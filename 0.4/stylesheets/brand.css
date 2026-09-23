@@ -1,0 +1,24 @@
+/* The cyan systems-family palette go-fileshare shares with go-filesystems,
+   go-diskimages, go-volumes and the rest: #22CCE2 -> #0079A8 -> #0A6E96.
+   Material reads primary/accent from these variables when the palette says
+   `primary: custom`, which is why the mkdocs.yml above says exactly that. */
+:root {
+  --md-primary-fg-color:        #0A6E96;
+  --md-primary-fg-color--light: #0079A8;
+  --md-primary-fg-color--dark:  #075670;
+  --md-accent-fg-color:         #0079A8;
+}
+
+[data-md-color-scheme="slate"] {
+  --md-primary-fg-color:        #22CCE2;
+  --md-primary-fg-color--light: #4FD8EA;
+  --md-primary-fg-color--dark:  #0079A8;
+  --md-accent-fg-color:         #22CCE2;
+  --md-typeset-a-color:         #4FD8EA;
+}
+
+/* Tables carry most of the load in these pages -- what a protocol can promise,
+   what a source can prove, what a build tag costs -- so they are given room
+   rather than left at the prose width. */
+.md-typeset table:not([class]) { font-size: .74rem; }
+.md-typeset table:not([class]) th { background: var(--md-primary-fg-color); color: #fff; }
