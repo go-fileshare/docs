@@ -18,11 +18,18 @@ assertions about the code.
 
 ## Not yet
 
-**S3** — the fifth protocol, and the one that would make an image reachable
-from anything that speaks object storage. It needs a
-[`go-filesystems/s3`](https://github.com/go-filesystems/s3) to exist first:
-SigV4 is stdlib arithmetic, and the union tree in `unionfs.go` is already the
-shape a bucket list wants.
+**Writes over S3.** `PUT` and `DELETE` answer 403. The library can write, but
+a share a person may only read has to refuse at the same place SFTP does, and
+that is not wired. Refusing beats a half-written object.
+
+**An OIDC token over S3.** Tokens work over [WebDAV](protocols/webdav.md) and
+nowhere else. The usual route for S3 is STS `AssumeRoleWithWebIdentity`,
+which exchanges the token for temporary credentials the client then signs
+with — a different mechanism from accepting a bearer token, and not
+implemented.
+
+[S3 itself](protocols/s3.md) has shipped: a share is a bucket, served over
+the same per-user tree SFTP uses.
 
 ## Measured, and stated as measured
 
