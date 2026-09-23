@@ -47,6 +47,7 @@ nav:
       - "SMB — NTLMv2": protocols/smb.md
       - "WebDAV — Basic, or a bearer token": protocols/webdav.md
       - "SFTP — keys, or certificates": protocols/sftp.md
+      - "S3 — a share is a bucket": protocols/s3.md
       - "NFS — nothing, unless Kerberos": protocols/nfs.md
   - Operations:
       - "Building only what you want": operations/build-tags.md

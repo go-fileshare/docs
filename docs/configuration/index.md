@@ -25,6 +25,7 @@ serve "smb"    { addr = "0.0.0.0:445" }
 serve "webdav" { addr = "0.0.0.0:8080" }
 serve "sftp"   { addr = "0.0.0.0:2222" }
 serve "nfs"    { addr = "0.0.0.0:2049" }
+serve "s3"     { addr = "0.0.0.0:9000" }
 ```
 
 A group is written `@name` wherever a person could be.
