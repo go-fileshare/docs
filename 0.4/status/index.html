@@ -626,6 +626,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../protocols/s3/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    S3 — a share is a bucket
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../protocols/nfs/" class="md-nav__link">
         
   
@@ -997,11 +1025,16 @@ assertions about the code.</p>
   refuses the same key once its certificate is moved aside.</li>
 </ul>
 <h2 id="not-yet">Not yet</h2>
-<p><strong>S3</strong> — the fifth protocol, and the one that would make an image reachable
-from anything that speaks object storage. It needs a
-<a href="https://github.com/go-filesystems/s3"><code>go-filesystems/s3</code></a> to exist first:
-SigV4 is stdlib arithmetic, and the union tree in <code>unionfs.go</code> is already the
-shape a bucket list wants.</p>
+<p><strong>Writes over S3.</strong> <code>PUT</code> and <code>DELETE</code> answer 403. The library can write, but
+a share a person may only read has to refuse at the same place SFTP does, and
+that is not wired. Refusing beats a half-written object.</p>
+<p><strong>An OIDC token over S3.</strong> Tokens work over <a href="../protocols/webdav/">WebDAV</a> and
+nowhere else. The usual route for S3 is STS <code>AssumeRoleWithWebIdentity</code>,
+which exchanges the token for temporary credentials the client then signs
+with — a different mechanism from accepting a bearer token, and not
+implemented.</p>
+<p><a href="../protocols/s3/">S3 itself</a> has shipped: a share is a bucket, served over
+the same per-user tree SFTP uses.</p>
 <h2 id="measured-and-stated-as-measured">Measured, and stated as measured</h2>
 <p>Two claims in these pages are insurance rather than reproductions of a defect,
 and are written that way in the source too:</p>

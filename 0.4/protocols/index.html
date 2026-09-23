@@ -699,6 +699,34 @@
   
   
     <li class="md-nav__item">
+      <a href="s3/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    S3 — a share is a bucket
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="nfs/" class="md-nav__link">
         
   
@@ -987,7 +1015,11 @@ the server can tell <strong>who</strong> is asking.</p>
 </tr>
 <tr>
 <td><strong><a href="webdav/">OIDC</a></strong> (over WebDAV)</td>
-<td>A <strong>bearer token</strong> an identity provider signed. Verified by <a href="https://github.com/go-authn/oidc">go-authn/oidc</a>: signature, issuer, audience, expiry. No other protocol here has anywhere to put one.</td>
+<td>A <strong>bearer token</strong> an identity provider signed. Verified by <a href="https://github.com/go-authn/oidc">go-authn/oidc</a>: signature, issuer, audience, expiry. No other protocol here has anywhere to put one — S3 signs with SigV4, which has no field for a bearer token.</td>
+</tr>
+<tr>
+<td><strong><a href="s3/">S3</a></strong></td>
+<td><strong>SigV4</strong>, header or presigned. The secret proves itself by computing an HMAC and never crosses the wire — so, like NTLMv2, the directory must HOLD the password rather than merely check it. A share is a bucket.</td>
 </tr>
 <tr>
 <td><strong><a href="nfs/">NFSv3</a></strong></td>

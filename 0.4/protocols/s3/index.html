@@ -10,31 +10,31 @@
       
       
       
-        <link rel="canonical" href="https://go-fileshare.github.io/docs/0.4/configuration/">
+        <link rel="canonical" href="https://go-fileshare.github.io/docs/0.4/protocols/s3/">
       
       
-        <link rel="prev" href="..">
+        <link rel="prev" href="../sftp/">
       
       
-        <link rel="next" href="shares/">
+        <link rel="next" href="../nfs/">
       
       
         
       
       
-      <link rel="icon" href="../assets/logo.svg">
+      <link rel="icon" href="../../assets/logo.svg">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
-        <title>Overview - go-fileshare</title>
+        <title>S3 — a share is a bucket - go-fileshare</title>
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
       
       
 
@@ -53,9 +53,9 @@
       
     
     
-      <link rel="stylesheet" href="../stylesheets/brand.css">
+      <link rel="stylesheet" href="../../stylesheets/brand.css">
     
-    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#the-configuration" class="md-skip">
+        <a href="#s3-a-share-is-a-bucket" class="md-skip">
           Skip to content
         </a>
       
@@ -100,9 +100,9 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href=".." title="go-fileshare" class="md-header__button md-logo" aria-label="go-fileshare" data-md-component="logo">
+    <a href="../.." title="go-fileshare" class="md-header__button md-logo" aria-label="go-fileshare" data-md-component="logo">
       
-  <img src="../assets/logo.svg" alt="logo">
+  <img src="../../assets/logo.svg" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -119,7 +119,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Overview
+              S3 — a share is a bucket
             
           </span>
         </div>
@@ -237,9 +237,9 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href=".." title="go-fileshare" class="md-nav__button md-logo" aria-label="go-fileshare" data-md-component="logo">
+    <a href="../.." title="go-fileshare" class="md-nav__button md-logo" aria-label="go-fileshare" data-md-component="logo">
       
-  <img src="../assets/logo.svg" alt="logo">
+  <img src="../../assets/logo.svg" alt="logo">
 
     </a>
     go-fileshare
@@ -266,7 +266,7 @@
   
   
     <li class="md-nav__item">
-      <a href=".." class="md-nav__link">
+      <a href="../.." class="md-nav__link">
         
   
   
@@ -290,8 +290,6 @@
       
   
   
-    
-  
   
   
     
@@ -304,11 +302,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
         
           
           <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
@@ -329,7 +327,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             
@@ -344,37 +342,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Overview
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../configuration/" class="md-nav__link">
         
   
   
@@ -390,48 +361,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#what-is-refused-at-startup-rather-than-later" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        What is refused at startup, rather than later
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#protocols-on-a-share" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        protocols on a share
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -444,7 +373,7 @@
   
   
     <li class="md-nav__item">
-      <a href="shares/" class="md-nav__link">
+      <a href="../../configuration/shares/" class="md-nav__link">
         
   
   
@@ -472,7 +401,7 @@
   
   
     <li class="md-nav__item">
-      <a href="identity/" class="md-nav__link">
+      <a href="../../configuration/identity/" class="md-nav__link">
         
   
   
@@ -500,7 +429,7 @@
   
   
     <li class="md-nav__item">
-      <a href="check/" class="md-nav__link">
+      <a href="../../configuration/check/" class="md-nav__link">
         
   
   
@@ -532,8 +461,10 @@
       
   
   
+    
   
   
+  
     
     
     
@@ -544,11 +475,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
           <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
@@ -569,7 +500,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
@@ -587,7 +518,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../protocols/" class="md-nav__link">
+      <a href="../" class="md-nav__link">
         
   
   
@@ -615,7 +546,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../protocols/smb/" class="md-nav__link">
+      <a href="../smb/" class="md-nav__link">
         
   
   
@@ -643,7 +574,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../protocols/webdav/" class="md-nav__link">
+      <a href="../webdav/" class="md-nav__link">
         
   
   
@@ -671,7 +602,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../protocols/sftp/" class="md-nav__link">
+      <a href="../sftp/" class="md-nav__link">
         
   
   
@@ -696,10 +627,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../protocols/s3/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    S3 — a share is a bucket
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -715,6 +673,81 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#a-share-is-a-bucket" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A share is a bucket
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#an-access-key-is-a-user-the-secret-key-is-their-password" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        An access key is a user; the secret key is their password
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-served" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What is served
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-refused-and-why" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What is refused, and why
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#two-limits-worth-knowing-before-pointing-it-at-something-large" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Two limits worth knowing before pointing it at something large
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -727,7 +760,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../protocols/nfs/" class="md-nav__link">
+      <a href="../nfs/" class="md-nav__link">
         
   
   
@@ -814,7 +847,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../operations/build-tags/" class="md-nav__link">
+      <a href="../../operations/build-tags/" class="md-nav__link">
         
   
   
@@ -842,7 +875,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../operations/isolation/" class="md-nav__link">
+      <a href="../../operations/isolation/" class="md-nav__link">
         
   
   
@@ -870,7 +903,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../operations/locking/" class="md-nav__link">
+      <a href="../../operations/locking/" class="md-nav__link">
         
   
   
@@ -905,7 +938,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../status/" class="md-nav__link">
+      <a href="../../status/" class="md-nav__link">
         
   
   
@@ -952,10 +985,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#what-is-refused-at-startup-rather-than-later" class="md-nav__link">
+  <a href="#a-share-is-a-bucket" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What is refused at startup, rather than later
+        A share is a bucket
       
     </span>
   </a>
@@ -963,10 +996,43 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#protocols-on-a-share" class="md-nav__link">
+  <a href="#an-access-key-is-a-user-the-secret-key-is-their-password" class="md-nav__link">
     <span class="md-ellipsis">
       
-        protocols on a share
+        An access key is a user; the secret key is their password
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-served" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What is served
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-refused-and-why" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What is refused, and why
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#two-limits-worth-knowing-before-pointing-it-at-something-large" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Two limits worth knowing before pointing it at something large
       
     </span>
   </a>
@@ -990,68 +1056,82 @@
 
 
 
-<h1 id="the-configuration">The configuration</h1>
-<p>One file, or a directory of small ones. <code>--config /etc/fileshare.d</code> merges
-them, so a user in one file and a share in another belong together.</p>
-<div class="highlight"><pre><span></span><code><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"ATTIC"</span>
-
-<span class="err">user</span><span class="w"> </span><span class="s2">"alice" { password_file = "/etc/fileshare/alice.pw"</span><span class="w"> </span><span class="p">}</span>
-<span class="err">user</span><span class="w"> </span><span class="s2">"bob"   { password_file = "/etc/fileshare/bob.pw"</span><span class="w"> </span><span class="p">}</span>
-
-<span class="err">group</span><span class="w"> </span><span class="s2">"family" { members = ["alice", "bob"</span><span class="p">]</span><span class="w"> </span><span class="p">}</span>
-
-<span class="err">share</span><span class="w"> </span><span class="s2">"photos"</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="na">image</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s2">"/srv/photos.img"</span>
-<span class="w">  </span><span class="na">allow</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"@family"</span><span class="p">]</span><span class="c1">        # a group, or a person, in either list</span>
-<span class="w">  </span><span class="na">writers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"alice"</span><span class="p">]</span><span class="c1">          # bob gets it read-only</span>
-<span class="p">}</span>
-
-<span class="err">share</span><span class="w"> </span><span class="s2">"scratch"</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="na">image</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"/srv/scratch.img"</span><span class="c1">   # anyone who authenticates, read-write</span>
-<span class="p">}</span>
-
-<span class="err">serve</span><span class="w"> </span><span class="s2">"smb"    { addr = "0.0.0.0:445"</span><span class="w"> </span><span class="p">}</span>
-<span class="err">serve</span><span class="w"> </span><span class="s2">"webdav" { addr = "0.0.0.0:8080"</span><span class="w"> </span><span class="p">}</span>
-<span class="err">serve</span><span class="w"> </span><span class="s2">"sftp"   { addr = "0.0.0.0:2222"</span><span class="w"> </span><span class="p">}</span>
-<span class="err">serve</span><span class="w"> </span><span class="s2">"nfs"    { addr = "0.0.0.0:2049"</span><span class="w"> </span><span class="p">}</span>
-<span class="err">serve</span><span class="w"> </span><span class="s2">"s3"     { addr = "0.0.0.0:9000"</span><span class="w"> </span><span class="p">}</span>
+<h1 id="s3-a-share-is-a-bucket">S3 — a share is a bucket</h1>
+<div class="highlight"><pre><span></span><code><span class="err">serve</span><span class="w"> </span><span class="s2">"s3" { addr = "0.0.0.0:9000"</span><span class="w"> </span><span class="p">}</span>
 </code></pre></div>
-<p>A group is written <code>@name</code> wherever a person could be.</p>
-<h2 id="what-is-refused-at-startup-rather-than-later">What is refused at startup, rather than later</h2>
-<div class="admonition warning">
-<p class="admonition-title">A name that belongs to no <code>user</code> block</p>
-<p><code>allow = ["alise"]</code> would otherwise lock Alice out of her own share and
-start happily. It is refused.</p>
-</div>
-<div class="admonition warning">
-<p class="admonition-title">A share that names who may use it, over NFS</p>
-<p>A configuration saying <em>photos belongs to alice</em> and a protocol handing
-photos to whoever connects cannot both be honoured. See
-<a href="../protocols/nfs/">NFS</a>.</p>
-</div>
-<div class="admonition warning">
-<p class="admonition-title">A provider with nowhere to put a token</p>
-<p>An <a href="../protocols/webdav/"><code>oidc</code></a> block without a WebDAV <code>serve</code> block is
-refused: no other protocol here can carry an <code>Authorization</code> header.</p>
-</div>
-<div class="admonition warning">
-<p class="admonition-title">A protocol this binary was built without</p>
-<p>It is told <em>that</em>, rather than "there is no such protocol" — the difference
-between a typo and a <a href="../operations/build-tags/">build tag</a>.</p>
-</div>
-<p>A <code>serve</code> block with no <code>addr</code> lands on the registered port for that protocol,
-on loopback.</p>
-<h2 id="protocols-on-a-share"><code>protocols</code> on a share</h2>
-<div class="highlight"><pre><span></span><code><span class="err">share</span><span class="w"> </span><span class="s2">"photos"</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="na">image</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">"/srv/photos.img"</span>
-<span class="w">  </span><span class="na">protocols</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"smb"</span><span class="p">]</span>
-<span class="p">}</span>
+<p>The fifth protocol, and the one that makes an image reachable from anything
+that speaks object storage — a backup tool, a data pipeline, <code>rclone</code>, a
+browser's <code>fetch()</code>. <strong>Nothing mounts.</strong></p>
+<div class="highlight"><pre><span></span><code>GET /                      the shares this person may use, as buckets
+GET /photos?list-type=2    the files in that share, as keys
+GET /photos/holiday.jpg    the file itself, Range and all
 </code></pre></div>
-<p>Says which protocols carry it. Useful on its own — a share declared SMB-only is
-a share the WebDAV process is never told about — and required in some
-configurations under <a href="../operations/isolation/"><code>--isolate</code></a>. A <code>serve</code> block
-that would end up carrying nothing is refused too, before any image is opened,
-naming the shares that were kept from it and why.</p>
+<h2 id="a-share-is-a-bucket">A share is a bucket</h2>
+<p>Served over the <strong>same per-user tree SFTP uses</strong>: a filesystem whose top level
+is the shares this person may use. So a share alice may not use is not a bucket
+alice can see, and the access rules are applied in one place rather than copied
+into a second protocol.</p>
+<div class="admonition note">
+<p class="admonition-title">A directory inside a share is a prefix, not an object</p>
+<p>Which is what S3 clients already believe — they display prefixes ending in
+the delimiter as folders. <code>GET</code> of a directory answers <code>NoSuchKey</code>, because
+answering 200 would make a client think it can fetch the bytes of a folder.</p>
+</div>
+<h2 id="an-access-key-is-a-user-the-secret-key-is-their-password">An access key is a user; the secret key is their password</h2>
+<div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">AWS_ACCESS_KEY_ID</span><span class="o">=</span>alice
+<span class="nb">export</span><span class="w"> </span><span class="nv">AWS_SECRET_ACCESS_KEY</span><span class="o">=</span><span class="k">$(</span>cat<span class="w"> </span>alice.pw<span class="k">)</span>
+aws<span class="w"> </span>--endpoint-url<span class="w"> </span>http://attic.example.org:9000<span class="w"> </span>s3<span class="w"> </span>ls
+</code></pre></div>
+<p>SigV4 proves possession of the secret by computing an HMAC from it — the
+password never crosses the wire, exactly as with NTLMv2.</p>
+<div class="admonition danger">
+<p class="admonition-title">So the directory must HOLD the password, not merely check it</p>
+<p>A source that can only <em>verify</em> a password — an LDAP bind, a bcrypt column
+— can answer WebDAV and <strong>cannot</strong> answer S3.</p>
+<p>And not an NT hash either: that is the MD4 SMB can work from, and an HMAC
+cannot be computed from it. <strong>An identity holding only an NT hash serves
+SMB and not S3</strong> — near neighbours rather than the same answer.
+<a href="../../configuration/check/"><code>check</code></a> prints the column.</p>
+</div>
+<p>⛔ The secret never leaves the directory. <code>Identity.Derive</code> runs the key
+schedule over the password and returns only the result, which is why there is
+no <code>Password()</code> accessor anywhere in the program.</p>
+<h2 id="what-is-served">What is served</h2>
+<p><code>ListBuckets</code>, <code>HeadBucket</code>, <code>ListObjectsV2</code> with prefix, delimiter, max-keys
+and continuation, <code>HeadObject</code>, and <code>GetObject</code> with <code>Range</code>. SigV4 in both
+forms, header and presigned.</p>
+<p>The object API itself is
+<a href="https://github.com/go-filesystems/s3"><code>go-filesystems/s3</code></a>.</p>
+<h2 id="what-is-refused-and-why">What is refused, and why</h2>
+<div class="admonition warning">
+<p class="admonition-title">Writes answer 403</p>
+<p><code>PUT</code> and <code>DELETE</code> are refused. The library can write, but a share a person
+may only read has to refuse at the same place SFTP does, and that is not
+wired yet. Refusing beats a half-written object.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">A bearer token is not accepted here</p>
+<p><a href="../webdav/">OIDC</a> works over WebDAV and nowhere else. S3 authenticates with
+a SigV4 signature — an HMAC over the request, with no field a bearer token
+fits in.</p>
+<p>The usual route is STS <code>AssumeRoleWithWebIdentity</code>, which exchanges an OIDC
+token for temporary credentials the client then signs with. That is a
+different mechanism, and it is <strong>not implemented</strong>.</p>
+</div>
+<p>Multipart upload, versioning, ACLs, policies, lifecycle rules, replication and
+tagging are refused by name. A client that asks gets <code>NotImplemented</code>, which is
+what makes it fall back to a single <code>PUT</code> rather than failing at the end of a
+5 GB one.</p>
+<h2 id="two-limits-worth-knowing-before-pointing-it-at-something-large">Two limits worth knowing before pointing it at something large</h2>
+<p><strong><code>GetObject</code> reads the whole object into memory.</strong> The driver interface offers
+<code>ReadFile</code> and nothing else — no opener, no reader — so there is no streaming
+read to use. A bound answers <code>EntityTooLarge</code> rather than taking the process
+down.</p>
+<p><strong><code>LastModified</code> is the epoch.</strong> <code>filesystem.Stat</code> carries <code>Mode</code>, <code>Size</code> and
+<code>Inode</code>, and no modification time at all. The field is not optional in the S3
+schema, so something must be sent; the epoch is obviously not a real time,
+where <code>time.Now()</code> would look like a file that just changed and make every sync
+tool copy everything, every run.</p>
 
 
 
@@ -1107,10 +1187,10 @@ naming the shares that were kept from it and why.</p>
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.sections", "navigation.top", "content.code.copy", "search.suggest"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "content.code.copy", "search.suggest"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
       
     
   </body>
