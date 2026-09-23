@@ -1,0 +1,55 @@
+site_name: go-fileshare
+site_description: One disk image, served over SMB, NFS, WebDAV and SFTP — the same users, the same per-share access, from one configuration file. Pure Go, CGO_ENABLED=0.
+site_url: https://go-fileshare.github.io/docs/
+repo_url: https://github.com/go-fileshare
+repo_name: go-fileshare
+edit_uri: ""
+
+theme:
+  name: material
+  logo: assets/logo.svg
+  favicon: assets/logo.svg
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: custom
+      accent: custom
+      toggle: { icon: material/weather-night, name: Dark mode }
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: custom
+      accent: custom
+      toggle: { icon: material/weather-sunny, name: Light mode }
+  features: [navigation.sections, navigation.top, content.code.copy, search.suggest]
+
+extra_css: [stylesheets/brand.css]
+extra:
+  version:
+    provider: mike
+
+markdown_extensions:
+  - admonition
+  - tables
+  - attr_list
+  - md_in_html
+  - pymdownx.superfences
+  - pymdownx.highlight
+
+nav:
+  - Home: index.md
+  - Configuration:
+      - Overview: configuration/index.md
+      - "Shares, filesystems and partitions": configuration/shares.md
+      - "Users, groups and directories": configuration/identity.md
+      - "check — before you restart": configuration/check.md
+  - Protocols:
+      - "What a protocol can promise": protocols/index.md
+      - "SMB — NTLMv2": protocols/smb.md
+      - "WebDAV — Basic, or a bearer token": protocols/webdav.md
+      - "SFTP — keys, or certificates": protocols/sftp.md
+      - "NFS — nothing, unless Kerberos": protocols/nfs.md
+  - Operations:
+      - "Building only what you want": operations/build-tags.md
+      - "One process per protocol": operations/isolation.md
+      - "One image, several protocols, one lock": operations/locking.md
+  - Status: status.md

@@ -1,0 +1,57 @@
+name: docs
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  # A pull request builds with --strict and publishes nothing. That is the
+  # whole reason this job is split from the deploy below: a broken nav entry,
+  # a dead internal link or a missing asset should fail the PR rather than be
+  # discovered on the published site. go-virtio/docs has no such job, and its
+  # mkdocs.yml has pointed extra_css at a stylesheets/brand.css that does not
+  # exist -- exactly the class of thing --strict catches.
+  build:
+    name: mkdocs build --strict
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install --upgrade pip && pip install -r requirements.txt
+      - run: mkdocs build --strict
+
+  deploy:
+    name: publish
+    if: github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install --upgrade pip && pip install -r requirements.txt
+      - name: Configure git for mike
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      # mike publishes versioned docs to gh-pages; Pages serves that branch at
+      # https://go-fileshare.github.io/docs/. main is labelled "0.4", aliased
+      # "latest", tracking the fileshare release it documents.
+      - name: Deploy versioned docs
+        run: |
+          git fetch origin gh-pages --depth=1 || true
+          mike deploy --push --update-aliases 0.4 latest
+          mike set-default --push latest
