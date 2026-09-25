@@ -28,6 +28,34 @@ serve "nfs"    { addr = "0.0.0.0:2049" }
 serve "s3"     { addr = "0.0.0.0:9000" }
 ```
 
+## What a `user` block can carry
+
+Every example above uses `password_file`, which is the common case and was
+for a while the only one this program read. It is not the whole block, and
+the difference decides **which protocols a person can be served over** — so
+it is worth having in one place rather than discovering at a mount.
+
+| field | what it is | what it buys |
+|---|---|---|
+| `password` | a password, in the file | every protocol a password answers |
+| `password_file` | the same, in a file of its own | the same, without the secret in the configuration |
+| `nt_hash` | `MD4(UTF16LE(password))`, 32 hex characters | **SMB**, for a person whose password this site does not hold |
+| `authorized_keys` | `authorized_keys` lines, inline | **SFTP** |
+| `authorized_keys_file` | the same, from a file | **SFTP** |
+| `totp_secret` | a base32 one-time-code secret | a second factor, where a protocol has room for one |
+
+⛔ `password` and `password_file` together are refused at startup, naming the
+person: two answers to "what is their password" is a question about which one
+wins, and a configuration should not have to be read twice to find out.
+
+!!! tip "An inline user CAN be served over SMB"
+    Until recently this block read only the password fields, so serving SMB
+    to somebody written down here meant giving this file their password in
+    the clear — or moving them into a database. With `nt_hash` it does not:
+    a site that stores what Samba stores can write that instead. See
+    [what a source can prove](identity.md#what-a-source-can-prove-and-what-each-protocol-needs),
+    which is the same table one layer up.
+
 A group is written `@name` wherever a person could be.
 
 ## What is refused at startup, rather than later
