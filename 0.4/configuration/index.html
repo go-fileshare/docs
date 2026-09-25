@@ -407,6 +407,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#what-a-user-block-can-carry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What a user block can carry
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#what-is-refused-at-startup-rather-than-later" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -952,6 +963,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#what-a-user-block-can-carry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What a user block can carry
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#what-is-refused-at-startup-rather-than-later" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1016,6 +1038,64 @@ them, so a user in one file and a share in another belong together.</p>
 <span class="err">serve</span><span class="w"> </span><span class="s2">"nfs"    { addr = "0.0.0.0:2049"</span><span class="w"> </span><span class="p">}</span>
 <span class="err">serve</span><span class="w"> </span><span class="s2">"s3"     { addr = "0.0.0.0:9000"</span><span class="w"> </span><span class="p">}</span>
 </code></pre></div>
+<h2 id="what-a-user-block-can-carry">What a <code>user</code> block can carry</h2>
+<p>Every example above uses <code>password_file</code>, which is the common case and was
+for a while the only one this program read. It is not the whole block, and
+the difference decides <strong>which protocols a person can be served over</strong> — so
+it is worth having in one place rather than discovering at a mount.</p>
+<table>
+<thead>
+<tr>
+<th>field</th>
+<th>what it is</th>
+<th>what it buys</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>password</code></td>
+<td>a password, in the file</td>
+<td>every protocol a password answers</td>
+</tr>
+<tr>
+<td><code>password_file</code></td>
+<td>the same, in a file of its own</td>
+<td>the same, without the secret in the configuration</td>
+</tr>
+<tr>
+<td><code>nt_hash</code></td>
+<td><code>MD4(UTF16LE(password))</code>, 32 hex characters</td>
+<td><strong>SMB</strong>, for a person whose password this site does not hold</td>
+</tr>
+<tr>
+<td><code>authorized_keys</code></td>
+<td><code>authorized_keys</code> lines, inline</td>
+<td><strong>SFTP</strong></td>
+</tr>
+<tr>
+<td><code>authorized_keys_file</code></td>
+<td>the same, from a file</td>
+<td><strong>SFTP</strong></td>
+</tr>
+<tr>
+<td><code>totp_secret</code></td>
+<td>a base32 one-time-code secret</td>
+<td>a second factor, where a protocol has room for one</td>
+</tr>
+</tbody>
+</table>
+<p>⛔ <code>password</code> and <code>password_file</code> together are refused at startup, naming the
+person: two answers to "what is their password" is a question about which one
+wins, and a configuration should not have to be read twice to find out.</p>
+<div class="admonition tip">
+<p class="admonition-title">An inline user CAN be served over SMB</p>
+<p>Until recently this block read only the password fields, so serving SMB
+to somebody written down here meant giving this file their password in
+the clear — or moving them into a database. With <code>nt_hash</code> it does not:
+a site that stores what Samba stores can write that instead. See
+<a href="identity/#what-a-source-can-prove-and-what-each-protocol-needs">what a source can prove</a>,
+which is the same table one layer up.</p>
+</div>
 <p>A group is written <code>@name</code> wherever a person could be.</p>
 <h2 id="what-is-refused-at-startup-rather-than-later">What is refused at startup, rather than later</h2>
 <div class="admonition warning">
