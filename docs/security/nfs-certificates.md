@@ -61,7 +61,7 @@ nothing can revoke outlives their removal by its whole lifetime.
 
 | field | default | |
 |---|---|---|
-| `crl_url` | | `https://` only |
+| `crl_url` | | HTTPS only |
 | `crl_file` | | or an absolute path — one or the other |
 | `crl_ca_file` | the system's | pins the authorities of the CRL's HTTPS server |
 | `crl_refresh` | `1m` | how often it is fetched |

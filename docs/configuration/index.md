@@ -103,7 +103,7 @@ A group is written `@name` wherever a person could be.
 !!! warning "A block that cannot be served safely"
     An `admin` block without `state_file`, or listening on TCP without mutual
     TLS; a `tls` block that no `serve` block uses; a `reload` shorter than a
-    second; a revocation list fetched over plain `http://`. Each is described
+    second; a revocation list fetched over plain HTTP. Each is described
     where it belongs: [administration](../administration/index.md),
     [TLS](../security/tls.md), [reload](../administration/reload.md),
     [revocation](../security/index.md).

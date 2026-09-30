@@ -70,10 +70,10 @@ a long-lived bearer token. One or the other: both, or neither, is refused.
 
 | field | default | |
 |---|---|---|
-| `transmitter` | | its issuer, **`https://` only** |
+| `transmitter` | | its issuer, **HTTPS only** |
 | `audience` | | what this server is to the transmitter; required, or a SET addressed to another receiver would be believed here |
 | `client_id`, `client_secret_file` | | OAuth client credentials, together |
-| `token_url` | discovered | `https://` only, or the secret crosses the network in the clear |
+| `token_url` | discovered | HTTPS only, or the secret crosses the network in the clear |
 | `token_file` | | a long-lived token instead of client credentials |
 | `state_file` | | **required**: where revocations are written down |
 | `ca_file` | the system's | pins the transmitter's authorities |

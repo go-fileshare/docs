@@ -53,6 +53,11 @@ jobs:
               *img.shields.io*) continue ;;
               # Documented placeholders, not hosts.
               *example.com*|*example.org*|*example.net*|*localhost*|*127.0.0.1*|*.invalid*) continue ;;
+              # A per-account ACME directory: the path holds the account's
+              # <uuid>, which the extractor stops at, so what is left is a
+              # prefix no server answers. The host is real; the URL is a
+              # template, like the placeholders above.
+              https://acme-v02.harica.gr/acme/) continue ;;
             esac
             # Three attempts: one is a flake detector rather than a link
             # checker, and a lane that fails at random gets ignored.

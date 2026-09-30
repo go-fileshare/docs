@@ -36,7 +36,7 @@ included**. The first operation after this server's copy of the list changes is 
 
 | field | default | |
 |---|---|---|
-| `ssh_krl_url` | | where the list is fetched, **`https://` only** |
+| `ssh_krl_url` | | where the list is fetched, **HTTPS only** |
 | `ssh_krl_file` | | or a file, by absolute path — one or the other, never both |
 | `ssh_krl_ca_file` | the system's | pins the authorities the list's HTTPS server is checked against |
 | `ssh_krl_refresh` | `1m` | how often it is fetched, at least a second |

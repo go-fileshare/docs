@@ -36,8 +36,8 @@ is "this server does not know", and the credentials that mechanism governs are
 
 A copy is replaced only by a list that parsed: a list that arrives broken leaves
 the last good one in place, still counting towards `max_age` from when **it**
-was fetched. And a list is fetched over **`https://`** only — a list an attacker
-on the path can replace revokes nothing — so a `http://` URL is refused at
+was fetched. And a list is fetched over **HTTPS only** — a list an attacker
+on the path can replace revokes nothing — so a plain-HTTP URL is refused at
 startup.
 
 ## Transport
