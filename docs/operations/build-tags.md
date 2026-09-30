@@ -13,14 +13,42 @@ the three database drivers, `noldap` the LDAP client.
 
 | build | size |
 |---|---|
-| everything | 28.6 MB |
-| `-tags noldap` | 28.3 MB |
-| `-tags nosftp` | 27.9 MB |
-| `-tags nonfs,nowebdav,nosftp` (SMB only) | 26.4 MB |
-| `-tags nopartitioned` (no apfs, btrfs, xfs, zfs) | 29.5 MB |
-| `-tags nosql` | 16.9 MB |
-| `-tags nosql,noldap` | 16.6 MB |
-| `-tags nosql,noldap,nonfs,nowebdav,nosftp` | 11.9 MB |
+| everything | 31.2 MB |
+| `-tags noldap` | 30.9 MB |
+| `-tags nosftp` | 30.6 MB |
+| `-tags noopenpubkey` (no opkssh logins over SFTP) | about 2 MB less |
+| `-tags nos3` | 31.1 MB |
+| `-tags nonfs,nowebdav,nosftp,nos3` (SMB only) | 28.1 MB |
+| `-tags nopartitioned` (no apfs, btrfs, xfs, zfs) | 29.2 MB |
+| `-tags nosql` | 20.2 MB |
+| `-tags nosql,noldap` | 19.8 MB |
+| `-tags nosql,noldap,nonfs,nowebdav,nosftp,nos3` | 16.2 MB |
+
+These are the figures the fileshare README gives, measured before the admin
+API arrived; the table below is the later measurement.
+
+## The admin API, and `nogrpc`
+
+The [admin API](../administration/index.md) brought gRPC and protobuf in, and
+they are behind `nogrpc` (linux/amd64, measured 2026-09-29, when the rows above
+had grown to 34.1 MB for everything):
+
+| build | size |
+|---|---|
+| everything, with the admin API | 46.1 MB |
+| `-tags nogrpc` | 34.4 MB |
+| `-tags nosql,noldap,nogrpc` | 22.5 MB |
+
+gRPC costs **11.7 MB** — the [plugin measurement](#why-not-subprocess-plugins)
+below, taken again, now that it is here for a reason of its own. A site that
+manages its shares in files does not need to carry it.
+
+!!! warning "An `admin` block in a `nogrpc` build is refused"
+    Rather than served without one: a configuration that asks for the API and
+    starts without it does not do what it says.
+
+`nogrpc` leaves out the admin API only. [Health and metrics](../administration/health.md)
+are plain HTTP and stay.
 
 `nosql` is by a distance the biggest lever: PostgreSQL, MySQL and SQLite
 together weigh **11.7 MB**, more than every protocol in this program put
@@ -30,7 +58,9 @@ choice a build tag rather than a fork.
 
 !!! note "A protocol this binary was built without"
     A configuration naming one is told *that*, rather than "there is no such
-    protocol" — the difference between a typo and a build tag.
+    protocol" — the difference between a typo and a build tag. The same holds
+    for `opkssh_client_id` under `noopenpubkey` and an `admin` block under
+    `nogrpc`.
 
 ## Why not subprocess plugins
 

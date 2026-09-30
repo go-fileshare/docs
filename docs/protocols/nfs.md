@@ -1,4 +1,4 @@
-# NFS — nothing, unless Kerberos
+# NFS — nothing, unless Kerberos or a certificate
 
 ```hcl
 serve "nfs" { addr = "0.0.0.0:2049" }
@@ -40,3 +40,43 @@ client asserts.
 
 !!! note "The realm is compared, not just the name before the `@`"
     Two realms can each have an `alice`, and only one of them is yours.
+
+## Over TLS: the machine, not the person
+
+```hcl
+serve "nfs" {
+  tls            = true
+  client_ca_file = "/etc/fileshare/tls/clients.pem"
+}
+```
+
+Since v0.9.0 NFS is served over RPC-with-TLS (RFC 9289) with `tls = true` and a
+[`tls` block](../security/tls.md). It encrypts; with `client_ca_file` it makes a
+client present a certificate from that authority — which **host** is mounting.
+The uid inside is still the one `AUTH_SYS` claims, so a restricted share is
+**still refused** over it. TLS is offered, not required: a client that never
+asks for it is still served the open shares.
+
+## A person, from their certificate
+
+Since v0.12.0 a certificate can name a **person** — as go-authn/bridge issues
+one after an identity provider login — and then a share that names people is
+served over NFS without kerberos:
+
+```hcl
+serve "nfs" {
+  tls            = true
+  client_ca_file = "/etc/fileshare/bridge-x509-ca.pem"
+  identity       = "certificate"
+  crl_url        = "https://bridge.example.org/x509/crl"   # required
+}
+```
+
+!!! danger "A Linux client's certificate belongs to a mount"
+    Every user of that mount acts as the person the certificate names. Right on
+    a workstation one person uses; wrong on a machine several people log into —
+    use `sec=krb5` there.
+
+What the certificate carries, the CRL that is required, and what was measured
+with a real Linux client (`MNT` in the clear, `tlshd`'s pitfalls) are in
+[NFS, with identities from certificates](../security/nfs-certificates.md).

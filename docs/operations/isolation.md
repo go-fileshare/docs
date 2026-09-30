@@ -56,3 +56,10 @@ that many drivers writing one file with no lock between them. Say
 `--isolate`: a share declared SMB-only is a share the WebDAV process is never
 told about. A `serve` block that would end up carrying nothing is refused too,
 before any image is opened, naming the shares that were kept from it and why.
+
+## Not with an `admin` or a `metrics` block, yet
+
+`--isolate` together with an [`admin`](../administration/index.md) or a
+[`metrics`](../administration/health.md) block is refused: the children open
+the images and the parent opens nothing, so there is no one process an API
+change could be applied to, or whose readiness a probe would be asking about.

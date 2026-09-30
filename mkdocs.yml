@@ -1,5 +1,5 @@
 site_name: go-fileshare
-site_description: One disk image, served over SMB, NFS, WebDAV and SFTP — the same users, the same per-share access, from one configuration file. Pure Go, CGO_ENABLED=0.
+site_description: A disk image or a directory, served over SMB, NFS, WebDAV, SFTP and S3 — the same users, the same per-share access, from one configuration file. Pure Go, CGO_ENABLED=0.
 site_url: https://go-fileshare.github.io/docs/
 repo_url: https://github.com/go-fileshare
 repo_name: go-fileshare
@@ -39,7 +39,7 @@ nav:
   - Home: index.md
   - Configuration:
       - Overview: configuration/index.md
-      - "Shares, filesystems and partitions": configuration/shares.md
+      - "Shares: images, devices, directories": configuration/shares.md
       - "Users, groups and directories": configuration/identity.md
       - "check — before you restart": configuration/check.md
   - Protocols:
@@ -48,7 +48,17 @@ nav:
       - "WebDAV — Basic, or a bearer token": protocols/webdav.md
       - "SFTP — keys, or certificates": protocols/sftp.md
       - "S3 — a share is a bucket": protocols/s3.md
-      - "NFS — nothing, unless Kerberos": protocols/nfs.md
+      - "NFS — nothing, unless Kerberos or a certificate": protocols/nfs.md
+  - Administration:
+      - "The admin API": administration/index.md
+      - "Health and metrics": administration/health.md
+      - "Reading the directory again": administration/reload.md
+  - Security:
+      - "What revokes what": security/index.md
+      - "TLS, and certificates from ACME": security/tls.md
+      - "Revoking SSH certificates: the KRL": security/revocation-lists.md
+      - "NFS, with identities from certificates": security/nfs-certificates.md
+      - "Shared signals": security/shared-signals.md
   - Operations:
       - "Building only what you want": operations/build-tags.md
       - "One process per protocol": operations/isolation.md

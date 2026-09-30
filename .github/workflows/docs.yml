@@ -53,6 +53,11 @@ jobs:
               *img.shields.io*) continue ;;
               # Documented placeholders, not hosts.
               *example.com*|*example.org*|*example.net*|*localhost*|*127.0.0.1*|*.invalid*) continue ;;
+              # A per-account ACME directory: the path holds the account's
+              # <uuid>, which the extractor stops at, so what is left is a
+              # prefix no server answers. The host is real; the URL is a
+              # template, like the placeholders above.
+              https://acme-v02.harica.gr/acme/) continue ;;
             esac
             # Three attempts: one is a flake detector rather than a link
             # checker, and a lane that fails at random gets ignored.
@@ -89,10 +94,10 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
       # mike publishes versioned docs to gh-pages; Pages serves that branch at
-      # https://go-fileshare.github.io/docs/. main is labelled "0.4", aliased
-      # "latest", tracking the fileshare release it documents.
+      # https://go-fileshare.github.io/docs/. main is labelled "0.13", aliased
+      # "latest", tracking the fileshare release it documents (v0.13.0).
       - name: Deploy versioned docs
         run: |
           git fetch origin gh-pages --depth=1 || true
-          mike deploy --push --update-aliases 0.4 latest
+          mike deploy --push --update-aliases 0.13 latest
           mike set-default --push latest
