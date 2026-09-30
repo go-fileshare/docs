@@ -21,12 +21,31 @@ share "scratch" {
   image = "/srv/scratch.img"   # anyone who authenticates, read-write
 }
 
+tls {
+  cert_file = "/etc/fileshare/tls/fullchain.pem"
+  key_file  = "/etc/fileshare/tls/key.pem"
+}
+
 serve "smb"    { addr = "0.0.0.0:445" }
-serve "webdav" { addr = "0.0.0.0:8080" }
+serve "webdav" {
+  addr = "0.0.0.0:443"
+  tls  = true                  # HTTP Basic is the password: never in the clear
+}
 serve "sftp"   { addr = "0.0.0.0:2222" }
 serve "nfs"    { addr = "0.0.0.0:2049" }
 serve "s3"     { addr = "0.0.0.0:9000" }
 ```
+
+!!! danger "Since v0.9.0, WebDAV with passwords is not served in the clear"
+    `serve "webdav" { addr = "0.0.0.0:8080" }` — the example this page showed
+    until then — is now **refused at startup** whenever somebody authenticates:
+    HTTP Basic is the password on every request. Say `tls = true` with a `tls`
+    block, as above, or `plaintext = true` when a proxy terminates TLS in front
+    of it. See [TLS](../security/tls.md).
+
+A share can also be a [device](shares.md#a-device-not-only-an-image) or a
+[directory of the host](shares.md#a-directory-not-only-an-image) instead of an
+image.
 
 ## What a `user` block can carry
 
@@ -69,9 +88,25 @@ A group is written `@name` wherever a person could be.
     photos to whoever connects cannot both be honoured. See
     [NFS](../protocols/nfs.md).
 
-!!! warning "A provider with nowhere to put a token"
-    An [`oidc`](../protocols/webdav.md) block without a WebDAV `serve` block is
-    refused: no other protocol here can carry an `Authorization` header.
+!!! warning "A provider with nowhere to put its word"
+    An [`oidc`](../protocols/webdav.md) block is refused unless WebDAV is
+    served — the one protocol that carries an `Authorization` header — or SFTP
+    is served with the provider's certificates turned on (`ssh_ca_file` or
+    `opkssh_client_id`, see [SFTP](../protocols/sftp.md#people-the-identity-provider-vouches-for)).
+    SMB and NFS have nowhere to put either.
+
+!!! warning "Passwords in the clear"
+    WebDAV on an address other machines can reach, without `tls = true` or
+    `plaintext = true`, while anybody authenticates. See
+    [TLS](../security/tls.md#webdav-is-not-served-in-the-clear).
+
+!!! warning "A block that cannot be served safely"
+    An `admin` block without `state_file`, or listening on TCP without mutual
+    TLS; a `tls` block that no `serve` block uses; a `reload` shorter than a
+    second; a revocation list fetched over plain `http://`. Each is described
+    where it belongs: [administration](../administration/index.md),
+    [TLS](../security/tls.md), [reload](../administration/reload.md),
+    [revocation](../security/index.md).
 
 !!! warning "A protocol this binary was built without"
     It is told *that*, rather than "there is no such protocol" — the difference

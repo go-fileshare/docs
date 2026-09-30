@@ -1,8 +1,9 @@
 # go-fileshare
 
-**One disk image, served over SMB, NFS, WebDAV and SFTP — the same users, the
-same per-share access, from one configuration file.** Pure Go,
-`CGO_ENABLED=0`, one binary.
+**A disk image — or a directory — served over SMB, NFS, WebDAV, SFTP and S3 —
+the same users, the same per-share access, from one configuration file.** Pure
+Go, `CGO_ENABLED=0`, one binary. These pages describe
+[v0.13.0](status.md).
 
 ```sh
 go install github.com/go-fileshare/fileshare@latest
@@ -46,10 +47,15 @@ See [What a protocol can promise](protocols/index.md).
 | | |
 |---|---|
 | [The configuration](configuration/index.md) | users, groups, shares, `serve` blocks |
-| [Shares, filesystems and partitions](configuration/shares.md) | what is detected, what must be declared |
+| [Shares: images, devices, directories](configuration/shares.md) | what is detected, what must be declared |
 | [Users, groups and directories](configuration/identity.md) | files, SQL, LDAP, and what each can prove |
 | [`check`](configuration/check.md) | read the whole configuration back before restarting |
 | [Protocols](protocols/index.md) | what each one can and cannot promise |
+| [The admin API](administration/index.md) | shares created, granted and taken offline without a restart |
+| [Health and metrics](administration/health.md) | `/healthz`, `/readyz`, `/metrics` |
+| [Reading the directory again](administration/reload.md) | `reload`, `SIGHUP`, and what a removal does to open sessions |
+| [TLS](security/tls.md) | files or ACME; and why WebDAV is refused in the clear |
+| [What revokes what](security/index.md) | KRL, CRL, shared signals — and why each fails closed |
 | [Building only what you want](operations/build-tags.md) | a tag leaves a protocol out entirely |
 | [One process per protocol](operations/isolation.md) | `--isolate` |
 | [Status](status.md) | what is verified, and what is not here yet |

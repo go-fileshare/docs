@@ -36,3 +36,14 @@ is not.
 reads through SMB while twenty run through WebDAV, under `-race`, in CI. macOS
 mounts a share over SMB while `curl` writes to the same image over WebDAV, and
 reads back what WebDAV wrote.
+
+## When the people change
+
+SMB fixes who may connect to a share **when the share is added**, and checks it
+once per tree connect. So somebody new whom a [directory reload](../administration/reload.md)
+finds is added in place, SMB's running server included, with no connection
+touched; but anything taken away — a person, a credential, a share's expanded
+lists — is a new generation, and SMB's open connections are closed, so a
+revocation reaches the sessions already open. A share whose `allow` group has
+emptied is **not offered over SMB at all**: its empty `AllowUsers` would read as
+everyone.
