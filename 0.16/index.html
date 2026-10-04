@@ -1376,7 +1376,7 @@
 <p><strong>A disk image — or a directory — served over SMB, NFS, WebDAV, SFTP and S3 —
 the same users, the same per-share access, from one configuration file.</strong> Pure
 Go, <code>CGO_ENABLED=0</code>, one binary. These pages describe
-<a href="status/">v0.16.4</a>.</p>
+<a href="status/">v0.16.6</a>.</p>
 <div class="highlight"><pre><span></span><code>go<span class="w"> </span>install<span class="w"> </span>github.com/go-fileshare/fileshare@latest
 
 fileshare<span class="w"> </span>--image<span class="w"> </span>disk.img<span class="w"> </span>--user<span class="w"> </span>alice<span class="w"> </span>--password-file<span class="w"> </span>pw<span class="w">   </span><span class="c1"># one image, now</span>
@@ -1399,7 +1399,9 @@ nfs    on 0.0.0.0:2049 — scratch
        photos is not served over nfs: it is restricted to alice and bob, and
        NFSv3 on its own has no authentication: AUTH_UNIX is a claim the client
        makes about itself and the wire cannot disagree with it. A kerberos
-       block lifts this: sec=krb5 carries a principal a ticket proves
+       block lifts this: sec=krb5 carries a principal a ticket proves; so
+       does identity = "certificate" on the nfs serve block: RPC-over-TLS
+       with a client certificate naming the person
 </code></pre></div>
 <p>That last paragraph is the shape of the whole program: a rule the configuration
 asks for and a protocol that cannot honour it do not quietly meet in the middle.
