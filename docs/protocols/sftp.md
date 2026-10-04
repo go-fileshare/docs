@@ -109,7 +109,9 @@ configuration with `opkssh_client_id` in such a build is refused.
     no [reload](../administration/reload.md) concerns them. The window is the
     certificate's lifetime: bridge's `ssh_ca { validity }` (12h by default, at
     most 168h, never past the IdP session's end) and `opkssh_max_age` here. Keep
-    it as short as the clients' re-login allows.
+    it as short as the clients' re-login allows. Since v0.17.0 an opkssh
+    session that is already open also ends at `opkssh_max_age`, whatever the
+    certificate (which the person signs themselves) says.
 
 Two mechanisms close that window:
 
