@@ -17,7 +17,7 @@ Nothing listens unless the block is written.
 ## What it does
 
 The service is
-[`fileshare.admin.v1.AdminService`](https://github.com/go-fileshare/fileshare/blob/v0.16.4/proto/fileshare/admin/v1/admin.proto):
+[`fileshare.admin.v1.AdminService`](https://github.com/go-fileshare/fileshare/blob/v0.16.6/proto/fileshare/admin/v1/admin.proto):
 
 | | |
 |---|---|
