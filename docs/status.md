@@ -1,6 +1,6 @@
 # Status
 
-These pages describe **fileshare v0.17.1**.
+These pages describe **fileshare v0.17.2**.
 
 ## What each release added
 
@@ -25,6 +25,7 @@ These pages describe **fileshare v0.17.1**.
 | v0.16.7 | go-authn/oidc v0.2.2: an RSA key's size is counted in bits. Before, a 1024-bit key padded with zero octets verified a WebDAV token or an opkssh PK Token |
 | v0.17.0 | a security audit's fixes: one share may not hold another; access files (`authorized_keys_file`, `dsn_file`, …) may not lie in a share; WebDAV never turns anonymous because a directory read came back empty; S3 honours `protocols`; a connection that has not authenticated within 30 s is closed; an opkssh session ends at `opkssh_max_age`; a revoked session stays revoked and is closed |
 | v0.17.1 | go-authn/oidc v0.2.4 (no key set behind a redirect to http), servercert v0.3.0 (the ACME cache path checked like sshd's StrictModes), krl v0.5.0, revocation v0.3.0 |
+| v0.17.2 | go-filesystems/s3 v0.3.0: S3 no longer tells an unauthenticated caller which access keys exist; presigned URLs work, last a week at most, and are refused before their own date |
 
 !!! warning "Upgrading to v0.17.0"
     A configuration with one share inside another, two shares on one source,
