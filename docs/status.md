@@ -1,6 +1,6 @@
 # Status
 
-These pages describe **fileshare v0.16.6**.
+These pages describe **fileshare v0.16.7**.
 
 ## What each release added
 
@@ -22,6 +22,7 @@ These pages describe **fileshare v0.16.6**.
 | v0.16.4 | tests only |
 | v0.16.5 | tests only ([#36](https://github.com/go-fileshare/fileshare/issues/36): a test read a transport error as success) |
 | v0.16.6 | the NFS refusal names both ways out: a `kerberos` block, or [`identity = "certificate"`](security/nfs-certificates.md) |
+| v0.16.7 | go-authn/oidc v0.2.2: an RSA key's size is counted in bits. Before, a 1024-bit key padded with zero octets verified a WebDAV token or an opkssh PK Token |
 
 !!! warning "Upgrading past v0.9.0"
     A configuration serving WebDAV without TLS on an address other machines can
