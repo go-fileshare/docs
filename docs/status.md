@@ -1,6 +1,6 @@
 # Status
 
-These pages describe **fileshare v0.13.0**.
+These pages describe **fileshare v0.16.4**.
 
 ## What each release added
 
@@ -13,6 +13,13 @@ These pages describe **fileshare v0.13.0**.
 | v0.11.0 | [SFTP for people the identity provider vouches for](protocols/sftp.md#people-the-identity-provider-vouches-for): its SSH CA, and opkssh |
 | v0.12.0 | revocation: a [KRL](security/revocation-lists.md) for the provider's SSH certificates, a CRL for [NFS identities from certificates](security/nfs-certificates.md) |
 | v0.13.0 | [shared signals](security/shared-signals.md): a CAEP `session-revoked` voids everything the provider issued before, on every protocol |
+| v0.14.0 | the security review's fixes: [share names a protocol can carry](administration/index.md#what-it-will-and-will-not-touch), no share containing the configuration or its secrets, `source_roots` checked again at start, SSF `max_age` ≥ 1m and `retain` ≥ 169h |
+| v0.15.0 | a [KRL from `ssh_krl_url` must be signed and dated](security/revocation-lists.md#signed-and-dated-from-ssh_krl_url) |
+| v0.16.0 | revocation lists [never go backwards](security/revocation-lists.md#never-backwards-across-a-restart-too), across a restart with `ssh_krl_state_file` / `crl_state_file`; trust anchors and list files may not lie inside a share |
+| v0.16.1 | requires Go 1.26.6: nine reachable standard-library advisories in 1.26.4 |
+| v0.16.2 | an [NFS CRL's signature is checked before it is parsed](security/nfs-certificates.md#revocation-the-crl) |
+| v0.16.3 | [nobody is named by an unverified email](protocols/webdav.md#a-token-over-the-one-protocol-that-can-carry-one) |
+| v0.16.4 | tests only |
 
 !!! warning "Upgrading past v0.9.0"
     A configuration serving WebDAV without TLS on an address other machines can

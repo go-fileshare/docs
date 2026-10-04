@@ -78,6 +78,15 @@ oidc {
 There is **no login flow** here: no redirect, no client secret, no cookies.
 This is the resource server.
 
+**The name** a token gives is `preferred_username`, or the claim
+`username_claim` names. Without `preferred_username`, it is the email only if
+the provider says `email_verified: true`, and otherwise `sub`. With
+`username_claim = "email"`, a token whose email is not verified is refused —
+over WebDAV, and for an opkssh login over SFTP alike. Until it is verified,
+the email is only what the person typed, and a signed token that carried it
+would bind as an address nobody checked (OpenID Connect Core 5.1;
+go-authn/oidc v0.2.0, fileshare v0.16.3).
+
 Which of the provider's people get a share — groups, named people, whole
 institutions — is written with `oidc:` rules and `domains`; see
 [people the identity provider names](../configuration/identity.md#people-the-identity-provider-names-not-this-file).
