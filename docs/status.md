@@ -1,6 +1,6 @@
 # Status
 
-These pages describe **fileshare v0.16.4**.
+These pages describe **fileshare v0.16.6**.
 
 ## What each release added
 
@@ -20,6 +20,8 @@ These pages describe **fileshare v0.16.4**.
 | v0.16.2 | an [NFS CRL's signature is checked before it is parsed](security/nfs-certificates.md#revocation-the-crl) |
 | v0.16.3 | [nobody is named by an unverified email](protocols/webdav.md#a-token-over-the-one-protocol-that-can-carry-one) |
 | v0.16.4 | tests only |
+| v0.16.5 | tests only ([#36](https://github.com/go-fileshare/fileshare/issues/36): a test read a transport error as success) |
+| v0.16.6 | the NFS refusal names both ways out: a `kerberos` block, or [`identity = "certificate"`](security/nfs-certificates.md) |
 
 !!! warning "Upgrading past v0.9.0"
     A configuration serving WebDAV without TLS on an address other machines can

@@ -3,7 +3,7 @@
 **A disk image — or a directory — served over SMB, NFS, WebDAV, SFTP and S3 —
 the same users, the same per-share access, from one configuration file.** Pure
 Go, `CGO_ENABLED=0`, one binary. These pages describe
-[v0.16.4](status.md).
+[v0.16.6](status.md).
 
 ```sh
 go install github.com/go-fileshare/fileshare@latest
@@ -35,7 +35,9 @@ nfs    on 0.0.0.0:2049 — scratch
        photos is not served over nfs: it is restricted to alice and bob, and
        NFSv3 on its own has no authentication: AUTH_UNIX is a claim the client
        makes about itself and the wire cannot disagree with it. A kerberos
-       block lifts this: sec=krb5 carries a principal a ticket proves
+       block lifts this: sec=krb5 carries a principal a ticket proves; so
+       does identity = "certificate" on the nfs serve block: RPC-over-TLS
+       with a client certificate naming the person
 ```
 
 That last paragraph is the shape of the whole program: a rule the configuration
