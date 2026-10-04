@@ -77,8 +77,8 @@ a long-lived bearer token. One or the other: both, or neither, is refused.
 | `token_file` | | a long-lived token instead of client credentials |
 | `state_file` | | **required**: where revocations are written down |
 | `ca_file` | the system's | pins the transmitter's authorities |
-| `max_age` | `10m` | how long without hearing from the transmitter before federated credentials are refused; at least 10s |
-| `retain` | `192h` | how long a revocation is kept; at least an hour |
+| `max_age` | `10m` | how long without hearing from the transmitter before federated credentials are refused; at least a minute |
+| `retain` | `192h` | how long a revocation is kept; at least 169h (since v0.14.0) |
 
 A revocation is **written down before it is acknowledged**, so an acknowledged
 one survives a restart; and it is kept for `retain` — longer than any credential

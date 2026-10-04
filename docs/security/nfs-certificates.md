@@ -11,6 +11,7 @@ serve "nfs" {
   client_ca_file = "/etc/fileshare/bridge-x509-ca.pem"
   identity       = "certificate"
   crl_url        = "https://bridge.example.org/x509/crl"   # or crl_file; required
+  crl_state_file = "/var/lib/fileshare/nfs.crl.state"     # the order, across a restart
 }
 ```
 
@@ -66,6 +67,7 @@ nothing can revoke outlives their removal by its whole lifetime.
 | `crl_ca_file` | the system's | pins the authorities of the CRL's HTTPS server |
 | `crl_refresh` | `1m` | how often it is fetched |
 | `crl_max_age` | `1h` | how old the last good copy may be |
+| `crl_state_file` | | where the last CRL that verified is kept, so a restart remembers which is newer |
 
 It is fetched and kept like the [KRL](revocation-lists.md), and **fails closed**
 the same way; a CRL past its own **`NextUpdate`** counts as unknown whatever
@@ -73,6 +75,15 @@ the same way; a CRL past its own **`NextUpdate`** counts as unknown whatever
 could have written revokes whatever they like, and, worse, un-revokes it. With
 the CRL reachable, **the next call after it changes is refused**; the
 certificate's lifetime bounds a revocation only when the CRL is not reachable.
+
+Since v0.16.2 the signature is checked on the raw bytes **before** the CRL is
+parsed, through [go-authn/revocation](https://github.com/go-authn/revocation):
+parsed first, a large CRL signed by anybody cost memory and seconds before
+being refused. What this server cannot read as a complete list is refused
+too: a delta CRL, an unknown critical extension or entry extension, no CRL
+number, no `NextUpdate`. A CRL with a lower number than the one held, or the
+same number issued earlier, is refused like an older
+[KRL](revocation-lists.md#never-backwards-across-a-restart-too).
 
 A CRL field without `identity = "certificate"` is refused, and so is
 `identity = "certificate"` without `tls = true` and `client_ca_file`: the

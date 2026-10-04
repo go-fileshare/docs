@@ -17,7 +17,7 @@ Nothing listens unless the block is written.
 ## What it does
 
 The service is
-[`fileshare.admin.v1.AdminService`](https://github.com/go-fileshare/fileshare/blob/v0.13.0/proto/fileshare/admin/v1/admin.proto):
+[`fileshare.admin.v1.AdminService`](https://github.com/go-fileshare/fileshare/blob/v0.16.4/proto/fileshare/admin/v1/admin.proto):
 
 | | |
 |---|---|
@@ -89,12 +89,24 @@ is why a block without `state_file` is refused.
 **A source must lie under `source_roots`**, resolved — links followed, `..`
 taken out — and it is the resolved path that is kept. Without `source_roots` the
 API **cannot create shares at all**: the process can read `/dev` and `/etc`,
-and nobody meant to hand those to a caller.
+and nobody meant to hand those to a caller. It is checked again at every start,
+and a share in `state_file` that is no longer under a root stops the start,
+naming it.
 
 **Every share has at least one grant.** A share with none is open to anyone who
 authenticates. The file may say that on purpose; an API call should not say it
 by omission. So `CreateShare` needs a grant, and revoking the last one is
 refused — delete the share instead.
+
+**Names a protocol can carry.** A share name is at most 80 characters, does
+not begin or end with a space, is not `.` or `..`, and holds no unprintable
+character and none of `:*?"<>|{}%`. Subjects hold no unprintable character
+either, and one share takes at most 1000 grants — a group's job long before.
+Each of these was accepted before v0.14.0, written to `state_file`, and then
+fatal at every start.
+
+**No share may contain** the configuration, the state file, or the secrets
+they name: whoever writes into it would rewrite who may do what.
 
 **A change is checked like a configuration, opened, written down, then
 served.** A change the server cannot honour — an image that will not open, a
