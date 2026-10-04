@@ -96,8 +96,10 @@ does not count as current until a list is fetched. Without it, a restart
 forgets the order, and fileshare says so at start: an older list, still signed
 and unexpired, would be taken.
 
-These files, like `ssh_ca_file`, the CA files and the list files, **may not lie
-inside a share**: whoever writes there would decide who gets in.
+These files, like `ssh_ca_file`, the CA files, the list files and (since
+v0.17.0) `authorized_keys_file`, `dsn_file`, `bind_password_file` and the
+`ssf` `ca_file`, **may not lie inside a share**: whoever writes there would
+decide who gets in.
 
 ## A plain `sshd` next to fileshare
 

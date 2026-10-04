@@ -137,6 +137,13 @@ not by a string test. A client may *create* a link to `/etc`; nothing will
 follow it. A FIFO planted in the tree is refused rather than left to hang the
 server.
 
+!!! danger "One share may not hold another (since v0.17.0)"
+    A directory share whose tree holds another share's image or directory is
+    **refused at start**, and by the admin API: whoever may use the outer
+    share would read and write the inner one without being allowed it —
+    anonymous NFS included. So are two shares on the same source, except two
+    different partitions of one disk image.
+
 !!! note "Not behind the image lock"
     An image driver owns one file and promises nothing about two calls at once,
     which is why [every image is wrapped in one lock](../operations/locking.md).

@@ -17,7 +17,7 @@ Nothing listens unless the block is written.
 ## What it does
 
 The service is
-[`fileshare.admin.v1.AdminService`](https://github.com/go-fileshare/fileshare/blob/v0.16.7/proto/fileshare/admin/v1/admin.proto):
+[`fileshare.admin.v1.AdminService`](https://github.com/go-fileshare/fileshare/blob/v0.17.1/proto/fileshare/admin/v1/admin.proto):
 
 | | |
 |---|---|
@@ -106,7 +106,12 @@ Each of these was accepted before v0.14.0, written to `state_file`, and then
 fatal at every start.
 
 **No share may contain** the configuration, the state file, or the secrets
-they name: whoever writes into it would rewrite who may do what.
+they name: whoever writes into it would rewrite who may do what. Since v0.17.0
+that includes `authorized_keys_file`, a `users` block's `dsn_file` and
+`bind_password_file`, the `ssf` block's `ca_file`, and a sqlite database a DSN
+names: a writer who could add their key to somebody's `authorized_keys` would
+log in as them. **Nor may a share contain another share** (see
+[directories](../configuration/shares.md#a-directory-not-only-an-image)).
 
 **A change is checked like a configuration, opened, written down, then
 served.** A change the server cannot honour — an image that will not open, a

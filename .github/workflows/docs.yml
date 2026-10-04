@@ -94,10 +94,10 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
       # mike publishes versioned docs to gh-pages; Pages serves that branch at
-      # https://go-fileshare.github.io/docs/. main is labelled "0.16", aliased
-      # "latest", tracking the fileshare release it documents (v0.16.7).
+      # https://go-fileshare.github.io/docs/. main is labelled "0.17", aliased
+      # "latest", tracking the fileshare release it documents (v0.17.1).
       - name: Deploy versioned docs
         run: |
           git fetch origin gh-pages --depth=1 || true
-          mike deploy --push --update-aliases 0.16 latest
+          mike deploy --push --update-aliases 0.17 latest
           mike set-default --push latest
