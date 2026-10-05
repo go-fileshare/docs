@@ -112,18 +112,22 @@ where the groups travel in the certificate instead of the token.
     `oidc` block, a malformed one, or one that may write without being allowed
     to connect is **refused at startup**.
 
-!!! danger "The other direction is not symmetric: set `domains`"
-    A plain name in `allow` or `writers` is matched against the name a token
-    or a provider certificate carries: the provider's `alice` gets the shares
-    this file grants `alice`, write included, as long as a source here knows
-    that name. That is deliberate, and only as safe as the provider's names.
-    Without `domains`, a provider where people choose their own
-    `preferred_username` hands anybody who signs up a local account's shares.
-    **Set `domains`** — a federated name must then be scoped
-    (`alice@univ-a.fr`), and a bare `alice` from the provider is refused — or
-    take the name from a claim the provider controls (`username_claim`), or
-    grant provider people only through `oidc:` rules. Since v0.18.1,
-    `fileshare check` says so when `domains` is not set.
+!!! danger "The provider's `alice` is not the local `alice` unless you say so (since v0.20.0)"
+    A plain name in `allow` or `writers` is a local account; a token or a
+    provider certificate is reached only by a share's `oidc:` rules. A site
+    whose provider's names ARE its local names writes `local_names = true` in
+    the `oidc` block — and should set `domains` with it, or take the name from
+    a claim the provider controls: a provider where people choose their own
+    `preferred_username` would otherwise hand anybody who signs up a local
+    account's shares, write included. That was the default before v0.20.0
+    (security audit F4). A federated name refused for want of `local_names`
+    is logged with the line to add, and `fileshare check` says which rule is
+    in force.
+
+    NFS client certificates (`identity = "certificate"`) are the exception:
+    their CA is the one `client_ca_file` pins for exactly that, and plain
+    names are the only way an NFS share can name somebody, so their names are
+    local names whatever `local_names` says.
 
 ### Which institutions
 
