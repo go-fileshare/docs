@@ -105,6 +105,19 @@ where the groups travel in the certificate instead of the token.
     `oidc` block, a malformed one, or one that may write without being allowed
     to connect is **refused at startup**.
 
+!!! danger "The other direction is not symmetric: set `domains`"
+    A plain name in `allow` or `writers` is matched against the name a token
+    or a provider certificate carries: the provider's `alice` gets the shares
+    this file grants `alice`, write included, as long as a source here knows
+    that name. That is deliberate, and only as safe as the provider's names.
+    Without `domains`, a provider where people choose their own
+    `preferred_username` hands anybody who signs up a local account's shares.
+    **Set `domains`** — a federated name must then be scoped
+    (`alice@univ-a.fr`), and a bare `alice` from the provider is refused — or
+    take the name from a claim the provider controls (`username_claim`), or
+    grant provider people only through `oidc:` rules. Since v0.18.1,
+    `fileshare check` says so when `domains` is not set.
+
 ### Which institutions
 
 ```hcl
