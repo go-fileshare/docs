@@ -26,6 +26,13 @@ LDAP side reads what a Samba-aware directory already publishes —
 `sambaNTPassword`, `sshPublicKey`, `memberUid` — and every name is
 configurable.
 
+!!! danger "No cleartext bind to another machine (since v0.19.0)"
+    A `users "ldap"` block refuses `ldap://` to another machine unless
+    `start_tls = true`: every password a bind checks would cross the network
+    in the clear. `ldaps://` is accepted, and so are `ldap://` to a loopback
+    address and `ldapi://`, where nobody is on the way. There is no switch to
+    turn this off (go-authn/directory v0.10.0).
+
 ## Order, and the one exception
 
 Sources are asked **in the order they are written**, and the first one that
