@@ -1,6 +1,6 @@
 # Status
 
-These pages describe **fileshare v0.19.0**.
+These pages describe **fileshare v0.20.0**.
 
 ## What each release added
 
@@ -29,6 +29,13 @@ These pages describe **fileshare v0.19.0**.
 | v0.18.0 | CI pins Go 1.27.1 instead of `stable` |
 | v0.18.1 | `fileshare check` warns when an `oidc` block has no `domains`: a [provider's bare name reaches the local account of that name](configuration/identity.md) |
 | v0.19.0 | go-authn/directory v0.11.0: a `users "ldap"` block refuses a [cleartext bind to another machine](configuration/identity.md); passwords are compared as digests, in constant time |
+| v0.20.0 | [`local_names`](configuration/identity.md): the provider's names are local names only when the `oidc` block says so (security audit F4) |
+
+!!! warning "Upgrading to v0.20.0"
+    The provider's `alice` no longer gets the local `alice`'s shares. A site
+    whose provider's names are its local names adds `local_names = true` to the
+    `oidc` block (and sets `domains`); the server logs that line for each name
+    it refuses for want of it.
 
 !!! warning "Upgrading to v0.19.0"
     A `users "ldap"` block pointing at `ldap://` on another machine without
