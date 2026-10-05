@@ -1,6 +1,6 @@
 # Status
 
-These pages describe **fileshare v0.17.2**.
+These pages describe **fileshare v0.18.1**.
 
 ## What each release added
 
@@ -26,6 +26,8 @@ These pages describe **fileshare v0.17.2**.
 | v0.17.0 | a security audit's fixes: one share may not hold another; access files (`authorized_keys_file`, `dsn_file`, …) may not lie in a share; WebDAV never turns anonymous because a directory read came back empty; S3 honours `protocols`; a connection that has not authenticated within 30 s is closed; an opkssh session ends at `opkssh_max_age`; a revoked session stays revoked and is closed |
 | v0.17.1 | go-authn/oidc v0.2.4 (no key set behind a redirect to http), servercert v0.3.0 (the ACME cache path checked like sshd's StrictModes), krl v0.5.0, revocation v0.3.0 |
 | v0.17.2 | go-filesystems/s3 v0.3.0: S3 no longer tells an unauthenticated caller which access keys exist; presigned URLs work, last a week at most, and are refused before their own date |
+| v0.18.0 | CI pins Go 1.27.1 instead of `stable` |
+| v0.18.1 | `fileshare check` warns when an `oidc` block has no `domains`: a [provider's bare name reaches the local account of that name](configuration/identity.md) |
 
 !!! warning "Upgrading to v0.17.0"
     A configuration with one share inside another, two shares on one source,
