@@ -1,6 +1,6 @@
 # Status
 
-These pages describe **fileshare v0.18.1**.
+These pages describe **fileshare v0.19.0**.
 
 ## What each release added
 
@@ -28,6 +28,11 @@ These pages describe **fileshare v0.18.1**.
 | v0.17.2 | go-filesystems/s3 v0.3.0: S3 no longer tells an unauthenticated caller which access keys exist; presigned URLs work, last a week at most, and are refused before their own date |
 | v0.18.0 | CI pins Go 1.27.1 instead of `stable` |
 | v0.18.1 | `fileshare check` warns when an `oidc` block has no `domains`: a [provider's bare name reaches the local account of that name](configuration/identity.md) |
+| v0.19.0 | go-authn/directory v0.11.0: a `users "ldap"` block refuses a [cleartext bind to another machine](configuration/identity.md); passwords are compared as digests, in constant time |
+
+!!! warning "Upgrading to v0.19.0"
+    A `users "ldap"` block pointing at `ldap://` on another machine without
+    `start_tls = true` **no longer starts**: use `ldaps://`, or StartTLS.
 
 !!! warning "Upgrading to v0.17.0"
     A configuration with one share inside another, two shares on one source,
