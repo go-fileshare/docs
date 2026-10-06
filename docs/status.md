@@ -1,6 +1,6 @@
 # Status
 
-These pages describe **fileshare v0.21.0**.
+These pages describe **fileshare v0.21.1**.
 
 ## What each release added
 
@@ -31,6 +31,7 @@ These pages describe **fileshare v0.21.0**.
 | v0.19.0 | go-authn/directory v0.11.0: a `users "ldap"` block refuses a [cleartext bind to another machine](configuration/identity.md); passwords are compared as digests, in constant time |
 | v0.20.0 | [`local_names`](configuration/identity.md): the provider's names are local names only when the `oidc` block says so (security audit F4) |
 | v0.21.0 | [volumes](administration/volumes.md): a privileged `fileshare provisioner` creates ZFS datasets, btrfs subvolumes and XFS/ext4 project-quota directories, and the admin API serves shares from them; a full directory share is one answer on every protocol; the admin socket's `allowed_uids` |
+| v0.21.1 | a [full share](administration/volumes.md#a-full-share) says so on SMB (`STATUS_DISK_FULL`) and NFS (`NFS3ERR_NOSPC` / `NFS3ERR_DQUOT`) |
 
 !!! warning "Upgrading to v0.21.0"
     A **full directory share** answers differently. `EDQUOT` (a quota) and
