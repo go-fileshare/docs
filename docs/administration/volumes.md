@@ -261,16 +261,19 @@ share's `unavailable` field — while the rest of the server starts.
 
 ## A full share
 
-XFS says a full project with `ENOSPC`; ext4, btrfs and ZFS say `EDQUOT`. Both
-are reported the same way:
+XFS says a full project with `ENOSPC`; ext4, btrfs and ZFS say `EDQUOT`. Since
+v0.21.1 every protocol answers "full":
 
-| protocol | a full share |
-|---|---|
-| WebDAV | `507 Insufficient Storage` |
-| NFS | `NFS3ERR_NOSPC` |
-| SFTP | `SSH_FX_FAILURE`, "no space left on device (the share is full)" — version 3 has no code for it |
-| SMB | ⛔ `STATUS_ACCESS_DENIED`: go-filesystems/smb never sends `STATUS_DISK_FULL` yet |
-| S3 | served read-only |
+| protocol | no space (`ENOSPC`) | a quota (`EDQUOT`) |
+|---|---|---|
+| WebDAV | `507 Insufficient Storage` | `507 Insufficient Storage` |
+| NFS | `NFS3ERR_NOSPC` (28) | `NFS3ERR_DQUOT` (69), as RFC 1813 and Linux's nfsd |
+| SFTP | `SSH_FX_FAILURE`, "no space left on device (the share is full)" — version 3 has no code for it | the same |
+| SMB | `STATUS_DISK_FULL` (0xC000007F) | `STATUS_DISK_FULL`, as Samba does ("Windows apps need this, not NT_STATUS_QUOTA_EXCEEDED") |
+| S3 | served read-only | served read-only |
+
+In v0.21.0, SMB answered `STATUS_ACCESS_DENIED` and NFS answered a quota with
+`NFS3ERR_NOSPC`.
 
 This applies to every [directory share](../configuration/shares.md), not only
 to volumes — see the [upgrade note](../status.md).
@@ -311,5 +314,3 @@ all four kinds.
 ## Not yet
 
 - **Ceph.** CephFS quotas and RBD are a later phase.
-- **SMB's "disk full".** A full share answers access denied over SMB until
-  go-filesystems/smb sends `STATUS_DISK_FULL`.
