@@ -1401,7 +1401,7 @@
 
 
 <h1 id="status">Status</h1>
-<p>These pages describe <strong>fileshare v0.21.0</strong>.</p>
+<p>These pages describe <strong>fileshare v0.21.1</strong>.</p>
 <h2 id="what-each-release-added">What each release added</h2>
 <table>
 <thead>
@@ -1510,6 +1510,10 @@
 <tr>
 <td>v0.21.0</td>
 <td><a href="../administration/volumes/">volumes</a>: a privileged <code>fileshare provisioner</code> creates ZFS datasets, btrfs subvolumes and XFS/ext4 project-quota directories, and the admin API serves shares from them; a full directory share is one answer on every protocol; the admin socket's <code>allowed_uids</code></td>
+</tr>
+<tr>
+<td>v0.21.1</td>
+<td>a <a href="../administration/volumes/#a-full-share">full share</a> says so on SMB (<code>STATUS_DISK_FULL</code>) and NFS (<code>NFS3ERR_NOSPC</code> / <code>NFS3ERR_DQUOT</code>)</td>
 </tr>
 </tbody>
 </table>

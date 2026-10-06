@@ -1853,38 +1853,46 @@ which it is. Hence <code>client_uid = 0</code> is refused by the provisioner, an
 server's unit above has an empty <code>CapabilityBoundingSet=</code>.</p>
 </div>
 <h2 id="a-full-share">A full share</h2>
-<p>XFS says a full project with <code>ENOSPC</code>; ext4, btrfs and ZFS say <code>EDQUOT</code>. Both
-are reported the same way:</p>
+<p>XFS says a full project with <code>ENOSPC</code>; ext4, btrfs and ZFS say <code>EDQUOT</code>. Since
+v0.21.1 every protocol answers "full":</p>
 <table>
 <thead>
 <tr>
 <th>protocol</th>
-<th>a full share</th>
+<th>no space (<code>ENOSPC</code>)</th>
+<th>a quota (<code>EDQUOT</code>)</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>WebDAV</td>
 <td><code>507 Insufficient Storage</code></td>
+<td><code>507 Insufficient Storage</code></td>
 </tr>
 <tr>
 <td>NFS</td>
-<td><code>NFS3ERR_NOSPC</code></td>
+<td><code>NFS3ERR_NOSPC</code> (28)</td>
+<td><code>NFS3ERR_DQUOT</code> (69), as RFC 1813 and Linux's nfsd</td>
 </tr>
 <tr>
 <td>SFTP</td>
 <td><code>SSH_FX_FAILURE</code>, "no space left on device (the share is full)" — version 3 has no code for it</td>
+<td>the same</td>
 </tr>
 <tr>
 <td>SMB</td>
-<td>⛔ <code>STATUS_ACCESS_DENIED</code>: go-filesystems/smb never sends <code>STATUS_DISK_FULL</code> yet</td>
+<td><code>STATUS_DISK_FULL</code> (0xC000007F)</td>
+<td><code>STATUS_DISK_FULL</code>, as Samba does ("Windows apps need this, not NT_STATUS_QUOTA_EXCEEDED")</td>
 </tr>
 <tr>
 <td>S3</td>
 <td>served read-only</td>
+<td>served read-only</td>
 </tr>
 </tbody>
 </table>
+<p>In v0.21.0, SMB answered <code>STATUS_ACCESS_DENIED</code> and NFS answered a quota with
+<code>NFS3ERR_NOSPC</code>.</p>
 <p>This applies to every <a href="../../configuration/shares/">directory share</a>, not only
 to volumes — see the <a href="../../status/">upgrade note</a>.</p>
 <h2 id="the-size-a-client-sees">The size a client sees</h2>
@@ -1918,8 +1926,6 @@ all four kinds.</p>
 <h2 id="not-yet">Not yet</h2>
 <ul>
 <li><strong>Ceph.</strong> CephFS quotas and RBD are a later phase.</li>
-<li><strong>SMB's "disk full".</strong> A full share answers access denied over SMB until
-  go-filesystems/smb sends <code>STATUS_DISK_FULL</code>.</li>
 </ul>
 
 
