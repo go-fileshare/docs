@@ -51,6 +51,7 @@ nav:
       - "NFS — nothing, unless Kerberos or a certificate": protocols/nfs.md
   - Administration:
       - "The admin API": administration/index.md
+      - "Volumes: storage fileshare creates": administration/volumes.md
       - "Health and metrics": administration/health.md
       - "Reading the directory again": administration/reload.md
   - Security:

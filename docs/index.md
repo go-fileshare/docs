@@ -3,7 +3,7 @@
 **A disk image — or a directory — served over SMB, NFS, WebDAV, SFTP and S3 —
 the same users, the same per-share access, from one configuration file.** Pure
 Go, `CGO_ENABLED=0`, one binary. These pages describe
-[v0.20.0](status.md).
+[v0.21.0](status.md).
 
 ```sh
 go install github.com/go-fileshare/fileshare@latest
@@ -54,6 +54,7 @@ See [What a protocol can promise](protocols/index.md).
 | [`check`](configuration/check.md) | read the whole configuration back before restarting |
 | [Protocols](protocols/index.md) | what each one can and cannot promise |
 | [The admin API](administration/index.md) | shares created, granted and taken offline without a restart |
+| [Volumes](administration/volumes.md) | ZFS datasets, btrfs subvolumes and XFS/ext4 project quotas, created through the API and served |
 | [Health and metrics](administration/health.md) | `/healthz`, `/readyz`, `/metrics` |
 | [Reading the directory again](administration/reload.md) | `reload`, `SIGHUP`, and what a removal does to open sessions |
 | [TLS](security/tls.md) | files or ACME; and why WebDAV is refused in the clear |
