@@ -17,17 +17,18 @@ Nothing listens unless the block is written.
 ## What it does
 
 The service is
-[`fileshare.admin.v1.AdminService`](https://github.com/go-fileshare/fileshare/blob/v0.20.0/proto/fileshare/admin/v1/admin.proto):
+[`fileshare.admin.v1.AdminService`](https://github.com/go-fileshare/fileshare/blob/v0.21.0/proto/fileshare/admin/v1/admin.proto):
 
 | | |
 |---|---|
-| `CreateShare`, `UpdateShare`, `DeleteShare` | define a share from an image or a directory; change `read_only` or `protocols` (its source cannot change: delete it and create another) |
+| `CreateShare`, `UpdateShare`, `DeleteShare` | define a share from an image, a directory or (since v0.21.0) a volume; change `read_only` or `protocols` (its source cannot change: delete it and create another) |
 | `DisableShare`, `EnableShare` | take a share offline and back |
 | `Grant`, `Revoke` | give a subject read or write access, or take it away |
 | `ListShares`, `GetShare` | every share, with what it serves, over which protocols, and why not the others |
 | `ListUsers`, `ListGroups` | who a grant can name; each user with the protocols their credentials can answer |
 | `ReloadDirectory` | read the people again, now — see [reading the directory again](reload.md) |
 | `GetServerInfo` | the name, version, start time, generation and listeners |
+| `ListParents`, `CreateVolume`, `ResizeVolume`, `SnapshotVolume`, `DeleteVolume`, `GetVolume`, `ListVolumes` | storage created through a privileged provisioner, and shares served from it — see [volumes](volumes.md) (since v0.21.0) |
 
 A grant names a **user**, a **group** (`@group` in a configuration file), an
 **`oidc:groups:` value** or an **`oidc:user:` name** — the vocabulary the

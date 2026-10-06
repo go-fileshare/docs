@@ -1,6 +1,6 @@
 # Status
 
-These pages describe **fileshare v0.20.0**.
+These pages describe **fileshare v0.21.0**.
 
 ## What each release added
 
@@ -30,6 +30,15 @@ These pages describe **fileshare v0.20.0**.
 | v0.18.1 | `fileshare check` warns when an `oidc` block has no `domains`: a [provider's bare name reaches the local account of that name](configuration/identity.md) |
 | v0.19.0 | go-authn/directory v0.11.0: a `users "ldap"` block refuses a [cleartext bind to another machine](configuration/identity.md); passwords are compared as digests, in constant time |
 | v0.20.0 | [`local_names`](configuration/identity.md): the provider's names are local names only when the `oidc` block says so (security audit F4) |
+| v0.21.0 | [volumes](administration/volumes.md): a privileged `fileshare provisioner` creates ZFS datasets, btrfs subvolumes and XFS/ext4 project-quota directories, and the admin API serves shares from them; a full directory share is one answer on every protocol; the admin socket's `allowed_uids` |
+
+!!! warning "Upgrading to v0.21.0"
+    A **full directory share** answers differently. `EDQUOT` (a quota) and
+    `ENOSPC` are now one error, "no space left on device (the share is full)",
+    on every directory share, not only volumes: an `EDQUOT` that was WebDAV
+    `500` and NFS `NFS3ERR_IO` is now `507` and `NFS3ERR_NOSPC`, and SFTP's text
+    is that sentence, without the path. SMB still answers access denied. See
+    [a full share](administration/volumes.md#a-full-share).
 
 !!! warning "Upgrading to v0.20.0"
     The provider's `alice` no longer gets the local `alice`'s shares. A site
