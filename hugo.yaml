@@ -34,6 +34,15 @@ languages:
     weight: 1
     params:
       flag: images/flags/gb.svg
+  de:
+    label: "Deutsch"
+    contentDir: content/de
+    weight: 4
+    params:
+      flag: images/flags/de.svg
+      # Day before month: "5. Oktober 2026".
+      dateFormat: "2. January 2006"
+      description: "Ein Disk-Image oder ein Verzeichnis, bereitgestellt über SMB, NFS, WebDAV, SFTP und S3: dieselben Benutzer, derselbe Zugriff pro Freigabe, aus einer einzigen Konfigurationsdatei. Reines Go, CGO_ENABLED=0."
 
 enableRobotsTXT: true
 # Git history dates every page: "Last updated on" at the bottom of each page.
