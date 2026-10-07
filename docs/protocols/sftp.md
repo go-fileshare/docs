@@ -98,12 +98,10 @@ with the result `granted`, `accepted_ungranted`, `refused_not_granted`,
 proves it holds the key, so these count attempts, not people.
 
 !!! danger "Why fail-closed"
-    GÉANT's own `ssh-cert-authorize` lets a certificate with no grant through
-    ("might be valid for non-domain-based auth"). It also reads a grant that
-    does not parse as no grant. Now take a host that trusts a second authority:
-    its own CA for staff, a test CA, EFP's staging CA appended to the same file,
-    or a go-authn/bridge client without grants. That authority's certificates
-    carry no grant, so the filter filters nothing.
+    Take a host that trusts a second authority: its own CA for staff, a test
+    CA, EFP's staging CA appended to the same file, or a go-authn/bridge client
+    without grants. That authority's certificates carry no grant. If a missing
+    grant meant "no restriction", the filter would filter nothing on that host.
 
     Here, a certificate with no grant is refused unless `ssh_accept_ungranted`
     says otherwise. A grant that is present but does not parse is refused
