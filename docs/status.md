@@ -1,6 +1,6 @@
 # Status
 
-These pages describe **fileshare v0.21.1**.
+These pages describe **fileshare v0.22.1**.
 
 ## What each release added
 
@@ -32,6 +32,8 @@ These pages describe **fileshare v0.21.1**.
 | v0.20.0 | [`local_names`](configuration/identity.md): the provider's names are local names only when the `oidc` block says so (security audit F4) |
 | v0.21.0 | [volumes](administration/volumes.md): a privileged `fileshare provisioner` creates ZFS datasets, btrfs subvolumes and XFS/ext4 project-quota directories, and the admin API serves shares from them; a full directory share is one answer on every protocol; the admin socket's `allowed_uids` |
 | v0.21.1 | a [full share](administration/volumes.md#a-full-share) says so on SMB (`STATUS_DISK_FULL`) and NFS (`NFS3ERR_NOSPC` / `NFS3ERR_DQUOT`) |
+| v0.22.0 | [`ssh_domains`](protocols/sftp.md#certificates-meant-for-this-host-the-domain-grant): an SSH certificate is accepted only where its domain grant (`ssh-domain-grant@core.aai.geant.org`, the EuroHPC SSH CA profile) names this host, fail-closed; `ssh_accept_ungranted` lets in certificates with no grant |
+| v0.22.1 | go-filesystems/sftp v0.5.1: a certificate [pinned to an address](protocols/sftp.md#a-certificate-pinned-to-an-address) (`source-address`) is accepted from that address under `ssh_domains`, and on the provider's and OpenPubkey certificates; before, it was refused from every address |
 
 !!! warning "Upgrading to v0.21.0"
     A **full directory share** answers differently. `EDQUOT` (a quota) and

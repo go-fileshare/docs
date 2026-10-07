@@ -49,6 +49,135 @@ which also refuses the same key once its certificate is moved aside.
     The server says so, and every client that has seen it before will warn
     about a changed key — which is the client doing its job.
 
+## Certificates meant for this host: the domain grant
+
+Since v0.22.0. The [EuroHPC Federation Platform's SSH CA](https://integration.docs.my-eurohpc.eu/aai/ssh-ca-overview/)
+(GÉANT / MyAccessID) signs certificates that every site of the federation
+trusts. Each certificate says which hosts it is meant for, in the
+`ssh-domain-grant@core.aai.geant.org` extension. sshd ignores that extension,
+and so did fileshare until v0.22.0: a certificate granted for somebody else's
+machines was as good here. With `ssh_domains`, the grant is read, parsed and
+matched by [go-authn/sshcert](https://github.com/go-authn/sshcert) as the
+specification says. A certificate whose grant names none of this host's names
+is refused.
+
+```hcl
+trusted_user_ca_file = "/etc/fileshare/efp-ssh-ca.pub"
+ssh_domains          = ["files.example.org", "sftp.example.org"]
+# ssh_accept_ungranted = true   # only if a trusted CA never writes a grant
+```
+
+| key | |
+|---|---|
+| `ssh_domains` | this host's names, as a grant names them. A certificate is accepted if one pattern of its grant matches one of them. `*` is **one or more characters within one label**: `*.example.org` grants `files.example.org` but not `a.files.example.org`, and `files-*.example.org` does not grant `files-.example.org`. The comparison ignores case. These are host names, not patterns, each listed once, and at least one authority (`trusted_user_ca_file`, or the `oidc` block's `ssh_ca_file`) must be trusted. |
+| `ssh_accept_ungranted` | let in a certificate with **no** grant. Off by default; without `ssh_domains` it is refused as meaningless. |
+
+| certificate | `ssh_domains` | `+ ssh_accept_ungranted` | no `ssh_domains` |
+|---|---|---|---|
+| granted one of `ssh_domains` | in | in | in |
+| granted other hosts only, or `[]` | refused | refused | in |
+| no grant | refused | in, logged | in |
+| a grant that does not parse (`null`, `[1]`, not compact...) | refused | **refused** | in |
+
+Without `ssh_domains` nothing is read and nothing changes. The grant is read on
+the certificates an **authority** signed: `trusted_user_ca_file`'s, and the
+provider's (`ssh_ca_file`). An OpenPubkey certificate is signed by the user's own
+key, so a grant in it would be the user's word about themselves. Its audience is
+`opkssh_client_id` instead. Plain keys carry no grant and are not concerned.
+
+Each refusal is logged with the certificate's serial, its key ID and the reason:
+
+```
+sftp: alice: certificate 42 ("alice@efp") refused: its domain grant [login.example.eu] names none of this host's names [files.example.org sftp.example.org]
+sftp: alice: certificate 43 ("staff") refused: it has no domain grant (ssh-domain-grant@core.aai.geant.org), and ssh_domains requires one
+```
+
+Each decision is also counted in `fileshare_sftp_domain_grant_total{result}`,
+with the result `granted`, `accepted_ungranted`, `refused_not_granted`,
+`refused_absent` or `refused_malformed`. A client offers a certificate before it
+proves it holds the key, so these count attempts, not people.
+
+!!! danger "Why fail-closed"
+    GÉANT's own `ssh-cert-authorize` lets a certificate with no grant through
+    ("might be valid for non-domain-based auth"). It also reads a grant that
+    does not parse as no grant. Now take a host that trusts a second authority:
+    its own CA for staff, a test CA, EFP's staging CA appended to the same file,
+    or a go-authn/bridge client without grants. That authority's certificates
+    carry no grant, so the filter filters nothing.
+
+    Here, a certificate with no grant is refused unless `ssh_accept_ungranted`
+    says otherwise. A grant that is present but does not parse is refused
+    whatever it says: an authority that wrote one meant to restrict the
+    certificate. go-authn/sshcert walks through the
+    [multi-CA scenario](https://github.com/go-authn/sshcert#why-fail-closed-the-multi-ca-scenario).
+
+### With EFP's CA
+
+`trusted_user_ca_file` is OpenSSH's `TrustedUserCAKeys`. Put in it the key EFP
+publishes at <https://sshca.my-eurohpc.eu/config>, as EFP's
+[trust page](https://integration.docs.my-eurohpc.eu/aai/ssh-ca-trust/) says.
+That URL returns `{"PublicKey": "ssh-ed25519 ..."}`; the file holds the value
+of `PublicKey` on a line of its own:
+
+```sh
+curl -s https://sshca.my-eurohpc.eu/config | jq -r '.PublicKey' > /etc/fileshare/efp-ssh-ca.pub
+```
+
+Then set `ssh_domains` to the names your hosting entity's grant uses. An EFP
+certificate's one principal is the MyAccessID identifier
+(`<id>@myaccessid.org`), so that is the user name it logs in as. A `user` block
+of that name, with no credential of its own, receives it:
+
+```hcl
+user "u1234@myaccessid.org" {}
+```
+
+### With go-authn/bridge
+
+A [go-authn/bridge](https://github.com/go-authn/bridge) client (v0.19.0 or
+later) with `ssh_certificates = true` and
+`ssh_domain_grants = ["files.example.org"]` issues certificates granted for
+this host. With `ssh_principal_claim = "voperson_id"` its one principal is the
+person's `voperson_id`, as in the EFP profile, and that is the `user` block to
+write here. Trust bridge's CA the way this server trusts any:
+
+- as `trusted_user_ca_file`, for local accounts. bridge serves its key in EFP's
+  format at `/ssh/config`, so the `curl | jq` line above works with bridge's URL;
+- or as the `oidc` block's `ssh_ca_file`, for
+  [people the provider vouches for](#people-the-identity-provider-vouches-for).
+
+bridge's other clients write no grant. If their certificates must keep working
+here, that is what `ssh_accept_ungranted` is for. But it lets in **every**
+ungranted certificate of every trusted authority, so prefer giving those
+clients a grant.
+
+### A certificate pinned to an address
+
+bridge's `ssh_source_address` writes the `source-address` critical option, as
+`ssh-keygen -O source-address=...` does. A certificate that carries one is
+accepted **from those addresses only**, with `ssh_domains` as without it. A
+login from an address the certificate allows is let in, provided its grant also
+names this host when `ssh_domains` is set. A login from any other address is
+refused.
+
+| fileshare | `trusted_user_ca_file` | `oidc` `ssh_ca_file`, and OpenPubkey |
+|---|---|---|
+| before v0.22.0 | enforced | **refused from every address** |
+| v0.22.0, without `ssh_domains` | enforced | **refused from every address** |
+| v0.22.0, with `ssh_domains` | **refused from every address** | **refused from every address** |
+| v0.22.1, with or without `ssh_domains` | enforced | enforced |
+
+"Refused from every address" fails closed: the certificate's restriction was
+never loosened, only the login lost. Before v0.22.1, go-filesystems/sftp's
+sshd refused any critical option on certificates it handed to fileshare to
+decide; that covers the provider's, OpenPubkey ones, and, under `ssh_domains`,
+every certificate. v0.22.1 is built on go-filesystems/sftp v0.5.1, whose sshd
+accepts `source-address` there and enforces it on every certificate path,
+against the address the connection comes from, IPv4 or IPv6.
+
+Any other critical option (`force-command`, `verify-required`, ...) is refused,
+since this server does not act on it.
+
 ## People the identity provider vouches for
 
 Since v0.11.0 an `oidc` block reaches SFTP too — not with a token, which SSH has
