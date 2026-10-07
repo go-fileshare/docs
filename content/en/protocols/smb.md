@@ -1,4 +1,10 @@
-# SMB — NTLMv2
+---
+title: "SMB — NTLMv2"
+linkTitle: "SMB: NTLMv2"
+weight: 10
+description: "TODO"
+tags: [protocols, smb]
+---
 
 ```hcl
 serve "smb" { addr = "0.0.0.0:445" }
@@ -18,13 +24,13 @@ cannot answer SMB, however good the check is, because the server has to compute
 the same proof the client did. That is a property of the protocol, not a
 limitation of this program.
 
-[`check`](../configuration/check.md) prints a `-` in the SMB column for such a
+[`check`]({{< relref "/configuration/check.md" >}}) prints a `-` in the SMB column for such a
 person, at configuration time, rather than leaving them to discover it at a
 mount.
 
 ## A privileged port without a privileged server
 
-Under [`--isolate`](../operations/isolation.md) on Unix, the parent binds 445
+Under [`--isolate`]({{< relref "/operations/isolation.md" >}}) on Unix, the parent binds 445
 and passes the listener to the child, so the process actually speaking SMB
 never needs the privilege. Windows has no `ExtraFiles`, so there the child
 binds the address itself; the isolation is the same, the privileged-port half
@@ -40,7 +46,7 @@ reads back what WebDAV wrote.
 ## When the people change
 
 SMB fixes who may connect to a share **when the share is added**, and checks it
-once per tree connect. So somebody new whom a [directory reload](../administration/reload.md)
+once per tree connect. So somebody new whom a [directory reload]({{< relref "/administration/reload.md" >}})
 finds is added in place, SMB's running server included, with no connection
 touched; but anything taken away — a person, a credential, a share's expanded
 lists — is a new generation, and SMB's open connections are closed, so a

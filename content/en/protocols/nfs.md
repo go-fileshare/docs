@@ -1,15 +1,24 @@
-# NFS — nothing, unless Kerberos or a certificate
+---
+title: "NFS — nothing, unless Kerberos or a certificate"
+linkTitle: "NFS: nothing, unless Kerberos or a certificate"
+weight: 50
+description: "TODO"
+tags: [protocols, nfs, kerberos]
+---
 
 ```hcl
 serve "nfs" { addr = "0.0.0.0:2049" }
 ```
 
-!!! danger "NFSv3 on its own authenticates nobody"
-    `AUTH_UNIX` is a **claim**: the client says "uid 501" and the wire cannot
-    disagree with it. There is no encryption either.
+{{< callout type="error" >}}
+**NFSv3 on its own authenticates nobody**
+
+`AUTH_UNIX` is a **claim**: the client says "uid 501" and the wire cannot
+disagree with it. There is no encryption either.
+{{< /callout >}}
 
 So **a share that names who may use it is not exported over NFS**. The refusal
-is printed at startup and in [`check`](../configuration/check.md), with the
+is printed at startup and in [`check`]({{< relref "/configuration/check.md" >}}), with the
 reason:
 
 ```
@@ -38,8 +47,11 @@ kerberos {
 `sec=krb5` carries a principal a **ticket proves**, rather than a uid the
 client asserts.
 
-!!! note "The realm is compared, not just the name before the `@`"
-    Two realms can each have an `alice`, and only one of them is yours.
+{{< callout type="info" >}}
+**The realm is compared, not just the name before the `@`**
+
+Two realms can each have an `alice`, and only one of them is yours.
+{{< /callout >}}
 
 ## Over TLS: the machine, not the person
 
@@ -51,7 +63,7 @@ serve "nfs" {
 ```
 
 Since v0.9.0 NFS is served over RPC-with-TLS (RFC 9289) with `tls = true` and a
-[`tls` block](../security/tls.md). It encrypts; with `client_ca_file` it makes a
+[`tls` block]({{< relref "/security/tls.md" >}}). It encrypts; with `client_ca_file` it makes a
 client present a certificate from that authority — which **host** is mounting.
 The uid inside is still the one `AUTH_SYS` claims, so a restricted share is
 **still refused** over it. TLS is offered, not required: a client that never
@@ -72,11 +84,14 @@ serve "nfs" {
 }
 ```
 
-!!! danger "A Linux client's certificate belongs to a mount"
-    Every user of that mount acts as the person the certificate names. Right on
-    a workstation one person uses; wrong on a machine several people log into —
-    use `sec=krb5` there.
+{{< callout type="error" >}}
+**A Linux client's certificate belongs to a mount**
+
+Every user of that mount acts as the person the certificate names. Right on
+a workstation one person uses; wrong on a machine several people log into —
+use `sec=krb5` there.
+{{< /callout >}}
 
 What the certificate carries, the CRL that is required, and what was measured
 with a real Linux client (`MNT` in the clear, `tlshd`'s pitfalls) are in
-[NFS, with identities from certificates](../security/nfs-certificates.md).
+[NFS, with identities from certificates]({{< relref "/security/nfs-certificates.md" >}}).

@@ -1,6 +1,11 @@
-# Volumes: storage fileshare creates
+---
+title: "Volumes: storage fileshare creates"
+weight: 10
+description: "TODO"
+tags: [administration, volumes, zfs, btrfs, quotas]
+---
 
-Since v0.21.0 the [admin API](index.md) can **create the storage a share
+Since v0.21.0 the [admin API]({{< relref "/administration/_index.md" >}}) can **create the storage a share
 serves** — a **ZFS dataset**, a **btrfs subvolume**, an **XFS or ext4 directory
 under a project quota** — sized, owned and tracked, and serve a share from it.
 Linux only. Ceph is not supported yet.
@@ -149,14 +154,20 @@ ReadWritePaths=/srv/fileshare/volumes /var/lib/fileshare
 mounts propagate into the server's namespace, not out of it, so a ZFS volume
 mounted after the server started is visible to it.
 
-!!! note "Examples, not tested units"
-    Neither unit is exercised in CI: the end-to-end job runs both processes
-    under `sudo`.
+{{< callout type="info" >}}
+**Examples, not tested units**
 
-!!! warning "Upgrade the provisioner first"
-    The provisioner refuses a message carrying a field its version does not
-    define — it closes the connection — so `fileshare serve` and
-    `fileshare provisioner` run the same version.
+Neither unit is exercised in CI: the end-to-end job runs both processes
+under `sudo`.
+{{< /callout >}}
+
+{{< callout type="warning" >}}
+**Upgrade the provisioner first**
+
+The provisioner refuses a message carrying a field its version does not
+define — it closes the connection — so `fileshare serve` and
+`fileshare provisioner` run the same version.
+{{< /callout >}}
 
 ## The admin API's volume calls
 
@@ -243,21 +254,24 @@ fileshare asks the provisioner where the volume is, and then checks, itself:
 The state file keeps the volume's **name**, not its path, and every start asks
 and checks again. A volume that is gone, fails a check, or whose provisioner
 does not answer within 10 s leaves its share **defined and not served** — said
-at the start, by [`fileshare check`](../configuration/check.md), and in the
+at the start, by [`fileshare check`]({{< relref "/configuration/check.md" >}}), and in the
 share's `unavailable` field — while the rest of the server starts.
 `EnableShare` tries it again.
 
-!!! danger "`fileshare serve` refuses to serve volumes as root or with `CAP_SYS_RESOURCE`"
-    ext4 lets either write past a project quota (fs/quota/dquot.c,
-    `ignore_hardlimit`): root wrote 16 MiB into an 8 MiB project in
-    go-fsctl/projquota's CI. XFS has no such exemption, but the rule is one
-    rule for the process, on every kind: fileshare reads its effective uid and
-    `CapEff`/`CapPrm` in `/proc/self/status` (a permitted capability is one
-    `capset(2)` away from effective), and a status it cannot read counts as
-    holding it. It refuses **serving**, not the volume calls — creating storage
-    as root is harmless, writing into it as root is not. `fileshare check` says
-    which it is. Hence `client_uid = 0` is refused by the provisioner, and the
-    server's unit above has an empty `CapabilityBoundingSet=`.
+{{< callout type="error" >}}
+**`fileshare serve` refuses to serve volumes as root or with `CAP_SYS_RESOURCE`**
+
+ext4 lets either write past a project quota (fs/quota/dquot.c,
+`ignore_hardlimit`): root wrote 16 MiB into an 8 MiB project in
+go-fsctl/projquota's CI. XFS has no such exemption, but the rule is one
+rule for the process, on every kind: fileshare reads its effective uid and
+`CapEff`/`CapPrm` in `/proc/self/status` (a permitted capability is one
+`capset(2)` away from effective), and a status it cannot read counts as
+holding it. It refuses **serving**, not the volume calls — creating storage
+as root is harmless, writing into it as root is not. `fileshare check` says
+which it is. Hence `client_uid = 0` is refused by the provisioner, and the
+server's unit above has an empty `CapabilityBoundingSet=`.
+{{< /callout >}}
 
 ## A full share
 
@@ -275,8 +289,8 @@ v0.21.1 every protocol answers "full":
 In v0.21.0, SMB answered `STATUS_ACCESS_DENIED` and NFS answered a quota with
 `NFS3ERR_NOSPC`.
 
-This applies to every [directory share](../configuration/shares.md), not only
-to volumes — see the [upgrade note](../status.md).
+This applies to every [directory share]({{< relref "/configuration/shares.md" >}}), not only
+to volumes — see the [upgrade note]({{< relref "/status.md" >}}).
 
 ## The size a client sees
 

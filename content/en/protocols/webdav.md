@@ -1,4 +1,10 @@
-# WebDAV — Basic, or a bearer token
+---
+title: "WebDAV — Basic, or a bearer token"
+linkTitle: "WebDAV: Basic, or a bearer token"
+weight: 20
+description: "TODO"
+tags: [protocols, webdav, oidc]
+---
 
 ```hcl
 tls {
@@ -12,28 +18,34 @@ serve "webdav" {
 }
 ```
 
-HTTP Basic, or a bearer token — over [TLS](../security/tls.md), from files or
+HTTP Basic, or a bearer token — over [TLS]({{< relref "/security/tls.md" >}}), from files or
 from ACME.
 
-!!! danger "Not in the clear, since v0.9.0"
-    HTTP Basic is the password on every request, and a bearer token is as good
-    as one. WebDAV **without TLS**, on an address other machines can reach,
-    while anybody authenticates, is **refused at startup** —
-    `serve "webdav" { addr = "0.0.0.0:8080" }`, the example this page used to
-    show, no longer starts. When a proxy terminates TLS in front of it, say so:
+{{< callout type="error" >}}
+**Not in the clear, since v0.9.0**
 
-    ```hcl
-    serve "webdav" {
-      addr      = "10.0.0.5:8080"
-      plaintext = true
-    }
-    ```
+HTTP Basic is the password on every request, and a bearer token is as good
+as one. WebDAV **without TLS**, on an address other machines can reach,
+while anybody authenticates, is **refused at startup** —
+`serve "webdav" { addr = "0.0.0.0:8080" }`, the example this page used to
+show, no longer starts. When a proxy terminates TLS in front of it, say so:
 
-    Loopback, and a server with nobody to authenticate, are unaffected. See
-    [TLS](../security/tls.md#webdav-is-not-served-in-the-clear).
+```hcl
+serve "webdav" {
+  addr      = "10.0.0.5:8080"
+  plaintext = true
+}
+```
 
-!!! note "404, not 403"
-    A share a person may not use answers **404**. It is not confirmed to exist.
+Loopback, and a server with nobody to authenticate, are unaffected. See
+[TLS]({{< relref "/security/tls.md#webdav-is-not-served-in-the-clear" >}}).
+{{< /callout >}}
+
+{{< callout type="info" >}}
+**404, not 403**
+
+A share a person may not use answers **404**. It is not confirmed to exist.
+{{< /callout >}}
 
 ## A token, over the one protocol that can carry one
 
@@ -50,20 +62,26 @@ can answer. The token is verified by
 [go-authn/oidc](https://github.com/go-authn/oidc): signature, issuer, audience,
 expiry.
 
-!!! danger "A bearer token: only WebDAV"
-    SMB authenticates with NTLMv2, SFTP with a key or a certificate, NFS with
-    nothing at all, and S3 with a SigV4 signature: none of them has anywhere to
-    put an `Authorization` header. That is a fact about the protocols, not a
-    limit of this program.
+{{< callout type="error" >}}
+**A bearer token: only WebDAV**
 
-    The provider's word reaches **SFTP** in a certificate instead — see
-    [SFTP](sftp.md#people-the-identity-provider-vouches-for). A configuration
-    naming a provider and serving neither WebDAV nor such an SFTP is **refused
-    rather than started**.
+SMB authenticates with NTLMv2, SFTP with a key or a certificate, NFS with
+nothing at all, and S3 with a SigV4 signature: none of them has anywhere to
+put an `Authorization` header. That is a fact about the protocols, not a
+limit of this program.
 
-!!! danger "A token says who the provider thinks somebody is. It does not say this server has a share for them."
-    A valid token for a name no source here knows is refused — the safe reading
-    of *I do not know you* is not *you are allowed*.
+The provider's word reaches **SFTP** in a certificate instead — see
+[SFTP]({{< relref "/protocols/sftp.md#people-the-identity-provider-vouches-for" >}}). A configuration
+naming a provider and serving neither WebDAV nor such an SFTP is **refused
+rather than started**.
+{{< /callout >}}
+
+{{< callout type="error" >}}
+**A token says who the provider thinks somebody is. It does not say this server has a share for them.**
+
+A valid token for a name no source here knows is refused — the safe reading
+of *I do not know you* is not *you are allowed*.
+{{< /callout >}}
 
 A site where the provider **is** the directory says so:
 
@@ -89,11 +107,11 @@ go-authn/oidc v0.2.0, fileshare v0.16.3).
 
 Which of the provider's people get a share — groups, named people, whole
 institutions — is written with `oidc:` rules and `domains`; see
-[people the identity provider names](../configuration/identity.md#people-the-identity-provider-names-not-this-file).
+[people the identity provider names]({{< relref "/configuration/identity.md#people-the-identity-provider-names-not-this-file" >}}).
 
 ## A token outlives the person, unless something says otherwise
 
 A token is verified here, on its own, and is valid until it expires — whatever
 happened to the person since. No revocation list can name it. An
-[`ssf` block](../security/shared-signals.md) makes a CAEP `session-revoked`
+[`ssf` block]({{< relref "/security/shared-signals.md" >}}) makes a CAEP `session-revoked`
 from the provider void every token issued (`iat`) before it.

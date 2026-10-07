@@ -1,7 +1,12 @@
-# NFS, with identities from certificates
+---
+title: "NFS, with identities from certificates"
+weight: 30
+description: "TODO"
+tags: [security, nfs, tls, revocation]
+---
 
 NFSv3 on its own authenticates nobody, which is why a share that names who may
-use it is [not exported over NFS](../protocols/nfs.md) — unless something can
+use it is [not exported over NFS]({{< relref "/protocols/nfs.md" >}}) — unless something can
 tell people apart. A `kerberos` block is one answer. Since v0.12.0, a client
 certificate that **names a person** is another:
 
@@ -30,14 +35,17 @@ it:
   registration, made for exactly this). FreeBSD's `rpc.tlsservd` reads the first
   identity otherName and skips every other SAN entry.
 
-!!! note "Why a tag URI, and not an extension of its own"
-    One was designed, under a UUID-derived arc (`2.25.<128-bit number>`), and
-    **measured**: Go's `x509.ParseCertificate` refuses the whole certificate —
-    *malformed extension OID field* — because an ASN.1 object identifier arc is
-    an `int` there. Every Go TLS server would have turned the certificate away.
-    A URI SAN needs no OID, and every parser reads it. Not `urn:x-…` either:
-    RFC 8141 took the experimental URN namespaces away, and a strict parser
-    refuses one.
+{{< callout type="info" >}}
+**Why a tag URI, and not an extension of its own**
+
+One was designed, under a UUID-derived arc (`2.25.<128-bit number>`), and
+**measured**: Go's `x509.ParseCertificate` refuses the whole certificate —
+*malformed extension OID field* — because an ASN.1 object identifier arc is
+an `int` there. Every Go TLS server would have turned the certificate away.
+A URI SAN needs no OID, and every parser reads it. Not `urn:x-…` either:
+RFC 8141 took the experimental URN namespaces away, and a strict parser
+refuses one.
+{{< /callout >}}
 
 ## What every call is asked
 
@@ -49,10 +57,10 @@ that:
 2. names **exactly one** person;
 3. names somebody this server admits **the way it admits a token** — a rule,
    `trust_all`, `domains`, see
-   [people the identity provider names](../configuration/identity.md#people-the-identity-provider-names-not-this-file);
+   [people the identity provider names]({{< relref "/configuration/identity.md#people-the-identity-provider-names-not-this-file" >}});
 4. names somebody **the share allows**.
 
-And, with an [`ssf` block](shared-signals.md), the certificate must have been
+And, with an [`ssf` block]({{< relref "/security/shared-signals.md" >}}), the certificate must have been
 issued (its `NotBefore`) **after** any revocation of that person.
 
 ## Revocation: the CRL
@@ -69,7 +77,7 @@ nothing can revoke outlives their removal by its whole lifetime.
 | `crl_max_age` | `1h` | how old the last good copy may be |
 | `crl_state_file` | | where the last CRL that verified is kept, so a restart remembers which is newer |
 
-It is fetched and kept like the [KRL](revocation-lists.md), and **fails closed**
+It is fetched and kept like the [KRL]({{< relref "/security/revocation-lists.md" >}}), and **fails closed**
 the same way; a CRL past its own **`NextUpdate`** counts as unknown whatever
 `crl_max_age` allows. A CRL must be signed by the client CA — a CRL anybody
 could have written revokes whatever they like, and, worse, un-revokes it. With
@@ -83,7 +91,7 @@ being refused. What this server cannot read as a complete list is refused
 too: a delta CRL, an unknown critical extension or entry extension, no CRL
 number, no `NextUpdate`. A CRL with a lower number than the one held, or the
 same number issued earlier, is refused like an older
-[KRL](revocation-lists.md#never-backwards-across-a-restart-too).
+[KRL]({{< relref "/security/revocation-lists.md#never-backwards-across-a-restart-too" >}}).
 
 A CRL field without `identity = "certificate"` is refused, and so is
 `identity = "certificate"` without `tls = true` and `client_ca_file`: the
@@ -91,17 +99,20 @@ identity is in the certificate the client presents.
 
 ## What it cannot promise
 
-!!! danger "A Linux client's certificate belongs to a MOUNT, not a person"
-    The server sees a **connection's** certificate, and a Linux client attaches
-    one to a mount (`tlshd`, the keyring serial on
-    `mount -o xprtsec=mtls,...`). **Every user of that mount acts as the person
-    the certificate names.** On a workstation one person uses, that is exactly
-    them; on a machine several people log into, it is whoever mounted — use
-    `sec=krb5` there.
+{{< callout type="error" >}}
+**A Linux client's certificate belongs to a MOUNT, not a person**
 
-    This is why RFC 9289 alone refuses to promise user authentication, and why
-    plain [NFS over TLS](tls.md#nfs-over-tls-proves-the-machine-not-the-person)
-    still proves only the machine.
+The server sees a **connection's** certificate, and a Linux client attaches
+one to a mount (`tlshd`, the keyring serial on
+`mount -o xprtsec=mtls,...`). **Every user of that mount acts as the person
+the certificate names.** On a workstation one person uses, that is exactly
+them; on a machine several people log into, it is whoever mounted — use
+`sec=krb5` there.
+
+This is why RFC 9289 alone refuses to promise user authentication, and why
+plain [NFS over TLS]({{< relref "/security/tls.md#nfs-over-tls-proves-the-machine-not-the-person" >}})
+still proves only the machine.
+{{< /callout >}}
 
 ## Measured with a real Linux client
 

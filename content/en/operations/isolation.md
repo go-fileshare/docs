@@ -1,4 +1,9 @@
-# One process per protocol
+---
+title: "One process per protocol"
+weight: 20
+description: "TODO"
+tags: [operations, isolation]
+---
 
 ```sh
 fileshare --config /etc/fileshare.d --isolate
@@ -24,7 +29,7 @@ nfs     (pid 19812) has open: photos.img
 The writable image is open in **exactly one process**, and the WebDAV child
 never opens it at all.
 
-That is what [build tags](build-tags.md) cannot give: a panic or an exhausted
+That is what [build tags]({{< relref "/operations/build-tags.md" >}}) cannot give: a panic or an exhausted
 heap in one protocol takes down one protocol, each child can be confined by
 whatever the operating system offers, and a bug in one parser cannot reach an
 image that process never opened.
@@ -42,7 +47,7 @@ isolation is the same, the privileged-port half is not.
 
 A child opens the image itself, so an image served *writable* by two protocols
 would be two drivers over one file with **no lock between them** — exactly what
-the [shared lock](locking.md) prevents inside one process.
+the [shared lock]({{< relref "/operations/locking.md" >}}) prevents inside one process.
 
 That is refused, and the refusal says how to fix it:
 
@@ -59,7 +64,7 @@ before any image is opened, naming the shares that were kept from it and why.
 
 ## Not with an `admin` or a `metrics` block, yet
 
-`--isolate` together with an [`admin`](../administration/index.md) or a
-[`metrics`](../administration/health.md) block is refused: the children open
+`--isolate` together with an [`admin`]({{< relref "/administration/_index.md" >}}) or a
+[`metrics`]({{< relref "/administration/health.md" >}}) block is refused: the children open
 the images and the parent opens nothing, so there is no one process an API
 change could be applied to, or whose readiness a probe would be asking about.

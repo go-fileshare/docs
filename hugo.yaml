@@ -1,0 +1,175 @@
+# go-fileshare documentation (Hugo + Hextra).
+#
+# Each documentation version is a separate build under
+# https://go-fileshare.github.io/docs/<version>/, where <version> is the minor
+# version of fileshare the pages describe (0.22, 0.23, ...): the label readers
+# have used since the site was built with MkDocs and mike. The CI sets it
+# through --baseURL, from params.fileshare.version below. This default is the
+# same build.
+baseURL: "https://go-fileshare.github.io/docs/0.22/"
+title: "go-fileshare"
+# themes/hextra is the tannevaled/hextra fork, pinned at a release tag:
+# upstream Hextra plus opt-in features (partial menu items, combos,
+# related-sites menu, page subtitle and history, darkreaderLock).
+theme: hextra
+
+# English is the default language and stays at the root of each version
+# (/docs/<version>/protocols/sftp/), so every URL published by MkDocs keeps
+# working; other languages will live under their code
+# (/docs/<version>/fr/protocols/sftp/). The versions built with MkDocs (0.4 to
+# 0.21) are English only: the version selector falls back to their English
+# page (layouts/_partials/custom/version-select.html).
+defaultContentLanguage: en
+defaultContentLanguageInSubdir: false
+
+# Each language has its own content directory, with the same file names, so
+# that a page and its translation are paired. A language is declared here only
+# once its content exists: a declared language without content would be an
+# empty entry in the language switch. The flags are lipis/flag-icons' 4x3
+# flags (MIT, static/images/flags/LICENSE).
+languages:
+  en:
+    label: "English"
+    contentDir: content/en
+    weight: 1
+    params:
+      flag: images/flags/gb.svg
+
+enableRobotsTXT: true
+# Git history dates every page: "Last updated on" at the bottom of each page.
+enableGitInfo: true
+
+markup:
+  goldmark:
+    renderer:
+      unsafe: true
+    parser:
+      # Heading ids as MkDocs made them are kept with explicit {#id} where the
+      # two slug rules differ; attributes are needed for those.
+      attribute:
+        title: true
+  highlight:
+    noClasses: false
+
+module:
+  hugoVersion:
+    extended: false
+    min: 0.146.0
+  # The marks and favicons come from the go-fileshare brand repository
+  # (submodule branding/), published under /images/brand/. Only the org mark's
+  # formats are mounted: the per-repository marks carry a name plate the site
+  # does not use.
+  mounts:
+    - source: static
+      target: static
+    - source: assets
+      target: assets
+    - source: branding/svg/color
+      target: static/images/brand/svg
+      files: ["go-fileshare.svg"]
+    - source: branding/png/color
+      target: static/images/brand/png
+      files: ["*/go-fileshare.png"]
+    - source: branding/ico
+      target: static/images/brand/ico
+      files: ["go-fileshare.ico"]
+
+menu:
+  main:
+    # Navbar, left to right: version, theme, search, sources.
+    - name: Version
+      weight: 3
+      params:
+        type: partial
+        partial: custom/version-select.html
+    - name: Theme
+      weight: 4
+      params:
+        type: theme-toggle
+        combo: true
+    - name: Search
+      weight: 5
+      params:
+        type: search
+    - name: GitHub
+      url: https://github.com/go-fileshare
+      weight: 6
+      params:
+        icon: github
+
+params:
+  description: "A disk image or a directory, served over SMB, NFS, WebDAV, SFTP and S3: the same users, the same per-share access, from one configuration file. Pure Go, CGO_ENABLED=0."
+
+  # The fileshare release these pages describe. Its minor version is the
+  # documentation's version label (v0.22.2 -> 0.22): the CI reads it here.
+  fileshare:
+    version: "v0.22.2"
+
+  # The language switch (foot of the sidebar) shows the translate icon, then
+  # the language's flag. It appears once a second language is declared.
+  languageSwitch:
+    icon: translate
+
+  navbar:
+    displayTitle: true
+    displayLogo: true
+    logo:
+      # The cyan mark reads on both themes; the name is the site title.
+      path: images/brand/svg/go-fileshare.svg
+      dark: images/brand/svg/go-fileshare.svg
+      width: 32
+      height: 32
+      # Related sites, opened from the chevron beside the title (the logo itself
+      # leads to the documentation's home). Only the project's landing page:
+      # the GitHub organisation is already the navbar's last item.
+      menu:
+        - name: go-fileshare
+          url: https://go-fileshare.github.io/
+          logo: images/brand/svg/go-fileshare.svg
+
+  theme:
+    default: system
+    # The theme toggle is in the navbar (menu above), not at the foot of the sidebar.
+    displayToggle: false
+    # Dark Reader would darken the light theme itself; with the lock, the dark
+    # theme is our own.
+    darkreaderLock: true
+
+  footer:
+    enable: true
+    displayCopyright: true
+    displayPoweredBy: false
+
+  displayUpdatedDate: true
+  dateFormat: "January 2, 2006"
+
+  editURL:
+    enable: true
+    base: "https://github.com/go-fileshare/docs/edit/main/content"
+
+  toc:
+    displayTags: true
+
+  page:
+    width: normal
+    # The front matter description as a subtitle under the title.
+    displayDescription: true
+    # "Created on ... by ... · Modified on ... by ..." at the foot of each page:
+    # creation from data/pagehistory.json, which the build writes with
+    # themes/hextra/scripts/page-history.sh (it needs the full git history);
+    # modification from git (enableGitInfo).
+    history: true
+    contextMenu:
+      enable: false
+
+  highlight:
+    copy:
+      enable: true
+      display: hover
+
+  search:
+    enable: true
+    type: flexsearch
+    flexsearch:
+      index: content
+      tokenize: forward

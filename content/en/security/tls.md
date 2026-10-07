@@ -1,4 +1,9 @@
-# TLS, and certificates from ACME
+---
+title: "TLS, and certificates from ACME"
+weight: 10
+description: "TODO"
+tags: [security, tls, acme]
+---
 
 Since v0.9.0, **WebDAV and S3 are served over HTTPS, and NFS over
 RPC-with-TLS** (RFC 9289), with `tls = true` on their `serve` block and one
@@ -63,29 +68,35 @@ HARICA, no port has to be opened to the Internet at all.
 A certificate is asked for at the **first TLS connection that names the host**
 (SNI); a client connecting by IP address gets none.
 
-!!! note "ALPN"
-    With ACME, the server's ALPN list holds `acme-tls/1`, and a Go server
-    refuses a client whose list shares nothing with its own. So `http/1.1` is
-    **appended** for WebDAV and S3 — every browser and WebDAV client offers it —
-    and `sunrpc` for NFS, as RFC 9289 §5.2 identifies RPC-with-TLS. Not `h2`:
-    HTTP/2 is not offered over these listeners, and offering it would be a lie.
-    `acme-tls/1` stays on every listener, so tls-alpn-01 is answered wherever
-    the CA reaches.
+{{< callout type="info" >}}
+**ALPN**
+
+With ACME, the server's ALPN list holds `acme-tls/1`, and a Go server
+refuses a client whose list shares nothing with its own. So `http/1.1` is
+**appended** for WebDAV and S3 — every browser and WebDAV client offers it —
+and `sunrpc` for NFS, as RFC 9289 §5.2 identifies RPC-with-TLS. Not `h2`:
+HTTP/2 is not offered over these listeners, and offering it would be a lie.
+`acme-tls/1` stays on every listener, so tls-alpn-01 is answered wherever
+the CA reaches.
+{{< /callout >}}
 
 ## WebDAV is not served in the clear
 
-!!! danger "BREAKING in v0.9.0: WebDAV with passwords on a reachable address is refused"
-    HTTP Basic is the password, base64'd, on every request, and a bearer token
-    is as good as one. So a configuration serving WebDAV **without TLS** on an
-    address other machines can reach, while anybody authenticates, is
-    **refused, not warned about** — a warning scrolls by, and the password does
-    not come back:
+{{< callout type="error" >}}
+**BREAKING in v0.9.0: WebDAV with passwords on a reachable address is refused**
 
-    ```
-    webdav on 0.0.0.0:8080 would carry passwords in the clear: serve it with
-    tls = true, or -- when TLS is terminated in front of it, by a proxy -- say
-    plaintext = true
-    ```
+HTTP Basic is the password, base64'd, on every request, and a bearer token
+is as good as one. So a configuration serving WebDAV **without TLS** on an
+address other machines can reach, while anybody authenticates, is
+**refused, not warned about** — a warning scrolls by, and the password does
+not come back:
+
+```
+webdav on 0.0.0.0:8080 would carry passwords in the clear: serve it with
+tls = true, or -- when TLS is terminated in front of it, by a proxy -- say
+plaintext = true
+```
+{{< /callout >}}
 
 A configuration that started before v0.9.0 with
 `serve "webdav" { addr = "0.0.0.0:8080" }` does not start after it. Two ways
@@ -117,7 +128,7 @@ too.
 
 ## What `check` says
 
-[`fileshare check`](../configuration/check.md) prints, per protocol, what is
+[`fileshare check`]({{< relref "/configuration/check.md" >}}) prints, per protocol, what is
 encrypted and what is in the clear **on purpose**:
 
 ```
@@ -154,7 +165,7 @@ serve "nfs" {
 **which host is mounting** — and RFC 9289 leaves user authentication as it was:
 the uid inside is still the one `AUTH_SYS` claims. So a share that names who may
 use it is **still refused over NFS** without a `kerberos` block — or without
-[identities from certificates](nfs-certificates.md), which is a different use of
+[identities from certificates]({{< relref "/security/nfs-certificates.md" >}}), which is a different use of
 the same certificate.
 
 TLS is **offered, not required**: a client that never asks for it is still

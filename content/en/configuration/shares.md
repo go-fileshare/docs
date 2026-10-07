@@ -1,4 +1,9 @@
-# Shares: images, devices, directories
+---
+title: "Shares: images, devices, directories"
+weight: 10
+description: "TODO"
+tags: [configuration, shares]
+---
 
 A share serves one of three things: a **disk image**, a **device** node, or a
 **directory of the host**. An image and a device carry a filesystem this
@@ -48,12 +53,15 @@ serve whichever the code tried first:
 | `partition_label = "photos"` | the GPT partition name |
 | `partition_uuid = "…"` | the GPT unique GUID — Linux's `PARTUUID` |
 
-!!! danger "An index moves"
-    A disk repartitioned, a tool that writes entries in another order, an image
-    restored with one partition fewer — and `partition = 2` names something
-    else, **silently**, because a filesystem is still found there. A label or a
-    UUID names the partition itself, which is why fstabs stopped using indexes
-    years ago. The index is here for MBR images, which have neither.
+{{< callout type="error" >}}
+**An index moves**
+
+A disk repartitioned, a tool that writes entries in another order, an image
+restored with one partition fewer — and `partition = 2` names something
+else, **silently**, because a filesystem is still found there. A label or a
+UUID names the partition itself, which is why fstabs stopped using indexes
+years ago. The index is here for MBR images, which have neither.
+{{< /callout >}}
 
 A share that chose a partition is **read-only**, and says so at startup: the
 driver's offsets are the partition's while the file underneath is the whole
@@ -62,16 +70,19 @@ the partition table, as often as not.
 
 ## Naming a filesystem turns detection off
 
-!!! danger "That is the point, and it is the risk"
-    The image is opened as *that* or refused. A FAT32 image told it is XFS does
-    not become an XFS share; it fails to start, saying what it was asked to
-    open it as.
+{{< callout type="error" >}}
+**That is the point, and it is the risk**
+
+The image is opened as *that* or refused. A FAT32 image told it is XFS does
+not become an XFS share; it fails to start, saying what it was asked to
+open it as.
+{{< /callout >}}
 
 `filesystem` is accepted for the sniffable ones too, and then the two are
 compared: a share that says `ext4` over a FAT32 image is refused with *the
 share says ext4 and the image holds fat32*. That is how a site refuses a
 misdetection rather than discovering one later.
-[`check`](check.md) marks a named driver with an asterisk, because that row was
+[`check`]({{< relref "/configuration/check.md" >}}) marks a named driver with an asterisk, because that row was
 not recognised — it was asserted.
 
 ## A device, not only an image
@@ -99,14 +110,17 @@ never `sudo`.
 ⛔ **A device share is read-only**, for the same reason as a share that chose a
 partition: writing to a live disk is not a decision to make on your behalf.
 
-!!! danger "The device is opened exclusively, and that is about correctness, not caution"
-    If the kernel has a filesystem mounted from it, the filesystem's page cache
-    holds newer metadata than the device does — so a raw reader sees a
-    directory block from before an update beside an inode block from after it,
-    a state that never existed on disk at any one moment. `O_EXCL` on a block
-    device is the kernel's own primitive for "nobody else, a mount included";
-    it is what `mkfs` and `fsck` use. A device in use is refused, by name, with
-    the reason.
+{{< callout type="error" >}}
+**The device is opened exclusively, and that is about correctness, not caution**
+
+If the kernel has a filesystem mounted from it, the filesystem's page cache
+holds newer metadata than the device does — so a raw reader sees a
+directory block from before an update beside an inode block from after it,
+a state that never existed on disk at any one moment. `O_EXCL` on a block
+device is the kernel's own primitive for "nobody else, a mount included";
+it is what `mkfs` and `fsck` use. A device in use is refused, by name, with
+the reason.
+{{< /callout >}}
 
 Two things were measured rather than assumed:
 
@@ -137,19 +151,25 @@ not by a string test. A client may *create* a link to `/etc`; nothing will
 follow it. A FIFO planted in the tree is refused rather than left to hang the
 server.
 
-!!! danger "One share may not hold another (since v0.17.0)"
-    A directory share whose tree holds another share's image or directory is
-    **refused at start**, and by the admin API: whoever may use the outer
-    share would read and write the inner one without being allowed it —
-    anonymous NFS included. So are two shares on the same source, except two
-    different partitions of one disk image.
+{{< callout type="error" >}}
+**One share may not hold another (since v0.17.0)**
 
-!!! note "Not behind the image lock"
-    An image driver owns one file and promises nothing about two calls at once,
-    which is why [every image is wrapped in one lock](../operations/locking.md).
-    A host tree is the kernel's, which serialises what must be serialised per
-    call and no more; one mutex in front of every file of every client would be
-    the slowest thing a file server can do.
+A directory share whose tree holds another share's image or directory is
+**refused at start**, and by the admin API: whoever may use the outer
+share would read and write the inner one without being allowed it —
+anonymous NFS included. So are two shares on the same source, except two
+different partitions of one disk image.
+{{< /callout >}}
+
+{{< callout type="info" >}}
+**Not behind the image lock**
+
+An image driver owns one file and promises nothing about two calls at once,
+which is why [every image is wrapped in one lock]({{< relref "/operations/locking.md" >}}).
+A host tree is the kernel's, which serialises what must be serialised per
+call and no more; one mutex in front of every file of every client would be
+the slowest thing a file server can do.
+{{< /callout >}}
 
 ⛔ A share has an `image` **or** a `directory`, never both, and never neither.
 `filesystem` and `partition` are for an image: a directory share naming one is

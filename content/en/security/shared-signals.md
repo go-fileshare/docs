@@ -1,7 +1,13 @@
-# Revoking what no list covers: shared signals
+---
+title: "Revoking what no list covers: shared signals"
+linkTitle: "Shared signals"
+weight: 40
+description: "TODO"
+tags: [security, revocation, shared signals]
+---
 
-A certificate has a revocation list — the [KRL](revocation-lists.md), the
-[CRL](nfs-certificates.md#revocation-the-crl). An **access token** fileshare
+A certificate has a revocation list — the [KRL]({{< relref "/security/revocation-lists.md" >}}), the
+[CRL]({{< relref "/security/nfs-certificates.md#revocation-the-crl" >}}). An **access token** fileshare
 verifies on its own, and an **OpenPubkey certificate** the person's own key
 signed, do not: they are valid until they expire, whatever happened to the
 person since.
@@ -36,19 +42,22 @@ the KRL's. What "issued" means depends on what carried it:
 | WebDAV | an access token | its `iat` |
 | SFTP | a certificate the provider's SSH CA signed | its validity start (`ValidAfter`) |
 | SFTP | an OpenPubkey (opkssh) certificate | the ID token's `iat` |
-| NFS | a client certificate ([identity = "certificate"](nfs-certificates.md)) | its `NotBefore` |
+| NFS | a client certificate ([identity = "certificate"]({{< relref "/security/nfs-certificates.md" >}})) | its `NotBefore` |
 
 What the provider issues **after** is theirs: a person re-enabled is not locked
 out.
 
-!!! note "The same second counts as before"
-    CAEP's `event_timestamp` and a token's `iat` are whole seconds, and a
-    credential issued **at or before** the revocation is refused — so one issued
-    in the same second as a revocation is refused too, and a person re-enabled
-    right after being disabled gets working credentials from the next second on.
-    That is the conservative side, on purpose. An issue time that is not known
-    is not "long ago": it is refused once there is any revocation for that
-    person.
+{{< callout type="info" >}}
+**The same second counts as before**
+
+CAEP's `event_timestamp` and a token's `iat` are whole seconds, and a
+credential issued **at or before** the revocation is refused — so one issued
+in the same second as a revocation is refused too, and a person re-enabled
+right after being disabled gets working credentials from the next second on.
+That is the conservative side, on purpose. An issue time that is not known
+is not "long ago": it is refused once there is any revocation for that
+person.
+{{< /callout >}}
 
 ## Who an event is about
 
@@ -94,13 +103,16 @@ fileshare's.
 
 ## It fails closed
 
-!!! danger "While the transmitter is silent, federated credentials are refused"
-    Like the KRL: while the transmitter has not answered a poll within
-    `max_age`, **every federated credential** is refused, because "no
-    revocation arrived" and "none could" look the same.
-    `fileshare_ssf_last_heard_seconds` is the metric to alert on;
-    `fileshare_ssf_revoked_subjects` is how many revocations are kept. See
-    [health and metrics](../administration/health.md#what-to-alert-on).
+{{< callout type="error" >}}
+**While the transmitter is silent, federated credentials are refused**
+
+Like the KRL: while the transmitter has not answered a poll within
+`max_age`, **every federated credential** is refused, because "no
+revocation arrived" and "none could" look the same.
+`fileshare_ssf_last_heard_seconds` is the metric to alert on;
+`fileshare_ssf_revoked_subjects` is how many revocations are kept. See
+[health and metrics]({{< relref "/administration/health.md#what-to-alert-on" >}}).
+{{< /callout >}}
 
 ## Checked end to end
 

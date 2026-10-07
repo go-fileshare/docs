@@ -1,4 +1,9 @@
-# One image, several protocols, one lock
+---
+title: "One image, several protocols, one lock"
+weight: 30
+description: "TODO"
+tags: [operations, locking]
+---
 
 Every server in this family serialises the driver itself, because
 [`go-filesystems/interface`](https://github.com/go-filesystems/interface)
@@ -29,9 +34,9 @@ The difference between those and the whole-file fallback was measured at
 **~70×** elsewhere in the family, so a wrapper that erased them would be a
 performance defect disguised as safety.
 
-## Under `--isolate` the lock cannot help
+## Under `--isolate` the lock cannot help {#under-isolate-the-lock-cannot-help}
 
 A child process opens the image itself, so there is no shared wrapper between
 children. That is why an image served writable by two protocols is
-[refused](isolation.md#the-rule-that-makes-it-honest) rather than quietly
+[refused]({{< relref "/operations/isolation.md#the-rule-that-makes-it-honest" >}}) rather than quietly
 served without a lock.

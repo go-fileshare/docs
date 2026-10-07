@@ -1,4 +1,10 @@
-# SFTP — keys, or certificates
+---
+title: "SFTP — keys, or certificates"
+linkTitle: "SFTP: keys, or certificates"
+weight: 30
+description: "TODO"
+tags: [protocols, sftp, ssh]
+---
 
 Every client already has it: `sftp` ships with OpenSSH, the Finder and GNOME
 mount it, editors speak it. It is also the one protocol here whose shape does
@@ -20,9 +26,12 @@ A share alice may not use **is not a directory alice can see**, and a share she
 may only read refuses her writes *in the tree*, before a driver that would have
 allowed them.
 
-!!! note "A rename across two shares is refused"
-    It would be a copy and a delete over two images, and that is not what
-    rename promises anywhere.
+{{< callout type="info" >}}
+**A rename across two shares is refused**
+
+It would be a copy and a delete over two images, and that is not what
+rename promises anywhere.
+{{< /callout >}}
 
 ## Configuration
 
@@ -45,9 +54,12 @@ The signature, the validity window and the principals are checked by
 `x/crypto/ssh`'s `CertChecker`; verified against **OpenSSH's own client**,
 which also refuses the same key once its certificate is moved aside.
 
-!!! warning "Without `host_key_file` a fresh identity is generated at every start"
-    The server says so, and every client that has seen it before will warn
-    about a changed key — which is the client doing its job.
+{{< callout type="warning" >}}
+**Without `host_key_file` a fresh identity is generated at every start**
+
+The server says so, and every client that has seen it before will warn
+about a changed key — which is the client doing its job.
+{{< /callout >}}
 
 ## Certificates meant for this host: the domain grant
 
@@ -97,17 +109,20 @@ with the result `granted`, `accepted_ungranted`, `refused_not_granted`,
 `refused_absent` or `refused_malformed`. A client offers a certificate before it
 proves it holds the key, so these count attempts, not people.
 
-!!! danger "Why fail-closed"
-    Take a host that trusts a second authority: its own CA for staff, a test
-    CA, EFP's staging CA appended to the same file, or a go-authn/bridge client
-    without grants. That authority's certificates carry no grant. If a missing
-    grant meant "no restriction", the filter would filter nothing on that host.
+{{< callout type="error" >}}
+**Why fail-closed**
 
-    Here, a certificate with no grant is refused unless `ssh_accept_ungranted`
-    says otherwise. A grant that is present but does not parse is refused
-    whatever it says: an authority that wrote one meant to restrict the
-    certificate. go-authn/sshcert walks through the
-    [multi-CA scenario](https://github.com/go-authn/sshcert#why-fail-closed-the-multi-ca-scenario).
+Take a host that trusts a second authority: its own CA for staff, a test
+CA, EFP's staging CA appended to the same file, or a go-authn/bridge client
+without grants. That authority's certificates carry no grant. If a missing
+grant meant "no restriction", the filter would filter nothing on that host.
+
+Here, a certificate with no grant is refused unless `ssh_accept_ungranted`
+says otherwise. A grant that is present but does not parse is refused
+whatever it says: an authority that wrote one meant to restrict the
+certificate. go-authn/sshcert walks through the
+[multi-CA scenario](https://github.com/go-authn/sshcert#why-fail-closed-the-multi-ca-scenario).
+{{< /callout >}}
 
 ### With EFP's CA
 
@@ -194,7 +209,7 @@ oidc {
 - **A certificate the provider's SSH CA signed** — `bridge ssh-cert` writes one
   after a login through the federation. Its principal is the person, its
   `groups@go-authn.org` extension their groups, so
-  [`oidc:groups:` rules](../configuration/identity.md#people-the-identity-provider-names-not-this-file)
+  [`oidc:groups:` rules]({{< relref "/configuration/identity.md#people-the-identity-provider-names-not-this-file" >}})
   apply. It is **not** `trusted_user_ca_file`, whose certificates are about
   local accounts: a local authority's certificate claiming the provider's groups
   is read as the local account it names.
@@ -218,34 +233,40 @@ ssh-keygen -L -f ~/.ssh/id_ed25519-cert.pub     # the Extensions section
 and the server says, at every federated login,
 `sftp: alice@univ-a.fr, vouched for by the provider, in groups [...]`.
 
-!!! danger "Vouched for is not admitted"
-    Somebody the provider vouches for is still a stranger here unless a rule
-    names them or `trust_all` says the provider is the directory — the same test
-    a token passes over WebDAV. A provider certificate with **no principal**,
-    valid for *anybody* by the format's own definition, is refused.
+{{< callout type="error" >}}
+**Vouched for is not admitted**
+
+Somebody the provider vouches for is still a stranger here unless a rule
+names them or `trust_all` says the provider is the directory — the same test
+a token passes over WebDAV. A provider certificate with **no principal**,
+valid for *anybody* by the format's own definition, is refused.
+{{< /callout >}}
 
 `-tags noopenpubkey` leaves the OpenPubkey verifier out (about 2 MB); a
 configuration with `opkssh_client_id` in such a build is refused.
 
 ## Taking a certificate back
 
-!!! danger "A certificate is checked at login"
-    Revoking the person at the provider does not, by itself, revoke a
-    certificate already issued: it opens SFTP until it expires, and an SFTP
-    session already open stays open — these people are not in the directory, so
-    no [reload](../administration/reload.md) concerns them. The window is the
-    certificate's lifetime: bridge's `ssh_ca { validity }` (12h by default, at
-    most 168h, never past the IdP session's end) and `opkssh_max_age` here. Keep
-    it as short as the clients' re-login allows. Since v0.17.0 an opkssh
-    session that is already open also ends at `opkssh_max_age`, whatever the
-    certificate (which the person signs themselves) says.
+{{< callout type="error" >}}
+**A certificate is checked at login**
+
+Revoking the person at the provider does not, by itself, revoke a
+certificate already issued: it opens SFTP until it expires, and an SFTP
+session already open stays open — these people are not in the directory, so
+no [reload]({{< relref "/administration/reload.md" >}}) concerns them. The window is the
+certificate's lifetime: bridge's `ssh_ca { validity }` (12h by default, at
+most 168h, never past the IdP session's end) and `opkssh_max_age` here. Keep
+it as short as the clients' re-login allows. Since v0.17.0 an opkssh
+session that is already open also ends at `opkssh_max_age`, whatever the
+certificate (which the person signs themselves) says.
+{{< /callout >}}
 
 Two mechanisms close that window:
 
-- the provider's **[KRL](../security/revocation-lists.md)** (`ssh_krl_url`):
+- the provider's **[KRL]({{< relref "/security/revocation-lists.md" >}})** (`ssh_krl_url`):
   a revoked certificate is refused at login, and every operation of a session it
   opened asks the list again, open files included;
-- **[shared signals](../security/shared-signals.md)** (`ssf`): everything
+- **[shared signals]({{< relref "/security/shared-signals.md" >}})** (`ssf`): everything
   the provider issued the person before a CAEP `session-revoked` is refused —
   the only way to reach an OpenPubkey certificate, which is in no list.
 

@@ -1,4 +1,10 @@
-# `check`, before you restart something people are using
+---
+title: "check, before you restart something people are using"
+linkTitle: "check, before you restart"
+weight: 30
+description: "TODO"
+tags: [configuration, check]
+---
 
 ```
 $ fileshare check /etc/fileshare.d
@@ -34,9 +40,9 @@ password and gives it to nobody.
 
 | | |
 |---|---|
-| a filesystem with an asterisk | the driver was **asserted** by the share, not recognised — see [shares](shares.md) |
+| a filesystem with an asterisk | the driver was **asserted** by the share, not recognised — see [shares]({{< relref "/configuration/shares.md" >}}) |
 | `NO` under a protocol | that share is not exported there, and the reason is printed below the table |
-| `-` under a protocol, per user | that person's source cannot prove what the protocol needs — see [identity](identity.md) |
+| `-` under a protocol, per user | that person's source cannot prove what the protocol needs — see [identity]({{< relref "/configuration/identity.md" >}}) |
 
 ## What else it says
 
@@ -44,11 +50,11 @@ After the tables, `check` says what a person needs to know before relying on
 the configuration, when it applies:
 
 - per protocol, what is **encrypted** and what is **in the clear on purpose**
-  — see [TLS](../security/tls.md#what-check-says);
+  — see [TLS]({{< relref "/security/tls.md#what-check-says" >}});
 - where a **revocation list** comes from, and what happens while it cannot be
-  fetched — see [what revokes what](../security/index.md);
+  fetched — see [what revokes what]({{< relref "/security/_index.md" >}});
 - which shares were **taken offline** through the admin API's `DisableShare`,
-  and are not served — see [the admin API](../administration/index.md#disabling-a-share).
+  and are not served — see [the admin API]({{< relref "/administration/_index.md#disabling-a-share" >}}).
 
 For a server with a KRL, NFS identities from certificates and shared signals,
 that part reads:

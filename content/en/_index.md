@@ -1,9 +1,13 @@
-# go-fileshare
+---
+title: "go-fileshare"
+linkTitle: "Home"
+description: "TODO"
+---
 
 **A disk image — or a directory — served over SMB, NFS, WebDAV, SFTP and S3 —
 the same users, the same per-share access, from one configuration file.** Pure
 Go, `CGO_ENABLED=0`, one binary. These pages describe
-[v0.22.1](status.md).
+[v0.22.1]({{< relref "/status.md" >}}).
 
 ```sh
 go install github.com/go-fileshare/fileshare@latest
@@ -42,26 +46,26 @@ nfs    on 0.0.0.0:2049 — scratch
 
 That last paragraph is the shape of the whole program: a rule the configuration
 asks for and a protocol that cannot honour it do not quietly meet in the middle.
-See [What a protocol can promise](protocols/index.md).
+See [What a protocol can promise]({{< relref "/protocols/_index.md" >}}).
 
 ## Where to go next
 
 | | |
 |---|---|
-| [The configuration](configuration/index.md) | users, groups, shares, `serve` blocks |
-| [Shares: images, devices, directories](configuration/shares.md) | what is detected, what must be declared |
-| [Users, groups and directories](configuration/identity.md) | files, SQL, LDAP, and what each can prove |
-| [`check`](configuration/check.md) | read the whole configuration back before restarting |
-| [Protocols](protocols/index.md) | what each one can and cannot promise |
-| [The admin API](administration/index.md) | shares created, granted and taken offline without a restart |
-| [Volumes](administration/volumes.md) | ZFS datasets, btrfs subvolumes and XFS/ext4 project quotas, created through the API and served |
-| [Health and metrics](administration/health.md) | `/healthz`, `/readyz`, `/metrics` |
-| [Reading the directory again](administration/reload.md) | `reload`, `SIGHUP`, and what a removal does to open sessions |
-| [TLS](security/tls.md) | files or ACME; and why WebDAV is refused in the clear |
-| [What revokes what](security/index.md) | KRL, CRL, shared signals — and why each fails closed |
-| [Building only what you want](operations/build-tags.md) | a tag leaves a protocol out entirely |
-| [One process per protocol](operations/isolation.md) | `--isolate` |
-| [Status](status.md) | what is verified, and what is not here yet |
+| [The configuration]({{< relref "/configuration/_index.md" >}}) | users, groups, shares, `serve` blocks |
+| [Shares: images, devices, directories]({{< relref "/configuration/shares.md" >}}) | what is detected, what must be declared |
+| [Users, groups and directories]({{< relref "/configuration/identity.md" >}}) | files, SQL, LDAP, and what each can prove |
+| [`check`]({{< relref "/configuration/check.md" >}}) | read the whole configuration back before restarting |
+| [Protocols]({{< relref "/protocols/_index.md" >}}) | what each one can and cannot promise |
+| [The admin API]({{< relref "/administration/_index.md" >}}) | shares created, granted and taken offline without a restart |
+| [Volumes]({{< relref "/administration/volumes.md" >}}) | ZFS datasets, btrfs subvolumes and XFS/ext4 project quotas, created through the API and served |
+| [Health and metrics]({{< relref "/administration/health.md" >}}) | `/healthz`, `/readyz`, `/metrics` |
+| [Reading the directory again]({{< relref "/administration/reload.md" >}}) | `reload`, `SIGHUP`, and what a removal does to open sessions |
+| [TLS]({{< relref "/security/tls.md" >}}) | files or ACME; and why WebDAV is refused in the clear |
+| [What revokes what]({{< relref "/security/_index.md" >}}) | KRL, CRL, shared signals — and why each fails closed |
+| [Building only what you want]({{< relref "/operations/build-tags.md" >}}) | a tag leaves a protocol out entirely |
+| [One process per protocol]({{< relref "/operations/isolation.md" >}}) | `--isolate` |
+| [Status]({{< relref "/status.md" >}}) | what is verified, and what is not here yet |
 
 ## Licence
 
