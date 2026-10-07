@@ -1,0 +1,891 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Seguridad</title><link>https://go-fileshare.github.io/docs/0.22/es/tags/seguridad/</link><description>Recent content in Seguridad on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>es</language><atom:link href="https://go-fileshare.github.io/docs/0.22/es/tags/seguridad/index.xml" rel="self" type="application/rss+xml"/><item><title>TLS, y certificados de ACME</title><link>https://go-fileshare.github.io/docs/0.22/es/security/tls/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.22/es/security/tls/</guid><description>
+&lt;p&gt;Desde la v0.9.0, &lt;strong&gt;WebDAV y S3 se sirven por HTTPS, y NFS sobre RPC-with-TLS&lt;/strong&gt;
+(RFC 9289), con &lt;code&gt;tls = true&lt;/code&gt; en su bloque &lt;code&gt;serve&lt;/code&gt; y un bloque &lt;code&gt;tls&lt;/code&gt; que indica de
+dónde procede el certificado.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="from-files"&gt;A partir de archivos&lt;span class="hx:absolute hx:-mt-20" id="from-files"&gt;&lt;/span&gt;
+&lt;a href="#from-files" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;tls&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; cert_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/tls/fullchain.pem&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; key_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/tls/key.pem&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;webdav&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:443&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; tls&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Los archivos &lt;strong&gt;se recargan cuando cambian&lt;/strong&gt;, así que una renovación escrita por otra
+herramienta se aplica sin reiniciar. El certificado lo gestiona
+&lt;a href="https://github.com/go-authn/servercert" target="_blank" rel="noopener"&gt;go-authn/servercert&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="from-an-acme-ca"&gt;A partir de una CA ACME&lt;span class="hx:absolute hx:-mt-20" id="from-an-acme-ca"&gt;&lt;/span&gt;
+&lt;a href="#from-an-acme-ca" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Let&amp;rsquo;s Encrypt por defecto; o una CA que le conoce mediante &lt;strong&gt;vinculación de cuenta
+externa&lt;/strong&gt; (external account binding, EAB), como GÉANT TCS a través de HARICA:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;tls&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;acme&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; directory_url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://acme-v02.harica.gr/acme/&amp;lt;uuid&amp;gt;/directory&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # the Server URL cm.harica.gr shows
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; domains&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;files.example.org&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; cache_dir&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/var/lib/fileshare/acme&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; eab_key_id&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;…&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; eab_hmac_key_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/tls/eab.key&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # a secret: a file, never the config
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;campo&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;directory_url&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;el directorio ACME de la CA; vacío es Let&amp;rsquo;s Encrypt&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;domains&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;los nombres que se solicitan (obligatorio)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;cache_dir&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;dónde se guardan la cuenta y los certificados (obligatorio)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;email&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;el contacto de la cuenta, opcional&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;eab_key_id&lt;/code&gt;, &lt;code&gt;eab_hmac_key_file&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;vinculación de cuenta externa; la clave HMAC es un secreto, así que se lee de un archivo, en base64url, tal como la entrega la CA (también se lee base64 estándar); cualquier otra cosa se rechaza&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;http_challenge&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;dónde responder al desafío http-01, p. ej. &lt;code&gt;&amp;quot;0.0.0.0:80&amp;quot;&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3 data-hextra-search-id="whether-acme-can-work-is-decided-by-how-the-ca-checks-the-name"&gt;Que ACME pueda funcionar depende de cómo comprueba la CA el nombre&lt;span class="hx:absolute hx:-mt-20" id="whether-acme-can-work-is-decided-by-how-the-ca-checks-the-name"&gt;&lt;/span&gt;
+&lt;a href="#whether-acme-can-work-is-decided-by-how-the-ca-checks-the-name" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;desafío&lt;/th&gt;
+&lt;th&gt;la CA se conecta a&lt;/th&gt;
+&lt;th&gt;por tanto&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;tls-alpn-01 (RFC 8737)&lt;/td&gt;
+&lt;td&gt;el puerto &lt;strong&gt;443&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;debe servirse un protocolo TLS en el 443&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;http-01 (RFC 8555 §8.3)&lt;/td&gt;
+&lt;td&gt;el puerto &lt;strong&gt;80&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;http_challenge = &amp;quot;0.0.0.0:80&amp;quot;&lt;/code&gt; lo responde, o la dirección a la que se reenvía un puerto 80&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;ninguno&lt;/td&gt;
+&lt;td&gt;nada&lt;/td&gt;
+&lt;td&gt;una cuenta de CA con el dominio &lt;strong&gt;prevalidado&lt;/strong&gt; no pide ningún desafío: las cuentas EAB empresariales de HARICA para GÉANT TCS; así, un servidor &lt;strong&gt;que nadie de fuera puede alcanzar&lt;/strong&gt; obtiene igualmente su certificado&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;La última fila es la que importa para un servidor de archivos dentro de una red de
+campus: con una cuenta GÉANT TCS cuyo dominio la institución ya ha validado en
+HARICA, no hay que abrir ningún puerto a Internet.&lt;/p&gt;
+&lt;p&gt;Un certificado se solicita en la &lt;strong&gt;primera conexión TLS que nombra el host&lt;/strong&gt; (SNI);
+un cliente que se conecta por dirección IP no obtiene ninguno.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;ALPN&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Con ACME, la lista ALPN del servidor contiene &lt;code&gt;acme-tls/1&lt;/code&gt;, y un servidor Go
+rechaza a un cliente cuya lista no tiene nada en común con la suya. Por eso
+se &lt;strong&gt;añade&lt;/strong&gt; &lt;code&gt;http/1.1&lt;/code&gt; para WebDAV y S3 —todos los navegadores y clientes
+WebDAV lo ofrecen— y &lt;code&gt;sunrpc&lt;/code&gt; para NFS, tal como el RFC 9289 §5.2 identifica
+RPC-with-TLS. No &lt;code&gt;h2&lt;/code&gt;: HTTP/2 no se ofrece en estas escuchas, y ofrecerlo
+sería mentir. &lt;code&gt;acme-tls/1&lt;/code&gt; permanece en todas las escuchas, así que
+tls-alpn-01 se responde allí donde llegue la CA.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="webdav-is-not-served-in-the-clear"&gt;WebDAV no se sirve sin cifrar&lt;span class="hx:absolute hx:-mt-20" id="webdav-is-not-served-in-the-clear"&gt;&lt;/span&gt;
+&lt;a href="#webdav-is-not-served-in-the-clear" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;CAMBIO INCOMPATIBLE en la v0.9.0: WebDAV con contraseñas en una dirección alcanzable se rechaza&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;HTTP Basic es la contraseña, en base64, en cada petición, y un token bearer
+vale tanto como ella. Así que una configuración que sirve WebDAV &lt;strong&gt;sin TLS&lt;/strong&gt;
+en una dirección que otras máquinas pueden alcanzar, mientras haya alguien
+que se autentique, se &lt;strong&gt;rechaza, no se advierte&lt;/strong&gt;: una advertencia pasa
+desapercibida, y la contraseña no vuelve:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;pre&gt;&lt;code&gt;webdav on 0.0.0.0:8080 would carry passwords in the clear: serve it with
+tls = true, or -- when TLS is terminated in front of it, by a proxy -- say
+plaintext = true&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Una configuración que arrancaba antes de la v0.9.0 con
+&lt;code&gt;serve &amp;quot;webdav&amp;quot; { addr = &amp;quot;0.0.0.0:8080&amp;quot; }&lt;/code&gt; no arranca después. Dos salidas:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;webdav&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:443&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; tls&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;&lt;span class="c1"&gt; # with a tls block
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;o, cuando un proxy inverso termina TLS delante y reenvía sin cifrar:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;webdav&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;10.0.0.5:8080&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; plaintext&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;&lt;span class="c1"&gt; # TLS is terminated in front of this, on purpose
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Las direcciones de &lt;strong&gt;loopback&lt;/strong&gt; (&lt;code&gt;127.0.0.1&lt;/code&gt;, &lt;code&gt;::1&lt;/code&gt;, &lt;code&gt;localhost&lt;/code&gt;) y un servidor
+&lt;strong&gt;sin nadie a quien autenticar&lt;/strong&gt; —sin &lt;code&gt;user&lt;/code&gt;, sin &lt;code&gt;users&lt;/code&gt;, sin bloque &lt;code&gt;oidc&lt;/code&gt;— no se
+ven afectados. Un bloque &lt;code&gt;serve&lt;/code&gt; sin &lt;code&gt;addr&lt;/code&gt; queda en loopback, y tampoco se ve
+afectado.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;plaintext&lt;/code&gt; es solo para WebDAV, el protocolo que envía una contraseña, y &lt;code&gt;plaintext&lt;/code&gt;
+junto con &lt;code&gt;tls&lt;/code&gt; se rechaza: uno u otro.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-check-says"&gt;Lo que dice &lt;code&gt;check&lt;/code&gt;&lt;span class="hx:absolute hx:-mt-20" id="what-check-says"&gt;&lt;/span&gt;
+&lt;a href="#what-check-says" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;a href="https://go-fileshare.github.io/docs/0.22/es/configuration/check/"&gt;&lt;code&gt;fileshare check&lt;/code&gt;&lt;/a&gt; imprime, por protocolo, lo que
+está cifrado y lo que va sin cifrar &lt;strong&gt;a propósito&lt;/strong&gt;:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;pre&gt;&lt;code&gt;webdav: TLS, certificate from the files /etc/fileshare/tls/fullchain.pem and /etc/fileshare/tls/key.pem
+nfs: TLS, certificate from the files /etc/fileshare/tls/fullchain.pem and /etc/fileshare/tls/key.pem; clients present one signed by /etc/fileshare/tls/clients.pem (the machine, not the person)&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;y, para WebDAV detrás de un proxy,&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;pre&gt;&lt;code&gt;webdav: in the clear on 10.0.0.5:8080, on purpose (plaintext = true): TLS must be terminated in front of it&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="per-protocol"&gt;Por protocolo&lt;span class="hx:absolute hx:-mt-20" id="per-protocol"&gt;&lt;/span&gt;
+&lt;a href="#per-protocol" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;protocolo&lt;/th&gt;
+&lt;th&gt;&lt;code&gt;tls = true&lt;/code&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;WebDAV&lt;/td&gt;
+&lt;td&gt;sí&lt;/td&gt;
+&lt;td&gt;HTTPS&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;S3&lt;/td&gt;
+&lt;td&gt;sí&lt;/td&gt;
+&lt;td&gt;HTTPS&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;NFS&lt;/td&gt;
+&lt;td&gt;sí&lt;/td&gt;
+&lt;td&gt;RFC 9289; véase más abajo&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;SMB&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;rechazado&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;SMB 3 cifra con sus propias claves&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;SFTP&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;rechazado&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;SFTP es SSH&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2 data-hextra-search-id="nfs-over-tls-proves-the-machine-not-the-person"&gt;NFS sobre TLS prueba la máquina, no la persona&lt;span class="hx:absolute hx:-mt-20" id="nfs-over-tls-proves-the-machine-not-the-person"&gt;&lt;/span&gt;
+&lt;a href="#nfs-over-tls-proves-the-machine-not-the-person" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;nfs&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; tls&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; client_ca_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/tls/clients.pem&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;client_ca_file&lt;/code&gt; obliga al cliente a presentar un certificado de esa autoridad
+—&lt;strong&gt;qué máquina está montando&lt;/strong&gt;—, y el RFC 9289 deja la autenticación de usuarios
+como estaba: el uid de dentro sigue siendo el que afirma &lt;code&gt;AUTH_SYS&lt;/code&gt;. Así que un
+recurso compartido que nombra quién puede usarlo &lt;strong&gt;sigue rechazándose por NFS&lt;/strong&gt; sin
+un bloque &lt;code&gt;kerberos&lt;/code&gt;, o sin
+&lt;a href="https://go-fileshare.github.io/docs/0.22/es/security/nfs-certificates/"&gt;identidades a partir de certificados&lt;/a&gt;, que son un uso
+distinto del mismo certificado.&lt;/p&gt;
+&lt;p&gt;TLS &lt;strong&gt;se ofrece, no se exige&lt;/strong&gt;: a un cliente que nunca lo pide se le siguen sirviendo
+los recursos compartidos abiertos. &lt;code&gt;client_ca_file&lt;/code&gt; sin &lt;code&gt;tls = true&lt;/code&gt; se rechaza —no
+comprobaría nada—, y &lt;code&gt;client_ca_file&lt;/code&gt; en cualquier protocolo distinto de NFS también
+se rechaza.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-else-is-refused"&gt;Qué más se rechaza&lt;span class="hx:absolute hx:-mt-20" id="what-else-is-refused"&gt;&lt;/span&gt;
+&lt;a href="#what-else-is-refused" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;tls = true&lt;/code&gt; sin bloque &lt;code&gt;tls&lt;/code&gt;: nada indica de dónde procede el certificado.&lt;/li&gt;
+&lt;li&gt;Un bloque &lt;code&gt;tls&lt;/code&gt; que ningún bloque &lt;code&gt;serve&lt;/code&gt; usa: nada lo usaría.&lt;/li&gt;
+&lt;li&gt;Un &lt;code&gt;http_challenge&lt;/code&gt; que no es una dirección en la que escuchar.&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>Revocar certificados SSH: la KRL</title><link>https://go-fileshare.github.io/docs/0.22/es/security/revocation-lists/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.22/es/security/revocation-lists/</guid><description>
+&lt;p&gt;Un certificado firmado por la CA SSH del proveedor de identidad —consulte
+&lt;a href="https://go-fileshare.github.io/docs/0.22/es/protocols/sftp/#people-the-identity-provider-vouches-for"&gt;SFTP para las personas que el proveedor avala&lt;/a&gt;—
+se comprueba al iniciar sesión. Desactivar a alguien en go-authn/bridge revoca sus
+tokens y elimina sus contraseñas de aplicación, cosa que aquí aplica una
+&lt;a href="https://go-fileshare.github.io/docs/0.22/es/administration/reload/"&gt;recarga del directorio&lt;/a&gt;; pero sin una lista, un
+certificado ya emitido seguiría abriendo SFTP hasta caducar, y una sesión SFTP ya
+abierta seguiría abierta.&lt;/p&gt;
+&lt;p&gt;Desde la v0.12.0, una lista lo impide:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;oidc&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; issuer&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://login.example.org&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; audience&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;fileshare&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; ssh_ca_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/bridge-ca.pub&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; ssh_krl_url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://bridge.example.org/ssh/krl&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # or ssh_krl_file
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; ssh_krl_state_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/var/lib/fileshare/ssh.krl.state&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # the order, across a restart
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; ssh_krl_max_age&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt; &amp;#34;1h&amp;#34; # default; ssh_krl_refresh&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;1m&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;go-authn/bridge publica los certificados SSH que ha revocado —una persona
+desactivada, un IdP desactivado— como una &lt;strong&gt;KRL&lt;/strong&gt; de OpenSSH (&lt;code&gt;PROTOCOL.krl&lt;/code&gt;, la
+lista que lee el &lt;code&gt;RevokedKeys&lt;/code&gt; de &lt;code&gt;sshd&lt;/code&gt;), y fileshare guarda una copia, leída con
+&lt;a href="https://github.com/go-authn/krl" target="_blank" rel="noopener"&gt;go-authn/krl&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="refused-at-login-and-in-the-middle-of-a-session"&gt;Rechazado al iniciar sesión, y en mitad de una sesión&lt;span class="hx:absolute hx:-mt-20" id="refused-at-login-and-in-the-middle-of-a-session"&gt;&lt;/span&gt;
+&lt;a href="#refused-at-login-and-in-the-middle-of-a-session" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Un certificado revocado se rechaza al iniciar sesión, y &lt;strong&gt;una sesión que ya abrió
+deja de recibir servicio&lt;/strong&gt;. SSH comprueba un certificado una sola vez, durante el
+handshake; por eso cada operación de una sesión SFTP federada vuelve a consultar la
+KRL, &lt;strong&gt;incluidos los archivos abiertos&lt;/strong&gt;. La primera operación después de que cambie
+la copia de la lista de este servidor se rechaza.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="fields"&gt;Campos&lt;span class="hx:absolute hx:-mt-20" id="fields"&gt;&lt;/span&gt;
+&lt;a href="#fields" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;campo&lt;/th&gt;
+&lt;th&gt;por defecto&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ssh_krl_url&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;dónde se descarga la lista, &lt;strong&gt;solo HTTPS&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ssh_krl_file&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;o un archivo, por ruta absoluta; uno u otro, nunca ambos&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ssh_krl_ca_file&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;las del sistema&lt;/td&gt;
+&lt;td&gt;fija las autoridades frente a las que se comprueba el servidor HTTPS de la lista&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ssh_krl_refresh&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;1m&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;con qué frecuencia se descarga, al menos un segundo&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ssh_krl_max_age&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;1h&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;qué antigüedad puede tener la última copia válida antes de que se rechacen los certificados que gobierna&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ssh_krl_state_file&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;dónde se guarda la última lista verificada, para que un reinicio recuerde el orden&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Un &lt;code&gt;max_age&lt;/code&gt; más corto que &lt;code&gt;refresh&lt;/code&gt; se rechaza: cada copia estaría obsoleta antes
+de la siguiente descarga. Una KRL sin &lt;code&gt;ssh_ca_file&lt;/code&gt; también se rechaza: revoca los
+certificados del proveedor, y sin esa CA no hay ninguno.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="it-fails-closed"&gt;Falla en modo cerrado&lt;span class="hx:absolute hx:-mt-20" id="it-fails-closed"&gt;&lt;/span&gt;
+&lt;a href="#it-fails-closed" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Mientras no se pueda descargar la KRL, los certificados del proveedor se rechazan&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Mientras no se pueda descargar la lista, o su última copia válida sea más
+antigua que &lt;code&gt;ssh_krl_max_age&lt;/code&gt;, se rechazan &lt;strong&gt;todos&lt;/strong&gt; los certificados
+firmados por la CA del proveedor: una comprobación de revocación que deja
+pasar todo cuando la lista es inalcanzable es la que derrota un atacante
+capaz de bloquear la lista. La lista debe servirse entonces con la misma
+fiabilidad que los inicios de sesión que gobierna.
+&lt;code&gt;fileshare_revocation_list_age_seconds{list=&amp;quot;ssh_krl&amp;quot;}&lt;/code&gt; es la métrica sobre
+la que alertar antes de alcanzar &lt;code&gt;max_age&lt;/code&gt;; consulte
+&lt;a href="https://go-fileshare.github.io/docs/0.22/es/administration/health/#what-to-alert-on"&gt;salud y métricas&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="signed-and-dated-from-ssh_krl_url"&gt;Firmada y fechada, desde &lt;code&gt;ssh_krl_url&lt;/code&gt;&lt;span class="hx:absolute hx:-mt-20" id="signed-and-dated-from-ssh_krl_url"&gt;&lt;/span&gt;
+&lt;a href="#signed-and-dated-from-ssh_krl_url" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Desde la v0.15.0, &lt;strong&gt;una KRL procedente de &lt;code&gt;ssh_krl_url&lt;/code&gt; debe estar firmada e indicar
+cuándo caduca&lt;/strong&gt;, tal como describe
+&lt;a href="https://github.com/go-authn/revocation" target="_blank" rel="noopener"&gt;go-authn/revocation&lt;/a&gt; y como la sirve
+go-authn/bridge a partir de la v0.10.0:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;La firma:&lt;/strong&gt; &lt;code&gt;&amp;lt;url&amp;gt;.sig&lt;/code&gt; es una firma SSHSIG separada de la CA SSH del proveedor
+(&lt;code&gt;ssh_ca_file&lt;/code&gt;, que por tanto &lt;code&gt;ssh_krl_url&lt;/code&gt; exige), en el espacio de nombres
+&lt;code&gt;krl@go-authn.github.io&lt;/code&gt;. Se descarga con &lt;code&gt;If-Match&lt;/code&gt; sobre el ETag de la lista, y
+se vuelve a descargar de inmediato si la lista se ha vuelto a emitir entretanto.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;La caducidad:&lt;/strong&gt; la extensión &lt;code&gt;expires@go-authn.github.io&lt;/code&gt;. Pasada esa fecha, la
+lista no está vigente, por reciente que sea el &lt;code&gt;304&lt;/code&gt; que la confirmó.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;HTTPS (&lt;code&gt;ssh_krl_ca_file&lt;/code&gt; fija sus autoridades) autentica al servidor que respondió,
+no a la lista: un espejo, una caché o un servidor web comprometido podrían servir una
+vacía, y nada en una KRL por sí sola indica que esté obsoleta. Una lista que no se
+verifica se rechaza, y se conserva la última copia válida. Una lista colocada a mano
+con &lt;code&gt;ssh_krl_file&lt;/code&gt; merece la misma confianza que el sistema de archivos que la
+contiene, y no necesita ni firma ni caducidad; si lleva alguna, se respeta.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Actualizar a la v0.15.0&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Un &lt;code&gt;ssh_krl_url&lt;/code&gt; que sirve una KRL sin firmar, o sin caducidad, ya no se
+acepta: los certificados del proveedor se rechazan entonces, como con
+cualquier lista que no se puede obtener. Ejecute primero go-authn/bridge
+v0.10.0 o posterior.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="never-backwards-across-a-restart-too"&gt;Nunca hacia atrás, tampoco tras un reinicio&lt;span class="hx:absolute hx:-mt-20" id="never-backwards-across-a-restart-too"&gt;&lt;/span&gt;
+&lt;a href="#never-backwards-across-a-restart-too" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Desde la v0.16.0, una lista se rechaza si es más antigua que la que se tiene: una
+versión inferior (la versión de la KRL, el número de una CRL), o la misma versión
+emitida antes. Con &lt;code&gt;ssh_krl_state_file&lt;/code&gt; (&lt;code&gt;crl_state_file&lt;/code&gt; para
+&lt;a href="https://go-fileshare.github.io/docs/0.22/es/security/nfs-certificates/#revocation-the-crl"&gt;NFS&lt;/a&gt;), la última lista
+verificada se guarda en disco, se vuelve a verificar al arrancar y ordena la
+siguiente. Por sí sola no cuenta como vigente hasta que se descarga una lista. Sin
+ella, un reinicio olvida el orden, y fileshare lo indica al arrancar: se aceptaría
+una lista más antigua, aún firmada y sin caducar.&lt;/p&gt;
+&lt;p&gt;Estos archivos, como &lt;code&gt;ssh_ca_file&lt;/code&gt;, los archivos de CA, los archivos de lista y
+(desde la v0.17.0) &lt;code&gt;authorized_keys_file&lt;/code&gt;, &lt;code&gt;dsn_file&lt;/code&gt;, &lt;code&gt;bind_password_file&lt;/code&gt; y el
+&lt;code&gt;ca_file&lt;/code&gt; de &lt;code&gt;ssf&lt;/code&gt;, &lt;strong&gt;no pueden estar dentro de un recurso compartido&lt;/strong&gt;: quien
+escribiera allí decidiría quién entra.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="a-plain-sshd-next-to-fileshare"&gt;Un &lt;code&gt;sshd&lt;/code&gt; normal junto a fileshare&lt;span class="hx:absolute hx:-mt-20" id="a-plain-sshd-next-to-fileshare"&gt;&lt;/span&gt;
+&lt;a href="#a-plain-sshd-next-to-fileshare" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;La misma verificación está disponible sin fileshare: el &lt;code&gt;revokd&lt;/code&gt; de
+go-authn/revocation descarga las listas, conserva solo las que se verifican, guarda
+su orden en disco, escribe &lt;code&gt;RevokedKeys&lt;/code&gt; para &lt;code&gt;sshd&lt;/code&gt; y, cuando una lista caduca,
+escribe una que revoca la propia CA, de modo que &lt;code&gt;sshd&lt;/code&gt; también falla en modo
+cerrado.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-it-does-not-cover"&gt;Lo que no cubre&lt;span class="hx:absolute hx:-mt-20" id="what-it-does-not-cover"&gt;&lt;/span&gt;
+&lt;a href="#what-it-does-not-cover" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;Los certificados OpenPubkey (opkssh) no están en ninguna KRL&lt;/strong&gt;: no los emitió nada
+más que la propia clave de la persona. Los limita &lt;code&gt;opkssh_max_age&lt;/code&gt;, y los retiran
+las &lt;a href="https://go-fileshare.github.io/docs/0.22/es/security/shared-signals/"&gt;señales compartidas&lt;/a&gt;. Lo mismo ocurre con un token de acceso por WebDAV.&lt;/p&gt;
+&lt;p&gt;El mismo mecanismo —descargado, conservado, en modo cerrado ante el fallo— transporta
+la &lt;strong&gt;CRL X.509&lt;/strong&gt; de las
+&lt;a href="https://go-fileshare.github.io/docs/0.22/es/security/nfs-certificates/#revocation-the-crl"&gt;identidades NFS a partir de certificados&lt;/a&gt;.&lt;/p&gt;</description></item><item><title>NFS, con identidades a partir de certificados</title><link>https://go-fileshare.github.io/docs/0.22/es/security/nfs-certificates/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.22/es/security/nfs-certificates/</guid><description>
+&lt;p&gt;NFSv3 por sí solo no autentica a nadie, y por eso un recurso compartido que nombra
+quién puede usarlo &lt;a href="https://go-fileshare.github.io/docs/0.22/es/protocols/nfs/"&gt;no se exporta por NFS&lt;/a&gt;, salvo que
+algo permita distinguir a las personas. Un bloque &lt;code&gt;kerberos&lt;/code&gt; es una respuesta. Desde
+la v0.12.0, un certificado de cliente que &lt;strong&gt;nombra a una persona&lt;/strong&gt; es otra:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;nfs&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; tls&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; client_ca_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/bridge-x509-ca.pem&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; identity&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;certificate&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; crl_url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://bridge.example.org/x509/crl&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # or crl_file; required
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; crl_state_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/var/lib/fileshare/nfs.crl.state&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # the order, across a restart
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="what-the-certificate-carries"&gt;Lo que transporta el certificado&lt;span class="hx:absolute hx:-mt-20" id="what-the-certificate-carries"&gt;&lt;/span&gt;
+&lt;a href="#what-the-certificate-carries" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Tras un inicio de sesión en un proveedor de identidad, go-authn/bridge emite un
+&lt;strong&gt;certificado de cliente X.509 de corta duración&lt;/strong&gt; que nombra a la persona tal como
+lo lee el &lt;code&gt;rpc.tlsservd -u&lt;/code&gt; de FreeBSD:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;la persona: el SubjectAltName &lt;strong&gt;otherName &lt;code&gt;1.3.6.1.4.1.2238.1.1.1&lt;/code&gt;&lt;/strong&gt;, un
+UTF8String &lt;code&gt;user@domain&lt;/code&gt;
+(&lt;a href="https://www.ietf.org/archive/id/draft-cel-nfsv4-rpc-tls-othername-04.html" target="_blank" rel="noopener"&gt;draft-cel-nfsv4-rpc-tls-othername&lt;/a&gt;
+lo describe; sus OID aún no están asignados);&lt;/li&gt;
+&lt;li&gt;sus grupos: un URI de SubjectAltName por grupo,
+&lt;code&gt;tag:go-authn.github.io,2026:group:&amp;lt;group&amp;gt;&lt;/code&gt;, un &lt;strong&gt;URI de etiqueta&lt;/strong&gt; (tag URI,
+RFC 4151: sin registro, pensado exactamente para esto). El &lt;code&gt;rpc.tlsservd&lt;/code&gt; de
+FreeBSD lee el primer otherName de identidad y omite cualquier otra entrada SAN.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Por qué un URI de etiqueta, y no una extensión propia&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Se diseñó una, bajo un arco derivado de un UUID (&lt;code&gt;2.25.&amp;lt;128-bit number&amp;gt;&lt;/code&gt;), y
+se &lt;strong&gt;midió&lt;/strong&gt;: &lt;code&gt;x509.ParseCertificate&lt;/code&gt; de Go rechaza el certificado entero
+—&lt;em&gt;malformed extension OID field&lt;/em&gt;— porque allí un arco de identificador de
+objeto ASN.1 es un &lt;code&gt;int&lt;/code&gt;. Todo servidor TLS en Go habría rechazado el
+certificado. Un SAN de tipo URI no necesita OID, y todos los analizadores lo
+leen. Tampoco &lt;code&gt;urn:x-…&lt;/code&gt;: el RFC 8141 suprimió los espacios de nombres URN
+experimentales, y un analizador estricto los rechaza.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="what-every-call-is-asked"&gt;Lo que se pregunta en cada llamada&lt;span class="hx:absolute hx:-mt-20" id="what-every-call-is-asked"&gt;&lt;/span&gt;
+&lt;a href="#what-every-call-is-asked" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Con &lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt;, un recurso compartido que nombra personas se sirve
+por NFS &lt;strong&gt;sin kerberos&lt;/strong&gt;. Cada llamada sobre él debe llegar por TLS, con un
+certificado que:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;no está en la CRL&lt;/strong&gt;;&lt;/li&gt;
+&lt;li&gt;nombra &lt;strong&gt;exactamente a una&lt;/strong&gt; persona;&lt;/li&gt;
+&lt;li&gt;nombra a alguien que este servidor admite &lt;strong&gt;igual que admite un token&lt;/strong&gt;: una
+regla, &lt;code&gt;trust_all&lt;/code&gt;, &lt;code&gt;domains&lt;/code&gt;; consulte
+&lt;a href="https://go-fileshare.github.io/docs/0.22/es/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;las personas que nombra el proveedor de identidad&lt;/a&gt;;&lt;/li&gt;
+&lt;li&gt;nombra a alguien &lt;strong&gt;que el recurso compartido permite&lt;/strong&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Y, con un &lt;a href="https://go-fileshare.github.io/docs/0.22/es/security/shared-signals/"&gt;bloque &lt;code&gt;ssf&lt;/code&gt;&lt;/a&gt;, el certificado debe
+haberse emitido (su &lt;code&gt;NotBefore&lt;/code&gt;) &lt;strong&gt;después&lt;/strong&gt; de cualquier revocación de esa persona.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="revocation-the-crl"&gt;Revocación: la CRL&lt;span class="hx:absolute hx:-mt-20" id="revocation-the-crl"&gt;&lt;/span&gt;
+&lt;a href="#revocation-the-crl" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;Se exige una CRL&lt;/strong&gt;: &lt;code&gt;crl_url&lt;/code&gt; o &lt;code&gt;crl_file&lt;/code&gt;. El certificado de una persona que nada
+puede revocar sobrevive a su baja durante toda su vida útil.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;campo&lt;/th&gt;
+&lt;th&gt;por defecto&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;crl_url&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;solo HTTPS&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;crl_file&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;o una ruta absoluta; uno u otro&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;crl_ca_file&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;las del sistema&lt;/td&gt;
+&lt;td&gt;fija las autoridades del servidor HTTPS de la CRL&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;crl_refresh&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;1m&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;con qué frecuencia se descarga&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;crl_max_age&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;1h&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;qué antigüedad puede tener la última copia válida&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;crl_state_file&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;dónde se guarda la última CRL verificada, para que un reinicio recuerde cuál es más reciente&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Se descarga y se conserva como la &lt;a href="https://go-fileshare.github.io/docs/0.22/es/security/revocation-lists/"&gt;KRL&lt;/a&gt;, y
+&lt;strong&gt;falla en modo cerrado&lt;/strong&gt; de la misma forma; una CRL que ha superado su propio
+&lt;strong&gt;&lt;code&gt;NextUpdate&lt;/code&gt;&lt;/strong&gt; cuenta como desconocida, permita lo que permita &lt;code&gt;crl_max_age&lt;/code&gt;. Una
+CRL debe estar firmada por la CA de clientes: una CRL que cualquiera podría haber
+escrito revoca lo que quiera y, peor aún, lo des-revoca. Con la CRL accesible, &lt;strong&gt;la
+siguiente llamada después de que cambie se rechaza&lt;/strong&gt;; la vida útil del certificado
+solo limita una revocación cuando la CRL no es accesible.&lt;/p&gt;
+&lt;p&gt;Desde la v0.16.2, la firma se comprueba sobre los bytes en bruto &lt;strong&gt;antes&lt;/strong&gt; de
+analizar la CRL, mediante &lt;a href="https://github.com/go-authn/revocation" target="_blank" rel="noopener"&gt;go-authn/revocation&lt;/a&gt;:
+si se analizaba primero, una CRL grande firmada por cualquiera costaba memoria y
+segundos antes de rechazarse. Lo que este servidor no puede leer como una lista
+completa también se rechaza: una CRL delta, una extensión crítica o de entrada
+desconocida, la ausencia de número de CRL, la ausencia de &lt;code&gt;NextUpdate&lt;/code&gt;. Una CRL con
+un número inferior al de la que se tiene, o con el mismo número emitida antes, se
+rechaza como una &lt;a href="https://go-fileshare.github.io/docs/0.22/es/security/revocation-lists/#never-backwards-across-a-restart-too"&gt;KRL&lt;/a&gt;
+más antigua.&lt;/p&gt;
+&lt;p&gt;Un campo de CRL sin &lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt; se rechaza, y también
+&lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt; sin &lt;code&gt;tls = true&lt;/code&gt; y &lt;code&gt;client_ca_file&lt;/code&gt;: la identidad está en
+el certificado que presenta el cliente.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-it-cannot-promise"&gt;Lo que no puede prometer&lt;span class="hx:absolute hx:-mt-20" id="what-it-cannot-promise"&gt;&lt;/span&gt;
+&lt;a href="#what-it-cannot-promise" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;El certificado de un cliente Linux pertenece a un MONTAJE, no a una persona&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;El servidor ve el certificado de una &lt;strong&gt;conexión&lt;/strong&gt;, y un cliente Linux asocia
+uno a un montaje (&lt;code&gt;tlshd&lt;/code&gt;, el número de serie del keyring en
+&lt;code&gt;mount -o xprtsec=mtls,...&lt;/code&gt;). &lt;strong&gt;Todos los usuarios de ese montaje actúan
+como la persona que nombra el certificado.&lt;/strong&gt; En una estación de trabajo que
+usa una sola persona, es exactamente ella; en una máquina en la que inician
+sesión varias personas, es quien montó: use &lt;code&gt;sec=krb5&lt;/code&gt; allí.&lt;/p&gt;
+&lt;p&gt;Por eso el RFC 9289 por sí solo se niega a prometer la autenticación de
+usuarios, y por eso el simple
+&lt;a href="https://go-fileshare.github.io/docs/0.22/es/security/tls/#nfs-over-tls-proves-the-machine-not-the-person"&gt;NFS sobre TLS&lt;/a&gt;
+sigue probando solo la máquina.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="measured-with-a-real-linux-client"&gt;Medido con un cliente Linux real&lt;span class="hx:absolute hx:-mt-20" id="measured-with-a-real-linux-client"&gt;&lt;/span&gt;
+&lt;a href="#measured-with-a-real-linux-client" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Núcleo 6.17, ktls-utils 0.9, en la CI de go-filesystems/nfs:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;El &lt;code&gt;MNT&lt;/code&gt; de MOUNT llega sin cifrar&lt;/strong&gt;, diga lo que diga &lt;code&gt;xprtsec=&lt;/code&gt;: el cliente
+de montaje del núcleo no tiene TLS. Se responde, y toda llamada NFS hecha sin TLS
+se rechaza después; así, una persona a la que el recurso compartido no permite el
+acceso ve &lt;em&gt;acceso denegado&lt;/em&gt; en el primer acceso y no en el &lt;code&gt;mount&lt;/code&gt;. &lt;strong&gt;Nada de un
+recurso compartido cruza sin cifrar.&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;tlshd&lt;/code&gt; comprueba el certificado de este servidor solo frente al almacén de
+confianza &lt;strong&gt;del sistema&lt;/strong&gt; —ignora &lt;code&gt;x509.truststore&lt;/code&gt;— y exige que el certificado y
+la clave del cliente &lt;strong&gt;pertenezcan a root, con la clave en modo 600&lt;/strong&gt;. Si no, falla
+con &lt;em&gt;gnutls: Error in the certificate (-43)&lt;/em&gt;, sin nombrar ni lo uno ni lo otro.&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>Qué revoca qué</title><link>https://go-fileshare.github.io/docs/0.22/es/security/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.22/es/security/</guid><description>
+&lt;p&gt;Una credencial se comprueba cuando se presenta. Retirarle después el acceso a una
+persona —un miembro del personal que se fue, una cuenta desactivada en
+go-authn/bridge, todo un IdP apagado— tiene que alcanzar &lt;strong&gt;todas&lt;/strong&gt; las credenciales
+que recibió, y las sesiones que estas ya abrieron. Cada tipo de credencial se alcanza
+aquí con un mecanismo distinto, porque cada una se emite y se comprueba de forma
+distinta:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;credencial&lt;/th&gt;
+&lt;th&gt;protocolo&lt;/th&gt;
+&lt;th&gt;qué la retira&lt;/th&gt;
+&lt;th&gt;añadido en&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;una contraseña, un hash NT o una contraseña de aplicación en un directorio &lt;code&gt;users&lt;/code&gt; (SQL, LDAP)&lt;/td&gt;
+&lt;td&gt;SMB, WebDAV, S3&lt;/td&gt;
+&lt;td&gt;la fila eliminada y luego una &lt;a href="https://go-fileshare.github.io/docs/0.22/es/administration/reload/"&gt;recarga del directorio&lt;/a&gt;: una nueva generación, y las conexiones que abrió, cerradas&lt;/td&gt;
+&lt;td&gt;v0.10.0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;un permiso sobre un recurso compartido&lt;/td&gt;
+&lt;td&gt;todos los protocolos&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;Revoke&lt;/code&gt; de la &lt;a href="https://go-fileshare.github.io/docs/0.22/es/administration/"&gt;API de administración&lt;/a&gt;, o &lt;code&gt;DisableShare&lt;/code&gt;: una nueva generación, conexiones cerradas&lt;/td&gt;
+&lt;td&gt;v0.8.0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;un certificado SSH firmado por la CA del proveedor&lt;/td&gt;
+&lt;td&gt;SFTP&lt;/td&gt;
+&lt;td&gt;su &lt;a href="https://go-fileshare.github.io/docs/0.22/es/security/revocation-lists/"&gt;KRL&lt;/a&gt;, comprobada al iniciar sesión &lt;strong&gt;y en cada operación&lt;/strong&gt;; y las &lt;a href="https://go-fileshare.github.io/docs/0.22/es/security/shared-signals/"&gt;señales compartidas&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;v0.12.0, v0.13.0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;un certificado OpenPubkey (opkssh)&lt;/td&gt;
+&lt;td&gt;SFTP&lt;/td&gt;
+&lt;td&gt;ninguna lista puede nombrarlo; las &lt;a href="https://go-fileshare.github.io/docs/0.22/es/security/shared-signals/"&gt;señales compartidas&lt;/a&gt;, y &lt;code&gt;opkssh_max_age&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;v0.13.0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;un token de acceso&lt;/td&gt;
+&lt;td&gt;WebDAV&lt;/td&gt;
+&lt;td&gt;ninguna lista puede nombrarlo; las &lt;a href="https://go-fileshare.github.io/docs/0.22/es/security/shared-signals/"&gt;señales compartidas&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;v0.13.0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;un certificado de cliente X.509 que nombra a una persona&lt;/td&gt;
+&lt;td&gt;NFS&lt;/td&gt;
+&lt;td&gt;su &lt;a href="https://go-fileshare.github.io/docs/0.22/es/security/nfs-certificates/#revocation-the-crl"&gt;CRL&lt;/a&gt;, en la siguiente llamada; y las &lt;a href="https://go-fileshare.github.io/docs/0.22/es/security/shared-signals/"&gt;señales compartidas&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;v0.12.0, v0.13.0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Sin el mecanismo de la tercera columna, una credencial sigue siendo válida hasta que
+caduca, y para un certificado o un token ese margen es toda su vida útil.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="every-one-of-them-fails-closed"&gt;Todos fallan en modo cerrado&lt;span class="hx:absolute hx:-mt-20" id="every-one-of-them-fails-closed"&gt;&lt;/span&gt;
+&lt;a href="#every-one-of-them-fails-closed" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Una lista de revocación que no se puede descargar, una copia más antigua que su
+&lt;code&gt;max_age&lt;/code&gt;, una CRL que ha superado su propio &lt;code&gt;NextUpdate&lt;/code&gt;, un transmisor de señales
+compartidas del que no se sabe nada dentro de &lt;code&gt;max_age&lt;/code&gt;: nada de esto se interpreta
+como «no hay nada revocado». Significa «este servidor no lo sabe», y las credenciales
+que ese mecanismo gobierna se &lt;strong&gt;rechazan&lt;/strong&gt; hasta que vuelva a saberlo.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;El precio es la disponibilidad, y se paga a propósito&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Una comprobación de revocación que deja pasar todo cuando la lista es
+inalcanzable es la que derrota un atacante capaz de bloquear la lista; por
+eso se dijo del OCSP en modo «soft-fail» de los navegadores que era «un
+cinturón de seguridad que se rompe cuando choca». Así que la lista, o el
+transmisor, debe servirse con la misma fiabilidad que los inicios de sesión
+que gobierna, y las métricas que indican que se está quedando obsoleta son
+las que hay que &lt;a href="https://go-fileshare.github.io/docs/0.22/es/administration/health/#what-to-alert-on"&gt;vigilar con alertas&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Una copia solo se sustituye por una lista que se ha podido analizar: una lista que
+llega dañada deja en su sitio la última válida, que sigue contando para &lt;code&gt;max_age&lt;/code&gt;
+desde el momento en que &lt;strong&gt;ella&lt;/strong&gt; se descargó. Y una lista se descarga &lt;strong&gt;solo por
+HTTPS&lt;/strong&gt; —una lista que un atacante en el camino puede sustituir no revoca nada—, así
+que una URL en HTTP plano se rechaza al arrancar.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="transport"&gt;Transporte&lt;span class="hx:absolute hx:-mt-20" id="transport"&gt;&lt;/span&gt;
+&lt;a href="#transport" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Las credenciales mismas no deben cruzar una red sin cifrar. Para eso está
+&lt;a href="https://go-fileshare.github.io/docs/0.22/es/security/tls/"&gt;TLS&lt;/a&gt;: WebDAV, S3 y NFS sobre TLS, un certificado a partir de archivos o de ACME,
+y —desde la v0.9.0— &lt;strong&gt;WebDAV con contraseñas rechazado sin cifrar&lt;/strong&gt;.&lt;/p&gt;</description></item><item><title>Revocar lo que ninguna lista cubre: las señales compartidas</title><link>https://go-fileshare.github.io/docs/0.22/es/security/shared-signals/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.22/es/security/shared-signals/</guid><description>
+&lt;p&gt;Un certificado tiene una lista de revocación: la &lt;a href="https://go-fileshare.github.io/docs/0.22/es/security/revocation-lists/"&gt;KRL&lt;/a&gt;,
+la &lt;a href="https://go-fileshare.github.io/docs/0.22/es/security/nfs-certificates/#revocation-the-crl"&gt;CRL&lt;/a&gt;. Un &lt;strong&gt;token de
+acceso&lt;/strong&gt; que fileshare verifica por sí solo, y un &lt;strong&gt;certificado OpenPubkey&lt;/strong&gt; firmado
+por la propia clave de la persona, no la tienen: son válidos hasta que caducan, pase
+lo que pase después con la persona.&lt;/p&gt;
+&lt;p&gt;Desde la v0.13.0, el &lt;a href="https://openid.net/specs/openid-sharedsignals-framework-1_0-final.html" target="_blank" rel="noopener"&gt;OpenID Shared Signals Framework&lt;/a&gt;
+cubre ese hueco, con un evento &lt;strong&gt;&lt;code&gt;session-revoked&lt;/code&gt;&lt;/strong&gt; de
+&lt;a href="https://openid.net/specs/openid-caep-1_0-final.html" target="_blank" rel="noopener"&gt;CAEP&lt;/a&gt;:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;ssf&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; transmitter&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://bridge.example.org&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # its issuer
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; audience&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://files.example.org&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # what this server is to it
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; client_id&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;fileshare&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # OAuth client credentials,
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; client_secret_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/ssf.secret&amp;#34; # scope &amp;#34;ssf&amp;#34;&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;or&lt;/span&gt; &lt;span class="k"&gt;token_file&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; state_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/var/lib/fileshare/revocations.json&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; max_age&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt; &amp;#34;10m&amp;#34; # default; retain&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;192h&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;go-authn/bridge envía uno cuando se desactiva una persona o un IdP; fileshare lo
+&lt;strong&gt;sondea&lt;/strong&gt; (RFC 8936, el modo por defecto de SSF) y guarda, para cada persona,
+&lt;strong&gt;cuándo&lt;/strong&gt; ocurrió.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="everything-issued-before-is-refused-on-every-protocol"&gt;Todo lo emitido antes se rechaza, en todos los protocolos&lt;span class="hx:absolute hx:-mt-20" id="everything-issued-before-is-refused-on-every-protocol"&gt;&lt;/span&gt;
+&lt;a href="#everything-issued-before-is-refused-on-every-protocol" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;A partir de ese momento, toda credencial federada &lt;strong&gt;emitida antes&lt;/strong&gt; se rechaza, y
+&lt;strong&gt;las sesiones que esas credenciales abrieron dejan de recibir servicio&lt;/strong&gt;, a través
+de los mismos puntos de control que los de la KRL. Lo que significa «emitida»
+depende de lo que la transportaba:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;protocolo&lt;/th&gt;
+&lt;th&gt;credencial&lt;/th&gt;
+&lt;th&gt;su momento de emisión&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;WebDAV&lt;/td&gt;
+&lt;td&gt;un token de acceso&lt;/td&gt;
+&lt;td&gt;su &lt;code&gt;iat&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;SFTP&lt;/td&gt;
+&lt;td&gt;un certificado firmado por la CA SSH del proveedor&lt;/td&gt;
+&lt;td&gt;el inicio de su validez (&lt;code&gt;ValidAfter&lt;/code&gt;)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;SFTP&lt;/td&gt;
+&lt;td&gt;un certificado OpenPubkey (opkssh)&lt;/td&gt;
+&lt;td&gt;el &lt;code&gt;iat&lt;/code&gt; del ID token&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;NFS&lt;/td&gt;
+&lt;td&gt;un certificado de cliente (&lt;a href="https://go-fileshare.github.io/docs/0.22/es/security/nfs-certificates/"&gt;identity = &amp;ldquo;certificate&amp;rdquo;&lt;/a&gt;)&lt;/td&gt;
+&lt;td&gt;su &lt;code&gt;NotBefore&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Lo que el proveedor emite &lt;strong&gt;después&lt;/strong&gt; es suyo: una persona reactivada no queda
+bloqueada.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;El mismo segundo cuenta como «antes»&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;El &lt;code&gt;event_timestamp&lt;/code&gt; de CAEP y el &lt;code&gt;iat&lt;/code&gt; de un token son segundos enteros, y
+una credencial emitida &lt;strong&gt;en el momento de la revocación o antes&lt;/strong&gt; se
+rechaza; así, una emitida en el mismo segundo que una revocación también se
+rechaza, y una persona reactivada justo después de ser desactivada obtiene
+credenciales válidas a partir del segundo siguiente. Es el lado
+conservador, a propósito. Un momento de emisión desconocido no equivale a
+«hace mucho»: se rechaza en cuanto existe alguna revocación para esa
+persona.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="who-an-event-is-about"&gt;A quién se refiere un evento&lt;span class="hx:absolute hx:-mt-20" id="who-an-event-is-about"&gt;&lt;/span&gt;
+&lt;a href="#who-an-event-is-about" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;El sujeto es un &lt;strong&gt;&lt;code&gt;account&lt;/code&gt;&lt;/strong&gt; del RFC 9493 (&lt;code&gt;acct:user@domain&lt;/code&gt;, el nombre que usan
+los recursos compartidos), un &lt;strong&gt;&lt;code&gt;iss_sub&lt;/code&gt;&lt;/strong&gt;, un &lt;strong&gt;&lt;code&gt;email&lt;/code&gt;&lt;/strong&gt;, o &lt;strong&gt;&lt;code&gt;aliases&lt;/code&gt;&lt;/strong&gt; de
+ellos.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Un IdP desactivado por completo&lt;/strong&gt; llega como un sujeto &lt;em&gt;tenant&lt;/em&gt; de CAEP, con los
+ámbitos (scopes) del IdP en el evento: todas las personas cuyo nombre está &lt;code&gt;@&lt;/code&gt; en uno
+de ellos —comparado entero: &lt;code&gt;evil-univ-a.fr&lt;/code&gt; no es &lt;code&gt;univ-a.fr&lt;/code&gt;— y cuya credencial
+se emitió antes se rechazan, &lt;strong&gt;incluidas las personas que el proveedor ya no
+recuerda&lt;/strong&gt;.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="how-the-receiver-authenticates"&gt;Cómo se autentica el receptor&lt;span class="hx:absolute hx:-mt-20" id="how-the-receiver-authenticates"&gt;&lt;/span&gt;
+&lt;a href="#how-the-receiver-authenticates" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Con &lt;strong&gt;credenciales de cliente OAuth&lt;/strong&gt; (RFC 6749 §4.4, ámbito &lt;code&gt;ssf&lt;/code&gt;): &lt;code&gt;client_id&lt;/code&gt; y
+&lt;code&gt;client_secret_file&lt;/code&gt;, con el token obtenido del propio endpoint de tokens del
+transmisor —que se encuentra en su configuración OpenID, o en &lt;code&gt;token_url&lt;/code&gt;— y
+renovado antes de que caduque. &lt;code&gt;token_file&lt;/code&gt; existe en su lugar para los
+transmisores que entregan un token bearer de larga duración. Uno u otro: ambos, o
+ninguno, se rechaza.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;campo&lt;/th&gt;
+&lt;th&gt;por defecto&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;transmitter&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;su emisor, &lt;strong&gt;solo HTTPS&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;audience&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;lo que este servidor es para el transmisor; obligatorio, o aquí se creería un SET dirigido a otro receptor&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;client_id&lt;/code&gt;, &lt;code&gt;client_secret_file&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;credenciales de cliente OAuth, juntas&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;token_url&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;descubierto&lt;/td&gt;
+&lt;td&gt;solo HTTPS, o el secreto cruza la red sin cifrar&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;token_file&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;un token de larga duración en lugar de credenciales de cliente&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;state_file&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;obligatorio&lt;/strong&gt;: dónde se anotan las revocaciones&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ca_file&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;las del sistema&lt;/td&gt;
+&lt;td&gt;fija las autoridades del transmisor&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;max_age&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;10m&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;cuánto tiempo sin noticias del transmisor antes de que se rechacen las credenciales federadas; al menos un minuto&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;retain&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;192h&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;cuánto tiempo se conserva una revocación; al menos 169h (desde la v0.14.0)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Una revocación &lt;strong&gt;se anota antes de confirmarse&lt;/strong&gt;, así que una revocación confirmada
+sobrevive a un reinicio; y se conserva durante &lt;code&gt;retain&lt;/code&gt;, más tiempo que cualquier
+credencial que pudiera invalidar (192h supera la credencial de mayor duración que
+emite el proveedor, un certificado SSH de 168h).&lt;/p&gt;
+&lt;p&gt;Un bloque &lt;code&gt;ssf&lt;/code&gt; sin nada federado que revocar —sin bloque &lt;code&gt;oidc&lt;/code&gt;, sin
+&lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt; en NFS— se rechaza.&lt;/p&gt;
+&lt;p&gt;El transporte es &lt;a href="https://github.com/hstern/go-ssf" target="_blank" rel="noopener"&gt;github.com/hstern/go-ssf&lt;/a&gt;: el
+descubrimiento, el sondeo del RFC 8936, la capa JWS del SET. Lo que un evento
+&lt;strong&gt;significa&lt;/strong&gt; lo decide fileshare.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="it-fails-closed"&gt;Falla en modo cerrado&lt;span class="hx:absolute hx:-mt-20" id="it-fails-closed"&gt;&lt;/span&gt;
+&lt;a href="#it-fails-closed" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Mientras el transmisor calla, las credenciales federadas se rechazan&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Como con la KRL: mientras el transmisor no haya respondido a un sondeo
+dentro de &lt;code&gt;max_age&lt;/code&gt;, se rechazan &lt;strong&gt;todas las credenciales federadas&lt;/strong&gt;,
+porque «no ha llegado ninguna revocación» y «no podía llegar ninguna» tienen
+el mismo aspecto. &lt;code&gt;fileshare_ssf_last_heard_seconds&lt;/code&gt; es la métrica sobre la
+que alertar; &lt;code&gt;fileshare_ssf_revoked_subjects&lt;/code&gt; indica cuántas revocaciones se
+conservan. Consulte
+&lt;a href="https://go-fileshare.github.io/docs/0.22/es/administration/health/#what-to-alert-on"&gt;salud y métricas&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="checked-end-to-end"&gt;Comprobado de extremo a extremo&lt;span class="hx:absolute hx:-mt-20" id="checked-end-to-end"&gt;&lt;/span&gt;
+&lt;a href="#checked-end-to-end" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;El carril de interoperabilidad de go-authn/bridge
+(&lt;a href="https://github.com/go-authn/bridge/pull/12" target="_blank" rel="noopener"&gt;#12&lt;/a&gt;,
+&lt;a href="https://github.com/go-authn/bridge/pull/17" target="_blank" rel="noopener"&gt;#17&lt;/a&gt;) evalúa fileshare v0.13.0 frente
+al bridge real: la KRL, la CRL sobre NFS, tokens de WebDAV revocados mediante SSF,
+un IdP desactivado por ámbito, y opkssh mediante SSF, el caso al que no llega
+ninguna lista de revocación.&lt;/p&gt;</description></item></channel></rss>
