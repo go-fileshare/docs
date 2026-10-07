@@ -34,6 +34,15 @@ languages:
     weight: 1
     params:
       flag: images/flags/gb.svg
+  fr:
+    label: "Français"
+    contentDir: content/fr
+    weight: 2
+    params:
+      flag: images/flags/fr.svg
+      # Day before month: "5 octobre 2026".
+      dateFormat: "2 January 2006"
+      description: "Une image disque ou un répertoire, servis en SMB, NFS, WebDAV, SFTP et S3 : les mêmes utilisateurs, le même accès par partage, depuis un seul fichier de configuration. Pur Go, CGO_ENABLED=0."
   de:
     label: "Deutsch"
     contentDir: content/de
