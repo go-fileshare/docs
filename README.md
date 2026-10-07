@@ -43,10 +43,12 @@ read the same `versions.json` (mike's format).
 ## Languages
 
 English is the default and sits at the root of each version
-(`/docs/<version>/protocols/sftp/`). The site is laid out for other languages,
-which will be under their code (`/docs/<version>/fr/protocols/sftp/`); only
-English is declared so far. The language switch at the foot of the sidebar
-opens the same page in the other language, in the same version.
+(`/docs/<version>/protocols/sftp/`). French, Spanish and German are under
+their code (`/docs/<version>/fr/protocols/sftp/`, `/es/`, `/de/`), from the
+0.22 build on; the versions MkDocs built (0.4 to 0.21) are English only, and the
+version selector falls back to their English page. The language switch at the
+foot of the sidebar opens the same page in another language, in the same
+version.
 
 To add a language `<lang>`:
 
