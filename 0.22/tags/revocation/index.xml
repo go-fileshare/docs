@@ -1,0 +1,571 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Revocation</title><link>https://go-fileshare.github.io/docs/0.22/tags/revocation/</link><description>Recent content in Revocation on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>en</language><atom:link href="https://go-fileshare.github.io/docs/0.22/tags/revocation/index.xml" rel="self" type="application/rss+xml"/><item><title>Revoking SSH certificates: the KRL</title><link>https://go-fileshare.github.io/docs/0.22/security/revocation-lists/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.22/security/revocation-lists/</guid><description>
+&lt;p&gt;A certificate the identity provider&amp;rsquo;s SSH CA signed — see
+&lt;a href="https://go-fileshare.github.io/docs/0.22/protocols/sftp/#people-the-identity-provider-vouches-for"&gt;SFTP for people the provider vouches for&lt;/a&gt;
+— is checked at login. Disabling somebody in go-authn/bridge revokes their
+tokens and deletes their application passwords, which a
+&lt;a href="https://go-fileshare.github.io/docs/0.22/administration/reload/"&gt;directory reload&lt;/a&gt; applies here; but without a
+list, a certificate already issued would still open SFTP until it expires, and
+an SFTP session already open would stay open.&lt;/p&gt;
+&lt;p&gt;Since v0.12.0 a list closes that:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;oidc&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; issuer&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://login.example.org&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; audience&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;fileshare&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; ssh_ca_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/bridge-ca.pub&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; ssh_krl_url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://bridge.example.org/ssh/krl&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # or ssh_krl_file
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; ssh_krl_state_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/var/lib/fileshare/ssh.krl.state&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # the order, across a restart
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; ssh_krl_max_age&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt; &amp;#34;1h&amp;#34; # default; ssh_krl_refresh&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;1m&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;go-authn/bridge publishes the SSH certificates it has revoked — a person
+disabled, an IdP disabled — as an OpenSSH &lt;strong&gt;KRL&lt;/strong&gt; (&lt;code&gt;PROTOCOL.krl&lt;/code&gt;, the list
+&lt;code&gt;sshd&lt;/code&gt;&amp;rsquo;s &lt;code&gt;RevokedKeys&lt;/code&gt; reads), and fileshare keeps a copy of it, read with
+&lt;a href="https://github.com/go-authn/krl" target="_blank" rel="noopener"&gt;go-authn/krl&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="refused-at-login-and-in-the-middle-of-a-session"&gt;Refused at login, and in the middle of a session&lt;span class="hx:absolute hx:-mt-20" id="refused-at-login-and-in-the-middle-of-a-session"&gt;&lt;/span&gt;
+&lt;a href="#refused-at-login-and-in-the-middle-of-a-session" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;A revoked certificate is refused at login, and &lt;strong&gt;a session it already opened
+stops being served&lt;/strong&gt;. SSH checks a certificate once, at the handshake; so every
+operation of a federated SFTP session asks the KRL again, &lt;strong&gt;open files
+included&lt;/strong&gt;. The first operation after this server&amp;rsquo;s copy of the list changes is refused.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="fields"&gt;Fields&lt;span class="hx:absolute hx:-mt-20" id="fields"&gt;&lt;/span&gt;
+&lt;a href="#fields" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;field&lt;/th&gt;
+&lt;th&gt;default&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ssh_krl_url&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;where the list is fetched, &lt;strong&gt;HTTPS only&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ssh_krl_file&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;or a file, by absolute path — one or the other, never both&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ssh_krl_ca_file&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;the system&amp;rsquo;s&lt;/td&gt;
+&lt;td&gt;pins the authorities the list&amp;rsquo;s HTTPS server is checked against&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ssh_krl_refresh&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;1m&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;how often it is fetched, at least a second&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ssh_krl_max_age&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;1h&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;how old the last good copy may be before the certificates it governs are refused&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ssh_krl_state_file&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;where the last list that verified is kept, so a restart remembers the order&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;A &lt;code&gt;max_age&lt;/code&gt; shorter than &lt;code&gt;refresh&lt;/code&gt; is refused — every copy would be stale before
+the next fetch. A KRL with no &lt;code&gt;ssh_ca_file&lt;/code&gt; is refused too: it revokes the
+provider&amp;rsquo;s certificates, and without that CA there are none.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="it-fails-closed"&gt;It fails closed&lt;span class="hx:absolute hx:-mt-20" id="it-fails-closed"&gt;&lt;/span&gt;
+&lt;a href="#it-fails-closed" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;While the KRL cannot be fetched, the provider&amp;rsquo;s certificates are refused&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;While the list cannot be fetched, or its last good copy is older than
+&lt;code&gt;ssh_krl_max_age&lt;/code&gt;, &lt;strong&gt;every&lt;/strong&gt; certificate the provider&amp;rsquo;s CA signed is
+refused: a revocation check that lets everything through when the list is
+unreachable is the one an attacker who can block the list defeats. The list
+must then be served as reliably as the logins it governs.
+&lt;code&gt;fileshare_revocation_list_age_seconds{list=&amp;quot;ssh_krl&amp;quot;}&lt;/code&gt; is the metric to
+alert on before &lt;code&gt;max_age&lt;/code&gt; is reached; see
+&lt;a href="https://go-fileshare.github.io/docs/0.22/administration/health/#what-to-alert-on"&gt;health and metrics&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="signed-and-dated-from-ssh_krl_url"&gt;Signed and dated, from &lt;code&gt;ssh_krl_url&lt;/code&gt;&lt;span class="hx:absolute hx:-mt-20" id="signed-and-dated-from-ssh_krl_url"&gt;&lt;/span&gt;
+&lt;a href="#signed-and-dated-from-ssh_krl_url" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Since v0.15.0, &lt;strong&gt;a KRL from &lt;code&gt;ssh_krl_url&lt;/code&gt; must be signed and say when it
+expires&lt;/strong&gt;, as &lt;a href="https://github.com/go-authn/revocation" target="_blank" rel="noopener"&gt;go-authn/revocation&lt;/a&gt;
+describes and go-authn/bridge serves from v0.10.0:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;The signature:&lt;/strong&gt; &lt;code&gt;&amp;lt;url&amp;gt;.sig&lt;/code&gt; is a detached SSHSIG signature by the
+provider&amp;rsquo;s SSH CA (&lt;code&gt;ssh_ca_file&lt;/code&gt;, which &lt;code&gt;ssh_krl_url&lt;/code&gt; therefore requires), in
+the namespace &lt;code&gt;krl@go-authn.github.io&lt;/code&gt;. It is fetched with &lt;code&gt;If-Match&lt;/code&gt; on the
+list&amp;rsquo;s ETag, and fetched again at once if the list was re-issued in between.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;The expiry:&lt;/strong&gt; the &lt;code&gt;expires@go-authn.github.io&lt;/code&gt; extension. Past it, the list
+is not current, however recently a &lt;code&gt;304&lt;/code&gt; confirmed it.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;HTTPS (&lt;code&gt;ssh_krl_ca_file&lt;/code&gt; pins its authorities) authenticates the server that
+answered, not the list: a mirror, a cache or a compromised web server could
+serve an empty one, and nothing in a KRL alone says it is stale. A list that
+does not verify is refused, and the last good copy is kept. A list placed by
+hand with &lt;code&gt;ssh_krl_file&lt;/code&gt; is trusted as the filesystem that holds it, and needs
+neither signature nor expiry; one it carries is honoured.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Upgrading to v0.15.0&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;An &lt;code&gt;ssh_krl_url&lt;/code&gt; serving an unsigned KRL, or one with no expiry, is no
+longer taken: the provider&amp;rsquo;s certificates are then refused, as for any
+list that cannot be had. Run go-authn/bridge v0.10.0 or later first.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="never-backwards-across-a-restart-too"&gt;Never backwards, across a restart too&lt;span class="hx:absolute hx:-mt-20" id="never-backwards-across-a-restart-too"&gt;&lt;/span&gt;
+&lt;a href="#never-backwards-across-a-restart-too" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Since v0.16.0, a list is refused if it is older than the one held: a lower
+version (the KRL&amp;rsquo;s version, a CRL&amp;rsquo;s number), or the same version issued
+earlier. With &lt;code&gt;ssh_krl_state_file&lt;/code&gt; (&lt;code&gt;crl_state_file&lt;/code&gt; for
+&lt;a href="https://go-fileshare.github.io/docs/0.22/security/nfs-certificates/#revocation-the-crl"&gt;NFS&lt;/a&gt;), the last list that verified is
+kept on disk, verified again at start, and orders the next one. On its own it
+does not count as current until a list is fetched. Without it, a restart
+forgets the order, and fileshare says so at start: an older list, still signed
+and unexpired, would be taken.&lt;/p&gt;
+&lt;p&gt;These files, like &lt;code&gt;ssh_ca_file&lt;/code&gt;, the CA files, the list files and (since
+v0.17.0) &lt;code&gt;authorized_keys_file&lt;/code&gt;, &lt;code&gt;dsn_file&lt;/code&gt;, &lt;code&gt;bind_password_file&lt;/code&gt; and the
+&lt;code&gt;ssf&lt;/code&gt; &lt;code&gt;ca_file&lt;/code&gt;, &lt;strong&gt;may not lie inside a share&lt;/strong&gt;: whoever writes there would
+decide who gets in.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="a-plain-sshd-next-to-fileshare"&gt;A plain &lt;code&gt;sshd&lt;/code&gt; next to fileshare&lt;span class="hx:absolute hx:-mt-20" id="a-plain-sshd-next-to-fileshare"&gt;&lt;/span&gt;
+&lt;a href="#a-plain-sshd-next-to-fileshare" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;The same verification is available without fileshare: go-authn/revocation&amp;rsquo;s
+&lt;code&gt;revokd&lt;/code&gt; fetches the lists, keeps only those that verify, keeps their order on
+disk, writes &lt;code&gt;RevokedKeys&lt;/code&gt; for &lt;code&gt;sshd&lt;/code&gt;, and, when a list lapses, writes one that
+revokes the CA itself, so &lt;code&gt;sshd&lt;/code&gt; fails closed too.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-it-does-not-cover"&gt;What it does not cover&lt;span class="hx:absolute hx:-mt-20" id="what-it-does-not-cover"&gt;&lt;/span&gt;
+&lt;a href="#what-it-does-not-cover" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;OpenPubkey (opkssh) certificates are not in any KRL&lt;/strong&gt; — nothing issued them
+but the person&amp;rsquo;s own key. They are bounded by &lt;code&gt;opkssh_max_age&lt;/code&gt;, and taken back
+by &lt;a href="https://go-fileshare.github.io/docs/0.22/security/shared-signals/"&gt;shared signals&lt;/a&gt;. So is an access token over WebDAV.&lt;/p&gt;
+&lt;p&gt;The same mechanism — fetched, kept, failing closed — carries the &lt;strong&gt;X.509 CRL&lt;/strong&gt;
+of &lt;a href="https://go-fileshare.github.io/docs/0.22/security/nfs-certificates/#revocation-the-crl"&gt;NFS identities from certificates&lt;/a&gt;.&lt;/p&gt;</description></item><item><title>NFS, with identities from certificates</title><link>https://go-fileshare.github.io/docs/0.22/security/nfs-certificates/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.22/security/nfs-certificates/</guid><description>
+&lt;p&gt;NFSv3 on its own authenticates nobody, which is why a share that names who may
+use it is &lt;a href="https://go-fileshare.github.io/docs/0.22/protocols/nfs/"&gt;not exported over NFS&lt;/a&gt; — unless something can
+tell people apart. A &lt;code&gt;kerberos&lt;/code&gt; block is one answer. Since v0.12.0, a client
+certificate that &lt;strong&gt;names a person&lt;/strong&gt; is another:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;nfs&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; tls&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; client_ca_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/bridge-x509-ca.pem&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; identity&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;certificate&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; crl_url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://bridge.example.org/x509/crl&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # or crl_file; required
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; crl_state_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/var/lib/fileshare/nfs.crl.state&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # the order, across a restart
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="what-the-certificate-carries"&gt;What the certificate carries&lt;span class="hx:absolute hx:-mt-20" id="what-the-certificate-carries"&gt;&lt;/span&gt;
+&lt;a href="#what-the-certificate-carries" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;After an identity provider login, go-authn/bridge issues a &lt;strong&gt;short-lived X.509
+client certificate&lt;/strong&gt; naming the person the way FreeBSD&amp;rsquo;s &lt;code&gt;rpc.tlsservd -u&lt;/code&gt; reads
+it:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;the person: the SubjectAltName &lt;strong&gt;otherName &lt;code&gt;1.3.6.1.4.1.2238.1.1.1&lt;/code&gt;&lt;/strong&gt;, a
+UTF8String &lt;code&gt;user@domain&lt;/code&gt;
+(&lt;a href="https://www.ietf.org/archive/id/draft-cel-nfsv4-rpc-tls-othername-04.html" target="_blank" rel="noopener"&gt;draft-cel-nfsv4-rpc-tls-othername&lt;/a&gt;
+describes it; its OIDs are not assigned yet);&lt;/li&gt;
+&lt;li&gt;their groups: one SubjectAltName URI each,
+&lt;code&gt;tag:go-authn.github.io,2026:group:&amp;lt;group&amp;gt;&lt;/code&gt; — a &lt;strong&gt;tag URI&lt;/strong&gt; (RFC 4151: no
+registration, made for exactly this). FreeBSD&amp;rsquo;s &lt;code&gt;rpc.tlsservd&lt;/code&gt; reads the first
+identity otherName and skips every other SAN entry.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Why a tag URI, and not an extension of its own&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;One was designed, under a UUID-derived arc (&lt;code&gt;2.25.&amp;lt;128-bit number&amp;gt;&lt;/code&gt;), and
+&lt;strong&gt;measured&lt;/strong&gt;: Go&amp;rsquo;s &lt;code&gt;x509.ParseCertificate&lt;/code&gt; refuses the whole certificate —
+&lt;em&gt;malformed extension OID field&lt;/em&gt; — because an ASN.1 object identifier arc is
+an &lt;code&gt;int&lt;/code&gt; there. Every Go TLS server would have turned the certificate away.
+A URI SAN needs no OID, and every parser reads it. Not &lt;code&gt;urn:x-…&lt;/code&gt; either:
+RFC 8141 took the experimental URN namespaces away, and a strict parser
+refuses one.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="what-every-call-is-asked"&gt;What every call is asked&lt;span class="hx:absolute hx:-mt-20" id="what-every-call-is-asked"&gt;&lt;/span&gt;
+&lt;a href="#what-every-call-is-asked" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;With &lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt;, a share that names people is served over NFS
+&lt;strong&gt;without kerberos&lt;/strong&gt;. Every call on it must arrive over TLS, with a certificate
+that:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;is &lt;strong&gt;not in the CRL&lt;/strong&gt;;&lt;/li&gt;
+&lt;li&gt;names &lt;strong&gt;exactly one&lt;/strong&gt; person;&lt;/li&gt;
+&lt;li&gt;names somebody this server admits &lt;strong&gt;the way it admits a token&lt;/strong&gt; — a rule,
+&lt;code&gt;trust_all&lt;/code&gt;, &lt;code&gt;domains&lt;/code&gt;, see
+&lt;a href="https://go-fileshare.github.io/docs/0.22/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;people the identity provider names&lt;/a&gt;;&lt;/li&gt;
+&lt;li&gt;names somebody &lt;strong&gt;the share allows&lt;/strong&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;And, with an &lt;a href="https://go-fileshare.github.io/docs/0.22/security/shared-signals/"&gt;&lt;code&gt;ssf&lt;/code&gt; block&lt;/a&gt;, the certificate must have been
+issued (its &lt;code&gt;NotBefore&lt;/code&gt;) &lt;strong&gt;after&lt;/strong&gt; any revocation of that person.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="revocation-the-crl"&gt;Revocation: the CRL&lt;span class="hx:absolute hx:-mt-20" id="revocation-the-crl"&gt;&lt;/span&gt;
+&lt;a href="#revocation-the-crl" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;A CRL is required&lt;/strong&gt; — &lt;code&gt;crl_url&lt;/code&gt; or &lt;code&gt;crl_file&lt;/code&gt;. A person&amp;rsquo;s certificate that
+nothing can revoke outlives their removal by its whole lifetime.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;field&lt;/th&gt;
+&lt;th&gt;default&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;crl_url&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;HTTPS only&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;crl_file&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;or an absolute path — one or the other&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;crl_ca_file&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;the system&amp;rsquo;s&lt;/td&gt;
+&lt;td&gt;pins the authorities of the CRL&amp;rsquo;s HTTPS server&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;crl_refresh&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;1m&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;how often it is fetched&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;crl_max_age&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;1h&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;how old the last good copy may be&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;crl_state_file&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;where the last CRL that verified is kept, so a restart remembers which is newer&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;It is fetched and kept like the &lt;a href="https://go-fileshare.github.io/docs/0.22/security/revocation-lists/"&gt;KRL&lt;/a&gt;, and &lt;strong&gt;fails closed&lt;/strong&gt;
+the same way; a CRL past its own &lt;strong&gt;&lt;code&gt;NextUpdate&lt;/code&gt;&lt;/strong&gt; counts as unknown whatever
+&lt;code&gt;crl_max_age&lt;/code&gt; allows. A CRL must be signed by the client CA — a CRL anybody
+could have written revokes whatever they like, and, worse, un-revokes it. With
+the CRL reachable, &lt;strong&gt;the next call after it changes is refused&lt;/strong&gt;; the
+certificate&amp;rsquo;s lifetime bounds a revocation only when the CRL is not reachable.&lt;/p&gt;
+&lt;p&gt;Since v0.16.2 the signature is checked on the raw bytes &lt;strong&gt;before&lt;/strong&gt; the CRL is
+parsed, through &lt;a href="https://github.com/go-authn/revocation" target="_blank" rel="noopener"&gt;go-authn/revocation&lt;/a&gt;:
+parsed first, a large CRL signed by anybody cost memory and seconds before
+being refused. What this server cannot read as a complete list is refused
+too: a delta CRL, an unknown critical extension or entry extension, no CRL
+number, no &lt;code&gt;NextUpdate&lt;/code&gt;. A CRL with a lower number than the one held, or the
+same number issued earlier, is refused like an older
+&lt;a href="https://go-fileshare.github.io/docs/0.22/security/revocation-lists/#never-backwards-across-a-restart-too"&gt;KRL&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;A CRL field without &lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt; is refused, and so is
+&lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt; without &lt;code&gt;tls = true&lt;/code&gt; and &lt;code&gt;client_ca_file&lt;/code&gt;: the
+identity is in the certificate the client presents.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-it-cannot-promise"&gt;What it cannot promise&lt;span class="hx:absolute hx:-mt-20" id="what-it-cannot-promise"&gt;&lt;/span&gt;
+&lt;a href="#what-it-cannot-promise" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;A Linux client&amp;rsquo;s certificate belongs to a MOUNT, not a person&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The server sees a &lt;strong&gt;connection&amp;rsquo;s&lt;/strong&gt; certificate, and a Linux client attaches
+one to a mount (&lt;code&gt;tlshd&lt;/code&gt;, the keyring serial on
+&lt;code&gt;mount -o xprtsec=mtls,...&lt;/code&gt;). &lt;strong&gt;Every user of that mount acts as the person
+the certificate names.&lt;/strong&gt; On a workstation one person uses, that is exactly
+them; on a machine several people log into, it is whoever mounted — use
+&lt;code&gt;sec=krb5&lt;/code&gt; there.&lt;/p&gt;
+&lt;p&gt;This is why RFC 9289 alone refuses to promise user authentication, and why
+plain &lt;a href="https://go-fileshare.github.io/docs/0.22/security/tls/#nfs-over-tls-proves-the-machine-not-the-person"&gt;NFS over TLS&lt;/a&gt;
+still proves only the machine.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="measured-with-a-real-linux-client"&gt;Measured with a real Linux client&lt;span class="hx:absolute hx:-mt-20" id="measured-with-a-real-linux-client"&gt;&lt;/span&gt;
+&lt;a href="#measured-with-a-real-linux-client" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Kernel 6.17, ktls-utils 0.9, in go-filesystems/nfs&amp;rsquo;s CI:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;MOUNT&amp;rsquo;s &lt;code&gt;MNT&lt;/code&gt; arrives in the clear&lt;/strong&gt;, whatever &lt;code&gt;xprtsec=&lt;/code&gt; says: the
+kernel&amp;rsquo;s mount client has no TLS. It is answered, and every NFS call made
+without TLS is then refused — so a person the share does not allow sees
+&lt;em&gt;access denied&lt;/em&gt; at the first access rather than at &lt;code&gt;mount&lt;/code&gt;. &lt;strong&gt;Nothing of a
+share crosses in the clear.&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;tlshd&lt;/code&gt; checks this server&amp;rsquo;s certificate against the &lt;strong&gt;system&lt;/strong&gt; trust store
+only — it ignores &lt;code&gt;x509.truststore&lt;/code&gt; — and wants the client&amp;rsquo;s certificate and
+key &lt;strong&gt;owned by root, the key mode 600&lt;/strong&gt;. Otherwise it fails with
+&lt;em&gt;gnutls: Error in the certificate (-43)&lt;/em&gt;, naming neither.&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>What revokes what</title><link>https://go-fileshare.github.io/docs/0.22/security/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.22/security/</guid><description>
+&lt;p&gt;A credential is checked when it is presented. Taking a person back afterwards —
+a staff member who left, an account disabled in go-authn/bridge, a whole IdP
+switched off — has to reach &lt;strong&gt;every&lt;/strong&gt; credential they were given, and the
+sessions those already opened. Each kind of credential here is reached by a
+different mechanism, because each is issued and checked differently:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;credential&lt;/th&gt;
+&lt;th&gt;protocol&lt;/th&gt;
+&lt;th&gt;what takes it back&lt;/th&gt;
+&lt;th&gt;added in&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;a password, NT hash or application password in a &lt;code&gt;users&lt;/code&gt; directory (SQL, LDAP)&lt;/td&gt;
+&lt;td&gt;SMB, WebDAV, S3&lt;/td&gt;
+&lt;td&gt;the row removed, then a &lt;a href="https://go-fileshare.github.io/docs/0.22/administration/reload/"&gt;directory reload&lt;/a&gt;: a new generation, and the connections it opened closed&lt;/td&gt;
+&lt;td&gt;v0.10.0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;a share grant&lt;/td&gt;
+&lt;td&gt;every protocol&lt;/td&gt;
+&lt;td&gt;the &lt;a href="https://go-fileshare.github.io/docs/0.22/administration/"&gt;admin API&lt;/a&gt;&amp;rsquo;s &lt;code&gt;Revoke&lt;/code&gt;, or &lt;code&gt;DisableShare&lt;/code&gt;: a new generation, connections closed&lt;/td&gt;
+&lt;td&gt;v0.8.0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;an SSH certificate the provider&amp;rsquo;s CA signed&lt;/td&gt;
+&lt;td&gt;SFTP&lt;/td&gt;
+&lt;td&gt;its &lt;a href="https://go-fileshare.github.io/docs/0.22/security/revocation-lists/"&gt;KRL&lt;/a&gt;, checked at login &lt;strong&gt;and at every operation&lt;/strong&gt;; and &lt;a href="https://go-fileshare.github.io/docs/0.22/security/shared-signals/"&gt;shared signals&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;v0.12.0, v0.13.0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;an OpenPubkey (opkssh) certificate&lt;/td&gt;
+&lt;td&gt;SFTP&lt;/td&gt;
+&lt;td&gt;no list can name it; &lt;a href="https://go-fileshare.github.io/docs/0.22/security/shared-signals/"&gt;shared signals&lt;/a&gt;, and &lt;code&gt;opkssh_max_age&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;v0.13.0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;an access token&lt;/td&gt;
+&lt;td&gt;WebDAV&lt;/td&gt;
+&lt;td&gt;no list can name it; &lt;a href="https://go-fileshare.github.io/docs/0.22/security/shared-signals/"&gt;shared signals&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;v0.13.0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;an X.509 client certificate naming a person&lt;/td&gt;
+&lt;td&gt;NFS&lt;/td&gt;
+&lt;td&gt;its &lt;a href="https://go-fileshare.github.io/docs/0.22/security/nfs-certificates/#revocation-the-crl"&gt;CRL&lt;/a&gt;, at the next call; and &lt;a href="https://go-fileshare.github.io/docs/0.22/security/shared-signals/"&gt;shared signals&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;v0.12.0, v0.13.0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Without the mechanism in the third column, a credential stays good until it
+expires — and for a certificate or a token, that window is its lifetime.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="every-one-of-them-fails-closed"&gt;Every one of them fails closed&lt;span class="hx:absolute hx:-mt-20" id="every-one-of-them-fails-closed"&gt;&lt;/span&gt;
+&lt;a href="#every-one-of-them-fails-closed" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;A revocation list that cannot be fetched, a copy of one older than its
+&lt;code&gt;max_age&lt;/code&gt;, a CRL past its own &lt;code&gt;NextUpdate&lt;/code&gt;, a shared-signals transmitter not
+heard from within &lt;code&gt;max_age&lt;/code&gt;: none of these is read as &amp;ldquo;nothing is revoked&amp;rdquo;. It
+is &amp;ldquo;this server does not know&amp;rdquo;, and the credentials that mechanism governs are
+&lt;strong&gt;refused&lt;/strong&gt; until it knows again.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;The price is availability, and it is paid on purpose&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;A revocation check that lets everything through when the list is
+unreachable is the one an attacker who can block the list defeats — the
+reason browsers&amp;rsquo; soft-fail OCSP was called &amp;ldquo;a seat-belt that snaps when you
+crash&amp;rdquo;. So the list, or the transmitter, must be served as reliably as the
+logins it governs, and the metrics that say it is going stale are the ones
+to &lt;a href="https://go-fileshare.github.io/docs/0.22/administration/health/#what-to-alert-on"&gt;alert on&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;A copy is replaced only by a list that parsed: a list that arrives broken leaves
+the last good one in place, still counting towards &lt;code&gt;max_age&lt;/code&gt; from when &lt;strong&gt;it&lt;/strong&gt;
+was fetched. And a list is fetched over &lt;strong&gt;HTTPS only&lt;/strong&gt; — a list an attacker
+on the path can replace revokes nothing — so a plain-HTTP URL is refused at
+startup.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="transport"&gt;Transport&lt;span class="hx:absolute hx:-mt-20" id="transport"&gt;&lt;/span&gt;
+&lt;a href="#transport" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;The credentials themselves must not cross a network in the clear. That is
+&lt;a href="https://go-fileshare.github.io/docs/0.22/security/tls/"&gt;TLS&lt;/a&gt;: WebDAV, S3 and NFS over TLS, a certificate from files or ACME,
+and — since v0.9.0 — &lt;strong&gt;WebDAV with passwords refused in the clear&lt;/strong&gt;.&lt;/p&gt;</description></item><item><title>Revoking what no list covers: shared signals</title><link>https://go-fileshare.github.io/docs/0.22/security/shared-signals/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.22/security/shared-signals/</guid><description>
+&lt;p&gt;A certificate has a revocation list — the &lt;a href="https://go-fileshare.github.io/docs/0.22/security/revocation-lists/"&gt;KRL&lt;/a&gt;, the
+&lt;a href="https://go-fileshare.github.io/docs/0.22/security/nfs-certificates/#revocation-the-crl"&gt;CRL&lt;/a&gt;. An &lt;strong&gt;access token&lt;/strong&gt; fileshare
+verifies on its own, and an &lt;strong&gt;OpenPubkey certificate&lt;/strong&gt; the person&amp;rsquo;s own key
+signed, do not: they are valid until they expire, whatever happened to the
+person since.&lt;/p&gt;
+&lt;p&gt;Since v0.13.0, the &lt;a href="https://openid.net/specs/openid-sharedsignals-framework-1_0-final.html" target="_blank" rel="noopener"&gt;OpenID Shared Signals Framework&lt;/a&gt;
+closes that, with a &lt;a href="https://openid.net/specs/openid-caep-1_0-final.html" target="_blank" rel="noopener"&gt;CAEP&lt;/a&gt;
+&lt;strong&gt;&lt;code&gt;session-revoked&lt;/code&gt;&lt;/strong&gt; event:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;ssf&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; transmitter&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://bridge.example.org&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # its issuer
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; audience&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://files.example.org&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # what this server is to it
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; client_id&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;fileshare&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # OAuth client credentials,
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; client_secret_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/ssf.secret&amp;#34; # scope &amp;#34;ssf&amp;#34;&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;or&lt;/span&gt; &lt;span class="k"&gt;token_file&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; state_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/var/lib/fileshare/revocations.json&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; max_age&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt; &amp;#34;10m&amp;#34; # default; retain&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;192h&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;go-authn/bridge sends one when a person or an IdP is disabled; fileshare
+&lt;strong&gt;polls&lt;/strong&gt; for it (RFC 8936, the SSF default) and keeps, per person, &lt;strong&gt;when&lt;/strong&gt; it
+happened.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="everything-issued-before-is-refused-on-every-protocol"&gt;Everything issued before is refused, on every protocol&lt;span class="hx:absolute hx:-mt-20" id="everything-issued-before-is-refused-on-every-protocol"&gt;&lt;/span&gt;
+&lt;a href="#everything-issued-before-is-refused-on-every-protocol" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;From that moment, every federated credential &lt;strong&gt;issued before&lt;/strong&gt; it is refused —
+and &lt;strong&gt;the sessions those opened stop being served&lt;/strong&gt;, through the same gates as
+the KRL&amp;rsquo;s. What &amp;ldquo;issued&amp;rdquo; means depends on what carried it:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;protocol&lt;/th&gt;
+&lt;th&gt;credential&lt;/th&gt;
+&lt;th&gt;its issue time&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;WebDAV&lt;/td&gt;
+&lt;td&gt;an access token&lt;/td&gt;
+&lt;td&gt;its &lt;code&gt;iat&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;SFTP&lt;/td&gt;
+&lt;td&gt;a certificate the provider&amp;rsquo;s SSH CA signed&lt;/td&gt;
+&lt;td&gt;its validity start (&lt;code&gt;ValidAfter&lt;/code&gt;)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;SFTP&lt;/td&gt;
+&lt;td&gt;an OpenPubkey (opkssh) certificate&lt;/td&gt;
+&lt;td&gt;the ID token&amp;rsquo;s &lt;code&gt;iat&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;NFS&lt;/td&gt;
+&lt;td&gt;a client certificate (&lt;a href="https://go-fileshare.github.io/docs/0.22/security/nfs-certificates/"&gt;identity = &amp;ldquo;certificate&amp;rdquo;&lt;/a&gt;)&lt;/td&gt;
+&lt;td&gt;its &lt;code&gt;NotBefore&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;What the provider issues &lt;strong&gt;after&lt;/strong&gt; is theirs: a person re-enabled is not locked
+out.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;The same second counts as before&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;CAEP&amp;rsquo;s &lt;code&gt;event_timestamp&lt;/code&gt; and a token&amp;rsquo;s &lt;code&gt;iat&lt;/code&gt; are whole seconds, and a
+credential issued &lt;strong&gt;at or before&lt;/strong&gt; the revocation is refused — so one issued
+in the same second as a revocation is refused too, and a person re-enabled
+right after being disabled gets working credentials from the next second on.
+That is the conservative side, on purpose. An issue time that is not known
+is not &amp;ldquo;long ago&amp;rdquo;: it is refused once there is any revocation for that
+person.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="who-an-event-is-about"&gt;Who an event is about&lt;span class="hx:absolute hx:-mt-20" id="who-an-event-is-about"&gt;&lt;/span&gt;
+&lt;a href="#who-an-event-is-about" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;The subject is RFC 9493&amp;rsquo;s &lt;strong&gt;&lt;code&gt;account&lt;/code&gt;&lt;/strong&gt; (&lt;code&gt;acct:user@domain&lt;/code&gt;, the name the shares
+use), &lt;strong&gt;&lt;code&gt;iss_sub&lt;/code&gt;&lt;/strong&gt;, &lt;strong&gt;&lt;code&gt;email&lt;/code&gt;&lt;/strong&gt;, or &lt;strong&gt;&lt;code&gt;aliases&lt;/code&gt;&lt;/strong&gt; of them.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;An IdP disabled whole&lt;/strong&gt; arrives as a CAEP &lt;em&gt;tenant&lt;/em&gt; subject with the IdP&amp;rsquo;s
+scopes in the event: everyone whose name is &lt;code&gt;@&lt;/code&gt; one of them — compared whole,
+&lt;code&gt;evil-univ-a.fr&lt;/code&gt; is not &lt;code&gt;univ-a.fr&lt;/code&gt; — and whose credential was issued before,
+is refused, &lt;strong&gt;including people the provider no longer remembers&lt;/strong&gt;.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="how-the-receiver-authenticates"&gt;How the receiver authenticates&lt;span class="hx:absolute hx:-mt-20" id="how-the-receiver-authenticates"&gt;&lt;/span&gt;
+&lt;a href="#how-the-receiver-authenticates" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;With &lt;strong&gt;OAuth client credentials&lt;/strong&gt; (RFC 6749 §4.4, scope &lt;code&gt;ssf&lt;/code&gt;): &lt;code&gt;client_id&lt;/code&gt; and
+&lt;code&gt;client_secret_file&lt;/code&gt;, the token fetched from the transmitter&amp;rsquo;s own token
+endpoint — found in its OpenID configuration, or &lt;code&gt;token_url&lt;/code&gt; — and renewed
+before it expires. &lt;code&gt;token_file&lt;/code&gt; is there instead for transmitters that hand out
+a long-lived bearer token. One or the other: both, or neither, is refused.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;field&lt;/th&gt;
+&lt;th&gt;default&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;transmitter&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;its issuer, &lt;strong&gt;HTTPS only&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;audience&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;what this server is to the transmitter; required, or a SET addressed to another receiver would be believed here&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;client_id&lt;/code&gt;, &lt;code&gt;client_secret_file&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;OAuth client credentials, together&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;token_url&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;discovered&lt;/td&gt;
+&lt;td&gt;HTTPS only, or the secret crosses the network in the clear&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;token_file&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;a long-lived token instead of client credentials&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;state_file&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;required&lt;/strong&gt;: where revocations are written down&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ca_file&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;the system&amp;rsquo;s&lt;/td&gt;
+&lt;td&gt;pins the transmitter&amp;rsquo;s authorities&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;max_age&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;10m&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;how long without hearing from the transmitter before federated credentials are refused; at least a minute&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;retain&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;192h&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;how long a revocation is kept; at least 169h (since v0.14.0)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;A revocation is &lt;strong&gt;written down before it is acknowledged&lt;/strong&gt;, so an acknowledged
+one survives a restart; and it is kept for &lt;code&gt;retain&lt;/code&gt; — longer than any credential
+it could void (192h is past the longest-lived credential the provider issues, a
+168h SSH certificate).&lt;/p&gt;
+&lt;p&gt;An &lt;code&gt;ssf&lt;/code&gt; block with nothing federated to revoke — no &lt;code&gt;oidc&lt;/code&gt; block, no NFS
+&lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt; — is refused.&lt;/p&gt;
+&lt;p&gt;The transport is &lt;a href="https://github.com/hstern/go-ssf" target="_blank" rel="noopener"&gt;github.com/hstern/go-ssf&lt;/a&gt;:
+discovery, the RFC 8936 poller, the SET&amp;rsquo;s JWS layer. What an event &lt;strong&gt;means&lt;/strong&gt; is
+fileshare&amp;rsquo;s.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="it-fails-closed"&gt;It fails closed&lt;span class="hx:absolute hx:-mt-20" id="it-fails-closed"&gt;&lt;/span&gt;
+&lt;a href="#it-fails-closed" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;While the transmitter is silent, federated credentials are refused&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Like the KRL: while the transmitter has not answered a poll within
+&lt;code&gt;max_age&lt;/code&gt;, &lt;strong&gt;every federated credential&lt;/strong&gt; is refused, because &amp;ldquo;no
+revocation arrived&amp;rdquo; and &amp;ldquo;none could&amp;rdquo; look the same.
+&lt;code&gt;fileshare_ssf_last_heard_seconds&lt;/code&gt; is the metric to alert on;
+&lt;code&gt;fileshare_ssf_revoked_subjects&lt;/code&gt; is how many revocations are kept. See
+&lt;a href="https://go-fileshare.github.io/docs/0.22/administration/health/#what-to-alert-on"&gt;health and metrics&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="checked-end-to-end"&gt;Checked end to end&lt;span class="hx:absolute hx:-mt-20" id="checked-end-to-end"&gt;&lt;/span&gt;
+&lt;a href="#checked-end-to-end" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;go-authn/bridge&amp;rsquo;s interop lane
+(&lt;a href="https://github.com/go-authn/bridge/pull/12" target="_blank" rel="noopener"&gt;#12&lt;/a&gt;,
+&lt;a href="https://github.com/go-authn/bridge/pull/17" target="_blank" rel="noopener"&gt;#17&lt;/a&gt;) judges fileshare v0.13.0
+against the real bridge: the KRL, the CRL over NFS, WebDAV tokens revoked over
+SSF, an IdP disabled by scope, and opkssh over SSF — the case no revocation list
+reaches.&lt;/p&gt;</description></item></channel></rss>

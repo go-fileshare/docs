@@ -1,0 +1,92 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Reload</title><link>https://go-fileshare.github.io/docs/0.22/tags/reload/</link><description>Recent content in Reload on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>en</language><atom:link href="https://go-fileshare.github.io/docs/0.22/tags/reload/index.xml" rel="self" type="application/rss+xml"/><item><title>Reading the directory again</title><link>https://go-fileshare.github.io/docs/0.22/administration/reload/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.22/administration/reload/</guid><description>
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;reload&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;5m&amp;#34;&lt;/span&gt; &lt;span class="err"&gt;#&lt;/span&gt; &lt;span class="k"&gt;and&lt;/span&gt; &lt;span class="k"&gt;on&lt;/span&gt; &lt;span class="k"&gt;SIGHUP&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;and&lt;/span&gt; &lt;span class="k"&gt;on&lt;/span&gt; &lt;span class="k"&gt;the&lt;/span&gt; &lt;span class="k"&gt;admin&lt;/span&gt; &lt;span class="k"&gt;API&lt;/span&gt;&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="k"&gt;s&lt;/span&gt; &lt;span class="k"&gt;ReloadDirectory&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;The people come from directories other things change — go-authn/bridge writes
+an application password into a table, and deletes the row when the person is
+disabled. Without a reload the server serves whoever was there when it started.
+Since v0.10.0 it reads them again:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;every &lt;code&gt;reload&lt;/code&gt; interval, a Go duration of &lt;strong&gt;at least a second&lt;/strong&gt; — a directory
+read many times a second is a load on somebody&amp;rsquo;s database, not a fresher
+server;&lt;/li&gt;
+&lt;li&gt;on &lt;strong&gt;&lt;code&gt;SIGHUP&lt;/code&gt;&lt;/strong&gt; (Unix);&lt;/li&gt;
+&lt;li&gt;on the &lt;a href="https://go-fileshare.github.io/docs/0.22/administration/"&gt;admin API&lt;/a&gt;&amp;rsquo;s &lt;strong&gt;&lt;code&gt;ReloadDirectory&lt;/code&gt;&lt;/strong&gt;, which answers with who
+was added, removed and changed, whether a new generation started, and notes a
+person should read — a group that no longer exists, somebody a share names
+who is no longer in the directory.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Without &lt;code&gt;reload&lt;/code&gt;, the directory is read at the start, on &lt;code&gt;SIGHUP&lt;/code&gt; and on
+&lt;code&gt;ReloadDirectory&lt;/code&gt; only.&lt;/p&gt;
+&lt;p&gt;It is the &lt;code&gt;users&lt;/code&gt; blocks — SQL, LDAP — that are read again. The &lt;code&gt;user&lt;/code&gt; and
+&lt;code&gt;group&lt;/code&gt; blocks of the configuration file &lt;strong&gt;are&lt;/strong&gt; the configuration, read at the
+start.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-a-reload-does-depends-on-what-changed"&gt;What a reload does depends on what changed&lt;span class="hx:absolute hx:-mt-20" id="what-a-reload-does-depends-on-what-changed"&gt;&lt;/span&gt;
+&lt;a href="#what-a-reload-does-depends-on-what-changed" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;The line is drawn at &lt;strong&gt;revocation&lt;/strong&gt;:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;what changed&lt;/th&gt;
+&lt;th&gt;what happens&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;only additions&lt;/strong&gt; — somebody new whose arrival changes no share&amp;rsquo;s expanded lists (a new application password, a person the shares reach through &lt;code&gt;oidc:&lt;/code&gt; rules or none at all)&lt;/td&gt;
+&lt;td&gt;added &lt;strong&gt;in place&lt;/strong&gt;, SMB&amp;rsquo;s running server included, and &lt;strong&gt;no connection is touched&lt;/strong&gt;. A bridge creating application passwords all day disturbs nobody.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;anything taken away&lt;/strong&gt; — somebody gone, a credential changed, a share whose expanded lists changed&lt;/td&gt;
+&lt;td&gt;a &lt;strong&gt;new generation&lt;/strong&gt;, and the old one&amp;rsquo;s connections &lt;strong&gt;closed&lt;/strong&gt;, exactly as an &lt;a href="https://go-fileshare.github.io/docs/0.22/administration/#a-change-is-a-new-generation"&gt;admin change&lt;/a&gt; is. A session that outlived its person&amp;rsquo;s removal is the thing a reload exists to end.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;a directory that cannot be read&lt;/strong&gt; — the database unreachable, a query failing&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;nothing changes&lt;/strong&gt;. An outage must not empty a file server, and &amp;ldquo;nobody&amp;rdquo; is what a failed read looks like.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Somebody new who joins a group a share names &lt;em&gt;does&lt;/em&gt; change that share, and goes
+through a new generation like any other change to it: SMB fixes a share&amp;rsquo;s lists
+when it starts.&lt;/p&gt;
+&lt;p&gt;A share naming somebody who is gone, or a group that no longer exists, is served
+&lt;strong&gt;without them&lt;/strong&gt; — the safe direction — and said, rather than refused the way a
+startup refuses it: refusing would keep the old lists, and the old lists are the
+access that was just taken away.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="an-empty-group-is-not-everyone"&gt;An empty group is not everyone&lt;span class="hx:absolute hx:-mt-20" id="an-empty-group-is-not-everyone"&gt;&lt;/span&gt;
+&lt;a href="#an-empty-group-is-not-everyone" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;A share written for &lt;code&gt;@engineers&lt;/code&gt; whose last engineer has left is served to nobody&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;An empty &lt;code&gt;allow&lt;/code&gt; means &amp;ldquo;anyone who authenticates&amp;rdquo;. So what decides whether
+a share is open is what was &lt;strong&gt;written&lt;/strong&gt;, not what it expands to now: a share
+written for a group stays closed when that group empties. Such a share is
+not offered over SMB at all, whose empty &lt;code&gt;AllowUsers&lt;/code&gt; would read as
+everyone.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="watching-it"&gt;Watching it&lt;span class="hx:absolute hx:-mt-20" id="watching-it"&gt;&lt;/span&gt;
+&lt;a href="#watching-it" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;fileshare_directory_reloads_total{result}&lt;/code&gt; counts reloads that found nothing
+(&lt;code&gt;unchanged&lt;/code&gt;), added in place (&lt;code&gt;added&lt;/code&gt;), started a generation (&lt;code&gt;swapped&lt;/code&gt;) or
+could not read the directory (&lt;code&gt;failed&lt;/code&gt;); &lt;code&gt;fileshare_directory_people&lt;/code&gt; is how
+many people the last read held. See &lt;a href="https://go-fileshare.github.io/docs/0.22/administration/health/"&gt;health and metrics&lt;/a&gt;.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;What a reload does not reach&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;People the identity provider vouches for through a token or a certificate
+are not in the directory, so no reload concerns them. Taking &lt;strong&gt;them&lt;/strong&gt; back
+is the job of &lt;a href="https://go-fileshare.github.io/docs/0.22/security/"&gt;revocation lists and shared signals&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;</description></item></channel></rss>

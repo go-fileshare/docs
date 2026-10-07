@@ -1,0 +1,28 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Locking</title><link>https://go-fileshare.github.io/docs/0.22/tags/locking/</link><description>Recent content in Locking on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>en</language><atom:link href="https://go-fileshare.github.io/docs/0.22/tags/locking/index.xml" rel="self" type="application/rss+xml"/><item><title>One image, several protocols, one lock</title><link>https://go-fileshare.github.io/docs/0.22/operations/locking/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.22/operations/locking/</guid><description>
+&lt;p&gt;Every server in this family serialises the driver itself, because
+&lt;a href="https://github.com/go-filesystems/interface" target="_blank" rel="noopener"&gt;&lt;code&gt;go-filesystems/interface&lt;/code&gt;&lt;/a&gt;
+promises nothing about concurrent path-based calls — and each of them holds
+&lt;strong&gt;its own&lt;/strong&gt; lock, knowing nothing about the others.&lt;/p&gt;
+&lt;p&gt;Serving one image over three protocols at once would therefore have no common
+lock anywhere. So the image is wrapped &lt;strong&gt;once&lt;/strong&gt;, here, and the same wrapper is
+handed to all of them.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="stated-as-measured-so-as-not-to-overstate-it"&gt;Stated as measured, so as not to overstate it&lt;span class="hx:absolute hx:-mt-20" id="stated-as-measured-so-as-not-to-overstate-it"&gt;&lt;/span&gt;
+&lt;a href="#stated-as-measured-so-as-not-to-overstate-it" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Eight goroutines writing through an &lt;strong&gt;unwrapped&lt;/strong&gt; fat32 driver under &lt;code&gt;-race&lt;/code&gt;
+produce &lt;strong&gt;no race today&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;This is insurance on a contract, not a reproduction of a defect — ext4 and ntfs
+are not fat32, and a driver update is not a thing this program should have to
+re-audit.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="the-wrapper-carries-capabilities-through"&gt;The wrapper carries capabilities through&lt;span class="hx:absolute hx:-mt-20" id="the-wrapper-carries-capabilities-through"&gt;&lt;/span&gt;
+&lt;a href="#the-wrapper-carries-capabilities-through" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;It does not hide them:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;a driver that answers &lt;code&gt;Opener&lt;/code&gt; gets a &lt;strong&gt;locked &lt;code&gt;File&lt;/code&gt;&lt;/strong&gt; back;&lt;/li&gt;
+&lt;li&gt;one whose &lt;code&gt;File&lt;/code&gt; answers &lt;code&gt;WritableFile&lt;/code&gt; keeps its &lt;strong&gt;positional writes&lt;/strong&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The difference between those and the whole-file fallback was measured at
+&lt;strong&gt;~70×&lt;/strong&gt; elsewhere in the family, so a wrapper that erased them would be a
+performance defect disguised as safety.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="under-isolate-the-lock-cannot-help"&gt;Under &lt;code&gt;--isolate&lt;/code&gt; the lock cannot help&lt;span class="hx:absolute hx:-mt-20" id="under-isolate-the-lock-cannot-help"&gt;&lt;/span&gt;
+&lt;a href="#under-isolate-the-lock-cannot-help" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;A child process opens the image itself, so there is no shared wrapper between
+children. That is why an image served writable by two protocols is
+&lt;a href="https://go-fileshare.github.io/docs/0.22/operations/isolation/#the-rule-that-makes-it-honest"&gt;refused&lt;/a&gt; rather than quietly
+served without a lock.&lt;/p&gt;</description></item></channel></rss>

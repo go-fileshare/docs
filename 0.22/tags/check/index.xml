@@ -1,0 +1,97 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Check</title><link>https://go-fileshare.github.io/docs/0.22/tags/check/</link><description>Recent content in Check on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>en</language><atom:link href="https://go-fileshare.github.io/docs/0.22/tags/check/index.xml" rel="self" type="application/rss+xml"/><item><title>check, before you restart something people are using</title><link>https://go-fileshare.github.io/docs/0.22/configuration/check/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.22/configuration/check/</guid><description>
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;pre&gt;&lt;code&gt;$ fileshare check /etc/fileshare.d
+ATTIC
+SHARE IMAGE FILESYSTEM WHO MAY CONNECT WHO MAY WRITE SMB WEBDAV NFS SFTP
+photos /srv/photos.img fat32 alice and bob alice yes yes NO yes
+scratch /srv/scratch.img ext4 anyone who authenticates anyone who authenticates yes yes yes yes
+photos is not served over nfs: it is restricted to alice and bob, and NFSv3 on its own has no authentication: AUTH_UNIX is a claim the client makes about itself and the wire cannot disagree with it. A kerberos block lifts this: sec=krb5 carries a principal a ticket proves; so does identity = &amp;#34;certificate&amp;#34; on the nfs serve block: RPC-over-TLS with a client certificate naming the person
+USER FROM AUTHENTICATES WITH SMB WEBDAV SFTP
+alice the configuration file a password and 1 key from /etc/…/alice.pw yes yes yes
+bob the configuration file a password from /etc/…/bob.pw yes yes -
+dora ldaps://ldap.example.org a password check and an NT hash yes yes -
+eli ldaps://ldap.example.org a password check - yes -
+this configuration can be served&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Every image is opened the way the server opens it and closed again; nothing is
+served. That is &lt;strong&gt;read-write&lt;/strong&gt; for a share that does not say &lt;code&gt;read_only = true&lt;/code&gt;
+— only a device is always opened read-only, and exclusively, so a device the
+running server holds can be refused here as busy.&lt;/p&gt;
+&lt;p&gt;It prints &lt;strong&gt;where a credential comes from and never what is in it&lt;/strong&gt; — and the
+per-person columns are why
+&lt;a href="https://github.com/go-authn/directory" target="_blank" rel="noopener"&gt;&lt;code&gt;Identity.Can&lt;/code&gt;&lt;/a&gt; exists: eli is in the
+same group as dora and SMB still cannot serve him, because LDAP holds his
+password and gives it to nobody.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="reading-the-columns"&gt;Reading the columns&lt;span class="hx:absolute hx:-mt-20" id="reading-the-columns"&gt;&lt;/span&gt;
+&lt;a href="#reading-the-columns" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;a filesystem with an asterisk&lt;/td&gt;
+&lt;td&gt;the driver was &lt;strong&gt;asserted&lt;/strong&gt; by the share, not recognised — see &lt;a href="https://go-fileshare.github.io/docs/0.22/configuration/shares/"&gt;shares&lt;/a&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;NO&lt;/code&gt; under a protocol&lt;/td&gt;
+&lt;td&gt;that share is not exported there, and the reason is printed below the table&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-&lt;/code&gt; under a protocol, per share&lt;/td&gt;
+&lt;td&gt;the share&amp;rsquo;s &lt;code&gt;protocols&lt;/code&gt; leaves that one out&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-&lt;/code&gt; under a protocol, per user&lt;/td&gt;
+&lt;td&gt;that person&amp;rsquo;s source cannot prove what the protocol needs — see &lt;a href="https://go-fileshare.github.io/docs/0.22/configuration/identity/"&gt;identity&lt;/a&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2 data-hextra-search-id="what-else-it-says"&gt;What else it says&lt;span class="hx:absolute hx:-mt-20" id="what-else-it-says"&gt;&lt;/span&gt;
+&lt;a href="#what-else-it-says" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;After the tables, &lt;code&gt;check&lt;/code&gt; says what a person needs to know before relying on
+the configuration, when it applies:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;with an &lt;code&gt;oidc&lt;/code&gt; block, that its tokens are accepted over WebDAV only, and
+whether the provider&amp;rsquo;s names are local names (&lt;code&gt;local_names&lt;/code&gt;) — see
+&lt;a href="https://go-fileshare.github.io/docs/0.22/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;identity&lt;/a&gt;;&lt;/li&gt;
+&lt;li&gt;per protocol, what is &lt;strong&gt;encrypted&lt;/strong&gt; and what is &lt;strong&gt;in the clear on purpose&lt;/strong&gt;
+— see &lt;a href="https://go-fileshare.github.io/docs/0.22/security/tls/#what-check-says"&gt;TLS&lt;/a&gt;;&lt;/li&gt;
+&lt;li&gt;where a &lt;strong&gt;revocation list&lt;/strong&gt; comes from, and what happens while it cannot be
+fetched — see &lt;a href="https://go-fileshare.github.io/docs/0.22/security/"&gt;what revokes what&lt;/a&gt;;&lt;/li&gt;
+&lt;li&gt;which shares were &lt;strong&gt;taken offline&lt;/strong&gt; through the admin API&amp;rsquo;s &lt;code&gt;DisableShare&lt;/code&gt;,
+and are not served — see &lt;a href="https://go-fileshare.github.io/docs/0.22/administration/#disabling-a-share"&gt;the admin API&lt;/a&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;For a server with a KRL, NFS identities from certificates and shared signals,
+that part reads:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;pre&gt;&lt;code&gt;sftp: the provider&amp;#39;s SSH certificates are checked against the KRL at https://bridge.example.org/ssh/krl, at login and on every operation; while it is unknown or older than 1h0m0s they are refused
+federated people: revocations come from the shared signals transmitter https://bridge.example.org (CAEP session-revoked, polled); whatever the provider issued them before a revocation is refused -- tokens, SSH and OpenPubkey certificates, NFS certificates -- and open sessions stop. Refused while it is not heard from within 10m0s; revocations kept 192h0m0s in /var/lib/fileshare/revocations.json
+nfs: identities come from client certificates signed by /etc/fileshare/bridge-x509-ca.pem, revoked by the CRL at https://bridge.example.org/x509/crl (refused while it is unknown or older than 1h0m0s).
+⛔ a Linux client&amp;#39;s certificate belongs to a MOUNT: every user of that mount is the person it names&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;check&lt;/code&gt; does not fetch the lists: it says where they come from and what their
+absence will do. The identity provider&amp;rsquo;s discovery document and keys, on the
+other hand, &lt;strong&gt;are&lt;/strong&gt; read — an &lt;code&gt;oidc&lt;/code&gt; block whose issuer cannot be reached is
+refused by &lt;code&gt;check&lt;/code&gt;.&lt;/p&gt;</description></item></channel></rss>
