@@ -1,7 +1,7 @@
 ---
 title: "Reading the directory again"
 weight: 30
-description: "TODO"
+description: "How and when the server reads its users directories again, and what a reload does to shares and open connections."
 tags: [administration, identity, reload]
 ---
 

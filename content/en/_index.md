@@ -1,13 +1,16 @@
 ---
 title: "go-fileshare"
 linkTitle: "Home"
-description: "TODO"
+type: docs
+cascade:
+  type: docs
+description: "go-fileshare serves disk images and directories over SMB, NFS, WebDAV, SFTP and S3, with one set of users and per-share rules from one configuration."
 ---
 
 **A disk image — or a directory — served over SMB, NFS, WebDAV, SFTP and S3 —
 the same users, the same per-share access, from one configuration file.** Pure
 Go, `CGO_ENABLED=0`, one binary. These pages describe
-[v0.22.1]({{< relref "/status.md" >}}).
+[v0.22.2]({{< relref "/status.md" >}}).
 
 ```sh
 go install github.com/go-fileshare/fileshare@latest
@@ -32,7 +35,7 @@ and the protocols are listeners over it.
 ## What it prints at startup
 
 ```
-smb    on 0.0.0.0:445  — photos and scratch
+smb    on 0.0.0.0:445 — photos and scratch
 webdav on 0.0.0.0:8080 — photos and scratch
 sftp   on 0.0.0.0:2222 — photos and scratch
 nfs    on 0.0.0.0:2049 — scratch

@@ -1,7 +1,7 @@
 ---
 title: "Users, groups and directories"
 weight: 20
-description: "TODO"
+description: "Where the people come from (user and group blocks, SQL, LDAP, an identity provider) and what each source lets them use."
 tags: [configuration, identity, oidc, ldap, sql]
 ---
 
@@ -13,7 +13,7 @@ goes stale, so a `users` block reads them where they are.
 users "sql" {
   driver   = "postgres"                 # or sqlite, or mysql
   dsn_file = "/etc/fileshare/dsn"       # a DSN holds a password: it lives in a file
-  users    = "select login, nt_hash, ssh_keys from staff"
+  users    = "select login, null, nt_hash, ssh_keys from staff"
   groups   = "select team, member from team_members"
 }
 
@@ -27,9 +27,20 @@ users "ldap" {
 
 The **queries are yours**, because a site's people are already in that site's
 shape; a schema invented here would mean copying them into a second one. The
-LDAP side reads what a Samba-aware directory already publishes —
-`sambaNTPassword`, `sshPublicKey`, `memberUid` — and every name is
-configurable.
+people query's columns are read **by position**, not by name: a name, then
+any of a password, an NT hash, SSH keys (one per line) and a TOTP secret, in
+that order. A NULL is a credential that person does not have, which is why the
+example selects `null` for the password. A password column is taken as the
+password itself: there is no setting here for a hashed one.
+
+The LDAP side reads what a Samba-aware directory already publishes —
+`sambaNTPassword`, `sshPublicKey`, `memberUid`. Where the people and groups
+are, and which attributes name them, is configurable: `user_filter`
+(default `(objectClass=posixAccount)`), `user_attribute` (`uid`),
+`group_base_dn` (`base_dn`), `group_filter` (`(objectClass=posixGroup)`),
+`group_attribute` (`cn`), `group_member_attribute` (`memberUid`), and
+`totp_attribute`, which has no default. `sambaNTPassword` and `sshPublicKey`
+are read under those names.
 
 {{< callout type="error" >}}
 **No cleartext bind to another machine (since v0.19.0)**
@@ -80,7 +91,7 @@ says it first:
 |---|---|---|---|---|
 | a password (file, or a cleartext column) | yes | yes | yes | — |
 | an NT hash (`sambaNTPassword`, `nt_hash`) | yes | **no** | — | — |
-| only a bind, or a bcrypt column | **no** | **no** | yes | — |
+| only a bind (LDAP) | **no** | **no** | yes | — |
 | public keys, or a trusted CA | — | — | — | yes |
 
 {{< callout type="error" >}}
@@ -165,7 +176,8 @@ share "projet-x" {
 }
 ```
 
-`domains` is checked at authentication, over SFTP and WebDAV alike: a name must
+`domains` is checked at authentication, over SFTP and WebDAV alike, and for
+NFS client certificates: a name must
 be `<something>@<one of them>`, compared whole (`evilunivb.fr` is not
 `univb.fr`). `oidc:domain:` is the same test for one share. The domain can be
 trusted as far as the provider: go-authn/bridge drops an eppn or subject-id

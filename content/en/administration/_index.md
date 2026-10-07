@@ -2,7 +2,7 @@
 title: "The admin API"
 linkTitle: "Administration"
 weight: 30
-description: "TODO"
+description: "The gRPC admin API that creates, changes, disables and grants shares while the server runs, where it listens, and what it refuses."
 tags: [administration, admin api, grpc]
 ---
 
@@ -23,7 +23,7 @@ Nothing listens unless the block is written.
 ## What it does
 
 The service is
-[`fileshare.admin.v1.AdminService`](https://github.com/go-fileshare/fileshare/blob/v0.21.0/proto/fileshare/admin/v1/admin.proto):
+[`fileshare.admin.v1.AdminService`](https://github.com/go-fileshare/fileshare/blob/v0.22.2/proto/fileshare/admin/v1/admin.proto):
 
 | | |
 |---|---|
@@ -176,12 +176,14 @@ field.
 ## Changing the `.proto`
 
 The Go code under `proto/` is generated and committed, so `go install` needs no
-`protoc`. After changing the `.proto`, regenerate it with the versions the
-fileshare CI pins (protoc 34.1, protoc-gen-go v1.36.12, protoc-gen-go-grpc
-v1.6.2) — CI regenerates it and fails when the committed code differs:
+`protoc`. After changing a `.proto` — the admin API's, or the provisioner's
+`proto/fileshare/provision/v1/provision.proto` — regenerate both with the
+versions the fileshare CI pins (protoc 34.1, protoc-gen-go v1.36.12,
+protoc-gen-go-grpc v1.6.2). CI regenerates them and fails when the committed
+code differs, or when generated code was left uncommitted:
 
 ```sh
 protoc -I proto --go_out=. --go_opt=module=github.com/go-fileshare/fileshare \
   --go-grpc_out=. --go-grpc_opt=module=github.com/go-fileshare/fileshare \
-  proto/fileshare/admin/v1/admin.proto
+  proto/fileshare/admin/v1/admin.proto proto/fileshare/provision/v1/provision.proto
 ```

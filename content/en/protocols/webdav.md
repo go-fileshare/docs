@@ -2,7 +2,7 @@
 title: "WebDAV — Basic, or a bearer token"
 linkTitle: "WebDAV: Basic, or a bearer token"
 weight: 20
-description: "TODO"
+description: "WebDAV with HTTP Basic or an OIDC bearer token, the TLS it requires, and how a token becomes a person here."
 tags: [protocols, webdav, oidc]
 ---
 
@@ -57,8 +57,8 @@ oidc {
 ```
 
 A browser has a token and no password. So WebDAV accepts `Authorization:
-Bearer`, and the challenge it sends offers **both** — a client picks the one it
-can answer. The token is verified by
+Bearer`, and where there are local people too, the challenge it sends offers
+**both** — a client picks the one it can answer. The token is verified by
 [go-authn/oidc](https://github.com/go-authn/oidc): signature, issuer, audience,
 expiry.
 
@@ -80,7 +80,10 @@ rather than started**.
 **A token says who the provider thinks somebody is. It does not say this server has a share for them.**
 
 A valid token for a name no source here knows is refused — the safe reading
-of *I do not know you* is not *you are allowed*.
+of *I do not know you* is not *you are allowed*. Nor is a name a local
+account also has that account, unless `local_names = true` says the
+provider's names are this server's (off by default, since v0.20.0); without
+it, such a token is refused too, unless an `oidc:` rule names the person.
 {{< /callout >}}
 
 A site where the provider **is** the directory says so:

@@ -1,7 +1,7 @@
 ---
 title: "Volumes: storage fileshare creates"
 weight: 10
-description: "TODO"
+description: "Creating ZFS, btrfs, XFS and ext4 storage through the privileged fileshare provisioner, and serving shares from it."
 tags: [administration, volumes, zfs, btrfs, quotas]
 ---
 
@@ -33,7 +33,7 @@ One binary rather than two daemons: one version to deploy, one protocol
 definition. The storage itself is done by [go-fsctl](https://go-fsctl.github.io/)
 (pure Go, no `zfs` or `btrfs` command). The design and what changed while
 building it are in the fileshare repository's
-[`docs/volumes.md`](https://github.com/go-fileshare/fileshare/blob/v0.21.0/docs/volumes.md).
+[`docs/volumes.md`](https://github.com/go-fileshare/fileshare/blob/v0.22.2/docs/volumes.md).
 
 ## Both processes, configured
 
@@ -84,7 +84,7 @@ provisioner {
 
 | key | |
 |---|---|
-| `listen` | `unix://<absolute path>` and nothing else. The socket is made 0660 `root:<group>`, and must be in a directory nobody but the provisioner may write — its **own** (`/run/fileshare-provisioner`), not fileshare's |
+| `listen` | `unix://<absolute path>` and nothing else. The socket is made 0660, owned by the provisioner's user (root) and `<group>`, and must be in a directory nobody but the provisioner may write — its **own** (`/run/fileshare-provisioner`), not fileshare's |
 | `client_uid` | the one uid answered: fileshare's. **0 is refused** |
 | `group` | owns every volume root (`root:<group>`, mode 2770). fileshare must be in it: it writes into a volume through the group, never as its owner — the owner of a directory may clear its project id without privilege, and so step out of an XFS/ext4 quota |
 | `max_volume` | the largest quota one volume may have (`"10T"`, `"500G"`, `"1048576"`); above it is `OUT_OF_RANGE` |
@@ -172,7 +172,7 @@ define — it closes the connection — so `fileshare serve` and
 ## The admin API's volume calls
 
 `fileshare serve` relays these to the provisioner
-([`admin.proto`](https://github.com/go-fileshare/fileshare/blob/v0.21.0/proto/fileshare/admin/v1/admin.proto)):
+([`admin.proto`](https://github.com/go-fileshare/fileshare/blob/v0.22.2/proto/fileshare/admin/v1/admin.proto)):
 
 | | |
 |---|---|
@@ -186,7 +186,7 @@ define — it closes the connection — so `fileshare serve` and
 
 `DeleteShare` never deletes a volume. "The shares that use it" are the shares
 made from it **and** any share — of the configuration files too, served,
-disabled or unavailable — whose directory lies inside it.
+disabled or unavailable — whose image or directory lies inside it.
 
 A name matches `^[a-z0-9][a-z0-9_-]{0,62}$`, and a request never carries a
 path: it names a `parent` from the provisioner's own configuration.

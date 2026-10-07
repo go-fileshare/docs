@@ -1,7 +1,7 @@
 ---
 title: "Revoking SSH certificates: the KRL"
 weight: 20
-description: "TODO"
+description: "Revoking the identity provider's SSH certificates with a signed, dated OpenSSH KRL that is checked at login and at every SFTP operation."
 tags: [security, revocation, sftp, ssh]
 ---
 

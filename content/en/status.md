@@ -1,11 +1,11 @@
 ---
 title: "Status"
 weight: 60
-description: "TODO"
+description: "Which fileshare release these pages describe, what each release added, what has been verified with real clients, and what is not implemented yet."
 tags: [status, releases]
 ---
 
-These pages describe **fileshare v0.22.1**.
+These pages describe **fileshare v0.22.2**.
 
 ## What each release added
 
@@ -39,6 +39,7 @@ These pages describe **fileshare v0.22.1**.
 | v0.21.1 | a [full share]({{< relref "/administration/volumes.md#a-full-share" >}}) says so on SMB (`STATUS_DISK_FULL`) and NFS (`NFS3ERR_NOSPC` / `NFS3ERR_DQUOT`) |
 | v0.22.0 | [`ssh_domains`]({{< relref "/protocols/sftp.md#certificates-meant-for-this-host-the-domain-grant" >}}): an SSH certificate is accepted only where its domain grant (`ssh-domain-grant@core.aai.geant.org`, the EuroHPC SSH CA profile) names this host, fail-closed; `ssh_accept_ungranted` lets in certificates with no grant |
 | v0.22.1 | go-filesystems/sftp v0.5.1: a certificate [pinned to an address]({{< relref "/protocols/sftp.md#a-certificate-pinned-to-an-address" >}}) (`source-address`) is accepted from that address under `ssh_domains`, and on the provider's and OpenPubkey certificates; before, it was refused from every address |
+| v0.22.2 | tests and documentation only: `source-address` is tested from `::1` and from a second IPv4 address (`127.0.0.2`), under `ssh_domains`, and on an OpenPubkey certificate; on Linux, under `FILESHARE_REQUIRE_JUDGE`, a missing judge fails instead of skipping |
 
 {{< callout type="warning" >}}
 **Upgrading to v0.21.0**

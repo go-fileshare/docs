@@ -2,7 +2,7 @@
 title: "SFTP — keys, or certificates"
 linkTitle: "SFTP: keys, or certificates"
 weight: 30
-description: "TODO"
+description: "SFTP with public keys or SSH certificates: local and provider authorities, OpenPubkey, domain grants, source-address, and revocation."
 tags: [protocols, sftp, ssh]
 ---
 
@@ -237,8 +237,9 @@ and the server says, at every federated login,
 **Vouched for is not admitted**
 
 Somebody the provider vouches for is still a stranger here unless a rule
-names them or `trust_all` says the provider is the directory — the same test
-a token passes over WebDAV. A provider certificate with **no principal**,
+names them, `trust_all` says the provider is the directory, or
+`local_names = true` says the provider's names are this server's and a local
+account has theirs — the same test a token passes over WebDAV. A provider certificate with **no principal**,
 valid for *anybody* by the format's own definition, is refused.
 {{< /callout >}}
 
@@ -252,7 +253,7 @@ configuration with `opkssh_client_id` in such a build is refused.
 
 Revoking the person at the provider does not, by itself, revoke a
 certificate already issued: it opens SFTP until it expires, and an SFTP
-session already open stays open — these people are not in the directory, so
+session already open stays open until then — these people are not in the directory, so
 no [reload]({{< relref "/administration/reload.md" >}}) concerns them. The window is the
 certificate's lifetime: bridge's `ssh_ca { validity }` (12h by default, at
 most 168h, never past the IdP session's end) and `opkssh_max_age` here. Keep

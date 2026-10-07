@@ -1,7 +1,7 @@
 ---
 title: "One process per protocol"
 weight: 20
-description: "TODO"
+description: "Running each protocol in its own process with --isolate, and the rules that keep it safe."
 tags: [operations, isolation]
 ---
 

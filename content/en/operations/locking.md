@@ -1,7 +1,7 @@
 ---
 title: "One image, several protocols, one lock"
 weight: 30
-description: "TODO"
+description: "Why an image served over several protocols is wrapped in one shared lock, and what that wrapper keeps."
 tags: [operations, locking]
 ---
 

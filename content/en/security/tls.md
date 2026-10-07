@@ -1,7 +1,7 @@
 ---
 title: "TLS, and certificates from ACME"
 weight: 10
-description: "TODO"
+description: "Serving WebDAV, S3 and NFS over TLS with a certificate from files or an ACME CA, and why WebDAV with passwords is refused in the clear."
 tags: [security, tls, acme]
 ---
 
@@ -50,7 +50,7 @@ tls {
 | `domains` | the names to ask for (required) |
 | `cache_dir` | where the account and the certificates are kept (required) |
 | `email` | the account's contact, optional |
-| `eab_key_id`, `eab_hmac_key_file` | external account binding; the HMAC key is a secret, so it is read from a file — base64url, as the CA hands it out, or the block is refused |
+| `eab_key_id`, `eab_hmac_key_file` | external account binding; the HMAC key is a secret, so it is read from a file — base64url, as the CA hands it out (standard base64 is read too); anything else is refused |
 | `http_challenge` | where to answer http-01, e.g. `"0.0.0.0:80"` |
 
 ### Whether ACME can work is decided by how the CA checks the name

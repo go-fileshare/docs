@@ -1,7 +1,7 @@
 ---
 title: "Shares: images, devices, directories"
 weight: 10
-description: "TODO"
+description: "What a share can serve (a disk image, a device or a host directory) and how its filesystem and partition are chosen."
 tags: [configuration, shares]
 ---
 
@@ -26,7 +26,7 @@ so there is no magic at offset zero to find. A share says which:
 share "photos" {
   image      = "/srv/disk.img"
   filesystem = "xfs"
-  partition  = 2       # or leave it out: -1, the first data partition
+  partition  = 2       # or leave it out: the driver takes the first data partition
 }
 ```
 
@@ -174,7 +174,8 @@ the slowest thing a file server can do.
 ⛔ A share has an `image` **or** a `directory`, never both, and never neither.
 `filesystem` and `partition` are for an image: a directory share naming one is
 refused, because saying one means the share was meant to be an image.
-`read_only = true` works on a directory as on an image.
+`read_only = true` works on a directory as on an image; a share that says it
+and also lists `writers` is refused, because `read_only` would win.
 
 The capacity a client is told is that of the filesystem the tree lives on; a
 platform that cannot say leaves it at zero, which the protocols read as

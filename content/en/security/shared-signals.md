@@ -2,7 +2,7 @@
 title: "Revoking what no list covers: shared signals"
 linkTitle: "Shared signals"
 weight: 40
-description: "TODO"
+description: "Revoking access tokens, OpenPubkey certificates and other federated credentials with CAEP session-revoked events from a shared signals transmitter."
 tags: [security, revocation, shared signals]
 ---
 

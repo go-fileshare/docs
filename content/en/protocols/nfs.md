@@ -2,7 +2,7 @@
 title: "NFS — nothing, unless Kerberos or a certificate"
 linkTitle: "NFS: nothing, unless Kerberos or a certificate"
 weight: 50
-description: "TODO"
+description: "NFSv3 authenticates nobody on its own; how Kerberos or client certificates let it serve restricted shares, and what TLS adds."
 tags: [protocols, nfs, kerberos]
 ---
 
@@ -25,7 +25,10 @@ reason:
 nfs    on 0.0.0.0:2049 — scratch
        photos is not served over nfs: it is restricted to alice and bob, and
        NFSv3 on its own has no authentication: AUTH_UNIX is a claim the client
-       makes about itself and the wire cannot disagree with it
+       makes about itself and the wire cannot disagree with it. A kerberos
+       block lifts this: sec=krb5 carries a principal a ticket proves; so
+       does identity = "certificate" on the nfs serve block: RPC-over-TLS
+       with a client certificate naming the person
 ```
 
 A share with no `allow` and no `writers` — anyone who connects, read-write — is
@@ -80,7 +83,7 @@ serve "nfs" {
   tls            = true
   client_ca_file = "/etc/fileshare/bridge-x509-ca.pem"
   identity       = "certificate"
-  crl_url        = "https://bridge.example.org/x509/crl"   # required
+  crl_url        = "https://bridge.example.org/x509/crl"   # or crl_file: one is required
 }
 ```
 

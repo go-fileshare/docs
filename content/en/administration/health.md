@@ -1,7 +1,7 @@
 ---
 title: "Health and metrics"
 weight: 20
-description: "TODO"
+description: "The /healthz, /readyz and /metrics endpoints of the metrics block, the metrics they expose, and what to alert on."
 tags: [administration, metrics]
 ---
 
@@ -44,7 +44,9 @@ must be a `host:port`, or the block is refused.
 | `fileshare_start_time_seconds` | when this process started |
 
 plus the Go runtime and build information. The revocation and shared-signals
-families appear only when the configuration has a list or an `ssf` block.
+families appear only when the configuration has a list or an `ssf` block, the
+domain-grant family only when it sets `ssh_domains`, and the admin requests
+family only when it has an `admin` block.
 
 {{< callout type="error" >}}
 **No metric names a share or a person**

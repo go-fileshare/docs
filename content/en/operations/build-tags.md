@@ -1,7 +1,7 @@
 ---
 title: "Building only what you want"
 weight: 10
-description: "TODO"
+description: "The build tags that leave protocols, user directories, the admin API and the provisioner out of the binary, and what each saves."
 tags: [operations, build]
 ---
 
@@ -9,8 +9,8 @@ Each protocol is behind a build tag, and a tag leaves it out **entirely**: no
 listener, no parser, no dependency, no code.
 
 ```sh
-go install -tags nonfs,nowebdav,nosftp github.com/go-fileshare/fileshare@latest   # SMB only
-go build   -tags nosmb,nonfs,nosftp .                                            # WebDAV only
+go install -tags nonfs,nowebdav,nosftp,nos3 github.com/go-fileshare/fileshare@latest   # SMB only
+go build   -tags nosmb,nonfs,nosftp,nos3 .                                            # WebDAV only
 ```
 
 Where the **people** come from is behind tags of its own: `nosql` leaves out
@@ -55,8 +55,14 @@ Rather than served without one: a configuration that asks for the API and
 starts without it does not do what it says.
 {{< /callout >}}
 
-`nogrpc` leaves out the admin API only. [Health and metrics]({{< relref "/administration/health.md" >}})
+`nogrpc` leaves out the admin API and, with it, the
+[provisioner]({{< relref "/administration/volumes.md" >}}). [Health and metrics]({{< relref "/administration/health.md" >}})
 are plain HTTP and stay.
+
+`-tags noprovisioner` leaves out only the provisioner, the privileged
+`fileshare provisioner` role, and go-fsctl's zfs, btrfs and projquota with it:
+a server that never serves volumes need not carry the code that creates them.
+`fileshare provisioner` in such a build says so rather than "unknown command".
 
 `nosql` is by a distance the biggest lever: PostgreSQL, MySQL and SQLite
 together weigh **11.7 MB**, more than every protocol in this program put

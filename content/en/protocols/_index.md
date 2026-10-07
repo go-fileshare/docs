@@ -2,7 +2,7 @@
 title: "What a protocol can promise"
 linkTitle: "Protocols"
 weight: 20
-description: "TODO"
+description: "Why each protocol can or cannot tell who is asking, and what that means for which shares it serves."
 tags: [protocols]
 ---
 

@@ -2,7 +2,7 @@
 title: "SMB — NTLMv2"
 linkTitle: "SMB: NTLMv2"
 weight: 10
-description: "TODO"
+description: "SMB with NTLMv2: what a directory must hold, the privileged port under isolation, and what a directory reload does to open connections."
 tags: [protocols, smb]
 ---
 
@@ -38,7 +38,7 @@ is not.
 
 ## Verified against a client this project did not write
 
-[go-smb2](https://github.com/hirochachacha/go-smb2) drives twenty concurrent
+[go-smb2](https://github.com/cloudsoda/go-smb2) drives twenty concurrent
 reads through SMB while twenty run through WebDAV, under `-race`, in CI. macOS
 mounts a share over SMB while `curl` writes to the same image over WebDAV, and
 reads back what WebDAV wrote.

@@ -2,7 +2,7 @@
 title: "The configuration"
 linkTitle: "Configuration"
 weight: 10
-description: "TODO"
+description: "How the HCL configuration is laid out, what a user block carries, and what is refused at startup."
 tags: [configuration]
 ---
 
@@ -70,11 +70,17 @@ it is worth having in one place rather than discovering at a mount.
 | `nt_hash` | `MD4(UTF16LE(password))`, 32 hex characters | **SMB**, for a person whose password this site does not hold |
 | `authorized_keys` | `authorized_keys` lines, inline | **SFTP** |
 | `authorized_keys_file` | the same, from a file | **SFTP** |
-| `totp_secret` | a base32 one-time-code secret | a second factor, where a protocol has room for one |
+| `totp_secret` | a base32 one-time-code secret | nothing yet: it is read and checked, and no protocol here asks for a second factor |
 
 ⛔ `password` and `password_file` together are refused at startup, naming the
 person: two answers to "what is their password" is a question about which one
-wins, and a configuration should not have to be read twice to find out.
+wins, and a configuration should not have to be read twice to find out. So are
+`authorized_keys` and `authorized_keys_file` together.
+
+⛔ A `user` block with none of `password`, `password_file`, `authorized_keys`
+or `authorized_keys_file` is refused too — *has no way to authenticate* —
+unless `trusted_user_ca_file` is set. `nt_hash` and `totp_secret` do not count
+here.
 
 {{< callout type="default" >}}
 **An inline user CAN be served over SMB**
@@ -82,7 +88,9 @@ wins, and a configuration should not have to be read twice to find out.
 Until recently this block read only the password fields, so serving SMB
 to somebody written down here meant giving this file their password in
 the clear — or moving them into a database. With `nt_hash` it does not:
-a site that stores what Samba stores can write that instead. See
+a site that stores what Samba stores can write that instead. The block still
+needs one of the fields above beside it — keys, say — or
+`trusted_user_ca_file`: `nt_hash` alone is refused at startup. See
 [what a source can prove]({{< relref "/configuration/identity.md#what-a-source-can-prove-and-what-each-protocol-needs" >}}),
 which is the same table one layer up.
 {{< /callout >}}
@@ -92,18 +100,21 @@ A group is written `@name` wherever a person could be.
 ## What is refused at startup, rather than later
 
 {{< callout type="warning" >}}
-**A name that belongs to no `user` block**
+**A name that belongs to nobody**
 
 `allow = ["alise"]` would otherwise lock Alice out of her own share and
-start happily. It is refused.
+start happily. A name no `user` block and no [`users` directory]({{< relref "/configuration/identity.md" >}})
+knows is refused, and so is a `@group` that none of them has.
 {{< /callout >}}
 
 {{< callout type="warning" >}}
 **A share that names who may use it, over NFS**
 
 A configuration saying *photos belongs to alice* and a protocol handing
-photos to whoever connects cannot both be honoured. See
-[NFS]({{< relref "/protocols/nfs.md" >}}).
+photos to whoever connects cannot both be honoured. Such a share is not
+exported over NFS — unless a `kerberos` block or `identity = "certificate"`
+lets NFS tell people apart — and an `nfs` serve block left with nothing to
+carry is refused. See [NFS]({{< relref "/protocols/nfs.md" >}}).
 {{< /callout >}}
 
 {{< callout type="warning" >}}
@@ -142,8 +153,9 @@ It is told *that*, rather than "there is no such protocol" — the difference
 between a typo and a [build tag]({{< relref "/operations/build-tags.md" >}}).
 {{< /callout >}}
 
-A `serve` block with no `addr` lands on the registered port for that protocol,
-on loopback.
+A `serve` block with no `addr` listens on loopback, `127.0.0.1`, on a port
+that needs no privilege: 4445 for SMB, 8080 for WebDAV, 2222 for SFTP, 2049
+for NFS, 9000 for S3.
 
 ## `protocols` on a share
 
@@ -158,4 +170,5 @@ Says which protocols carry it. Useful on its own — a share declared SMB-only i
 a share the WebDAV process is never told about — and required in some
 configurations under [`--isolate`]({{< relref "/operations/isolation.md" >}}). A `serve` block
 that would end up carrying nothing is refused too, before any image is opened,
-naming the shares that were kept from it and why.
+naming the shares that were kept from it and why — unless an `admin` block is
+there to give it shares later.

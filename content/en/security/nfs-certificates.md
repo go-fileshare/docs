@@ -1,7 +1,7 @@
 ---
 title: "NFS, with identities from certificates"
 weight: 30
-description: "TODO"
+description: "Serving restricted shares over NFS to people named by an X.509 client certificate, revoked by a CRL, and what that cannot promise on a shared client."
 tags: [security, nfs, tls, revocation]
 ---
 

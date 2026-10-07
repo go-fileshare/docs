@@ -77,7 +77,7 @@ is an empty entry in the switch.
 | `layouts/_partials/favicons.html` | the brand's favicons |
 | `assets/css/custom.css` | the brand cyan as Hextra's primary colour, and the table headers |
 | `themes/hextra` | submodule: [tannevaled/hextra](https://github.com/tannevaled/hextra), pinned to a release tag (upstream Hextra plus opt-in features: partial menu items, related sites, page subtitle and history) |
-| `branding` | submodule: [go-fileshare/brand](https://github.com/go-fileshare/brand) (the mark, its PNGs and ICO) |
+| `branding` | submodule: [go-fileshare/brand](https://github.com/go-fileshare/brand), pinned to a release tag (the mark, its PNGs and ICO, and their LICENSE) |
 | `scripts/publish-version.sh` | puts one build into a `gh-pages` checkout and rewrites `versions.json`, `latest` and the root redirect |
 
 ## Writing a page

@@ -56,7 +56,8 @@ module:
     extended: false
     min: 0.146.0
   # The marks and favicons come from the go-fileshare brand repository
-  # (submodule branding/), published under /images/brand/. Only the org mark's
+  # (submodule branding/, pinned at a release tag), published under
+  # /images/brand/. Only the org mark's
   # formats are mounted: the per-repository marks carry a name plate the site
   # does not use.
   mounts:
@@ -73,6 +74,10 @@ module:
     - source: branding/ico
       target: static/images/brand/ico
       files: ["go-fileshare.ico"]
+    # The marks' licence (BSD-3-Clause) travels with them.
+    - source: branding
+      target: static/images/brand
+      files: ["LICENSE"]
 
 menu:
   main:

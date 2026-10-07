@@ -2,7 +2,7 @@
 title: "What revokes what"
 linkTitle: "Security"
 weight: 40
-description: "TODO"
+description: "Which mechanism takes back each kind of credential fileshare accepts, and why every one of them fails closed."
 tags: [security, revocation]
 ---
 
