@@ -1,0 +1,461 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Tls</title><link>https://go-fileshare.github.io/docs/0.22/de/tags/tls/</link><description>Recent content in Tls on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>de</language><atom:link href="https://go-fileshare.github.io/docs/0.22/de/tags/tls/index.xml" rel="self" type="application/rss+xml"/><item><title>TLS und Zertifikate per ACME</title><link>https://go-fileshare.github.io/docs/0.22/de/security/tls/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.22/de/security/tls/</guid><description>
+&lt;p&gt;Seit v0.9.0 werden &lt;strong&gt;WebDAV und S3 über HTTPS bereitgestellt und NFS über
+RPC-with-TLS&lt;/strong&gt; (RFC 9289), mit &lt;code&gt;tls = true&lt;/code&gt; in ihrem &lt;code&gt;serve&lt;/code&gt;-Block und einem
+&lt;code&gt;tls&lt;/code&gt;-Block, der angibt, woher das Zertifikat kommt.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="from-files"&gt;Aus Dateien&lt;span class="hx:absolute hx:-mt-20" id="from-files"&gt;&lt;/span&gt;
+&lt;a href="#from-files" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;tls&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; cert_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/tls/fullchain.pem&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; key_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/tls/key.pem&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;webdav&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:443&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; tls&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Code kopieren"
+aria-label="Code kopieren"
+data-copied-label="Kopiert!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Die Dateien werden &lt;strong&gt;neu geladen, wenn sie sich ändern&lt;/strong&gt;, sodass eine Erneuerung, die
+ein anderes Werkzeug schreibt, ohne Neustart übernommen wird. Das Zertifikat stammt aus
+&lt;a href="https://github.com/go-authn/servercert" target="_blank" rel="noopener"&gt;go-authn/servercert&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="from-an-acme-ca"&gt;Von einer ACME-CA&lt;span class="hx:absolute hx:-mt-20" id="from-an-acme-ca"&gt;&lt;/span&gt;
+&lt;a href="#from-an-acme-ca" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Standardmäßig Let&amp;rsquo;s Encrypt; oder eine CA, die Sie über &lt;strong&gt;External Account
+Binding&lt;/strong&gt; kennt, etwa GÉANT TCS über HARICA:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;tls&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;acme&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; directory_url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://acme-v02.harica.gr/acme/&amp;lt;uuid&amp;gt;/directory&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # the Server URL cm.harica.gr shows
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; domains&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;files.example.org&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; cache_dir&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/var/lib/fileshare/acme&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; eab_key_id&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;…&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; eab_hmac_key_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/tls/eab.key&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # a secret: a file, never the config
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Code kopieren"
+aria-label="Code kopieren"
+data-copied-label="Kopiert!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Feld&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;directory_url&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;das ACME-Verzeichnis der CA; leer bedeutet Let&amp;rsquo;s Encrypt&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;domains&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;die anzufordernden Namen (erforderlich)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;cache_dir&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;wo das Konto und die Zertifikate aufbewahrt werden (erforderlich)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;email&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;der Kontakt des Kontos, optional&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;eab_key_id&lt;/code&gt;, &lt;code&gt;eab_hmac_key_file&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;External Account Binding; der HMAC-Schlüssel ist ein Geheimnis und wird daher aus einer Datei gelesen – base64url, wie die CA ihn ausgibt (Standard-base64 wird ebenfalls gelesen); alles andere wird abgelehnt&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;http_challenge&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;wo http-01 beantwortet wird, z. B. &lt;code&gt;&amp;quot;0.0.0.0:80&amp;quot;&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3 data-hextra-search-id="whether-acme-can-work-is-decided-by-how-the-ca-checks-the-name"&gt;Ob ACME funktionieren kann, entscheidet die Art, wie die CA den Namen prüft&lt;span class="hx:absolute hx:-mt-20" id="whether-acme-can-work-is-decided-by-how-the-ca-checks-the-name"&gt;&lt;/span&gt;
+&lt;a href="#whether-acme-can-work-is-decided-by-how-the-ca-checks-the-name" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Challenge&lt;/th&gt;
+&lt;th&gt;die CA verbindet sich mit&lt;/th&gt;
+&lt;th&gt;also&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;tls-alpn-01 (RFC 8737)&lt;/td&gt;
+&lt;td&gt;Port &lt;strong&gt;443&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;auf 443 muss ein TLS-Protokoll bereitgestellt werden&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;http-01 (RFC 8555 §8.3)&lt;/td&gt;
+&lt;td&gt;Port &lt;strong&gt;80&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;http_challenge = &amp;quot;0.0.0.0:80&amp;quot;&lt;/code&gt; beantwortet sie – oder die Adresse, an die ein Port 80 weitergeleitet wird&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;keine&lt;/td&gt;
+&lt;td&gt;nichts&lt;/td&gt;
+&lt;td&gt;ein CA-Konto mit &lt;strong&gt;vorab validierter&lt;/strong&gt; Domain verlangt keine Challenge: die Enterprise-EAB-Konten von HARICA für GÉANT TCS – daher erhält auch ein Server, &lt;strong&gt;den von außen niemand erreichen kann&lt;/strong&gt;, sein Zertifikat&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Die letzte Zeile ist die entscheidende für einen Dateiserver in einem Campusnetz:
+Mit einem GÉANT-TCS-Konto, dessen Domain die Einrichtung bei HARICA bereits
+validiert hat, muss überhaupt kein Port zum Internet geöffnet werden.&lt;/p&gt;
+&lt;p&gt;Ein Zertifikat wird bei der &lt;strong&gt;ersten TLS-Verbindung angefordert, die den Host
+benennt&lt;/strong&gt; (SNI); ein Client, der sich per IP-Adresse verbindet, erhält keines.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;ALPN&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Mit ACME enthält die ALPN-Liste des Servers &lt;code&gt;acme-tls/1&lt;/code&gt;, und ein Go-Server
+lehnt einen Client ab, dessen Liste nichts mit seiner eigenen gemeinsam hat. Daher
+wird für WebDAV und S3 &lt;code&gt;http/1.1&lt;/code&gt; &lt;strong&gt;angehängt&lt;/strong&gt; – jeder Browser und jeder WebDAV-Client
+bietet es an – und für NFS &lt;code&gt;sunrpc&lt;/code&gt;, so wie RFC 9289 §5.2 RPC-with-TLS kennzeichnet.
+Nicht &lt;code&gt;h2&lt;/code&gt;: HTTP/2 wird über diese Listener nicht angeboten, und es anzubieten
+wäre eine Lüge. &lt;code&gt;acme-tls/1&lt;/code&gt; bleibt auf jedem Listener, sodass tls-alpn-01 überall
+beantwortet wird, wo die CA hingelangt.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="webdav-is-not-served-in-the-clear"&gt;WebDAV wird nicht unverschlüsselt bereitgestellt&lt;span class="hx:absolute hx:-mt-20" id="webdav-is-not-served-in-the-clear"&gt;&lt;/span&gt;
+&lt;a href="#webdav-is-not-served-in-the-clear" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;BREAKING in v0.9.0: WebDAV mit Passwörtern auf einer erreichbaren Adresse wird abgelehnt&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;HTTP Basic ist das Passwort, base64-kodiert, bei jeder Anfrage, und ein Bearer-Token
+ist ebenso viel wert wie eines. Eine Konfiguration, die WebDAV &lt;strong&gt;ohne TLS&lt;/strong&gt; auf einer
+Adresse bereitstellt, die andere Rechner erreichen können, während sich irgendjemand
+authentifiziert, wird daher &lt;strong&gt;abgelehnt, nicht bloß gewarnt&lt;/strong&gt; – eine Warnung scrollt
+vorbei, und das Passwort kommt nicht zurück:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;pre&gt;&lt;code&gt;webdav on 0.0.0.0:8080 would carry passwords in the clear: serve it with
+tls = true, or -- when TLS is terminated in front of it, by a proxy -- say
+plaintext = true&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Code kopieren"
+aria-label="Code kopieren"
+data-copied-label="Kopiert!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Eine Konfiguration, die vor v0.9.0 mit
+&lt;code&gt;serve &amp;quot;webdav&amp;quot; { addr = &amp;quot;0.0.0.0:8080&amp;quot; }&lt;/code&gt; startete, startet danach nicht mehr. Zwei
+Auswege:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;webdav&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:443&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; tls&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;&lt;span class="c1"&gt; # with a tls block
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Code kopieren"
+aria-label="Code kopieren"
+data-copied-label="Kopiert!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;oder, wenn ein Reverse Proxy davor TLS terminiert und unverschlüsselt weiterleitet:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;webdav&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;10.0.0.5:8080&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; plaintext&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;&lt;span class="c1"&gt; # TLS is terminated in front of this, on purpose
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Code kopieren"
+aria-label="Code kopieren"
+data-copied-label="Kopiert!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;Loopback&lt;/strong&gt;-Adressen (&lt;code&gt;127.0.0.1&lt;/code&gt;, &lt;code&gt;::1&lt;/code&gt;, &lt;code&gt;localhost&lt;/code&gt;) und ein Server, bei dem sich
+&lt;strong&gt;niemand authentifizieren muss&lt;/strong&gt; – kein &lt;code&gt;user&lt;/code&gt;, kein &lt;code&gt;users&lt;/code&gt;, kein &lt;code&gt;oidc&lt;/code&gt;-Block –, sind
+nicht betroffen. Ein &lt;code&gt;serve&lt;/code&gt;-Block ohne &lt;code&gt;addr&lt;/code&gt; landet auf Loopback und ist ebenfalls
+nicht betroffen.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;plaintext&lt;/code&gt; gilt nur für WebDAV, das Protokoll, das ein Passwort sendet, und
+&lt;code&gt;plaintext&lt;/code&gt; zusammen mit &lt;code&gt;tls&lt;/code&gt; wird abgelehnt: das eine oder das andere.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-check-says"&gt;Was &lt;code&gt;check&lt;/code&gt; meldet&lt;span class="hx:absolute hx:-mt-20" id="what-check-says"&gt;&lt;/span&gt;
+&lt;a href="#what-check-says" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;a href="https://go-fileshare.github.io/docs/0.22/de/configuration/check/"&gt;&lt;code&gt;fileshare check&lt;/code&gt;&lt;/a&gt; gibt pro Protokoll aus, was
+verschlüsselt ist und was &lt;strong&gt;absichtlich&lt;/strong&gt; unverschlüsselt ist:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;pre&gt;&lt;code&gt;webdav: TLS, certificate from the files /etc/fileshare/tls/fullchain.pem and /etc/fileshare/tls/key.pem
+nfs: TLS, certificate from the files /etc/fileshare/tls/fullchain.pem and /etc/fileshare/tls/key.pem; clients present one signed by /etc/fileshare/tls/clients.pem (the machine, not the person)&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Code kopieren"
+aria-label="Code kopieren"
+data-copied-label="Kopiert!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;und, für WebDAV hinter einem Proxy,&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;pre&gt;&lt;code&gt;webdav: in the clear on 10.0.0.5:8080, on purpose (plaintext = true): TLS must be terminated in front of it&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Code kopieren"
+aria-label="Code kopieren"
+data-copied-label="Kopiert!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="per-protocol"&gt;Pro Protokoll&lt;span class="hx:absolute hx:-mt-20" id="per-protocol"&gt;&lt;/span&gt;
+&lt;a href="#per-protocol" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Protokoll&lt;/th&gt;
+&lt;th&gt;&lt;code&gt;tls = true&lt;/code&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;WebDAV&lt;/td&gt;
+&lt;td&gt;ja&lt;/td&gt;
+&lt;td&gt;HTTPS&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;S3&lt;/td&gt;
+&lt;td&gt;ja&lt;/td&gt;
+&lt;td&gt;HTTPS&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;NFS&lt;/td&gt;
+&lt;td&gt;ja&lt;/td&gt;
+&lt;td&gt;RFC 9289; siehe unten&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;SMB&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;abgelehnt&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;SMB 3 verschlüsselt mit eigenen Schlüsseln&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;SFTP&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;abgelehnt&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;SFTP ist SSH&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2 data-hextra-search-id="nfs-over-tls-proves-the-machine-not-the-person"&gt;NFS über TLS weist den Rechner nach, nicht die Person&lt;span class="hx:absolute hx:-mt-20" id="nfs-over-tls-proves-the-machine-not-the-person"&gt;&lt;/span&gt;
+&lt;a href="#nfs-over-tls-proves-the-machine-not-the-person" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;nfs&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; tls&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; client_ca_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/tls/clients.pem&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Code kopieren"
+aria-label="Code kopieren"
+data-copied-label="Kopiert!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;client_ca_file&lt;/code&gt; lässt einen Client ein Zertifikat dieser Stelle vorlegen –
+&lt;strong&gt;welcher Host einhängt&lt;/strong&gt; –, und RFC 9289 lässt die Benutzerauthentifizierung, wie sie war:
+Die uid darin ist weiterhin die, die &lt;code&gt;AUTH_SYS&lt;/code&gt; behauptet. Eine Freigabe, die benennt, wer
+sie nutzen darf, wird daher über NFS &lt;strong&gt;weiterhin abgelehnt&lt;/strong&gt;, ohne einen &lt;code&gt;kerberos&lt;/code&gt;-Block –
+oder ohne &lt;a href="https://go-fileshare.github.io/docs/0.22/de/security/nfs-certificates/"&gt;Identitäten aus Zertifikaten&lt;/a&gt;, was eine andere Verwendung
+desselben Zertifikats ist.&lt;/p&gt;
+&lt;p&gt;TLS wird &lt;strong&gt;angeboten, nicht verlangt&lt;/strong&gt;: Ein Client, der nie danach fragt, erhält
+weiterhin die offenen Freigaben. &lt;code&gt;client_ca_file&lt;/code&gt; ohne &lt;code&gt;tls = true&lt;/code&gt; wird abgelehnt – es
+würde nichts prüfen –, und &lt;code&gt;client_ca_file&lt;/code&gt; bei jedem anderen Protokoll als NFS wird
+ebenfalls abgelehnt.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-else-is-refused"&gt;Was sonst abgelehnt wird&lt;span class="hx:absolute hx:-mt-20" id="what-else-is-refused"&gt;&lt;/span&gt;
+&lt;a href="#what-else-is-refused" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;tls = true&lt;/code&gt; ohne &lt;code&gt;tls&lt;/code&gt;-Block: Nichts gibt an, woher das Zertifikat kommt.&lt;/li&gt;
+&lt;li&gt;Ein &lt;code&gt;tls&lt;/code&gt;-Block, den kein &lt;code&gt;serve&lt;/code&gt;-Block verwendet: Nichts würde ihn nutzen.&lt;/li&gt;
+&lt;li&gt;Eine &lt;code&gt;http_challenge&lt;/code&gt;, die keine Adresse ist, auf der gelauscht werden kann.&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>NFS mit Identitäten aus Zertifikaten</title><link>https://go-fileshare.github.io/docs/0.22/de/security/nfs-certificates/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.22/de/security/nfs-certificates/</guid><description>
+&lt;p&gt;NFSv3 allein authentifiziert niemanden, weshalb eine Freigabe, die benennt, wer sie
+nutzen darf, &lt;a href="https://go-fileshare.github.io/docs/0.22/de/protocols/nfs/"&gt;nicht über NFS exportiert wird&lt;/a&gt; – es sei denn, etwas kann
+Personen unterscheiden. Ein &lt;code&gt;kerberos&lt;/code&gt;-Block ist eine Antwort. Seit v0.12.0 ist ein
+Client-Zertifikat, das &lt;strong&gt;eine Person benennt&lt;/strong&gt;, eine weitere:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;nfs&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; tls&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; client_ca_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/bridge-x509-ca.pem&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; identity&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;certificate&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; crl_url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://bridge.example.org/x509/crl&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # or crl_file; required
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; crl_state_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/var/lib/fileshare/nfs.crl.state&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # the order, across a restart
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Code kopieren"
+aria-label="Code kopieren"
+data-copied-label="Kopiert!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="what-the-certificate-carries"&gt;Was das Zertifikat enthält&lt;span class="hx:absolute hx:-mt-20" id="what-the-certificate-carries"&gt;&lt;/span&gt;
+&lt;a href="#what-the-certificate-carries" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Nach einer Anmeldung beim Identitätsanbieter stellt go-authn/bridge ein &lt;strong&gt;kurzlebiges
+X.509-Client-Zertifikat&lt;/strong&gt; aus, das die Person so benennt, wie &lt;code&gt;rpc.tlsservd -u&lt;/code&gt; von FreeBSD
+sie liest:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;die Person: der SubjectAltName &lt;strong&gt;otherName &lt;code&gt;1.3.6.1.4.1.2238.1.1.1&lt;/code&gt;&lt;/strong&gt;, ein
+UTF8String &lt;code&gt;user@domain&lt;/code&gt;
+(&lt;a href="https://www.ietf.org/archive/id/draft-cel-nfsv4-rpc-tls-othername-04.html" target="_blank" rel="noopener"&gt;draft-cel-nfsv4-rpc-tls-othername&lt;/a&gt;
+beschreibt ihn; seine OIDs sind noch nicht vergeben);&lt;/li&gt;
+&lt;li&gt;ihre Gruppen: je eine SubjectAltName-URI,
+&lt;code&gt;tag:go-authn.github.io,2026:group:&amp;lt;group&amp;gt;&lt;/code&gt; – eine &lt;strong&gt;Tag-URI&lt;/strong&gt; (RFC 4151: keine
+Registrierung, genau dafür gemacht). &lt;code&gt;rpc.tlsservd&lt;/code&gt; von FreeBSD liest den ersten
+Identitäts-otherName und überspringt jeden anderen SAN-Eintrag.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Warum eine Tag-URI und keine eigene Erweiterung&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Eine wurde entworfen, unter einem aus einer UUID abgeleiteten Bogen (&lt;code&gt;2.25.&amp;lt;128-bit number&amp;gt;&lt;/code&gt;), und
+&lt;strong&gt;gemessen&lt;/strong&gt;: &lt;code&gt;x509.ParseCertificate&lt;/code&gt; von Go lehnt das ganze Zertifikat ab –
+&lt;em&gt;malformed extension OID field&lt;/em&gt; –, weil ein Bogen eines ASN.1-Objektbezeichners dort
+ein &lt;code&gt;int&lt;/code&gt; ist. Jeder TLS-Server in Go hätte das Zertifikat zurückgewiesen.
+Ein URI-SAN braucht keine OID, und jeder Parser liest ihn. Auch nicht &lt;code&gt;urn:x-…&lt;/code&gt;:
+RFC 8141 hat die experimentellen URN-Namensräume abgeschafft, und ein strenger Parser
+lehnt einen solchen ab.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="what-every-call-is-asked"&gt;Was bei jedem Aufruf geprüft wird&lt;span class="hx:absolute hx:-mt-20" id="what-every-call-is-asked"&gt;&lt;/span&gt;
+&lt;a href="#what-every-call-is-asked" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Mit &lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt; wird eine Freigabe, die Personen benennt, über NFS
+&lt;strong&gt;ohne Kerberos&lt;/strong&gt; bereitgestellt. Jeder Aufruf darauf muss über TLS ankommen, mit einem
+Zertifikat, das:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;nicht in der CRL&lt;/strong&gt; steht;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;genau eine&lt;/strong&gt; Person benennt;&lt;/li&gt;
+&lt;li&gt;jemanden benennt, den dieser Server &lt;strong&gt;so zulässt, wie er ein Token zulässt&lt;/strong&gt; – eine Regel,
+&lt;code&gt;trust_all&lt;/code&gt;, &lt;code&gt;domains&lt;/code&gt;, siehe
+&lt;a href="https://go-fileshare.github.io/docs/0.22/de/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;Personen, die der Identitätsanbieter benennt&lt;/a&gt;;&lt;/li&gt;
+&lt;li&gt;jemanden benennt, &lt;strong&gt;den die Freigabe erlaubt&lt;/strong&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Und mit einem &lt;a href="https://go-fileshare.github.io/docs/0.22/de/security/shared-signals/"&gt;&lt;code&gt;ssf&lt;/code&gt;-Block&lt;/a&gt; muss das Zertifikat
+&lt;strong&gt;nach&lt;/strong&gt; jedem Widerruf dieser Person ausgestellt worden sein (sein &lt;code&gt;NotBefore&lt;/code&gt;).&lt;/p&gt;
+&lt;h2 data-hextra-search-id="revocation-the-crl"&gt;Widerruf: die CRL&lt;span class="hx:absolute hx:-mt-20" id="revocation-the-crl"&gt;&lt;/span&gt;
+&lt;a href="#revocation-the-crl" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;Eine Sperrliste (CRL) ist erforderlich&lt;/strong&gt; – &lt;code&gt;crl_url&lt;/code&gt; oder &lt;code&gt;crl_file&lt;/code&gt;. Das Zertifikat einer
+Person, das nichts widerrufen kann, überdauert ihre Entfernung um seine ganze Lebensdauer.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Feld&lt;/th&gt;
+&lt;th&gt;Standard&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;crl_url&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;nur HTTPS&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;crl_file&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;oder ein absoluter Pfad – das eine oder das andere&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;crl_ca_file&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;die des Systems&lt;/td&gt;
+&lt;td&gt;legt die Zertifizierungsstellen des HTTPS-Servers der CRL fest&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;crl_refresh&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;1m&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;wie oft sie abgerufen wird&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;crl_max_age&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;1h&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;wie alt die letzte gute Kopie sein darf&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;crl_state_file&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;wo die letzte geprüfte CRL aufbewahrt wird, damit sich ein Neustart erinnert, welche neuer ist&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Sie wird wie die &lt;a href="https://go-fileshare.github.io/docs/0.22/de/security/revocation-lists/"&gt;KRL&lt;/a&gt; abgerufen und aufbewahrt und ist auf
+dieselbe Weise &lt;strong&gt;ausfallsicher geschlossen (fail closed)&lt;/strong&gt;; eine CRL jenseits ihres eigenen
+&lt;strong&gt;&lt;code&gt;NextUpdate&lt;/code&gt;&lt;/strong&gt; gilt als unbekannt, was auch immer &lt;code&gt;crl_max_age&lt;/code&gt; erlaubt. Eine CRL muss
+von der Client-CA signiert sein – eine CRL, die jeder hätte schreiben können, widerruft,
+was immer er will, und, schlimmer noch, hebt den Widerruf wieder auf. Ist die CRL erreichbar,
+wird &lt;strong&gt;der nächste Aufruf nach ihrer Änderung abgelehnt&lt;/strong&gt;; die Lebensdauer des Zertifikats
+begrenzt einen Widerruf nur, wenn die CRL nicht erreichbar ist.&lt;/p&gt;
+&lt;p&gt;Seit v0.16.2 wird die Signatur über &lt;a href="https://github.com/go-authn/revocation" target="_blank" rel="noopener"&gt;go-authn/revocation&lt;/a&gt;
+an den Rohbytes geprüft, &lt;strong&gt;bevor&lt;/strong&gt; die CRL geparst wird: Wurde zuerst geparst, kostete eine große,
+von irgendjemandem signierte CRL Speicher und Sekunden, bevor sie abgelehnt wurde. Was dieser
+Server nicht als vollständige Liste lesen kann, wird ebenfalls abgelehnt: eine Delta-CRL,
+eine unbekannte kritische Erweiterung oder Eintragserweiterung, keine CRL-Nummer, kein
+&lt;code&gt;NextUpdate&lt;/code&gt;. Eine CRL mit einer niedrigeren Nummer als die gehaltene oder mit derselben
+Nummer, früher ausgestellt, wird abgelehnt wie eine ältere
+&lt;a href="https://go-fileshare.github.io/docs/0.22/de/security/revocation-lists/#never-backwards-across-a-restart-too"&gt;KRL&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Ein CRL-Feld ohne &lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt; wird abgelehnt, ebenso
+&lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt; ohne &lt;code&gt;tls = true&lt;/code&gt; und &lt;code&gt;client_ca_file&lt;/code&gt;: Die
+Identität steht in dem Zertifikat, das der Client vorlegt.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-it-cannot-promise"&gt;Was sie nicht versprechen kann&lt;span class="hx:absolute hx:-mt-20" id="what-it-cannot-promise"&gt;&lt;/span&gt;
+&lt;a href="#what-it-cannot-promise" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Das Zertifikat eines Linux-Clients gehört zu einem MOUNT, nicht zu einer Person&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Der Server sieht das Zertifikat einer &lt;strong&gt;Verbindung&lt;/strong&gt;, und ein Linux-Client verknüpft
+eines mit einem Mount (&lt;code&gt;tlshd&lt;/code&gt;, die Keyring-Seriennummer bei
+&lt;code&gt;mount -o xprtsec=mtls,...&lt;/code&gt;). &lt;strong&gt;Jeder Benutzer dieses Mounts handelt als die Person,
+die das Zertifikat benennt.&lt;/strong&gt; Auf einem Arbeitsplatzrechner, den eine Person nutzt, ist das
+genau sie; auf einem Rechner, an dem sich mehrere Personen anmelden, ist es, wer auch immer
+eingehängt hat – verwenden Sie dort &lt;code&gt;sec=krb5&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Deshalb lehnt es RFC 9289 allein ab, eine Benutzerauthentifizierung zu versprechen, und deshalb
+weist einfaches &lt;a href="https://go-fileshare.github.io/docs/0.22/de/security/tls/#nfs-over-tls-proves-the-machine-not-the-person"&gt;NFS über TLS&lt;/a&gt;
+weiterhin nur den Rechner nach.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="measured-with-a-real-linux-client"&gt;Gemessen mit einem echten Linux-Client&lt;span class="hx:absolute hx:-mt-20" id="measured-with-a-real-linux-client"&gt;&lt;/span&gt;
+&lt;a href="#measured-with-a-real-linux-client" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Kernel 6.17, ktls-utils 0.9, in der CI von go-filesystems/nfs:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;MNT&lt;/code&gt; von MOUNT kommt unverschlüsselt an&lt;/strong&gt;, was auch immer &lt;code&gt;xprtsec=&lt;/code&gt; sagt: Der
+Mount-Client des Kernels hat kein TLS. Er wird beantwortet, und jeder NFS-Aufruf ohne
+TLS wird danach abgelehnt – eine Person, die die Freigabe nicht erlaubt, sieht daher
+&lt;em&gt;access denied&lt;/em&gt; beim ersten Zugriff statt bei &lt;code&gt;mount&lt;/code&gt;. &lt;strong&gt;Nichts von einer
+Freigabe geht unverschlüsselt über die Leitung.&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;tlshd&lt;/code&gt; prüft das Zertifikat dieses Servers nur gegen den Vertrauensspeicher des
+&lt;strong&gt;Systems&lt;/strong&gt; – es ignoriert &lt;code&gt;x509.truststore&lt;/code&gt; – und verlangt, dass Zertifikat und
+Schlüssel des Clients &lt;strong&gt;root gehören, der Schlüssel mit Modus 600&lt;/strong&gt;. Andernfalls schlägt es mit
+&lt;em&gt;gnutls: Error in the certificate (-43)&lt;/em&gt; fehl, ohne eines von beiden zu nennen.&lt;/li&gt;
+&lt;/ul&gt;</description></item></channel></rss>

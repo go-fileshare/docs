@@ -1,0 +1,144 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Build</title><link>https://go-fileshare.github.io/docs/0.22/de/tags/build/</link><description>Recent content in Build on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>de</language><atom:link href="https://go-fileshare.github.io/docs/0.22/de/tags/build/index.xml" rel="self" type="application/rss+xml"/><item><title>Nur bauen, was Sie brauchen</title><link>https://go-fileshare.github.io/docs/0.22/de/operations/build-tags/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.22/de/operations/build-tags/</guid><description>
+&lt;p&gt;Jedes Protokoll liegt hinter einem Build-Tag, und ein Tag lässt es &lt;strong&gt;ganz&lt;/strong&gt; weg: kein
+Listener, kein Parser, keine Abhängigkeit, kein Code.&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;go install -tags nonfs,nowebdav,nosftp,nos3 github.com/go-fileshare/fileshare@latest &lt;span class="c1"&gt;# SMB only&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;go build -tags nosmb,nonfs,nosftp,nos3 . &lt;span class="c1"&gt;# WebDAV only&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Code kopieren"
+aria-label="Code kopieren"
+data-copied-label="Kopiert!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Woher die &lt;strong&gt;Personen&lt;/strong&gt; kommen, liegt hinter eigenen Tags: &lt;code&gt;nosql&lt;/code&gt; lässt
+die drei Datenbanktreiber weg, &lt;code&gt;noldap&lt;/code&gt; den LDAP-Client.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Build&lt;/th&gt;
+&lt;th&gt;Größe&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;alles&lt;/td&gt;
+&lt;td&gt;31,2 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags noldap&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;30,9 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags nosftp&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;30,6 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags noopenpubkey&lt;/code&gt; (keine opkssh-Anmeldungen über SFTP)&lt;/td&gt;
+&lt;td&gt;etwa 2 MB weniger&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags nos3&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;31,1 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags nonfs,nowebdav,nosftp,nos3&lt;/code&gt; (nur SMB)&lt;/td&gt;
+&lt;td&gt;28,1 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags nopartitioned&lt;/code&gt; (kein apfs, btrfs, xfs, zfs)&lt;/td&gt;
+&lt;td&gt;29,2 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags nosql&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;20,2 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags nosql,noldap&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;19,8 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags nosql,noldap,nonfs,nowebdav,nosftp,nos3&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;16,2 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Das sind die Zahlen aus der README von fileshare, gemessen, bevor die Admin-API
+hinzukam; die Tabelle unten ist die spätere Messung.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="the-admin-api-and-nogrpc"&gt;Die Admin-API und &lt;code&gt;nogrpc&lt;/code&gt;&lt;span class="hx:absolute hx:-mt-20" id="the-admin-api-and-nogrpc"&gt;&lt;/span&gt;
+&lt;a href="#the-admin-api-and-nogrpc" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Die &lt;a href="https://go-fileshare.github.io/docs/0.22/de/administration/"&gt;Admin-API&lt;/a&gt; hat gRPC und Protobuf mitgebracht, und
+diese liegen hinter &lt;code&gt;nogrpc&lt;/code&gt; (linux/amd64, gemessen am 29.09.2026, als die Zeilen oben
+für alles auf 34,1 MB angewachsen waren):&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Build&lt;/th&gt;
+&lt;th&gt;Größe&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;alles, mit der Admin-API&lt;/td&gt;
+&lt;td&gt;46,1 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags nogrpc&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;34,4 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags nosql,noldap,nogrpc&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;22,5 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;gRPC kostet &lt;strong&gt;11,7 MB&lt;/strong&gt; – die &lt;a href="#why-not-subprocess-plugins"&gt;Plugin-Messung&lt;/a&gt;
+unten, erneut vorgenommen, jetzt, da es aus einem eigenen Grund hier ist. Eine Installation, die
+ihre Freigaben in Dateien verwaltet, muss es nicht mitschleppen.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Ein &lt;code&gt;admin&lt;/code&gt;-Block in einem &lt;code&gt;nogrpc&lt;/code&gt;-Build wird abgelehnt&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Statt ohne ihn bereitgestellt zu werden: Eine Konfiguration, die die API verlangt und
+ohne sie startet, tut nicht, was sie sagt.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;nogrpc&lt;/code&gt; lässt die Admin-API weg und mit ihr den
+&lt;a href="https://go-fileshare.github.io/docs/0.22/de/administration/volumes/"&gt;Provisioner&lt;/a&gt;. &lt;a href="https://go-fileshare.github.io/docs/0.22/de/administration/health/"&gt;Health und Metriken&lt;/a&gt;
+sind reines HTTP und bleiben.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;-tags noprovisioner&lt;/code&gt; lässt nur den Provisioner weg, die privilegierte Rolle
+&lt;code&gt;fileshare provisioner&lt;/code&gt;, und mit ihr zfs, btrfs und projquota von go-fsctl:
+Ein Server, der nie Volumes bereitstellt, muss den Code, der sie anlegt, nicht mitschleppen.
+&lt;code&gt;fileshare provisioner&lt;/code&gt; sagt in einem solchen Build genau das, statt „unknown command&amp;quot;.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;nosql&lt;/code&gt; ist mit Abstand der größte Hebel: PostgreSQL, MySQL und SQLite
+wiegen zusammen &lt;strong&gt;11,7 MB&lt;/strong&gt;, mehr als alle Protokolle dieses Programms
+zusammen. Eine Installation, deren Benutzer in der Datei stehen, will es. Die Treiber werden
+vom Kommando importiert und nicht von der Bibliothek, die sie verwendet; das macht die
+Wahl zu einem Build-Tag statt zu einem Fork.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Ein Protokoll, ohne das dieses Binary gebaut wurde&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Eine Konfiguration, die eines nennt, erfährt &lt;em&gt;genau das&lt;/em&gt;, statt „es gibt kein solches
+Protokoll&amp;quot; – der Unterschied zwischen einem Tippfehler und einem Build-Tag. Dasselbe gilt
+für &lt;code&gt;opkssh_client_id&lt;/code&gt; unter &lt;code&gt;noopenpubkey&lt;/code&gt; und einen &lt;code&gt;admin&lt;/code&gt;-Block unter
+&lt;code&gt;nogrpc&lt;/code&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="why-not-subprocess-plugins"&gt;Warum keine Plugins als Unterprozesse&lt;span class="hx:absolute hx:-mt-20" id="why-not-subprocess-plugins"&gt;&lt;/span&gt;
+&lt;a href="#why-not-subprocess-plugins" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Es wurde &lt;strong&gt;gemessen statt argumentiert&lt;/strong&gt;: &lt;code&gt;hashicorp/go-plugin&lt;/code&gt; bringt gRPC und
+Protobuf mit, die &lt;strong&gt;allein 13,2 MB&lt;/strong&gt; kosten – mehr als dieses gesamte Binary
+mit allen drei Protokollen und jedem Treiber darin. Ein Plugin-Host wäre doppelt
+so groß, bevor er irgendetwas lädt, und jedes Plugin-Binary würde gRPC erneut
+mitbringen.&lt;/p&gt;
+&lt;p&gt;Was die Angriffsfläche angeht, ist ein Tag auch das stärkere Werkzeug für alles, was Sie nicht
+ausführen: &lt;strong&gt;Code, der nie kompiliert wurde, ist nicht erreichbar&lt;/strong&gt;, ob in einer Sandbox oder nicht.&lt;/p&gt;
+&lt;p&gt;Was Tags &lt;em&gt;nicht&lt;/em&gt; bieten, ist Isolierung zwischen den Protokollen, die Sie &lt;strong&gt;tatsächlich&lt;/strong&gt; ausführen, noch
+eine Möglichkeit, ein Protokoll ohne Neukompilieren hinzuzufügen. Beides ist real, und beides sind
+Argumente für eine Prozessgrenze statt für ein kleineres Binary – und das ist
+&lt;a href="https://go-fileshare.github.io/docs/0.22/de/operations/isolation/"&gt;ein Prozess pro Protokoll&lt;/a&gt;, mit genau diesem Binary, kein Plugin-Framework.&lt;/p&gt;</description></item></channel></rss>
