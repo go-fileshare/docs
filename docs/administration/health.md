@@ -35,6 +35,7 @@ must be a `host:port`, or the block is refused.
 | `fileshare_revocation_list_fetch_failures_total{list}` | fetches of that list that failed |
 | `fileshare_ssf_last_heard_seconds` | seconds since the [shared signals](../security/shared-signals.md) transmitter last answered; `-1` when never |
 | `fileshare_ssf_revoked_subjects` | people whose earlier credentials the provider has revoked, as kept now |
+| `fileshare_sftp_domain_grant_total{result}` | SFTP certificates [`ssh_domains`](../protocols/sftp.md#certificates-meant-for-this-host-the-domain-grant) was asked about: `granted`, `accepted_ungranted`, `refused_not_granted`, `refused_absent`, `refused_malformed` |
 | `fileshare_start_time_seconds` | when this process started |
 
 plus the Go runtime and build information. The revocation and shared-signals
