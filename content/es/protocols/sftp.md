@@ -287,3 +287,12 @@ Ambos fallan en modo cerrado.
 ## Sin contraseña {#no-password}
 
 Un cliente que la pide hace justo lo que las claves existen para evitar.
+
+## Tamaño de las transferencias y archivos abiertos {#transfer-size-and-open-files}
+
+fileshare responde a `limits@openssh.com` de OpenSSH (desde la v0.25.0), así
+que el `sftp` de OpenSSH lee y escribe hasta 255 KiB por petición en lugar
+de 32 KiB: alrededor de +25 % medido con OpenSSH 10.3. Una sesión puede tener
+como mucho 1024 archivos y directorios abiertos a la vez; en un recurso
+compartido de directorio cada uno es un descriptor del host, y el límite
+impide que un usuario los gaste todos.

@@ -276,3 +276,12 @@ Both fail closed.
 ## No password
 
 A client that prompts for one is doing the thing keys exist to avoid.
+
+## Transfer size and open files
+
+fileshare answers OpenSSH's `limits@openssh.com` (since v0.25.0), so
+OpenSSH's `sftp` reads and writes up to 255 KiB per request instead of
+32 KiB: about +25% measured with OpenSSH 10.3. One session may hold at most
+1024 open files and directories at once; on a directory share each is a
+descriptor of the host, and the bound keeps one user from spending all of
+them.

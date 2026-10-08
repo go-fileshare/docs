@@ -5,7 +5,7 @@ description: "Welches fileshare-Release diese Seiten beschreiben, was jedes Rele
 tags: [stand, releases]
 ---
 
-Diese Seiten beschreiben **fileshare v0.24.0**.
+Diese Seiten beschreiben **fileshare v0.25.0**.
 
 ## Was jedes Release hinzugefügt hat {#what-each-release-added}
 
@@ -42,6 +42,8 @@ Diese Seiten beschreiben **fileshare v0.24.0**.
 | v0.22.2 | nur Tests und Dokumentation: `source-address` wird von `::1` und von einer zweiten IPv4-Adresse (`127.0.0.2`) aus getestet, unter `ssh_domains` und mit einem OpenPubkey-Zertifikat; unter Linux schlägt mit `FILESHARE_REQUIRE_JUDGE` ein fehlender Judge fehl, statt übersprungen zu werden |
 | v0.23.0 | ein [btrfs-Volume]({{< relref "/administration/volumes.md#the-size-a-client-sees" >}}) hat über NFS, SMB und WebDAV die Größe seiner Quota (go-filesystems/nfs v0.7.0, smb v0.5.0, webdav v0.3.0 melden die Größe bei jeder Abfrage); zuvor zeigte btrfs das ganze Dateisystem. Ein Server, dessen Freigaben aus der Admin-API kommen, hält beim Start nicht mehr an, wenn er NFS anbietet und noch keine Freigabe hat |
 | v0.24.0 | schnelleres Lesen: Ein WebDAV-GET einer Verzeichnis- oder Volume-Freigabe geht über einfaches HTTP (nicht über TLS) mit `sendfile(2)` hinaus, NFS liest und schreibt in 1 MiB (rtmax/wtmax), und SMB-Clients lesen mehr als 64 KiB pro Anfrage (`CAP_LARGE_MTU`). Auf dem CI-Runner, eine 256-MiB-Datei: WebDAV 6,6 GB/s, SMB 0,84, NFS 1,47 (ein Client) |
+| v0.24.1 | Sicherheit: Eine untätige NFS-Verbindung behält nicht mehr die 3 MiB ihres größten Aufrufs (24 untätige Verbindungen hielten 59 MiB); ein SMB-Frame-Header lässt den Server nicht mehr die angekündigten 8 MiB belegen, bevor die Bytes ankommen; eine SMB-Anfrage kann nicht mehr ein Credit für 4 GiB zahlen (go-filesystems/nfs v0.8.1, smb v0.6.1 und v0.6.2) |
+| v0.25.0 | SFTP beantwortet `limits@openssh.com`, sodass OpenSSHs `sftp` bis zu 255 KiB liest (+25 %); eine Sitzung hält höchstens 1024 offene Handles (go-filesystems/sftp v0.6.0) |
 
 {{< callout type="warning" >}}
 **Upgrade auf v0.21.0**
