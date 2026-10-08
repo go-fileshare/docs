@@ -1,0 +1,558 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Ssh</title><link>https://go-fileshare.github.io/docs/0.23/es/tags/ssh/</link><description>Recent content in Ssh on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>es</language><atom:link href="https://go-fileshare.github.io/docs/0.23/es/tags/ssh/index.xml" rel="self" type="application/rss+xml"/><item><title>Revocar certificados SSH: la KRL</title><link>https://go-fileshare.github.io/docs/0.23/es/security/revocation-lists/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.23/es/security/revocation-lists/</guid><description>
+&lt;p&gt;Un certificado firmado por la CA SSH del proveedor de identidad —consulte
+&lt;a href="https://go-fileshare.github.io/docs/0.23/es/protocols/sftp/#people-the-identity-provider-vouches-for"&gt;SFTP para las personas que el proveedor avala&lt;/a&gt;—
+se comprueba al iniciar sesión. Desactivar a alguien en go-authn/bridge revoca sus
+tokens y elimina sus contraseñas de aplicación, cosa que aquí aplica una
+&lt;a href="https://go-fileshare.github.io/docs/0.23/es/administration/reload/"&gt;recarga del directorio&lt;/a&gt;; pero sin una lista, un
+certificado ya emitido seguiría abriendo SFTP hasta caducar, y una sesión SFTP ya
+abierta seguiría abierta.&lt;/p&gt;
+&lt;p&gt;Desde la v0.12.0, una lista lo impide:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;oidc&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; issuer&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://login.example.org&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; audience&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;fileshare&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; ssh_ca_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/bridge-ca.pub&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; ssh_krl_url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://bridge.example.org/ssh/krl&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # or ssh_krl_file
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; ssh_krl_state_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/var/lib/fileshare/ssh.krl.state&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # the order, across a restart
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; ssh_krl_max_age&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt; &amp;#34;1h&amp;#34; # default; ssh_krl_refresh&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;1m&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;go-authn/bridge publica los certificados SSH que ha revocado —una persona
+desactivada, un IdP desactivado— como una &lt;strong&gt;KRL&lt;/strong&gt; de OpenSSH (&lt;code&gt;PROTOCOL.krl&lt;/code&gt;, la
+lista que lee el &lt;code&gt;RevokedKeys&lt;/code&gt; de &lt;code&gt;sshd&lt;/code&gt;), y fileshare guarda una copia, leída con
+&lt;a href="https://github.com/go-authn/krl" target="_blank" rel="noopener"&gt;go-authn/krl&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="refused-at-login-and-in-the-middle-of-a-session"&gt;Rechazado al iniciar sesión, y en mitad de una sesión&lt;span class="hx:absolute hx:-mt-20" id="refused-at-login-and-in-the-middle-of-a-session"&gt;&lt;/span&gt;
+&lt;a href="#refused-at-login-and-in-the-middle-of-a-session" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Un certificado revocado se rechaza al iniciar sesión, y &lt;strong&gt;una sesión que ya abrió
+deja de recibir servicio&lt;/strong&gt;. SSH comprueba un certificado una sola vez, durante el
+handshake; por eso cada operación de una sesión SFTP federada vuelve a consultar la
+KRL, &lt;strong&gt;incluidos los archivos abiertos&lt;/strong&gt;. La primera operación después de que cambie
+la copia de la lista de este servidor se rechaza.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="fields"&gt;Campos&lt;span class="hx:absolute hx:-mt-20" id="fields"&gt;&lt;/span&gt;
+&lt;a href="#fields" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;campo&lt;/th&gt;
+&lt;th&gt;por defecto&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ssh_krl_url&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;dónde se descarga la lista, &lt;strong&gt;solo HTTPS&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ssh_krl_file&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;o un archivo, por ruta absoluta; uno u otro, nunca ambos&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ssh_krl_ca_file&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;las del sistema&lt;/td&gt;
+&lt;td&gt;fija las autoridades frente a las que se comprueba el servidor HTTPS de la lista&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ssh_krl_refresh&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;1m&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;con qué frecuencia se descarga, al menos un segundo&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ssh_krl_max_age&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;1h&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;qué antigüedad puede tener la última copia válida antes de que se rechacen los certificados que gobierna&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ssh_krl_state_file&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;dónde se guarda la última lista verificada, para que un reinicio recuerde el orden&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Un &lt;code&gt;max_age&lt;/code&gt; más corto que &lt;code&gt;refresh&lt;/code&gt; se rechaza: cada copia estaría obsoleta antes
+de la siguiente descarga. Una KRL sin &lt;code&gt;ssh_ca_file&lt;/code&gt; también se rechaza: revoca los
+certificados del proveedor, y sin esa CA no hay ninguno.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="it-fails-closed"&gt;Falla en modo cerrado&lt;span class="hx:absolute hx:-mt-20" id="it-fails-closed"&gt;&lt;/span&gt;
+&lt;a href="#it-fails-closed" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Mientras no se pueda descargar la KRL, los certificados del proveedor se rechazan&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Mientras no se pueda descargar la lista, o su última copia válida sea más
+antigua que &lt;code&gt;ssh_krl_max_age&lt;/code&gt;, se rechazan &lt;strong&gt;todos&lt;/strong&gt; los certificados
+firmados por la CA del proveedor: una comprobación de revocación que deja
+pasar todo cuando la lista es inalcanzable es la que derrota un atacante
+capaz de bloquear la lista. La lista debe servirse entonces con la misma
+fiabilidad que los inicios de sesión que gobierna.
+&lt;code&gt;fileshare_revocation_list_age_seconds{list=&amp;quot;ssh_krl&amp;quot;}&lt;/code&gt; es la métrica sobre
+la que alertar antes de alcanzar &lt;code&gt;max_age&lt;/code&gt;; consulte
+&lt;a href="https://go-fileshare.github.io/docs/0.23/es/administration/health/#what-to-alert-on"&gt;salud y métricas&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="signed-and-dated-from-ssh_krl_url"&gt;Firmada y fechada, desde &lt;code&gt;ssh_krl_url&lt;/code&gt;&lt;span class="hx:absolute hx:-mt-20" id="signed-and-dated-from-ssh_krl_url"&gt;&lt;/span&gt;
+&lt;a href="#signed-and-dated-from-ssh_krl_url" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Desde la v0.15.0, &lt;strong&gt;una KRL procedente de &lt;code&gt;ssh_krl_url&lt;/code&gt; debe estar firmada e indicar
+cuándo caduca&lt;/strong&gt;, tal como describe
+&lt;a href="https://github.com/go-authn/revocation" target="_blank" rel="noopener"&gt;go-authn/revocation&lt;/a&gt; y como la sirve
+go-authn/bridge a partir de la v0.10.0:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;La firma:&lt;/strong&gt; &lt;code&gt;&amp;lt;url&amp;gt;.sig&lt;/code&gt; es una firma SSHSIG separada de la CA SSH del proveedor
+(&lt;code&gt;ssh_ca_file&lt;/code&gt;, que por tanto &lt;code&gt;ssh_krl_url&lt;/code&gt; exige), en el espacio de nombres
+&lt;code&gt;krl@go-authn.github.io&lt;/code&gt;. Se descarga con &lt;code&gt;If-Match&lt;/code&gt; sobre el ETag de la lista, y
+se vuelve a descargar de inmediato si la lista se ha vuelto a emitir entretanto.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;La caducidad:&lt;/strong&gt; la extensión &lt;code&gt;expires@go-authn.github.io&lt;/code&gt;. Pasada esa fecha, la
+lista no está vigente, por reciente que sea el &lt;code&gt;304&lt;/code&gt; que la confirmó.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;HTTPS (&lt;code&gt;ssh_krl_ca_file&lt;/code&gt; fija sus autoridades) autentica al servidor que respondió,
+no a la lista: un espejo, una caché o un servidor web comprometido podrían servir una
+vacía, y nada en una KRL por sí sola indica que esté obsoleta. Una lista que no se
+verifica se rechaza, y se conserva la última copia válida. Una lista colocada a mano
+con &lt;code&gt;ssh_krl_file&lt;/code&gt; merece la misma confianza que el sistema de archivos que la
+contiene, y no necesita ni firma ni caducidad; si lleva alguna, se respeta.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Actualizar a la v0.15.0&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Un &lt;code&gt;ssh_krl_url&lt;/code&gt; que sirve una KRL sin firmar, o sin caducidad, ya no se
+acepta: los certificados del proveedor se rechazan entonces, como con
+cualquier lista que no se puede obtener. Ejecute primero go-authn/bridge
+v0.10.0 o posterior.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="never-backwards-across-a-restart-too"&gt;Nunca hacia atrás, tampoco tras un reinicio&lt;span class="hx:absolute hx:-mt-20" id="never-backwards-across-a-restart-too"&gt;&lt;/span&gt;
+&lt;a href="#never-backwards-across-a-restart-too" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Desde la v0.16.0, una lista se rechaza si es más antigua que la que se tiene: una
+versión inferior (la versión de la KRL, el número de una CRL), o la misma versión
+emitida antes. Con &lt;code&gt;ssh_krl_state_file&lt;/code&gt; (&lt;code&gt;crl_state_file&lt;/code&gt; para
+&lt;a href="https://go-fileshare.github.io/docs/0.23/es/security/nfs-certificates/#revocation-the-crl"&gt;NFS&lt;/a&gt;), la última lista
+verificada se guarda en disco, se vuelve a verificar al arrancar y ordena la
+siguiente. Por sí sola no cuenta como vigente hasta que se descarga una lista. Sin
+ella, un reinicio olvida el orden, y fileshare lo indica al arrancar: se aceptaría
+una lista más antigua, aún firmada y sin caducar.&lt;/p&gt;
+&lt;p&gt;Estos archivos, como &lt;code&gt;ssh_ca_file&lt;/code&gt;, los archivos de CA, los archivos de lista y
+(desde la v0.17.0) &lt;code&gt;authorized_keys_file&lt;/code&gt;, &lt;code&gt;dsn_file&lt;/code&gt;, &lt;code&gt;bind_password_file&lt;/code&gt; y el
+&lt;code&gt;ca_file&lt;/code&gt; de &lt;code&gt;ssf&lt;/code&gt;, &lt;strong&gt;no pueden estar dentro de un recurso compartido&lt;/strong&gt;: quien
+escribiera allí decidiría quién entra.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="a-plain-sshd-next-to-fileshare"&gt;Un &lt;code&gt;sshd&lt;/code&gt; normal junto a fileshare&lt;span class="hx:absolute hx:-mt-20" id="a-plain-sshd-next-to-fileshare"&gt;&lt;/span&gt;
+&lt;a href="#a-plain-sshd-next-to-fileshare" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;La misma verificación está disponible sin fileshare: el &lt;code&gt;revokd&lt;/code&gt; de
+go-authn/revocation descarga las listas, conserva solo las que se verifican, guarda
+su orden en disco, escribe &lt;code&gt;RevokedKeys&lt;/code&gt; para &lt;code&gt;sshd&lt;/code&gt; y, cuando una lista caduca,
+escribe una que revoca la propia CA, de modo que &lt;code&gt;sshd&lt;/code&gt; también falla en modo
+cerrado.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-it-does-not-cover"&gt;Lo que no cubre&lt;span class="hx:absolute hx:-mt-20" id="what-it-does-not-cover"&gt;&lt;/span&gt;
+&lt;a href="#what-it-does-not-cover" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;Los certificados OpenPubkey (opkssh) no están en ninguna KRL&lt;/strong&gt;: no los emitió nada
+más que la propia clave de la persona. Los limita &lt;code&gt;opkssh_max_age&lt;/code&gt;, y los retiran
+las &lt;a href="https://go-fileshare.github.io/docs/0.23/es/security/shared-signals/"&gt;señales compartidas&lt;/a&gt;. Lo mismo ocurre con un token de acceso por WebDAV.&lt;/p&gt;
+&lt;p&gt;El mismo mecanismo —descargado, conservado, en modo cerrado ante el fallo— transporta
+la &lt;strong&gt;CRL X.509&lt;/strong&gt; de las
+&lt;a href="https://go-fileshare.github.io/docs/0.23/es/security/nfs-certificates/#revocation-the-crl"&gt;identidades NFS a partir de certificados&lt;/a&gt;.&lt;/p&gt;</description></item><item><title>SFTP — claves, o certificados</title><link>https://go-fileshare.github.io/docs/0.23/es/protocols/sftp/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.23/es/protocols/sftp/</guid><description>
+&lt;p&gt;Todos los clientes ya lo tienen: &lt;code&gt;sftp&lt;/code&gt; viene con OpenSSH, el Finder y GNOME lo
+montan, los editores lo hablan. Es también el único protocolo de los aquí descritos
+cuya forma no encaja: una persona inicia sesión y llega a &lt;strong&gt;un&lt;/strong&gt; sistema de archivos,
+no a una lista de recursos compartidos.&lt;/p&gt;
+&lt;p&gt;Así que los recursos compartidos se convierten en los directorios de nivel superior
+de un árbol construido para quien acaba de autenticarse:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;pre&gt;&lt;code&gt;$ sftp -i ~/.ssh/id_ed25519 -P 2222 alice@attic
+sftp&amp;gt; ls
+photos scratch
+sftp&amp;gt; cd photos
+sftp&amp;gt; get holiday.jpg&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Un recurso compartido que alice no puede usar &lt;strong&gt;no es un directorio que alice pueda
+ver&lt;/strong&gt;, y un recurso compartido que solo puede leer rechaza sus escrituras &lt;em&gt;en el
+árbol&lt;/em&gt;, antes de llegar a un controlador que las habría permitido.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Un renombrado entre dos recursos compartidos se rechaza&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Sería una copia y un borrado sobre dos imágenes, y eso no es lo que un
+renombrado promete en ningún sitio.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="configuration"&gt;Configuración&lt;span class="hx:absolute hx:-mt-20" id="configuration"&gt;&lt;/span&gt;
+&lt;a href="#configuration" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;host_key_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/ssh_host_ed25519_key&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;trusted_user_ca_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/ca.pub&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # optional
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;user&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;alice&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; authorized_keys_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/alice.pub&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;user&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;carol&amp;#34;&lt;/span&gt; {} &lt;span class="err"&gt;#&lt;/span&gt; &lt;span class="k"&gt;nothing&lt;/span&gt; &lt;span class="k"&gt;here&lt;/span&gt;&lt;span class="err"&gt;:&lt;/span&gt; &lt;span class="k"&gt;her&lt;/span&gt; &lt;span class="k"&gt;certificate&lt;/span&gt; &lt;span class="k"&gt;is&lt;/span&gt; &lt;span class="k"&gt;her&lt;/span&gt; &lt;span class="k"&gt;credential&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Con &lt;code&gt;trusted_user_ca_file&lt;/code&gt;, basta un certificado firmado por esa autoridad que nombre
+al usuario entre sus principales; así, el acceso de una persona &lt;strong&gt;se emite y caduca
+en otro lugar&lt;/strong&gt;, y no se edita ningún archivo de aquí cuando alguien llega o se va.&lt;/p&gt;
+&lt;p&gt;La firma, el periodo de validez y los principales los comprueba el &lt;code&gt;CertChecker&lt;/code&gt; de
+&lt;code&gt;x/crypto/ssh&lt;/code&gt;; verificado frente al &lt;strong&gt;propio cliente de OpenSSH&lt;/strong&gt;, que también
+rechaza la misma clave en cuanto su certificado se aparta.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Sin &lt;code&gt;host_key_file&lt;/code&gt; se genera una identidad nueva en cada arranque&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;El servidor lo indica, y todo cliente que ya la haya visto advertirá de una
+clave cambiada, que es el cliente haciendo su trabajo.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="certificates-meant-for-this-host-the-domain-grant"&gt;Certificados destinados a este host: la concesión de dominio&lt;span class="hx:absolute hx:-mt-20" id="certificates-meant-for-this-host-the-domain-grant"&gt;&lt;/span&gt;
+&lt;a href="#certificates-meant-for-this-host-the-domain-grant" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Desde la v0.22.0. La &lt;a href="https://integration.docs.my-eurohpc.eu/aai/ssh-ca-overview/" target="_blank" rel="noopener"&gt;CA SSH de la EuroHPC Federation Platform&lt;/a&gt;
+(GÉANT / MyAccessID) firma certificados en los que confían todos los sitios de la
+federación. Cada certificado indica a qué hosts está destinado, en la extensión
+&lt;code&gt;ssh-domain-grant@core.aai.geant.org&lt;/code&gt;. sshd ignora esa extensión, y fileshare también
+lo hacía hasta la v0.22.0: un certificado concedido para las máquinas de otro valía
+igual aquí. Con &lt;code&gt;ssh_domains&lt;/code&gt;, la concesión se lee, se analiza y se compara mediante
+&lt;a href="https://github.com/go-authn/sshcert" target="_blank" rel="noopener"&gt;go-authn/sshcert&lt;/a&gt;, tal como dice la
+especificación. Un certificado cuya concesión no nombra ninguno de los nombres de
+este host se rechaza.&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;trusted_user_ca_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/efp-ssh-ca.pub&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;ssh_domains&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;files.example.org&amp;#34;, &amp;#34;sftp.example.org&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;# ssh_accept_ungranted&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt; &lt;span class="err"&gt;#&lt;/span&gt; &lt;span class="k"&gt;only&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="k"&gt;a&lt;/span&gt; &lt;span class="k"&gt;trusted&lt;/span&gt; &lt;span class="k"&gt;CA&lt;/span&gt; &lt;span class="k"&gt;never&lt;/span&gt; &lt;span class="k"&gt;writes&lt;/span&gt; &lt;span class="k"&gt;a&lt;/span&gt; &lt;span class="k"&gt;grant&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;clave&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ssh_domains&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;los nombres de este host, tal como los nombra una concesión. Un certificado se acepta si uno de los patrones de su concesión coincide con uno de ellos. &lt;code&gt;*&lt;/code&gt; es &lt;strong&gt;uno o más caracteres dentro de una misma etiqueta&lt;/strong&gt;: &lt;code&gt;*.example.org&lt;/code&gt; concede &lt;code&gt;files.example.org&lt;/code&gt; pero no &lt;code&gt;a.files.example.org&lt;/code&gt;, y &lt;code&gt;files-*.example.org&lt;/code&gt; no concede &lt;code&gt;files-.example.org&lt;/code&gt;. La comparación no distingue mayúsculas de minúsculas. Son nombres de host, no patrones, cada uno listado una sola vez, y al menos una autoridad (&lt;code&gt;trusted_user_ca_file&lt;/code&gt;, o el &lt;code&gt;ssh_ca_file&lt;/code&gt; del bloque &lt;code&gt;oidc&lt;/code&gt;) debe ser de confianza.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ssh_accept_ungranted&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;deja entrar un certificado &lt;strong&gt;sin&lt;/strong&gt; concesión. Desactivado por defecto; sin &lt;code&gt;ssh_domains&lt;/code&gt; se rechaza por carecer de sentido.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;certificado&lt;/th&gt;
+&lt;th&gt;&lt;code&gt;ssh_domains&lt;/code&gt;&lt;/th&gt;
+&lt;th&gt;&lt;code&gt;+ ssh_accept_ungranted&lt;/code&gt;&lt;/th&gt;
+&lt;th&gt;sin &lt;code&gt;ssh_domains&lt;/code&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;concedido para uno de &lt;code&gt;ssh_domains&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;entra&lt;/td&gt;
+&lt;td&gt;entra&lt;/td&gt;
+&lt;td&gt;entra&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;concedido solo para otros hosts, o &lt;code&gt;[]&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;rechazado&lt;/td&gt;
+&lt;td&gt;rechazado&lt;/td&gt;
+&lt;td&gt;entra&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;sin concesión&lt;/td&gt;
+&lt;td&gt;rechazado&lt;/td&gt;
+&lt;td&gt;entra, registrado&lt;/td&gt;
+&lt;td&gt;entra&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;una concesión que no se puede analizar (&lt;code&gt;null&lt;/code&gt;, &lt;code&gt;[1]&lt;/code&gt;, no compacta&amp;hellip;)&lt;/td&gt;
+&lt;td&gt;rechazado&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;rechazado&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;entra&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Sin &lt;code&gt;ssh_domains&lt;/code&gt; no se lee nada y nada cambia. La concesión se lee en los
+certificados que firmó una &lt;strong&gt;autoridad&lt;/strong&gt;: los de &lt;code&gt;trusted_user_ca_file&lt;/code&gt; y los del
+proveedor (&lt;code&gt;ssh_ca_file&lt;/code&gt;). Un certificado OpenPubkey lo firma la propia clave del
+usuario, así que una concesión en él sería la palabra del usuario sobre sí mismo. Su
+audiencia es en cambio &lt;code&gt;opkssh_client_id&lt;/code&gt;. Las claves simples no llevan concesión y
+no se ven afectadas.&lt;/p&gt;
+&lt;p&gt;Cada rechazo se registra con el número de serie del certificado, su key ID y el
+motivo:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;pre&gt;&lt;code&gt;sftp: alice: certificate 42 (&amp;#34;alice@efp&amp;#34;) refused: its domain grant [login.example.eu] names none of this host&amp;#39;s names [files.example.org sftp.example.org]
+sftp: alice: certificate 43 (&amp;#34;staff&amp;#34;) refused: it has no domain grant (ssh-domain-grant@core.aai.geant.org), and ssh_domains requires one&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Cada decisión se cuenta también en &lt;code&gt;fileshare_sftp_domain_grant_total{result}&lt;/code&gt;, con
+el resultado &lt;code&gt;granted&lt;/code&gt;, &lt;code&gt;accepted_ungranted&lt;/code&gt;, &lt;code&gt;refused_not_granted&lt;/code&gt;,
+&lt;code&gt;refused_absent&lt;/code&gt; o &lt;code&gt;refused_malformed&lt;/code&gt;. Un cliente ofrece un certificado antes de
+demostrar que posee la clave, así que esto cuenta intentos, no personas.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Por qué en modo cerrado ante el fallo&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Tome un host que confía en una segunda autoridad: su propia CA para el
+personal, una CA de pruebas, la CA de preproducción de EFP añadida al mismo
+archivo, o un cliente de go-authn/bridge sin concesiones. Los certificados
+de esa autoridad no llevan concesión. Si una concesión ausente significara
+«sin restricción», el filtro no filtraría nada en ese host.&lt;/p&gt;
+&lt;p&gt;Aquí, un certificado sin concesión se rechaza salvo que
+&lt;code&gt;ssh_accept_ungranted&lt;/code&gt; diga lo contrario. Una concesión presente que no se
+puede analizar se rechaza diga lo que diga: una autoridad que la escribió
+pretendía restringir el certificado. go-authn/sshcert describe paso a paso
+el &lt;a href="https://github.com/go-authn/sshcert#why-fail-closed-the-multi-ca-scenario" target="_blank" rel="noopener"&gt;escenario de varias CA&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h3 data-hextra-search-id="with-efps-ca"&gt;Con la CA de EFP&lt;span class="hx:absolute hx:-mt-20" id="with-efps-ca"&gt;&lt;/span&gt;
+&lt;a href="#with-efps-ca" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;&lt;code&gt;trusted_user_ca_file&lt;/code&gt; es el &lt;code&gt;TrustedUserCAKeys&lt;/code&gt; de OpenSSH. Ponga en él la clave que
+EFP publica en &lt;a href="https://sshca.my-eurohpc.eu/config" target="_blank" rel="noopener"&gt;https://sshca.my-eurohpc.eu/config&lt;/a&gt;, como indica la
+&lt;a href="https://integration.docs.my-eurohpc.eu/aai/ssh-ca-trust/" target="_blank" rel="noopener"&gt;página de confianza&lt;/a&gt; de
+EFP. Esa URL devuelve &lt;code&gt;{&amp;quot;PublicKey&amp;quot;: &amp;quot;ssh-ed25519 ...&amp;quot;}&lt;/code&gt;; el archivo contiene el
+valor de &lt;code&gt;PublicKey&lt;/code&gt; en una línea propia:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;curl -s https://sshca.my-eurohpc.eu/config &lt;span class="p"&gt;|&lt;/span&gt; jq -r &lt;span class="s1"&gt;&amp;#39;.PublicKey&amp;#39;&lt;/span&gt; &amp;gt; /etc/fileshare/efp-ssh-ca.pub&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Después, establezca &lt;code&gt;ssh_domains&lt;/code&gt; con los nombres que usa la concesión de su entidad
+de alojamiento. El único principal de un certificado de EFP es el identificador de
+MyAccessID (&lt;code&gt;&amp;lt;id&amp;gt;@myaccessid.org&lt;/code&gt;), así que ese es el nombre de usuario con el que
+inicia sesión. Un bloque &lt;code&gt;user&lt;/code&gt; con ese nombre, sin credencial propia, lo recibe:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;user&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;u1234@myaccessid.org&amp;#34;&lt;/span&gt; {}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h3 data-hextra-search-id="with-go-authnbridge"&gt;Con go-authn/bridge&lt;span class="hx:absolute hx:-mt-20" id="with-go-authnbridge"&gt;&lt;/span&gt;
+&lt;a href="#with-go-authnbridge" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Un cliente de &lt;a href="https://github.com/go-authn/bridge" target="_blank" rel="noopener"&gt;go-authn/bridge&lt;/a&gt; (v0.19.0 o
+posterior) con &lt;code&gt;ssh_certificates = true&lt;/code&gt; y
+&lt;code&gt;ssh_domain_grants = [&amp;quot;files.example.org&amp;quot;]&lt;/code&gt; emite certificados concedidos para este
+host. Con &lt;code&gt;ssh_principal_claim = &amp;quot;voperson_id&amp;quot;&lt;/code&gt;, su único principal es el
+&lt;code&gt;voperson_id&lt;/code&gt; de la persona, como en el perfil de EFP, y ese es el bloque &lt;code&gt;user&lt;/code&gt; que
+hay que escribir aquí. Confíe en la CA de bridge como este servidor confía en
+cualquier otra:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;como &lt;code&gt;trusted_user_ca_file&lt;/code&gt;, para cuentas locales. bridge sirve su clave en el
+formato de EFP en &lt;code&gt;/ssh/config&lt;/code&gt;, así que la línea &lt;code&gt;curl | jq&lt;/code&gt; de arriba funciona
+con la URL de bridge;&lt;/li&gt;
+&lt;li&gt;o como el &lt;code&gt;ssh_ca_file&lt;/code&gt; del bloque &lt;code&gt;oidc&lt;/code&gt;, para
+&lt;a href="#people-the-identity-provider-vouches-for"&gt;las personas que el proveedor avala&lt;/a&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Los demás clientes de bridge no escriben concesión. Si sus certificados deben seguir
+funcionando aquí, para eso está &lt;code&gt;ssh_accept_ungranted&lt;/code&gt;. Pero deja entrar &lt;strong&gt;todos&lt;/strong&gt;
+los certificados sin concesión de todas las autoridades de confianza, así que es
+preferible dar una concesión a esos clientes.&lt;/p&gt;
+&lt;h3 data-hextra-search-id="a-certificate-pinned-to-an-address"&gt;Un certificado vinculado a una dirección&lt;span class="hx:absolute hx:-mt-20" id="a-certificate-pinned-to-an-address"&gt;&lt;/span&gt;
+&lt;a href="#a-certificate-pinned-to-an-address" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;El &lt;code&gt;ssh_source_address&lt;/code&gt; de bridge escribe la opción crítica &lt;code&gt;source-address&lt;/code&gt;, como
+hace &lt;code&gt;ssh-keygen -O source-address=...&lt;/code&gt;. Un certificado que la lleva se acepta
+&lt;strong&gt;solo desde esas direcciones&lt;/strong&gt;, con o sin &lt;code&gt;ssh_domains&lt;/code&gt;. Un inicio de sesión desde
+una dirección que el certificado permite se deja entrar, siempre que su concesión
+nombre también este host cuando &lt;code&gt;ssh_domains&lt;/code&gt; está establecido. Un inicio de sesión
+desde cualquier otra dirección se rechaza.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;fileshare&lt;/th&gt;
+&lt;th&gt;&lt;code&gt;trusted_user_ca_file&lt;/code&gt;&lt;/th&gt;
+&lt;th&gt;&lt;code&gt;ssh_ca_file&lt;/code&gt; de &lt;code&gt;oidc&lt;/code&gt;, y OpenPubkey&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;antes de la v0.22.0&lt;/td&gt;
+&lt;td&gt;aplicada&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;rechazado desde cualquier dirección&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.22.0, sin &lt;code&gt;ssh_domains&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;aplicada&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;rechazado desde cualquier dirección&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.22.0, con &lt;code&gt;ssh_domains&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;rechazado desde cualquier dirección&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;rechazado desde cualquier dirección&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.22.1, con o sin &lt;code&gt;ssh_domains&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;aplicada&lt;/td&gt;
+&lt;td&gt;aplicada&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;«Rechazado desde cualquier dirección» falla en modo cerrado: la restricción del
+certificado nunca se relajó, solo se perdió el inicio de sesión. Antes de la v0.22.1,
+el sshd de go-filesystems/sftp rechazaba cualquier opción crítica en los certificados
+que pasaba a fileshare para que este decidiera; eso abarca los del proveedor, los de
+OpenPubkey y, con &lt;code&gt;ssh_domains&lt;/code&gt;, todos los certificados. La v0.22.1 se basa en
+go-filesystems/sftp v0.5.1, cuyo sshd acepta ahí &lt;code&gt;source-address&lt;/code&gt; y lo aplica en
+todas las rutas de certificado, frente a la dirección de la que procede la conexión,
+IPv4 o IPv6.&lt;/p&gt;
+&lt;p&gt;Cualquier otra opción crítica (&lt;code&gt;force-command&lt;/code&gt;, &lt;code&gt;verify-required&lt;/code&gt;, &amp;hellip;) se rechaza,
+ya que este servidor no actúa en consecuencia.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="people-the-identity-provider-vouches-for"&gt;Las personas que el proveedor de identidad avala&lt;span class="hx:absolute hx:-mt-20" id="people-the-identity-provider-vouches-for"&gt;&lt;/span&gt;
+&lt;a href="#people-the-identity-provider-vouches-for" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Desde la v0.11.0, un bloque &lt;code&gt;oidc&lt;/code&gt; llega también a SFTP; no con un token, que SSH no
+tiene dónde poner, sino con un &lt;strong&gt;certificado&lt;/strong&gt;:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;oidc&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; issuer&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://login.example.org&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; audience&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;fileshare&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; ssh_ca_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/bridge-ca.pub&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # go-authn/bridge&amp;#39;s ssh_ca
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; opkssh_client_id&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;opkssh&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # OpenPubkey logins
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; opkssh_max_age&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;24h&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # 12h, 24h, 48h, 1week
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Un certificado firmado por la CA SSH del proveedor&lt;/strong&gt;: &lt;code&gt;bridge ssh-cert&lt;/code&gt; escribe
+uno tras un inicio de sesión a través de la federación. Su principal es la
+persona, su extensión &lt;code&gt;groups@go-authn.org&lt;/code&gt; sus grupos, de modo que se aplican las
+&lt;a href="https://go-fileshare.github.io/docs/0.23/es/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;reglas &lt;code&gt;oidc:groups:&lt;/code&gt;&lt;/a&gt;.
+&lt;strong&gt;No&lt;/strong&gt; es &lt;code&gt;trusted_user_ca_file&lt;/code&gt;, cuyos certificados se refieren a cuentas
+locales: el certificado de una autoridad local que reivindica los grupos del
+proveedor se interpreta como la cuenta local que nombra.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Un certificado OpenPubkey&lt;/strong&gt;, como el que escribe &lt;code&gt;opkssh login&lt;/code&gt;: firmado por la
+propia clave del usuario, con un ID token que se compromete con esa clave. Se
+comprueba como lo comprueba &lt;code&gt;opkssh verify&lt;/code&gt; —el verificador de
+&lt;a href="https://github.com/openpubkey/openpubkey" target="_blank" rel="noopener"&gt;openpubkey&lt;/a&gt; (la firma del proveedor
+frente a sus claves publicadas, el compromiso del nonce, el client ID, la
+antigüedad) y después la clave del certificado frente a la del token—, y el nombre
+de usuario SSH debe ser el nombre de usuario del token, porque aquí no hay archivo
+&lt;code&gt;auth_id&lt;/code&gt; que haga corresponder el uno con el otro:
+&lt;code&gt;sftp alice@univ-example.fr@files.example.org&lt;/code&gt;. &lt;code&gt;opkssh_client_id&lt;/code&gt; debería ser un
+client ID propio, nunca el de otra aplicación: el ID token viaja a cada servidor en
+el que la persona inicia sesión.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Para ver los grupos que lleva un certificado:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;ssh-keygen -L -f ~/.ssh/id_ed25519-cert.pub &lt;span class="c1"&gt;# the Extensions section&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;y el servidor indica, en cada inicio de sesión federado,
+&lt;code&gt;sftp: alice@univ-a.fr, vouched for by the provider, in groups [...]&lt;/code&gt;.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Avalado no significa admitido&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Alguien a quien el proveedor avala sigue siendo un desconocido aquí salvo
+que una regla lo nombre, que &lt;code&gt;trust_all&lt;/code&gt; indique que el proveedor es el
+directorio, o que &lt;code&gt;local_names = true&lt;/code&gt; indique que los nombres del proveedor
+son los de este servidor y que una cuenta local tiene el suyo: la misma
+prueba que supera un token por WebDAV. Un certificado del proveedor &lt;strong&gt;sin
+principal&lt;/strong&gt;, válido para &lt;em&gt;cualquiera&lt;/em&gt; según la propia definición del
+formato, se rechaza.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;-tags noopenpubkey&lt;/code&gt; deja fuera el verificador de OpenPubkey (unos 2 MB); una
+configuración con &lt;code&gt;opkssh_client_id&lt;/code&gt; en una compilación así se rechaza.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="taking-a-certificate-back"&gt;Retirar un certificado&lt;span class="hx:absolute hx:-mt-20" id="taking-a-certificate-back"&gt;&lt;/span&gt;
+&lt;a href="#taking-a-certificate-back" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Un certificado se comprueba al iniciar sesión&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Revocar a la persona en el proveedor no revoca por sí solo un certificado ya
+emitido: este abre SFTP hasta que caduca, y una sesión SFTP ya abierta sigue
+abierta hasta entonces; estas personas no están en el directorio, así que
+ninguna &lt;a href="https://go-fileshare.github.io/docs/0.23/es/administration/reload/"&gt;recarga&lt;/a&gt; les concierne. El margen
+es la vida útil del certificado: el &lt;code&gt;ssh_ca { validity }&lt;/code&gt; de bridge (12h por
+defecto, 168h como máximo, nunca más allá del final de la sesión del IdP) y
+&lt;code&gt;opkssh_max_age&lt;/code&gt; aquí. Manténgalo tan corto como permita el reinicio de
+sesión de los clientes. Desde la v0.17.0, una sesión opkssh ya abierta
+también termina en &lt;code&gt;opkssh_max_age&lt;/code&gt;, diga lo que diga el certificado (que la
+persona firma ella misma).&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Dos mecanismos cierran ese margen:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;la &lt;strong&gt;&lt;a href="https://go-fileshare.github.io/docs/0.23/es/security/revocation-lists/"&gt;KRL&lt;/a&gt;&lt;/strong&gt; del proveedor (&lt;code&gt;ssh_krl_url&lt;/code&gt;):
+un certificado revocado se rechaza al iniciar sesión, y cada operación de una
+sesión que abrió vuelve a consultar la lista, incluidos los archivos abiertos;&lt;/li&gt;
+&lt;li&gt;las &lt;strong&gt;&lt;a href="https://go-fileshare.github.io/docs/0.23/es/security/shared-signals/"&gt;señales compartidas&lt;/a&gt;&lt;/strong&gt; (&lt;code&gt;ssf&lt;/code&gt;): todo
+lo que el proveedor emitió a la persona antes de un &lt;code&gt;session-revoked&lt;/code&gt; de CAEP se
+rechaza; es la única forma de alcanzar un certificado OpenPubkey, que no figura en
+ninguna lista.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Ambos fallan en modo cerrado.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="no-password"&gt;Sin contraseña&lt;span class="hx:absolute hx:-mt-20" id="no-password"&gt;&lt;/span&gt;
+&lt;a href="#no-password" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Un cliente que la pide hace justo lo que las claves existen para evitar.&lt;/p&gt;</description></item></channel></rss>

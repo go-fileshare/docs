@@ -1,0 +1,28 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Verrouillage</title><link>https://go-fileshare.github.io/docs/0.23/fr/tags/verrouillage/</link><description>Recent content in Verrouillage on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>fr</language><atom:link href="https://go-fileshare.github.io/docs/0.23/fr/tags/verrouillage/index.xml" rel="self" type="application/rss+xml"/><item><title>Une image, plusieurs protocoles, un verrou</title><link>https://go-fileshare.github.io/docs/0.23/fr/operations/locking/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.23/fr/operations/locking/</guid><description>
+&lt;p&gt;Chaque serveur de cette famille sérialise lui-même les appels au pilote, parce que
+&lt;a href="https://github.com/go-filesystems/interface" target="_blank" rel="noopener"&gt;&lt;code&gt;go-filesystems/interface&lt;/code&gt;&lt;/a&gt;
+ne promet rien sur les appels concurrents par chemin — et chacun d&amp;rsquo;eux détient
+&lt;strong&gt;son propre&lt;/strong&gt; verrou, sans rien savoir des autres.&lt;/p&gt;
+&lt;p&gt;Servir une image par trois protocoles à la fois n&amp;rsquo;aurait donc aucun verrou commun
+nulle part. L&amp;rsquo;image est donc enveloppée &lt;strong&gt;une seule fois&lt;/strong&gt;, ici, et la même enveloppe est
+remise à tous.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="stated-as-measured-so-as-not-to-overstate-it"&gt;Énoncé tel que mesuré, pour ne pas l&amp;rsquo;exagérer&lt;span class="hx:absolute hx:-mt-20" id="stated-as-measured-so-as-not-to-overstate-it"&gt;&lt;/span&gt;
+&lt;a href="#stated-as-measured-so-as-not-to-overstate-it" class="subheading-anchor" aria-label="Lien permanent vers cette section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Huit goroutines qui écrivent à travers un pilote fat32 &lt;strong&gt;non enveloppé&lt;/strong&gt; sous &lt;code&gt;-race&lt;/code&gt;
+ne produisent &lt;strong&gt;aucune course aujourd&amp;rsquo;hui&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;C&amp;rsquo;est une assurance sur un contrat, pas la reproduction d&amp;rsquo;un défaut — ext4 et ntfs
+ne sont pas fat32, et une mise à jour de pilote n&amp;rsquo;est pas une chose que ce programme devrait avoir à
+réauditer.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="the-wrapper-carries-capabilities-through"&gt;L&amp;rsquo;enveloppe laisse passer les capacités&lt;span class="hx:absolute hx:-mt-20" id="the-wrapper-carries-capabilities-through"&gt;&lt;/span&gt;
+&lt;a href="#the-wrapper-carries-capabilities-through" class="subheading-anchor" aria-label="Lien permanent vers cette section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Elle ne les masque pas :&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;un pilote qui répond à &lt;code&gt;Opener&lt;/code&gt; reçoit en retour un &lt;strong&gt;&lt;code&gt;File&lt;/code&gt; verrouillé&lt;/strong&gt; ;&lt;/li&gt;
+&lt;li&gt;celui dont le &lt;code&gt;File&lt;/code&gt; répond à &lt;code&gt;WritableFile&lt;/code&gt; conserve ses &lt;strong&gt;écritures positionnelles&lt;/strong&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;L&amp;rsquo;écart entre celles-ci et le repli sur le fichier entier a été mesuré à
+&lt;strong&gt;~70×&lt;/strong&gt; ailleurs dans la famille : une enveloppe qui les effacerait serait un
+défaut de performance déguisé en sécurité.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="under-isolate-the-lock-cannot-help"&gt;Sous &lt;code&gt;--isolate&lt;/code&gt;, le verrou ne peut rien&lt;span class="hx:absolute hx:-mt-20" id="under-isolate-the-lock-cannot-help"&gt;&lt;/span&gt;
+&lt;a href="#under-isolate-the-lock-cannot-help" class="subheading-anchor" aria-label="Lien permanent vers cette section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Un processus enfant ouvre l&amp;rsquo;image lui-même : il n&amp;rsquo;y a donc pas d&amp;rsquo;enveloppe partagée entre
+les enfants. C&amp;rsquo;est pourquoi une image servie en écriture par deux protocoles est
+&lt;a href="https://go-fileshare.github.io/docs/0.23/fr/operations/isolation/#the-rule-that-makes-it-honest"&gt;refusée&lt;/a&gt; plutôt que servie
+discrètement sans verrou.&lt;/p&gt;</description></item></channel></rss>

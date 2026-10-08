@@ -1,0 +1,271 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Operación</title><link>https://go-fileshare.github.io/docs/0.23/es/tags/operaci%C3%B3n/</link><description>Recent content in Operación on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>es</language><atom:link href="https://go-fileshare.github.io/docs/0.23/es/tags/operaci%C3%B3n/index.xml" rel="self" type="application/rss+xml"/><item><title>Compilar solo lo que necesita</title><link>https://go-fileshare.github.io/docs/0.23/es/operations/build-tags/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.23/es/operations/build-tags/</guid><description>
+&lt;p&gt;Cada protocolo está detrás de una etiqueta de compilación (build tag), y una etiqueta
+lo deja fuera &lt;strong&gt;por completo&lt;/strong&gt;: ni escucha, ni analizador, ni dependencia, ni código.&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;go install -tags nonfs,nowebdav,nosftp,nos3 github.com/go-fileshare/fileshare@latest &lt;span class="c1"&gt;# SMB only&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;go build -tags nosmb,nonfs,nosftp,nos3 . &lt;span class="c1"&gt;# WebDAV only&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;De dónde proceden las &lt;strong&gt;personas&lt;/strong&gt; depende de etiquetas propias: &lt;code&gt;nosql&lt;/code&gt; deja fuera
+los tres controladores de bases de datos, &lt;code&gt;noldap&lt;/code&gt; el cliente LDAP.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;compilación&lt;/th&gt;
+&lt;th&gt;tamaño&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;todo&lt;/td&gt;
+&lt;td&gt;31,2 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags noldap&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;30,9 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags nosftp&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;30,6 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags noopenpubkey&lt;/code&gt; (sin inicios de sesión opkssh por SFTP)&lt;/td&gt;
+&lt;td&gt;unos 2 MB menos&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags nos3&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;31,1 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags nonfs,nowebdav,nosftp,nos3&lt;/code&gt; (solo SMB)&lt;/td&gt;
+&lt;td&gt;28,1 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags nopartitioned&lt;/code&gt; (sin apfs, btrfs, xfs, zfs)&lt;/td&gt;
+&lt;td&gt;29,2 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags nosql&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;20,2 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags nosql,noldap&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;19,8 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags nosql,noldap,nonfs,nowebdav,nosftp,nos3&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;16,2 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Son las cifras que da el README de fileshare, medidas antes de que llegara la API de
+administración; la tabla de abajo es la medición posterior.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="the-admin-api-and-nogrpc"&gt;La API de administración, y &lt;code&gt;nogrpc&lt;/code&gt;&lt;span class="hx:absolute hx:-mt-20" id="the-admin-api-and-nogrpc"&gt;&lt;/span&gt;
+&lt;a href="#the-admin-api-and-nogrpc" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;La &lt;a href="https://go-fileshare.github.io/docs/0.23/es/administration/"&gt;API de administración&lt;/a&gt; trajo gRPC y protobuf,
+y están detrás de &lt;code&gt;nogrpc&lt;/code&gt; (linux/amd64, medido el 2026-09-29, cuando las filas de
+arriba habían crecido hasta 34,1 MB para todo):&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;compilación&lt;/th&gt;
+&lt;th&gt;tamaño&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;todo, con la API de administración&lt;/td&gt;
+&lt;td&gt;46,1 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags nogrpc&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;34,4 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags nosql,noldap,nogrpc&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;22,5 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;gRPC cuesta &lt;strong&gt;11,7 MB&lt;/strong&gt;: la &lt;a href="#why-not-subprocess-plugins"&gt;medición de los plugins&lt;/a&gt;
+de más abajo, repetida ahora que está aquí por un motivo propio. Un sitio que
+gestiona sus recursos compartidos en archivos no necesita cargar con él.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Un bloque &lt;code&gt;admin&lt;/code&gt; en una compilación &lt;code&gt;nogrpc&lt;/code&gt; se rechaza&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;En lugar de servirse sin él: una configuración que pide la API y arranca
+sin ella no hace lo que dice.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;nogrpc&lt;/code&gt; deja fuera la API de administración y, con ella, el
+&lt;a href="https://go-fileshare.github.io/docs/0.23/es/administration/volumes/"&gt;aprovisionador&lt;/a&gt;. &lt;a href="https://go-fileshare.github.io/docs/0.23/es/administration/health/"&gt;Salud y métricas&lt;/a&gt;
+son HTTP simple y se quedan.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;-tags noprovisioner&lt;/code&gt; deja fuera solo el aprovisionador, el rol privilegiado
+&lt;code&gt;fileshare provisioner&lt;/code&gt;, y con él zfs, btrfs y projquota de go-fsctl: un servidor
+que nunca sirve volúmenes no necesita cargar con el código que los crea.
+&lt;code&gt;fileshare provisioner&lt;/code&gt; en una compilación así lo indica, en lugar de decir
+«comando desconocido».&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;nosql&lt;/code&gt; es con diferencia la palanca más grande: PostgreSQL, MySQL y SQLite juntos
+pesan &lt;strong&gt;11,7 MB&lt;/strong&gt;, más que todos los protocolos de este programa juntos. Un sitio
+cuyos usuarios están en el archivo la quiere. Los controladores los importa el
+comando y no la biblioteca que los usa, y eso es lo que convierte la elección en una
+etiqueta de compilación y no en un fork.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Un protocolo con el que este binario no se compiló&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;A una configuración que nombra uno se le dice &lt;em&gt;eso&lt;/em&gt;, y no «no existe tal
+protocolo»: la diferencia entre una errata y una etiqueta de compilación. Lo
+mismo vale para &lt;code&gt;opkssh_client_id&lt;/code&gt; con &lt;code&gt;noopenpubkey&lt;/code&gt; y para un bloque
+&lt;code&gt;admin&lt;/code&gt; con &lt;code&gt;nogrpc&lt;/code&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="why-not-subprocess-plugins"&gt;Por qué no plugins en subprocesos&lt;span class="hx:absolute hx:-mt-20" id="why-not-subprocess-plugins"&gt;&lt;/span&gt;
+&lt;a href="#why-not-subprocess-plugins" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Se &lt;strong&gt;midió en lugar de argumentarse&lt;/strong&gt;: &lt;code&gt;hashicorp/go-plugin&lt;/code&gt; trae gRPC y protobuf,
+que cuestan &lt;strong&gt;13,2 MB por sí solos&lt;/strong&gt;, más que todo este binario con los tres
+protocolos y todos los controladores. Un host de plugins tendría el doble de tamaño
+antes de cargar nada, y cada binario de plugin volvería a llevar gRPC.&lt;/p&gt;
+&lt;p&gt;En cuanto a superficie de ataque, una etiqueta es también la herramienta más sólida
+para todo lo que no ejecuta: &lt;strong&gt;el código que nunca se compiló no se puede
+alcanzar&lt;/strong&gt;, esté aislado o no.&lt;/p&gt;
+&lt;p&gt;Lo que las etiquetas &lt;em&gt;no&lt;/em&gt; dan es aislamiento entre los protocolos que &lt;strong&gt;sí&lt;/strong&gt; ejecuta,
+ni una forma de añadir un protocolo sin recompilar. Ambas cosas son reales, y ambas
+son argumentos a favor de una frontera de proceso y no de un binario más pequeño, que
+es &lt;a href="https://go-fileshare.github.io/docs/0.23/es/operations/isolation/"&gt;un proceso por protocolo&lt;/a&gt;, con este mismo binario, no un
+framework de plugins.&lt;/p&gt;</description></item><item><title>Un proceso por protocolo</title><link>https://go-fileshare.github.io/docs/0.23/es/operations/isolation/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.23/es/operations/isolation/</guid><description>
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;fileshare --config /etc/fileshare.d --isolate&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;pre&gt;&lt;code&gt;smb on 0.0.0.0:445 — process 19810, serving public, photos and scratch
+webdav on 0.0.0.0:8080 — process 19811, serving public and photos
+nfs on 0.0.0.0:2049 — process 19812, serving public&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;El proceso padre crea las escuchas y luego se ejecuta &lt;strong&gt;a sí mismo&lt;/strong&gt; (exec) una vez
+por protocolo, entregando a cada hijo solo los recursos compartidos que ese protocolo
+puede servir.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="checked-with-lsof-not-by-reading-the-code"&gt;Comprobado con &lt;code&gt;lsof&lt;/code&gt;, no leyendo el código&lt;span class="hx:absolute hx:-mt-20" id="checked-with-lsof-not-by-reading-the-code"&gt;&lt;/span&gt;
+&lt;a href="#checked-with-lsof-not-by-reading-the-code" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;pre&gt;&lt;code&gt;smb (pid 19810) has open: scratch.img photos.img
+webdav (pid 19811) has open: photos.img
+nfs (pid 19812) has open: photos.img&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;La imagen escribible está abierta en &lt;strong&gt;exactamente un proceso&lt;/strong&gt;, y el hijo WebDAV
+nunca la abre.&lt;/p&gt;
+&lt;p&gt;Eso es lo que las &lt;a href="https://go-fileshare.github.io/docs/0.23/es/operations/build-tags/"&gt;etiquetas de compilación&lt;/a&gt; no pueden
+dar: un panic o un heap agotado en un protocolo tumba un solo protocolo, cada hijo
+puede confinarse con lo que ofrezca el sistema operativo, y un fallo en un analizador
+no puede alcanzar una imagen que ese proceso nunca abrió.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="privileged-ports"&gt;Puertos privilegiados&lt;span class="hx:absolute hx:-mt-20" id="privileged-ports"&gt;&lt;/span&gt;
+&lt;a href="#privileged-ports" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;En Unix, el padre pasa la escucha ya vinculada al hijo, de modo que &lt;strong&gt;un puerto
+privilegiado funciona con hijos sin privilegios&lt;/strong&gt;: el padre se vincula al 445 y el
+hijo nunca necesita el privilegio.&lt;/p&gt;
+&lt;p&gt;Windows no tiene &lt;code&gt;ExtraFiles&lt;/code&gt;, así que allí el hijo se vincula él mismo a la
+dirección; el aislamiento es el mismo, la parte del puerto privilegiado no.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="the-rule-that-makes-it-honest"&gt;La regla que lo hace honesto&lt;span class="hx:absolute hx:-mt-20" id="the-rule-that-makes-it-honest"&gt;&lt;/span&gt;
+&lt;a href="#the-rule-that-makes-it-honest" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Un hijo abre la imagen él mismo, así que una imagen servida &lt;em&gt;en escritura&lt;/em&gt; por dos
+protocolos serían dos controladores sobre un mismo archivo &lt;strong&gt;sin ningún bloqueo entre
+ellos&lt;/strong&gt;, justo lo que el &lt;a href="https://go-fileshare.github.io/docs/0.23/es/operations/locking/"&gt;bloqueo compartido&lt;/a&gt; impide
+dentro de un solo proceso.&lt;/p&gt;
+&lt;p&gt;Eso se rechaza, y el rechazo indica cómo corregirlo:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;pre&gt;&lt;code&gt;scratch is writable over smb and webdav, and one process per protocol means
+that many drivers writing one file with no lock between them. Say
+`protocols = [&amp;#34;smb&amp;#34;]` on the share, or make it read_only, or do not isolate.&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;protocols = [...]&lt;/code&gt; en un recurso compartido es útil por sí mismo, no solo con
+&lt;code&gt;--isolate&lt;/code&gt;: un recurso compartido declarado solo SMB es un recurso compartido del
+que nunca se informa al proceso WebDAV. Un bloque &lt;code&gt;serve&lt;/code&gt; que acabaría sin servir
+nada también se rechaza, antes de abrir ninguna imagen, nombrando los recursos
+compartidos que se le retiraron y por qué.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="not-with-an-admin-or-a-metrics-block-yet"&gt;Todavía no con un bloque &lt;code&gt;admin&lt;/code&gt; o &lt;code&gt;metrics&lt;/code&gt;&lt;span class="hx:absolute hx:-mt-20" id="not-with-an-admin-or-a-metrics-block-yet"&gt;&lt;/span&gt;
+&lt;a href="#not-with-an-admin-or-a-metrics-block-yet" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;--isolate&lt;/code&gt; junto con un bloque &lt;a href="https://go-fileshare.github.io/docs/0.23/es/administration/"&gt;&lt;code&gt;admin&lt;/code&gt;&lt;/a&gt; o
+&lt;a href="https://go-fileshare.github.io/docs/0.23/es/administration/health/"&gt;&lt;code&gt;metrics&lt;/code&gt;&lt;/a&gt; se rechaza: los hijos abren las
+imágenes y el padre no abre nada, así que no hay un único proceso al que se pueda
+aplicar un cambio de la API, ni cuya disponibilidad pueda consultar una sonda.&lt;/p&gt;</description></item><item><title>Una imagen, varios protocolos, un bloqueo</title><link>https://go-fileshare.github.io/docs/0.23/es/operations/locking/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.23/es/operations/locking/</guid><description>
+&lt;p&gt;Cada servidor de esta familia serializa el propio controlador, porque
+&lt;a href="https://github.com/go-filesystems/interface" target="_blank" rel="noopener"&gt;&lt;code&gt;go-filesystems/interface&lt;/code&gt;&lt;/a&gt; no promete
+nada sobre llamadas concurrentes basadas en rutas, y cada uno de ellos tiene &lt;strong&gt;su
+propio&lt;/strong&gt; bloqueo, sin saber nada de los demás.&lt;/p&gt;
+&lt;p&gt;Servir una misma imagen por tres protocolos a la vez no tendría, por tanto, ningún
+bloqueo común en ningún sitio. Así que la imagen se envuelve &lt;strong&gt;una sola vez&lt;/strong&gt;, aquí,
+y el mismo envoltorio se entrega a todos ellos.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="stated-as-measured-so-as-not-to-overstate-it"&gt;Presentado como medido, para no exagerarlo&lt;span class="hx:absolute hx:-mt-20" id="stated-as-measured-so-as-not-to-overstate-it"&gt;&lt;/span&gt;
+&lt;a href="#stated-as-measured-so-as-not-to-overstate-it" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Ocho goroutines que escriben a través de un controlador fat32 &lt;strong&gt;sin envolver&lt;/strong&gt;, con
+&lt;code&gt;-race&lt;/code&gt;, &lt;strong&gt;no producen hoy ninguna condición de carrera&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;Es un seguro sobre un contrato, no la reproducción de un defecto: ext4 y ntfs no son
+fat32, y una actualización de un controlador no es algo que este programa debiera
+tener que volver a auditar.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="the-wrapper-carries-capabilities-through"&gt;El envoltorio deja pasar las capacidades&lt;span class="hx:absolute hx:-mt-20" id="the-wrapper-carries-capabilities-through"&gt;&lt;/span&gt;
+&lt;a href="#the-wrapper-carries-capabilities-through" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;No las oculta:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;un controlador que responde a &lt;code&gt;Opener&lt;/code&gt; recibe a cambio un &lt;strong&gt;&lt;code&gt;File&lt;/code&gt; con bloqueo&lt;/strong&gt;;&lt;/li&gt;
+&lt;li&gt;uno cuyo &lt;code&gt;File&lt;/code&gt; responde a &lt;code&gt;WritableFile&lt;/code&gt; conserva sus &lt;strong&gt;escrituras posicionales&lt;/strong&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;La diferencia entre estas y la alternativa de archivo completo se midió en &lt;strong&gt;~70×&lt;/strong&gt;
+en otro lugar de la familia, así que un envoltorio que las borrara sería un defecto
+de rendimiento disfrazado de seguridad.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="under-isolate-the-lock-cannot-help"&gt;Con &lt;code&gt;--isolate&lt;/code&gt; el bloqueo no puede ayudar&lt;span class="hx:absolute hx:-mt-20" id="under-isolate-the-lock-cannot-help"&gt;&lt;/span&gt;
+&lt;a href="#under-isolate-the-lock-cannot-help" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Un proceso hijo abre la imagen él mismo, así que no hay envoltorio compartido entre
+hijos. Por eso una imagen servida en escritura por dos protocolos se
+&lt;a href="https://go-fileshare.github.io/docs/0.23/es/operations/isolation/#the-rule-that-makes-it-honest"&gt;rechaza&lt;/a&gt; en lugar de
+servirse discretamente sin bloqueo.&lt;/p&gt;</description></item><item><title>Operación</title><link>https://go-fileshare.github.io/docs/0.23/es/operations/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.23/es/operations/</guid><description>
+&lt;div class="hextra-cards hx:mt-4 hx:gap-4 hx:grid not-prose" style="--hextra-cards-grid-cols: 3;"&gt;
+&lt;a class="hextra-card hx:group hx:flex hx:flex-col hx:justify-start hx:overflow-hidden hx:rounded-lg hx:border hx:border-gray-200 hx:text-current hx:no-underline hx:dark:shadow-none hx:hover:shadow-gray-100 hx:dark:hover:shadow-none hx:shadow-gray-100 hx:active:shadow-sm hx:active:shadow-gray-200 hx:transition-all hx:duration-200 hx:hover:border-gray-300 hx:bg-transparent hx:shadow-xs hx:dark:border-neutral-800 hx:hover:bg-slate-50 hx:hover:shadow-md hx:dark:hover:border-neutral-700 hx:dark:hover:bg-neutral-900" href="build-tags/"&gt;&lt;div&gt;
+&lt;span class="hextra-card-icon hx:flex hx:font-semibold hx:items-start hx:gap-2 hx:pt-4 hx:px-4 hx:text-gray-700 hx:hover:text-gray-900 hx:dark:text-neutral-200 hx:dark:hover:text-neutral-50"&gt;&lt;svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/&gt;&lt;/svg&gt;Compilar solo lo que necesita&lt;/span&gt;&lt;div class="hextra-card-subtitle hx:line-clamp-3 hx:text-sm hx:font-normal hx:text-gray-500 hx:dark:text-gray-400 hx:px-4 hx:mb-4 hx:mt-2"&gt;Una etiqueta de compilación deja un protocolo, o la API de administración, completamente fuera del binario.&lt;/div&gt;&lt;/div&gt;&lt;/a&gt;
+&lt;a class="hextra-card hx:group hx:flex hx:flex-col hx:justify-start hx:overflow-hidden hx:rounded-lg hx:border hx:border-gray-200 hx:text-current hx:no-underline hx:dark:shadow-none hx:hover:shadow-gray-100 hx:dark:hover:shadow-none hx:shadow-gray-100 hx:active:shadow-sm hx:active:shadow-gray-200 hx:transition-all hx:duration-200 hx:hover:border-gray-300 hx:bg-transparent hx:shadow-xs hx:dark:border-neutral-800 hx:hover:bg-slate-50 hx:hover:shadow-md hx:dark:hover:border-neutral-700 hx:dark:hover:bg-neutral-900" href="isolation/"&gt;&lt;div&gt;
+&lt;span class="hextra-card-icon hx:flex hx:font-semibold hx:items-start hx:gap-2 hx:pt-4 hx:px-4 hx:text-gray-700 hx:hover:text-gray-900 hx:dark:text-neutral-200 hx:dark:hover:text-neutral-50"&gt;&lt;svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/&gt;&lt;/svg&gt;Un proceso por protocolo&lt;/span&gt;&lt;div class="hextra-card-subtitle hx:line-clamp-3 hx:text-sm hx:font-normal hx:text-gray-500 hx:dark:text-gray-400 hx:px-4 hx:mb-4 hx:mt-2"&gt;&amp;ndash;isolate: cada protocolo en un proceso propio.&lt;/div&gt;&lt;/div&gt;&lt;/a&gt;
+&lt;a class="hextra-card hx:group hx:flex hx:flex-col hx:justify-start hx:overflow-hidden hx:rounded-lg hx:border hx:border-gray-200 hx:text-current hx:no-underline hx:dark:shadow-none hx:hover:shadow-gray-100 hx:dark:hover:shadow-none hx:shadow-gray-100 hx:active:shadow-sm hx:active:shadow-gray-200 hx:transition-all hx:duration-200 hx:hover:border-gray-300 hx:bg-transparent hx:shadow-xs hx:dark:border-neutral-800 hx:hover:bg-slate-50 hx:hover:shadow-md hx:dark:hover:border-neutral-700 hx:dark:hover:bg-neutral-900" href="locking/"&gt;&lt;div&gt;
+&lt;span class="hextra-card-icon hx:flex hx:font-semibold hx:items-start hx:gap-2 hx:pt-4 hx:px-4 hx:text-gray-700 hx:hover:text-gray-900 hx:dark:text-neutral-200 hx:dark:hover:text-neutral-50"&gt;&lt;svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/&gt;&lt;/svg&gt;Una imagen, varios protocolos, un bloqueo&lt;/span&gt;&lt;div class="hextra-card-subtitle hx:line-clamp-3 hx:text-sm hx:font-normal hx:text-gray-500 hx:dark:text-gray-400 hx:px-4 hx:mb-4 hx:mt-2"&gt;Las escrituras de varios protocolos en una misma imagen pasan por un único bloqueo compartido.&lt;/div&gt;&lt;/div&gt;&lt;/a&gt;
+&lt;/div&gt;</description></item></channel></rss>
