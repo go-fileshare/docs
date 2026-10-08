@@ -6,7 +6,7 @@
 # have used since the site was built with MkDocs and mike. The CI sets it
 # through --baseURL, from params.fileshare.version below. This default is the
 # same build.
-baseURL: "https://go-fileshare.github.io/docs/0.23/"
+baseURL: "https://go-fileshare.github.io/docs/0.24/"
 title: "go-fileshare"
 # themes/hextra is the tannevaled/hextra fork, pinned at a release tag:
 # upstream Hextra plus opt-in features (partial menu items, combos,
@@ -135,7 +135,7 @@ params:
   # The fileshare release these pages describe. Its minor version is the
   # documentation's version label (v0.22.2 -> 0.22): the CI reads it here.
   fileshare:
-    version: "v0.23.0"
+    version: "v0.24.0"
 
   # The language switch (foot of the sidebar) shows the translate icon, then
   # the language's flag. It appears once a second language is declared.

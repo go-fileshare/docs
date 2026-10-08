@@ -33,7 +33,7 @@ One binary rather than two daemons: one version to deploy, one protocol
 definition. The storage itself is done by [go-fsctl](https://go-fsctl.github.io/)
 (pure Go, no `zfs` or `btrfs` command). The design and what changed while
 building it are in the fileshare repository's
-[`docs/volumes.md`](https://github.com/go-fileshare/fileshare/blob/v0.23.0/docs/volumes.md).
+[`docs/volumes.md`](https://github.com/go-fileshare/fileshare/blob/v0.24.0/docs/volumes.md).
 
 ## Both processes, configured
 
@@ -172,7 +172,7 @@ define — it closes the connection — so `fileshare serve` and
 ## The admin API's volume calls
 
 `fileshare serve` relays these to the provisioner
-([`admin.proto`](https://github.com/go-fileshare/fileshare/blob/v0.23.0/proto/fileshare/admin/v1/admin.proto)):
+([`admin.proto`](https://github.com/go-fileshare/fileshare/blob/v0.24.0/proto/fileshare/admin/v1/admin.proto)):
 
 | | |
 |---|---|
