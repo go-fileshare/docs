@@ -5,7 +5,7 @@ description: "La version de fileshare que décrivent ces pages, ce que chaque ve
 tags: [état, versions]
 ---
 
-Ces pages décrivent **fileshare v0.22.2**.
+Ces pages décrivent **fileshare v0.23.0**.
 
 ## Ce que chaque version a ajouté {#what-each-release-added}
 
@@ -40,6 +40,7 @@ Ces pages décrivent **fileshare v0.22.2**.
 | v0.22.0 | [`ssh_domains`]({{< relref "/protocols/sftp.md#certificates-meant-for-this-host-the-domain-grant" >}}) : un certificat SSH n'est accepté que là où sa délégation de domaine (`ssh-domain-grant@core.aai.geant.org`, le profil de l'AC SSH EuroHPC) nomme cet hôte, en refusant en cas de doute ; `ssh_accept_ungranted` laisse entrer les certificats sans délégation |
 | v0.22.1 | go-filesystems/sftp v0.5.1 : un certificat [épinglé à une adresse]({{< relref "/protocols/sftp.md#a-certificate-pinned-to-an-address" >}}) (`source-address`) est accepté depuis cette adresse sous `ssh_domains`, ainsi que sur les certificats du fournisseur et ceux d'OpenPubkey ; auparavant, il était refusé depuis toutes les adresses |
 | v0.22.2 | tests et documentation uniquement : `source-address` est testé depuis `::1` et depuis une seconde adresse IPv4 (`127.0.0.2`), sous `ssh_domains`, et sur un certificat OpenPubkey ; sous Linux, avec `FILESHARE_REQUIRE_JUDGE`, un juge absent échoue au lieu d'être ignoré |
+| v0.23.0 | un [volume btrfs]({{< relref "/administration/volumes.md#the-size-a-client-sees" >}}) a la taille de son quota sur NFS, SMB et WebDAV (go-filesystems/nfs v0.7.0, smb v0.5.0, webdav v0.3.0 donnent la taille à chaque requête) ; auparavant, btrfs affichait le système de fichiers entier. Un serveur dont les partages viennent de l'API d'administration ne s'arrête plus au démarrage quand il sert NFS sans avoir encore de partage |
 
 {{< callout type="warning" >}}
 **Passer à la v0.21.0**

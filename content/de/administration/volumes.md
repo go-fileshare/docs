@@ -33,7 +33,7 @@ Ein Binary statt zweier Daemons: eine Version zum Ausrollen, eine
 Protokolldefinition. Den Speicher selbst übernimmt [go-fsctl](https://go-fsctl.github.io/)
 (reines Go, kein `zfs`- oder `btrfs`-Kommando). Das Design und was sich während
 des Baus geändert hat, stehen im fileshare-Repository unter
-[`docs/volumes.md`](https://github.com/go-fileshare/fileshare/blob/v0.22.2/docs/volumes.md).
+[`docs/volumes.md`](https://github.com/go-fileshare/fileshare/blob/v0.23.0/docs/volumes.md).
 
 ## Beide Prozesse, konfiguriert {#both-processes-configured}
 
@@ -172,7 +172,7 @@ definiert – er schließt die Verbindung –, also laufen `fileshare serve` und
 ## Die Volume-Aufrufe der Admin-API {#the-admin-apis-volume-calls}
 
 `fileshare serve` leitet diese an den Provisioner weiter
-([`admin.proto`](https://github.com/go-fileshare/fileshare/blob/v0.22.2/proto/fileshare/admin/v1/admin.proto)):
+([`admin.proto`](https://github.com/go-fileshare/fileshare/blob/v0.23.0/proto/fileshare/admin/v1/admin.proto)):
 
 | | |
 |---|---|
@@ -294,11 +294,23 @@ für Volumes – siehe den [Upgrade-Hinweis]({{< relref "/status.md" >}}).
 
 ## Die Größe, die ein Client sieht {#the-size-a-client-sees}
 
-Die Größe einer Freigabe ist das, was `statfs` innerhalb des Volumes sagt: die Quota bei ZFS
-(`refquota`), XFS und ext4 (Projekt-`statfs`). **Bei btrfs ist es das ganze
-Dateisystem**: `statfs` von btrfs ignoriert qgroups, sodass `df` auf einem btrfs-Volume
-Größe und freien Platz des Dateisystems zeigt, nicht die Quota des Volumes – die trotzdem
-gilt.
+Jedes Protokoll fragt den Server bei jeder Abfrage nach der Größe einer Freigabe:
+NFS mit `FSSTAT`, SMB mit `FileFsFullSizeInformation` und WebDAV mit den
+Quota-Eigenschaften aus RFC 4331.
+
+- **ZFS, XFS und ext4**: Die Größe ist das, was `statfs` innerhalb des Volumes sagt;
+  der Kernel antwortet dort mit der Quota (`refquota` bei ZFS, die Projekt-Quota bei
+  XFS und ext4).
+- **btrfs** (seit fileshare v0.23.0): `statfs` von btrfs ignoriert qgroups und meldet
+  das ganze Dateisystem, deshalb nimmt der Server die Zahlen des Provisioners. Die
+  Größe ist die Quota des Volumes, der freie Platz ist die Quota abzüglich der
+  referenzierten Bytes der qgroup, oder der freie Platz des Dateisystems, wenn der
+  kleiner ist. Der Server fragt den Provisioner im Hintergrund, höchstens alle
+  5 Sekunden, solange Clients fragen, und antwortet bis dahin mit den letzten Zahlen.
+  btrfs aktualisiert den Zähler einer qgroup beim Abschluss einer Transaktion
+  (standardmäßig alle 30 Sekunden), daher kann der freie Platz, den ein Client sieht,
+  den Schreibvorgängen um so viel hinterherhinken. Vor v0.23.0 zeigte ein btrfs-Volume
+  das ganze Dateisystem; die Quota galt trotzdem.
 
 Der belegte Platz kommt vom Provisioner (`used_bytes`): Die Belegung eines XFS- oder
 ext4-Projekts zu lesen erfordert `CAP_SYS_ADMIN`, das fileshare nicht hat.

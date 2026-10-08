@@ -33,7 +33,7 @@ Un binaire plutôt que deux démons : une seule version à déployer, une seule 
 protocole. Le stockage lui-même est géré par [go-fsctl](https://go-fsctl.github.io/)
 (pur Go, sans commande `zfs` ni `btrfs`). La conception, et ce qui a changé en cours
 de construction, se trouvent dans le
-[`docs/volumes.md`](https://github.com/go-fileshare/fileshare/blob/v0.22.2/docs/volumes.md) du dépôt fileshare.
+[`docs/volumes.md`](https://github.com/go-fileshare/fileshare/blob/v0.23.0/docs/volumes.md) du dépôt fileshare.
 
 ## Les deux processus, configurés {#both-processes-configured}
 
@@ -172,7 +172,7 @@ définit pas — il ferme la connexion — si bien que `fileshare serve` et
 ## Les appels de l'API d'administration sur les volumes {#the-admin-apis-volume-calls}
 
 `fileshare serve` les relaie à l'approvisionneur
-([`admin.proto`](https://github.com/go-fileshare/fileshare/blob/v0.22.2/proto/fileshare/admin/v1/admin.proto)) :
+([`admin.proto`](https://github.com/go-fileshare/fileshare/blob/v0.23.0/proto/fileshare/admin/v1/admin.proto)) :
 
 | | |
 |---|---|
@@ -294,11 +294,22 @@ aux volumes — voir la [note de mise à jour]({{< relref "/status.md" >}}).
 
 ## La taille que voit un client {#the-size-a-client-sees}
 
-La taille d'un partage est ce que dit `statfs` à l'intérieur du volume : le quota pour ZFS
-(`refquota`), XFS et ext4 (`statfs` du projet). **Pour btrfs, c'est le système de fichiers
-entier** : le `statfs` de btrfs ignore les qgroups, si bien que `df` sur un volume btrfs affiche
-la taille et l'espace libre du système de fichiers, pas le quota du volume — qui s'applique
-pourtant.
+Chaque protocole demande au serveur la taille d'un partage à chaque requête : `FSSTAT`
+pour NFS, `FileFsFullSizeInformation` pour SMB et les propriétés de quota de la RFC 4331
+pour WebDAV.
+
+- **ZFS, XFS et ext4** : la taille est ce que dit `statfs` à l'intérieur du volume, auquel
+  le noyau répond par le quota (`refquota` pour ZFS, le quota de projet pour XFS et ext4).
+- **btrfs** (depuis fileshare v0.23.0) : le `statfs` de btrfs ignore les qgroups et
+  annonce le système de fichiers entier, donc le serveur prend les chiffres de
+  l'approvisionneur. La taille est le quota du volume, et l'espace libre est le quota
+  moins les octets référencés du qgroup, ou l'espace libre du système de fichiers s'il
+  est plus petit. Le serveur interroge l'approvisionneur en arrière-plan, au plus une
+  fois toutes les 5 secondes tant que des clients demandent, et répond entre-temps avec
+  les derniers chiffres. btrfs met à jour le compte d'un qgroup quand il valide une
+  transaction (toutes les 30 secondes par défaut) : l'espace libre vu par un client peut
+  donc avoir ce retard sur les écritures. Avant la v0.23.0, un volume btrfs affichait le
+  système de fichiers entier ; le quota s'appliquait quand même.
 
 L'espace utilisé vient de l'approvisionneur (`used_bytes`) : lire l'utilisation d'un projet XFS ou ext4
 exige `CAP_SYS_ADMIN`, que fileshare n'a pas.
