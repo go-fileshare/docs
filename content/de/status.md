@@ -5,7 +5,7 @@ description: "Welches fileshare-Release diese Seiten beschreiben, was jedes Rele
 tags: [stand, releases]
 ---
 
-Diese Seiten beschreiben **fileshare v0.23.0**.
+Diese Seiten beschreiben **fileshare v0.24.0**.
 
 ## Was jedes Release hinzugefügt hat {#what-each-release-added}
 
@@ -41,6 +41,7 @@ Diese Seiten beschreiben **fileshare v0.23.0**.
 | v0.22.1 | go-filesystems/sftp v0.5.1: Ein [an eine Adresse gebundenes]({{< relref "/protocols/sftp.md#a-certificate-pinned-to-an-address" >}}) Zertifikat (`source-address`) wird von dieser Adresse aus unter `ssh_domains` akzeptiert, ebenso bei den Zertifikaten des Anbieters und von OpenPubkey; zuvor wurde es von jeder Adresse abgelehnt |
 | v0.22.2 | nur Tests und Dokumentation: `source-address` wird von `::1` und von einer zweiten IPv4-Adresse (`127.0.0.2`) aus getestet, unter `ssh_domains` und mit einem OpenPubkey-Zertifikat; unter Linux schlägt mit `FILESHARE_REQUIRE_JUDGE` ein fehlender Judge fehl, statt übersprungen zu werden |
 | v0.23.0 | ein [btrfs-Volume]({{< relref "/administration/volumes.md#the-size-a-client-sees" >}}) hat über NFS, SMB und WebDAV die Größe seiner Quota (go-filesystems/nfs v0.7.0, smb v0.5.0, webdav v0.3.0 melden die Größe bei jeder Abfrage); zuvor zeigte btrfs das ganze Dateisystem. Ein Server, dessen Freigaben aus der Admin-API kommen, hält beim Start nicht mehr an, wenn er NFS anbietet und noch keine Freigabe hat |
+| v0.24.0 | schnelleres Lesen: Ein WebDAV-GET einer Verzeichnis- oder Volume-Freigabe geht über einfaches HTTP (nicht über TLS) mit `sendfile(2)` hinaus, NFS liest und schreibt in 1 MiB (rtmax/wtmax), und SMB-Clients lesen mehr als 64 KiB pro Anfrage (`CAP_LARGE_MTU`). Auf dem CI-Runner, eine 256-MiB-Datei: WebDAV 6,6 GB/s, SMB 0,84, NFS 1,47 (ein Client) |
 
 {{< callout type="warning" >}}
 **Upgrade auf v0.21.0**

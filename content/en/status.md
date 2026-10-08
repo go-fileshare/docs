@@ -5,7 +5,7 @@ description: "Which fileshare release these pages describe, what each release ad
 tags: [status, releases]
 ---
 
-These pages describe **fileshare v0.23.0**.
+These pages describe **fileshare v0.24.0**.
 
 ## What each release added
 
@@ -41,6 +41,7 @@ These pages describe **fileshare v0.23.0**.
 | v0.22.1 | go-filesystems/sftp v0.5.1: a certificate [pinned to an address]({{< relref "/protocols/sftp.md#a-certificate-pinned-to-an-address" >}}) (`source-address`) is accepted from that address under `ssh_domains`, and on the provider's and OpenPubkey certificates; before, it was refused from every address |
 | v0.22.2 | tests and documentation only: `source-address` is tested from `::1` and from a second IPv4 address (`127.0.0.2`), under `ssh_domains`, and on an OpenPubkey certificate; on Linux, under `FILESHARE_REQUIRE_JUDGE`, a missing judge fails instead of skipping |
 | v0.23.0 | a [btrfs volume]({{< relref "/administration/volumes.md#the-size-a-client-sees" >}}) is the size of its quota over NFS, SMB and WebDAV (go-filesystems/nfs v0.7.0, smb v0.5.0, webdav v0.3.0 report the size at each query); before, btrfs showed the whole filesystem. A server whose shares come from the admin API no longer stops at start when it serves NFS and has no share yet |
+| v0.24.0 | faster reads: a WebDAV GET of a directory or volume share goes out with `sendfile(2)` over plain HTTP (not over TLS), NFS reads and writes in 1 MiB (rtmax/wtmax), and SMB clients read more than 64 KiB per request (`CAP_LARGE_MTU`). On the CI runner, a 256 MiB file: WebDAV 6.6 GB/s, SMB 0.84, NFS 1.47 (one client) |
 
 {{< callout type="warning" >}}
 **Upgrading to v0.21.0**
