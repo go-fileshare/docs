@@ -34,7 +34,7 @@ Un binario en lugar de dos demonios: una versión que desplegar, una definición
 protocolo. El almacenamiento en sí lo gestiona [go-fsctl](https://go-fsctl.github.io/)
 (Go puro, sin los comandos `zfs` ni `btrfs`). El diseño, y lo que cambió durante su
 construcción, están en el
-[`docs/volumes.md`](https://github.com/go-fileshare/fileshare/blob/v0.22.2/docs/volumes.md)
+[`docs/volumes.md`](https://github.com/go-fileshare/fileshare/blob/v0.23.0/docs/volumes.md)
 del repositorio de fileshare.
 
 ## Los dos procesos, configurados {#both-processes-configured}
@@ -176,7 +176,7 @@ define —cierra la conexión—, así que `fileshare serve` y
 ## Las llamadas de volúmenes de la API de administración {#the-admin-apis-volume-calls}
 
 `fileshare serve` las transmite al aprovisionador
-([`admin.proto`](https://github.com/go-fileshare/fileshare/blob/v0.22.2/proto/fileshare/admin/v1/admin.proto)):
+([`admin.proto`](https://github.com/go-fileshare/fileshare/blob/v0.23.0/proto/fileshare/admin/v1/admin.proto)):
 
 | | |
 |---|---|
@@ -304,11 +304,22 @@ no solo a los volúmenes; consulte la [nota de actualización]({{< relref "/stat
 
 ## El tamaño que ve un cliente {#the-size-a-client-sees}
 
-El tamaño de un recurso compartido es lo que indica `statfs` dentro del volumen: la
-cuota para ZFS (`refquota`), XFS y ext4 (`statfs` del proyecto). **Para btrfs es el
-sistema de archivos entero**: el `statfs` de btrfs ignora los qgroups, así que `df`
-sobre un volumen btrfs muestra el tamaño y el espacio libre del sistema de archivos,
-no la cuota del volumen, que sigue aplicándose.
+Cada protocolo pregunta al servidor el tamaño de un recurso compartido en cada
+consulta: `FSSTAT` en NFS, `FileFsFullSizeInformation` en SMB y las propiedades de
+cuota de la RFC 4331 en WebDAV.
+
+- **ZFS, XFS y ext4**: el tamaño es lo que dice `statfs` dentro del volumen, al que el
+  núcleo responde con la cuota (`refquota` en ZFS, la cuota de proyecto en XFS y ext4).
+- **btrfs** (desde fileshare v0.23.0): el `statfs` de btrfs ignora los qgroups y
+  declara el sistema de archivos entero, así que el servidor usa las cifras del
+  aprovisionador. El tamaño es la cuota del volumen, y el espacio libre es la cuota
+  menos los bytes referenciados del qgroup, o el espacio libre del sistema de archivos
+  si es menor. El servidor consulta al aprovisionador en segundo plano, como mucho una
+  vez cada 5 segundos mientras haya clientes preguntando, y mientras tanto responde con
+  las últimas cifras. btrfs actualiza la cuenta de un qgroup al confirmar una
+  transacción (cada 30 segundos por defecto), así que el espacio libre que ve un cliente
+  puede ir con ese retraso respecto a las escrituras. Antes de la v0.23.0, un volumen
+  btrfs mostraba el sistema de archivos entero; la cuota se aplicaba igualmente.
 
 El espacio usado procede del aprovisionador (`used_bytes`): leer el uso de un
 proyecto XFS o ext4 requiere `CAP_SYS_ADMIN`, que fileshare no tiene.

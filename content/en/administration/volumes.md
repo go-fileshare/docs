@@ -33,7 +33,7 @@ One binary rather than two daemons: one version to deploy, one protocol
 definition. The storage itself is done by [go-fsctl](https://go-fsctl.github.io/)
 (pure Go, no `zfs` or `btrfs` command). The design and what changed while
 building it are in the fileshare repository's
-[`docs/volumes.md`](https://github.com/go-fileshare/fileshare/blob/v0.22.2/docs/volumes.md).
+[`docs/volumes.md`](https://github.com/go-fileshare/fileshare/blob/v0.23.0/docs/volumes.md).
 
 ## Both processes, configured
 
@@ -172,7 +172,7 @@ define — it closes the connection — so `fileshare serve` and
 ## The admin API's volume calls
 
 `fileshare serve` relays these to the provisioner
-([`admin.proto`](https://github.com/go-fileshare/fileshare/blob/v0.22.2/proto/fileshare/admin/v1/admin.proto)):
+([`admin.proto`](https://github.com/go-fileshare/fileshare/blob/v0.23.0/proto/fileshare/admin/v1/admin.proto)):
 
 | | |
 |---|---|
@@ -294,11 +294,23 @@ to volumes — see the [upgrade note]({{< relref "/status.md" >}}).
 
 ## The size a client sees
 
-A share's size is what `statfs` says inside the volume: the quota for ZFS
-(`refquota`), XFS and ext4 (project `statfs`). **For btrfs it is the whole
-filesystem**: btrfs's `statfs` ignores qgroups, so `df` on a btrfs volume shows
-the filesystem's size and free space, not the volume's quota — which still
-holds.
+Every protocol asks the server for a share's size at each query: NFS
+`FSSTAT`, SMB `FileFsFullSizeInformation` and WebDAV's RFC 4331 quota
+properties.
+
+- **ZFS, XFS and ext4**: the size is what `statfs` says inside the volume,
+  which the kernel answers with the quota (`refquota` for ZFS, the project
+  quota for XFS and ext4).
+- **btrfs** (since fileshare v0.23.0): btrfs's `statfs` ignores qgroups and
+  reports the whole filesystem, so the server uses the provisioner's numbers
+  instead. The size is the volume's quota, and the free space is the quota
+  less the qgroup's referenced bytes, or the filesystem's own free space when
+  that is less. The server asks the provisioner in the background, at most
+  once every 5 seconds while clients are asking, and answers from the last
+  numbers in the meantime. btrfs updates a qgroup's count when it commits a
+  transaction (every 30 seconds by default), so the free space a client sees
+  can lag behind writes by that long. Before v0.23.0, a btrfs volume showed
+  the whole filesystem; the quota held all the same.
 
 Used space comes from the provisioner (`used_bytes`): reading an XFS or ext4
 project's usage needs `CAP_SYS_ADMIN`, which fileshare does not have.
