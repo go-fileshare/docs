@@ -276,3 +276,12 @@ Beide schlagen geschlossen fehl.
 ## Kein Passwort {#no-password}
 
 Ein Client, der nach einem fragt, tut genau das, was Schlüssel vermeiden sollen.
+
+## Übertragungsgröße und offene Dateien {#transfer-size-and-open-files}
+
+fileshare beantwortet OpenSSHs `limits@openssh.com` (seit v0.25.0), sodass
+OpenSSHs `sftp` bis zu 255 KiB pro Anfrage liest und schreibt statt 32 KiB:
+etwa +25 %, gemessen mit OpenSSH 10.3. Eine Sitzung darf höchstens 1024
+Dateien und Verzeichnisse gleichzeitig offen halten; bei einer
+Verzeichnisfreigabe ist jede ein Deskriptor des Hosts, und die Grenze hält
+einen Benutzer davon ab, alle zu verbrauchen.

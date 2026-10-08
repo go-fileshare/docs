@@ -275,3 +275,12 @@ Les deux refusent en cas de doute.
 ## Pas de mot de passe {#no-password}
 
 Un client qui en demande un fait précisément ce que les clés existent pour éviter.
+
+## Taille des transferts et fichiers ouverts {#transfer-size-and-open-files}
+
+fileshare répond à `limits@openssh.com` d'OpenSSH (depuis la v0.25.0) : le
+`sftp` d'OpenSSH lit et écrit jusqu'à 255 Kio par requête au lieu de 32 Kio,
+environ +25 % mesuré avec OpenSSH 10.3. Une session peut tenir au plus 1024
+fichiers et répertoires ouverts à la fois ; sur un partage de répertoire,
+chacun est un descripteur de l'hôte, et la limite empêche un utilisateur de
+tous les prendre.

@@ -5,7 +5,7 @@ description: "Qué versión de fileshare describen estas páginas, qué añadió
 tags: [estado, versiones]
 ---
 
-Estas páginas describen **fileshare v0.24.0**.
+Estas páginas describen **fileshare v0.25.0**.
 
 ## Lo que añadió cada versión {#what-each-release-added}
 
@@ -42,6 +42,8 @@ Estas páginas describen **fileshare v0.24.0**.
 | v0.22.2 | solo pruebas y documentación: `source-address` se prueba desde `::1` y desde una segunda dirección IPv4 (`127.0.0.2`), con `ssh_domains`, y en un certificado OpenPubkey; en Linux, con `FILESHARE_REQUIRE_JUDGE`, un juez ausente hace fallar la prueba en lugar de omitirla |
 | v0.23.0 | un [volumen btrfs]({{< relref "/administration/volumes.md#the-size-a-client-sees" >}}) tiene el tamaño de su cuota por NFS, SMB y WebDAV (go-filesystems/nfs v0.7.0, smb v0.5.0, webdav v0.3.0 informan del tamaño en cada consulta); antes, btrfs mostraba el sistema de archivos entero. Un servidor cuyos recursos compartidos vienen de la API de administración ya no se detiene al arrancar cuando sirve NFS y aún no tiene ningún recurso |
 | v0.24.0 | lecturas más rápidas: un GET WebDAV de un recurso compartido de directorio o de volumen sale con `sendfile(2)` en HTTP sin cifrar (no bajo TLS), NFS lee y escribe en bloques de 1 MiB (rtmax/wtmax), y los clientes SMB leen más de 64 KiB por petición (`CAP_LARGE_MTU`). En el runner de CI, un archivo de 256 MiB: WebDAV 6,6 GB/s, SMB 0,84, NFS 1,47 (un cliente) |
+| v0.24.1 | seguridad: una conexión NFS inactiva ya no guarda los 3 MiB de su llamada más grande (24 conexiones inactivas retenían 59 MiB); una cabecera de trama SMB ya no hace que el servidor reserve los 8 MiB que anuncia antes de que lleguen los bytes; una petición SMB ya no puede pagar un crédito por 4 GiB (go-filesystems/nfs v0.8.1, smb v0.6.1 y v0.6.2) |
+| v0.25.0 | SFTP responde a `limits@openssh.com`, así que el `sftp` de OpenSSH lee hasta 255 KiB (+25 %); una sesión mantiene como mucho 1024 handles abiertos (go-filesystems/sftp v0.6.0) |
 
 {{< callout type="warning" >}}
 **Actualizar a la v0.21.0**
