@@ -1,0 +1,28 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Sperren</title><link>https://go-fileshare.github.io/docs/0.24/de/tags/sperren/</link><description>Recent content in Sperren on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>de</language><atom:link href="https://go-fileshare.github.io/docs/0.24/de/tags/sperren/index.xml" rel="self" type="application/rss+xml"/><item><title>Ein Image, mehrere Protokolle, eine Sperre</title><link>https://go-fileshare.github.io/docs/0.24/de/operations/locking/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.24/de/operations/locking/</guid><description>
+&lt;p&gt;Jeder Server dieser Familie serialisiert den Treiber selbst, weil
+&lt;a href="https://github.com/go-filesystems/interface" target="_blank" rel="noopener"&gt;&lt;code&gt;go-filesystems/interface&lt;/code&gt;&lt;/a&gt;
+nichts über gleichzeitige pfadbasierte Aufrufe zusichert – und jeder von ihnen hält
+&lt;strong&gt;seine eigene&lt;/strong&gt; Sperre, ohne etwas von den anderen zu wissen.&lt;/p&gt;
+&lt;p&gt;Ein Image gleichzeitig über drei Protokolle bereitzustellen, hätte daher nirgends eine gemeinsame
+Sperre. Also wird das Image &lt;strong&gt;einmal&lt;/strong&gt; umhüllt, hier, und dieselbe Hülle wird
+allen übergeben.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="stated-as-measured-so-as-not-to-overstate-it"&gt;Als gemessen ausgewiesen, um nicht zu übertreiben&lt;span class="hx:absolute hx:-mt-20" id="stated-as-measured-so-as-not-to-overstate-it"&gt;&lt;/span&gt;
+&lt;a href="#stated-as-measured-so-as-not-to-overstate-it" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Acht Goroutinen, die unter &lt;code&gt;-race&lt;/code&gt; über einen &lt;strong&gt;nicht umhüllten&lt;/strong&gt; fat32-Treiber schreiben,
+erzeugen &lt;strong&gt;heute keinen Race&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;Das ist eine Absicherung eines Vertrags, keine Reproduktion eines Fehlers – ext4 und ntfs
+sind nicht fat32, und ein Treiber-Update ist nichts, was dieses Programm erneut
+prüfen müssen sollte.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="the-wrapper-carries-capabilities-through"&gt;Die Hülle reicht Fähigkeiten durch&lt;span class="hx:absolute hx:-mt-20" id="the-wrapper-carries-capabilities-through"&gt;&lt;/span&gt;
+&lt;a href="#the-wrapper-carries-capabilities-through" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Sie verbirgt sie nicht:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;ein Treiber, der &lt;code&gt;Opener&lt;/code&gt; beantwortet, erhält eine &lt;strong&gt;gesperrte &lt;code&gt;File&lt;/code&gt;&lt;/strong&gt; zurück;&lt;/li&gt;
+&lt;li&gt;einer, dessen &lt;code&gt;File&lt;/code&gt; &lt;code&gt;WritableFile&lt;/code&gt; beantwortet, behält seine &lt;strong&gt;positionellen Schreibzugriffe&lt;/strong&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Der Unterschied zwischen diesen und dem Rückgriff auf die ganze Datei wurde an anderer Stelle der Familie mit
+&lt;strong&gt;~70×&lt;/strong&gt; gemessen, sodass eine Hülle, die sie verwischt, ein als Sicherheit
+getarnter Leistungsfehler wäre.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="under-isolate-the-lock-cannot-help"&gt;Unter &lt;code&gt;--isolate&lt;/code&gt; kann die Sperre nicht helfen&lt;span class="hx:absolute hx:-mt-20" id="under-isolate-the-lock-cannot-help"&gt;&lt;/span&gt;
+&lt;a href="#under-isolate-the-lock-cannot-help" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Ein Kindprozess öffnet das Image selbst, also gibt es keine gemeinsame Hülle zwischen
+den Kindprozessen. Deshalb wird ein Image, das zwei Protokolle beschreibbar bereitstellen,
+&lt;a href="https://go-fileshare.github.io/docs/0.24/de/operations/isolation/#the-rule-that-makes-it-honest"&gt;abgelehnt&lt;/a&gt;, statt stillschweigend
+ohne Sperre bereitgestellt zu werden.&lt;/p&gt;</description></item></channel></rss>

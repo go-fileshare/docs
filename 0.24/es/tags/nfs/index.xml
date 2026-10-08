@@ -1,0 +1,296 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Nfs</title><link>https://go-fileshare.github.io/docs/0.24/es/tags/nfs/</link><description>Recent content in Nfs on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>es</language><atom:link href="https://go-fileshare.github.io/docs/0.24/es/tags/nfs/index.xml" rel="self" type="application/rss+xml"/><item><title>NFS, con identidades a partir de certificados</title><link>https://go-fileshare.github.io/docs/0.24/es/security/nfs-certificates/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.24/es/security/nfs-certificates/</guid><description>
+&lt;p&gt;NFSv3 por sí solo no autentica a nadie, y por eso un recurso compartido que nombra
+quién puede usarlo &lt;a href="https://go-fileshare.github.io/docs/0.24/es/protocols/nfs/"&gt;no se exporta por NFS&lt;/a&gt;, salvo que
+algo permita distinguir a las personas. Un bloque &lt;code&gt;kerberos&lt;/code&gt; es una respuesta. Desde
+la v0.12.0, un certificado de cliente que &lt;strong&gt;nombra a una persona&lt;/strong&gt; es otra:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;nfs&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; tls&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; client_ca_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/bridge-x509-ca.pem&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; identity&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;certificate&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; crl_url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://bridge.example.org/x509/crl&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # or crl_file; required
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; crl_state_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/var/lib/fileshare/nfs.crl.state&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # the order, across a restart
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="what-the-certificate-carries"&gt;Lo que transporta el certificado&lt;span class="hx:absolute hx:-mt-20" id="what-the-certificate-carries"&gt;&lt;/span&gt;
+&lt;a href="#what-the-certificate-carries" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Tras un inicio de sesión en un proveedor de identidad, go-authn/bridge emite un
+&lt;strong&gt;certificado de cliente X.509 de corta duración&lt;/strong&gt; que nombra a la persona tal como
+lo lee el &lt;code&gt;rpc.tlsservd -u&lt;/code&gt; de FreeBSD:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;la persona: el SubjectAltName &lt;strong&gt;otherName &lt;code&gt;1.3.6.1.4.1.2238.1.1.1&lt;/code&gt;&lt;/strong&gt;, un
+UTF8String &lt;code&gt;user@domain&lt;/code&gt;
+(&lt;a href="https://www.ietf.org/archive/id/draft-cel-nfsv4-rpc-tls-othername-04.html" target="_blank" rel="noopener"&gt;draft-cel-nfsv4-rpc-tls-othername&lt;/a&gt;
+lo describe; sus OID aún no están asignados);&lt;/li&gt;
+&lt;li&gt;sus grupos: un URI de SubjectAltName por grupo,
+&lt;code&gt;tag:go-authn.github.io,2026:group:&amp;lt;group&amp;gt;&lt;/code&gt;, un &lt;strong&gt;URI de etiqueta&lt;/strong&gt; (tag URI,
+RFC 4151: sin registro, pensado exactamente para esto). El &lt;code&gt;rpc.tlsservd&lt;/code&gt; de
+FreeBSD lee el primer otherName de identidad y omite cualquier otra entrada SAN.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Por qué un URI de etiqueta, y no una extensión propia&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Se diseñó una, bajo un arco derivado de un UUID (&lt;code&gt;2.25.&amp;lt;128-bit number&amp;gt;&lt;/code&gt;), y
+se &lt;strong&gt;midió&lt;/strong&gt;: &lt;code&gt;x509.ParseCertificate&lt;/code&gt; de Go rechaza el certificado entero
+—&lt;em&gt;malformed extension OID field&lt;/em&gt;— porque allí un arco de identificador de
+objeto ASN.1 es un &lt;code&gt;int&lt;/code&gt;. Todo servidor TLS en Go habría rechazado el
+certificado. Un SAN de tipo URI no necesita OID, y todos los analizadores lo
+leen. Tampoco &lt;code&gt;urn:x-…&lt;/code&gt;: el RFC 8141 suprimió los espacios de nombres URN
+experimentales, y un analizador estricto los rechaza.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="what-every-call-is-asked"&gt;Lo que se pregunta en cada llamada&lt;span class="hx:absolute hx:-mt-20" id="what-every-call-is-asked"&gt;&lt;/span&gt;
+&lt;a href="#what-every-call-is-asked" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Con &lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt;, un recurso compartido que nombra personas se sirve
+por NFS &lt;strong&gt;sin kerberos&lt;/strong&gt;. Cada llamada sobre él debe llegar por TLS, con un
+certificado que:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;no está en la CRL&lt;/strong&gt;;&lt;/li&gt;
+&lt;li&gt;nombra &lt;strong&gt;exactamente a una&lt;/strong&gt; persona;&lt;/li&gt;
+&lt;li&gt;nombra a alguien que este servidor admite &lt;strong&gt;igual que admite un token&lt;/strong&gt;: una
+regla, &lt;code&gt;trust_all&lt;/code&gt;, &lt;code&gt;domains&lt;/code&gt;; consulte
+&lt;a href="https://go-fileshare.github.io/docs/0.24/es/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;las personas que nombra el proveedor de identidad&lt;/a&gt;;&lt;/li&gt;
+&lt;li&gt;nombra a alguien &lt;strong&gt;que el recurso compartido permite&lt;/strong&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Y, con un &lt;a href="https://go-fileshare.github.io/docs/0.24/es/security/shared-signals/"&gt;bloque &lt;code&gt;ssf&lt;/code&gt;&lt;/a&gt;, el certificado debe
+haberse emitido (su &lt;code&gt;NotBefore&lt;/code&gt;) &lt;strong&gt;después&lt;/strong&gt; de cualquier revocación de esa persona.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="revocation-the-crl"&gt;Revocación: la CRL&lt;span class="hx:absolute hx:-mt-20" id="revocation-the-crl"&gt;&lt;/span&gt;
+&lt;a href="#revocation-the-crl" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;Se exige una CRL&lt;/strong&gt;: &lt;code&gt;crl_url&lt;/code&gt; o &lt;code&gt;crl_file&lt;/code&gt;. El certificado de una persona que nada
+puede revocar sobrevive a su baja durante toda su vida útil.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;campo&lt;/th&gt;
+&lt;th&gt;por defecto&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;crl_url&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;solo HTTPS&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;crl_file&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;o una ruta absoluta; uno u otro&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;crl_ca_file&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;las del sistema&lt;/td&gt;
+&lt;td&gt;fija las autoridades del servidor HTTPS de la CRL&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;crl_refresh&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;1m&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;con qué frecuencia se descarga&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;crl_max_age&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;1h&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;qué antigüedad puede tener la última copia válida&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;crl_state_file&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;dónde se guarda la última CRL verificada, para que un reinicio recuerde cuál es más reciente&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Se descarga y se conserva como la &lt;a href="https://go-fileshare.github.io/docs/0.24/es/security/revocation-lists/"&gt;KRL&lt;/a&gt;, y
+&lt;strong&gt;falla en modo cerrado&lt;/strong&gt; de la misma forma; una CRL que ha superado su propio
+&lt;strong&gt;&lt;code&gt;NextUpdate&lt;/code&gt;&lt;/strong&gt; cuenta como desconocida, permita lo que permita &lt;code&gt;crl_max_age&lt;/code&gt;. Una
+CRL debe estar firmada por la CA de clientes: una CRL que cualquiera podría haber
+escrito revoca lo que quiera y, peor aún, lo des-revoca. Con la CRL accesible, &lt;strong&gt;la
+siguiente llamada después de que cambie se rechaza&lt;/strong&gt;; la vida útil del certificado
+solo limita una revocación cuando la CRL no es accesible.&lt;/p&gt;
+&lt;p&gt;Desde la v0.16.2, la firma se comprueba sobre los bytes en bruto &lt;strong&gt;antes&lt;/strong&gt; de
+analizar la CRL, mediante &lt;a href="https://github.com/go-authn/revocation" target="_blank" rel="noopener"&gt;go-authn/revocation&lt;/a&gt;:
+si se analizaba primero, una CRL grande firmada por cualquiera costaba memoria y
+segundos antes de rechazarse. Lo que este servidor no puede leer como una lista
+completa también se rechaza: una CRL delta, una extensión crítica o de entrada
+desconocida, la ausencia de número de CRL, la ausencia de &lt;code&gt;NextUpdate&lt;/code&gt;. Una CRL con
+un número inferior al de la que se tiene, o con el mismo número emitida antes, se
+rechaza como una &lt;a href="https://go-fileshare.github.io/docs/0.24/es/security/revocation-lists/#never-backwards-across-a-restart-too"&gt;KRL&lt;/a&gt;
+más antigua.&lt;/p&gt;
+&lt;p&gt;Un campo de CRL sin &lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt; se rechaza, y también
+&lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt; sin &lt;code&gt;tls = true&lt;/code&gt; y &lt;code&gt;client_ca_file&lt;/code&gt;: la identidad está en
+el certificado que presenta el cliente.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-it-cannot-promise"&gt;Lo que no puede prometer&lt;span class="hx:absolute hx:-mt-20" id="what-it-cannot-promise"&gt;&lt;/span&gt;
+&lt;a href="#what-it-cannot-promise" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;El certificado de un cliente Linux pertenece a un MONTAJE, no a una persona&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;El servidor ve el certificado de una &lt;strong&gt;conexión&lt;/strong&gt;, y un cliente Linux asocia
+uno a un montaje (&lt;code&gt;tlshd&lt;/code&gt;, el número de serie del keyring en
+&lt;code&gt;mount -o xprtsec=mtls,...&lt;/code&gt;). &lt;strong&gt;Todos los usuarios de ese montaje actúan
+como la persona que nombra el certificado.&lt;/strong&gt; En una estación de trabajo que
+usa una sola persona, es exactamente ella; en una máquina en la que inician
+sesión varias personas, es quien montó: use &lt;code&gt;sec=krb5&lt;/code&gt; allí.&lt;/p&gt;
+&lt;p&gt;Por eso el RFC 9289 por sí solo se niega a prometer la autenticación de
+usuarios, y por eso el simple
+&lt;a href="https://go-fileshare.github.io/docs/0.24/es/security/tls/#nfs-over-tls-proves-the-machine-not-the-person"&gt;NFS sobre TLS&lt;/a&gt;
+sigue probando solo la máquina.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="measured-with-a-real-linux-client"&gt;Medido con un cliente Linux real&lt;span class="hx:absolute hx:-mt-20" id="measured-with-a-real-linux-client"&gt;&lt;/span&gt;
+&lt;a href="#measured-with-a-real-linux-client" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Núcleo 6.17, ktls-utils 0.9, en la CI de go-filesystems/nfs:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;El &lt;code&gt;MNT&lt;/code&gt; de MOUNT llega sin cifrar&lt;/strong&gt;, diga lo que diga &lt;code&gt;xprtsec=&lt;/code&gt;: el cliente
+de montaje del núcleo no tiene TLS. Se responde, y toda llamada NFS hecha sin TLS
+se rechaza después; así, una persona a la que el recurso compartido no permite el
+acceso ve &lt;em&gt;acceso denegado&lt;/em&gt; en el primer acceso y no en el &lt;code&gt;mount&lt;/code&gt;. &lt;strong&gt;Nada de un
+recurso compartido cruza sin cifrar.&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;tlshd&lt;/code&gt; comprueba el certificado de este servidor solo frente al almacén de
+confianza &lt;strong&gt;del sistema&lt;/strong&gt; —ignora &lt;code&gt;x509.truststore&lt;/code&gt;— y exige que el certificado y
+la clave del cliente &lt;strong&gt;pertenezcan a root, con la clave en modo 600&lt;/strong&gt;. Si no, falla
+con &lt;em&gt;gnutls: Error in the certificate (-43)&lt;/em&gt;, sin nombrar ni lo uno ni lo otro.&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>NFS — nada, salvo Kerberos o un certificado</title><link>https://go-fileshare.github.io/docs/0.24/es/protocols/nfs/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.24/es/protocols/nfs/</guid><description>
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;serve &amp;#34;nfs&amp;#34; { addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:2049&amp;#34;&lt;/span&gt; }&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;NFSv3 por sí solo no autentica a nadie&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;AUTH_UNIX&lt;/code&gt; es una &lt;strong&gt;afirmación&lt;/strong&gt;: el cliente dice «uid 501» y la red no
+puede contradecirlo. Tampoco hay cifrado.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Por eso &lt;strong&gt;un recurso compartido que nombra quién puede usarlo no se exporta por
+NFS&lt;/strong&gt;. El rechazo se imprime al arrancar y en &lt;a href="https://go-fileshare.github.io/docs/0.24/es/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt;,
+con el motivo:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;pre&gt;&lt;code&gt;nfs on 0.0.0.0:2049 — scratch
+photos is not served over nfs: it is restricted to alice and bob, and
+NFSv3 on its own has no authentication: AUTH_UNIX is a claim the client
+makes about itself and the wire cannot disagree with it. A kerberos
+block lifts this: sec=krb5 carries a principal a ticket proves; so
+does identity = &amp;#34;certificate&amp;#34; on the nfs serve block: RPC-over-TLS
+with a client certificate naming the person&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Un recurso compartido sin &lt;code&gt;allow&lt;/code&gt; ni &lt;code&gt;writers&lt;/code&gt; —cualquiera que se conecte, en lectura
+y escritura— sí se exporta por NFS, porque ahí no hay ninguna regla que el protocolo
+pueda dejar de respetar.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="the-refusal-that-used-to-be-permanent"&gt;El rechazo que antes era permanente&lt;span class="hx:absolute hx:-mt-20" id="the-refusal-that-used-to-be-permanent"&gt;&lt;/span&gt;
+&lt;a href="#the-refusal-that-used-to-be-permanent" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Un bloque &lt;code&gt;kerberos&lt;/code&gt; permite a NFS distinguir a las personas, y un recurso compartido
+restringido se sirve entonces por él como en cualquier otro sitio:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;kerberos&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; realm&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;EXAMPLE.ORG&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; keytab&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/krb5.keytab&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;sec=krb5&lt;/code&gt; transporta un principal que &lt;strong&gt;prueba un ticket&lt;/strong&gt;, en lugar de un uid que
+el cliente afirma.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Se compara el reino (realm), no solo el nombre antes de la &lt;code&gt;@&lt;/code&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Dos reinos pueden tener cada uno un &lt;code&gt;alice&lt;/code&gt;, y solo uno de ellos es el suyo.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="over-tls-the-machine-not-the-person"&gt;Sobre TLS: la máquina, no la persona&lt;span class="hx:absolute hx:-mt-20" id="over-tls-the-machine-not-the-person"&gt;&lt;/span&gt;
+&lt;a href="#over-tls-the-machine-not-the-person" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;nfs&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; tls&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; client_ca_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/tls/clients.pem&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Desde la v0.9.0, NFS se sirve sobre RPC-with-TLS (RFC 9289) con &lt;code&gt;tls = true&lt;/code&gt; y un
+&lt;a href="https://go-fileshare.github.io/docs/0.24/es/security/tls/"&gt;bloque &lt;code&gt;tls&lt;/code&gt;&lt;/a&gt;. Cifra; con &lt;code&gt;client_ca_file&lt;/code&gt; obliga al cliente
+a presentar un certificado de esa autoridad, que indica qué &lt;strong&gt;máquina&lt;/strong&gt; está
+montando. El uid de dentro sigue siendo el que afirma &lt;code&gt;AUTH_SYS&lt;/code&gt;, así que un recurso
+compartido restringido &lt;strong&gt;sigue rechazándose&lt;/strong&gt; por esta vía. TLS se ofrece, no se
+exige: a un cliente que nunca lo pide se le siguen sirviendo los recursos compartidos
+abiertos.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="a-person-from-their-certificate"&gt;Una persona, a partir de su certificado&lt;span class="hx:absolute hx:-mt-20" id="a-person-from-their-certificate"&gt;&lt;/span&gt;
+&lt;a href="#a-person-from-their-certificate" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Desde la v0.12.0, un certificado puede nombrar a una &lt;strong&gt;persona&lt;/strong&gt; —tal como lo emite
+go-authn/bridge tras un inicio de sesión en un proveedor de identidad—, y entonces un
+recurso compartido que nombra personas se sirve por NFS sin kerberos:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;nfs&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; tls&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; client_ca_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/bridge-x509-ca.pem&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; identity&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;certificate&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; crl_url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://bridge.example.org/x509/crl&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # or crl_file: one is required
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;El certificado de un cliente Linux pertenece a un montaje&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Todos los usuarios de ese montaje actúan como la persona que nombra el
+certificado. Correcto en una estación de trabajo que usa una sola persona;
+incorrecto en una máquina en la que inician sesión varias personas: use
+&lt;code&gt;sec=krb5&lt;/code&gt; allí.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Lo que transporta el certificado, la CRL que se exige y lo que se midió con un
+cliente Linux real (&lt;code&gt;MNT&lt;/code&gt; sin cifrar, las trampas de &lt;code&gt;tlshd&lt;/code&gt;) se encuentran en
+&lt;a href="https://go-fileshare.github.io/docs/0.24/es/security/nfs-certificates/"&gt;NFS, con identidades a partir de certificados&lt;/a&gt;.&lt;/p&gt;</description></item></channel></rss>

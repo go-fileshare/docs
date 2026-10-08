@@ -1,0 +1,28 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Bloqueo</title><link>https://go-fileshare.github.io/docs/0.24/es/tags/bloqueo/</link><description>Recent content in Bloqueo on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>es</language><atom:link href="https://go-fileshare.github.io/docs/0.24/es/tags/bloqueo/index.xml" rel="self" type="application/rss+xml"/><item><title>Una imagen, varios protocolos, un bloqueo</title><link>https://go-fileshare.github.io/docs/0.24/es/operations/locking/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.24/es/operations/locking/</guid><description>
+&lt;p&gt;Cada servidor de esta familia serializa el propio controlador, porque
+&lt;a href="https://github.com/go-filesystems/interface" target="_blank" rel="noopener"&gt;&lt;code&gt;go-filesystems/interface&lt;/code&gt;&lt;/a&gt; no promete
+nada sobre llamadas concurrentes basadas en rutas, y cada uno de ellos tiene &lt;strong&gt;su
+propio&lt;/strong&gt; bloqueo, sin saber nada de los demás.&lt;/p&gt;
+&lt;p&gt;Servir una misma imagen por tres protocolos a la vez no tendría, por tanto, ningún
+bloqueo común en ningún sitio. Así que la imagen se envuelve &lt;strong&gt;una sola vez&lt;/strong&gt;, aquí,
+y el mismo envoltorio se entrega a todos ellos.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="stated-as-measured-so-as-not-to-overstate-it"&gt;Presentado como medido, para no exagerarlo&lt;span class="hx:absolute hx:-mt-20" id="stated-as-measured-so-as-not-to-overstate-it"&gt;&lt;/span&gt;
+&lt;a href="#stated-as-measured-so-as-not-to-overstate-it" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Ocho goroutines que escriben a través de un controlador fat32 &lt;strong&gt;sin envolver&lt;/strong&gt;, con
+&lt;code&gt;-race&lt;/code&gt;, &lt;strong&gt;no producen hoy ninguna condición de carrera&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;Es un seguro sobre un contrato, no la reproducción de un defecto: ext4 y ntfs no son
+fat32, y una actualización de un controlador no es algo que este programa debiera
+tener que volver a auditar.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="the-wrapper-carries-capabilities-through"&gt;El envoltorio deja pasar las capacidades&lt;span class="hx:absolute hx:-mt-20" id="the-wrapper-carries-capabilities-through"&gt;&lt;/span&gt;
+&lt;a href="#the-wrapper-carries-capabilities-through" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;No las oculta:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;un controlador que responde a &lt;code&gt;Opener&lt;/code&gt; recibe a cambio un &lt;strong&gt;&lt;code&gt;File&lt;/code&gt; con bloqueo&lt;/strong&gt;;&lt;/li&gt;
+&lt;li&gt;uno cuyo &lt;code&gt;File&lt;/code&gt; responde a &lt;code&gt;WritableFile&lt;/code&gt; conserva sus &lt;strong&gt;escrituras posicionales&lt;/strong&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;La diferencia entre estas y la alternativa de archivo completo se midió en &lt;strong&gt;~70×&lt;/strong&gt;
+en otro lugar de la familia, así que un envoltorio que las borrara sería un defecto
+de rendimiento disfrazado de seguridad.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="under-isolate-the-lock-cannot-help"&gt;Con &lt;code&gt;--isolate&lt;/code&gt; el bloqueo no puede ayudar&lt;span class="hx:absolute hx:-mt-20" id="under-isolate-the-lock-cannot-help"&gt;&lt;/span&gt;
+&lt;a href="#under-isolate-the-lock-cannot-help" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Un proceso hijo abre la imagen él mismo, así que no hay envoltorio compartido entre
+hijos. Por eso una imagen servida en escritura por dos protocolos se
+&lt;a href="https://go-fileshare.github.io/docs/0.24/es/operations/isolation/#the-rule-that-makes-it-honest"&gt;rechaza&lt;/a&gt; en lugar de
+servirse discretamente sin bloqueo.&lt;/p&gt;</description></item></channel></rss>

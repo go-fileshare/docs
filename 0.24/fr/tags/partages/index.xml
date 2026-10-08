@@ -1,0 +1,238 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Partages</title><link>https://go-fileshare.github.io/docs/0.24/fr/tags/partages/</link><description>Recent content in Partages on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>fr</language><atom:link href="https://go-fileshare.github.io/docs/0.24/fr/tags/partages/index.xml" rel="self" type="application/rss+xml"/><item><title>Partages : images, périphériques, répertoires</title><link>https://go-fileshare.github.io/docs/0.24/fr/configuration/shares/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.24/fr/configuration/shares/</guid><description>
+&lt;p&gt;Un partage sert l&amp;rsquo;une de trois choses : une &lt;strong&gt;image disque&lt;/strong&gt;, un nœud de &lt;strong&gt;périphérique&lt;/strong&gt;, ou un
+&lt;strong&gt;répertoire de l&amp;rsquo;hôte&lt;/strong&gt;. Une image et un périphérique portent un système de fichiers que ce
+programme lit lui-même ; un répertoire est celui de l&amp;rsquo;hôte.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="an-image-and-the-filesystem-inside-it"&gt;Une image, et le système de fichiers qu&amp;rsquo;elle contient&lt;span class="hx:absolute hx:-mt-20" id="an-image-and-the-filesystem-inside-it"&gt;&lt;/span&gt;
+&lt;a href="#an-image-and-the-filesystem-inside-it" class="subheading-anchor" aria-label="Lien permanent vers cette section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Le système de fichiers que contient une image est &lt;strong&gt;déduit plutôt que déclaré&lt;/strong&gt;.
+&lt;a href="https://github.com/go-filesystems/detect" target="_blank" rel="noopener"&gt;&lt;code&gt;go-filesystems/detect&lt;/code&gt;&lt;/a&gt; lit le
+nombre magique et renvoie le pilote qui lui correspond : &lt;strong&gt;fat32, exfat, ext4, ntfs, ufs,
+iso9660, squashfs ou hfsplus&lt;/strong&gt; — tous les pilotes de la même forme,
+&lt;code&gt;OpenReader(io.ReaderAt, int64)&lt;/code&gt;, un système de fichiers à l&amp;rsquo;offset zéro.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="the-four-that-cannot-be-sniffed"&gt;Les quatre qu&amp;rsquo;on ne peut pas flairer&lt;span class="hx:absolute hx:-mt-20" id="the-four-that-cannot-be-sniffed"&gt;&lt;/span&gt;
+&lt;a href="#the-four-that-cannot-be-sniffed" class="subheading-anchor" aria-label="Lien permanent vers cette section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;apfs, btrfs, xfs et zfs&lt;/strong&gt; ouvrent chacun une image de &lt;em&gt;disque&lt;/em&gt; et choisissent une &lt;strong&gt;partition&lt;/strong&gt; :
+il n&amp;rsquo;y a donc aucun nombre magique à trouver à l&amp;rsquo;offset zéro. Un partage dit lequel :&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;photos&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/disk.img&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; filesystem&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;xfs&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; partition&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;2&lt;/span&gt;&lt;span class="c1"&gt; # or leave it out: the driver takes the first data partition
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copier le code"
+aria-label="Copier le code"
+data-copied-label="Copié !"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="a-partition-for-any-filesystem"&gt;Une partition, pour n&amp;rsquo;importe quel système de fichiers&lt;span class="hx:absolute hx:-mt-20" id="a-partition-for-any-filesystem"&gt;&lt;/span&gt;
+&lt;a href="#a-partition-for-any-filesystem" class="subheading-anchor" aria-label="Lien permanent vers cette section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Une image disque qui contient du FAT32, de l&amp;rsquo;ext4 ou de l&amp;rsquo;exFAT a une table de partitions devant elle
+aussi souvent qu&amp;rsquo;une image qui contient du XFS — et la détection lit l&amp;rsquo;offset zéro, où une
+image partitionnée a la &lt;em&gt;table&lt;/em&gt;. La partition est donc choisie d&amp;rsquo;abord, et le
+pilote reçoit une vue de celle-ci :&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;photos&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/disk.img&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; partition_label&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;photos&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # what lsblk calls PARTLABEL
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copier le code"
+aria-label="Copier le code"
+data-copied-label="Copié !"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Trois façons d&amp;rsquo;en nommer une, et &lt;strong&gt;une seule peut être donnée&lt;/strong&gt; — deux qui se contrediraient
+serviraient celle que le code essaierait en premier :&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;partition = 2&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;en comptant à partir de 1, comme les outils de partitionnement les affichent&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;partition_label = &amp;quot;photos&amp;quot;&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;le nom de partition GPT&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;partition_uuid = &amp;quot;…&amp;quot;&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;le GUID unique GPT — le &lt;code&gt;PARTUUID&lt;/code&gt; de Linux&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Un index bouge&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Un disque repartitionné, un outil qui écrit les entrées dans un autre ordre, une image
+restaurée avec une partition de moins — et &lt;code&gt;partition = 2&lt;/code&gt; désigne autre
+chose, &lt;strong&gt;en silence&lt;/strong&gt;, parce qu&amp;rsquo;on y trouve toujours un système de fichiers. Une étiquette ou un
+UUID désigne la partition elle-même : c&amp;rsquo;est pourquoi les fstab ont cessé d&amp;rsquo;utiliser des index
+il y a des années. L&amp;rsquo;index est là pour les images MBR, qui n&amp;rsquo;ont ni l&amp;rsquo;un ni l&amp;rsquo;autre.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Un partage qui a choisi une partition est &lt;strong&gt;en lecture seule&lt;/strong&gt;, et le dit au démarrage : les
+offsets du pilote sont ceux de la partition alors que le fichier sous-jacent est le disque
+entier, si bien qu&amp;rsquo;une écriture atterrirait à cet offset depuis le début de l&amp;rsquo;&lt;em&gt;image&lt;/em&gt; — sur
+la table de partitions, bien souvent.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="naming-a-filesystem-turns-detection-off"&gt;Nommer un système de fichiers désactive la détection&lt;span class="hx:absolute hx:-mt-20" id="naming-a-filesystem-turns-detection-off"&gt;&lt;/span&gt;
+&lt;a href="#naming-a-filesystem-turns-detection-off" class="subheading-anchor" aria-label="Lien permanent vers cette section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;C&amp;rsquo;est le but, et c&amp;rsquo;est le risque&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;L&amp;rsquo;image est ouverte comme &lt;em&gt;ce&lt;/em&gt; système de fichiers, ou refusée. Une image FAT32 à qui l&amp;rsquo;on dit qu&amp;rsquo;elle est XFS
+ne devient pas un partage XFS ; elle ne démarre pas, et dit comme quoi on lui a demandé
+de l&amp;rsquo;ouvrir.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;filesystem&lt;/code&gt; est accepté aussi pour ceux qu&amp;rsquo;on peut flairer, et les deux sont alors
+comparés : un partage qui dit &lt;code&gt;ext4&lt;/code&gt; sur une image FAT32 est refusé avec &lt;em&gt;the
+share says ext4 and the image holds fat32&lt;/em&gt;. C&amp;rsquo;est ainsi qu&amp;rsquo;un site refuse une
+détection erronée plutôt que de la découvrir plus tard.
+&lt;a href="https://go-fileshare.github.io/docs/0.24/fr/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt; marque d&amp;rsquo;un astérisque un pilote nommé, parce que cette ligne n&amp;rsquo;a pas été
+reconnue — elle a été affirmée.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="a-device-not-only-an-image"&gt;Un périphérique, pas seulement une image&lt;span class="hx:absolute hx:-mt-20" id="a-device-not-only-an-image"&gt;&lt;/span&gt;
+&lt;a href="#a-device-not-only-an-image" class="subheading-anchor" aria-label="Lien permanent vers cette section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;photos&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/dev/sda&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # a device node, not a file
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copier le code"
+aria-label="Copier le code"
+data-copied-label="Copié !"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;Aucun privilège n&amp;rsquo;est en jeu.&lt;/strong&gt; Rien ici ne monte quoi que ce soit — les pilotes
+&lt;a href="https://github.com/go-filesystems" target="_blank" rel="noopener"&gt;&lt;code&gt;go-filesystems&lt;/code&gt;&lt;/a&gt; lisent ext4, xfs et
+les autres en espace utilisateur — il n&amp;rsquo;y a donc pas de &lt;code&gt;mount(2)&lt;/code&gt; et par conséquent pas de
+&lt;code&gt;CAP_SYS_ADMIN&lt;/code&gt;. Ouvrir un périphérique est un &lt;code&gt;open(2)&lt;/code&gt; ordinaire, régi par les
+permissions du nœud :&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;propriétaire&lt;/th&gt;
+&lt;th&gt;mode&lt;/th&gt;
+&lt;th&gt;suffisant&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Linux &lt;code&gt;/dev/sda&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;root:disk&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;0660&lt;/td&gt;
+&lt;td&gt;appartenance à &lt;code&gt;disk&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;macOS &lt;code&gt;/dev/disk0&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;root:operator&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;0640&lt;/td&gt;
+&lt;td&gt;appartenance à &lt;code&gt;operator&lt;/code&gt;, plus l&amp;rsquo;accès complet au disque (Full Disk Access)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Un refus dit quel groupe, plutôt que &lt;code&gt;permission denied&lt;/code&gt; — la réponse n&amp;rsquo;est
+jamais &lt;code&gt;sudo&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;⛔ &lt;strong&gt;Un partage de périphérique est en lecture seule&lt;/strong&gt;, pour la même raison qu&amp;rsquo;un partage qui a choisi une
+partition : écrire sur un disque en service n&amp;rsquo;est pas une décision à prendre à votre place.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Le périphérique est ouvert en exclusivité, et c&amp;rsquo;est une question de justesse, pas de prudence&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Si le noyau a un système de fichiers monté depuis ce périphérique, le cache de pages du système de fichiers
+détient des métadonnées plus récentes que le périphérique — si bien qu&amp;rsquo;un lecteur brut voit un
+bloc de répertoire d&amp;rsquo;avant une mise à jour à côté d&amp;rsquo;un bloc d&amp;rsquo;inode d&amp;rsquo;après celle-ci,
+un état qui n&amp;rsquo;a jamais existé sur le disque à aucun moment. &lt;code&gt;O_EXCL&lt;/code&gt; sur un périphérique
+bloc est la primitive du noyau lui-même pour « personne d&amp;rsquo;autre, montage compris » ;
+c&amp;rsquo;est ce qu&amp;rsquo;utilisent &lt;code&gt;mkfs&lt;/code&gt; et &lt;code&gt;fsck&lt;/code&gt;. Un périphérique en cours d&amp;rsquo;utilisation est refusé, nommément, avec
+la raison.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Deux choses ont été mesurées plutôt que supposées :&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Stat().Size()&lt;/code&gt; vaut &lt;strong&gt;0&lt;/strong&gt; pour un périphérique : la longueur est donc demandée au périphérique
+lui-même. Se positionner à la fin répond sous Linux et renvoie &lt;strong&gt;0 sans erreur&lt;/strong&gt;
+sous macOS : c&amp;rsquo;est pourquoi Darwin utilise &lt;code&gt;DKIOCGETBLOCKCOUNT&lt;/code&gt; à la place.&lt;/li&gt;
+&lt;li&gt;Un nœud &lt;strong&gt;brut&lt;/strong&gt; (&lt;code&gt;/dev/rdiskN&lt;/code&gt;, ou &lt;code&gt;O_DIRECT&lt;/code&gt; sous Linux) refuse une lecture
+non alignée, et lire un champ de deux octets à l&amp;rsquo;offset 11, c&amp;rsquo;est précisément ce &lt;em&gt;qu&amp;rsquo;est&lt;/em&gt; l&amp;rsquo;analyse d&amp;rsquo;un BPB FAT.
+Les lectures sur un périphérique sont arrondies à des blocs entiers ; sans cela,
+&lt;code&gt;/dev/rdisk4&lt;/code&gt; signalait &lt;code&gt;unknown filesystem&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 data-hextra-search-id="a-directory-not-only-an-image"&gt;Un répertoire, pas seulement une image&lt;span class="hx:absolute hx:-mt-20" id="a-directory-not-only-an-image"&gt;&lt;/span&gt;
+&lt;a href="#a-directory-not-only-an-image" class="subheading-anchor" aria-label="Lien permanent vers cette section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Depuis la v0.8.0, un partage peut servir un répertoire de l&amp;rsquo;hôte — le volume d&amp;rsquo;un conteneur,
+par exemple — plutôt qu&amp;rsquo;une image :&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;photos&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; directory&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/data/photos&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; allow&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;@family&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copier le code"
+aria-label="Copier le code"
+data-copied-label="Copié !"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;C&amp;rsquo;est &lt;a href="https://github.com/go-filesystems/osfs" target="_blank" rel="noopener"&gt;go-filesystems/osfs&lt;/a&gt;, qui
+atteint l&amp;rsquo;arborescence par un &lt;strong&gt;&lt;code&gt;os.Root&lt;/code&gt;&lt;/strong&gt; : un &lt;code&gt;..&lt;/code&gt; qui en sort, un chemin
+absolu, et un lien symbolique qui mène dehors sont refusés par la racine adossée au noyau,
+pas par un test sur des chaînes. Un client peut &lt;em&gt;créer&lt;/em&gt; un lien vers &lt;code&gt;/etc&lt;/code&gt; ; rien ne le
+suivra. Une FIFO plantée dans l&amp;rsquo;arborescence est refusée plutôt que laissée bloquer le
+serveur.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Un partage ne peut pas en contenir un autre (depuis la v0.17.0)&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Un partage de répertoire dont l&amp;rsquo;arborescence contient l&amp;rsquo;image ou le répertoire d&amp;rsquo;un autre partage est
+&lt;strong&gt;refusé au démarrage&lt;/strong&gt;, ainsi que par l&amp;rsquo;API d&amp;rsquo;administration : quiconque peut utiliser le partage
+extérieur lirait et écrirait l&amp;rsquo;intérieur sans y être autorisé —
+NFS anonyme compris. De même pour deux partages sur la même source, sauf deux
+partitions différentes d&amp;rsquo;une même image disque.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Pas derrière le verrou d&amp;rsquo;image&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Un pilote d&amp;rsquo;image possède un seul fichier et ne promet rien sur deux appels simultanés,
+c&amp;rsquo;est pourquoi &lt;a href="https://go-fileshare.github.io/docs/0.24/fr/operations/locking/"&gt;chaque image est enveloppée dans un verrou&lt;/a&gt;.
+Une arborescence de l&amp;rsquo;hôte appartient au noyau, qui sérialise ce qui doit l&amp;rsquo;être, appel
+par appel, et pas davantage ; un seul mutex devant chaque fichier de chaque client serait
+la chose la plus lente que puisse faire un serveur de fichiers.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;⛔ Un partage a une &lt;code&gt;image&lt;/code&gt; &lt;strong&gt;ou&lt;/strong&gt; un &lt;code&gt;directory&lt;/code&gt;, jamais les deux, et jamais aucun des deux.
+&lt;code&gt;filesystem&lt;/code&gt; et &lt;code&gt;partition&lt;/code&gt; concernent une image : un partage de répertoire qui en nomme un est
+refusé, parce que le dire signifie que le partage devait être une image.
+&lt;code&gt;read_only = true&lt;/code&gt; fonctionne sur un répertoire comme sur une image ; un partage qui le dit
+et liste aussi des &lt;code&gt;writers&lt;/code&gt; est refusé, parce que &lt;code&gt;read_only&lt;/code&gt; l&amp;rsquo;emporterait.&lt;/p&gt;
+&lt;p&gt;La capacité annoncée à un client est celle du système de fichiers sur lequel se trouve l&amp;rsquo;arborescence ; une
+plateforme qui ne sait pas la dire la laisse à zéro, ce que les protocoles lisent comme
+« inconnue » plutôt que « pleine ».&lt;/p&gt;</description></item></channel></rss>

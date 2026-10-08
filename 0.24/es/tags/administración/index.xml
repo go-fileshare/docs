@@ -1,0 +1,959 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Administración</title><link>https://go-fileshare.github.io/docs/0.24/es/tags/administraci%C3%B3n/</link><description>Recent content in Administración on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>es</language><atom:link href="https://go-fileshare.github.io/docs/0.24/es/tags/administraci%C3%B3n/index.xml" rel="self" type="application/rss+xml"/><item><title>Volúmenes: almacenamiento que crea fileshare</title><link>https://go-fileshare.github.io/docs/0.24/es/administration/volumes/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.24/es/administration/volumes/</guid><description>
+&lt;p&gt;Desde la v0.21.0, la &lt;a href="https://go-fileshare.github.io/docs/0.24/es/administration/"&gt;API de administración&lt;/a&gt; puede &lt;strong&gt;crear
+el almacenamiento que sirve un recurso compartido&lt;/strong&gt; —un &lt;strong&gt;dataset ZFS&lt;/strong&gt;, un
+&lt;strong&gt;subvolumen btrfs&lt;/strong&gt;, un &lt;strong&gt;directorio XFS o ext4 bajo una cuota de proyecto&lt;/strong&gt;—, con
+tamaño, propietario y seguimiento, y servir un recurso compartido a partir de él.
+Solo en Linux. Ceph aún no está soportado.&lt;/p&gt;
+&lt;p&gt;Crear ese almacenamiento requiere &lt;code&gt;CAP_SYS_ADMIN&lt;/code&gt; (quotactl, los ioctl de cuotas de
+btrfs, &lt;code&gt;/dev/zfs&lt;/code&gt;, mount(2)). &lt;code&gt;fileshare serve&lt;/code&gt; analiza cinco protocolos de red para
+desconocidos y no tiene ningún privilegio, así que la parte que sí lo tiene es un
+segundo rol del mismo binario, &lt;code&gt;fileshare provisioner&lt;/code&gt;, detrás de un socket unix y de
+un protocolo pequeño y cerrado:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;pre&gt;&lt;code&gt; admin gRPC (unix socket 0600 &amp;#43; peer uid, or mTLS)
+operator ─────────────────────────────────────────────▶ fileshare serve
+(unprivileged)
+│
+provision gRPC (unix socket, SO_PEERCRED = fileshare&amp;#39;s uid)
+▼
+fileshare provisioner
+(CAP_SYS_ADMIN, CAP_CHOWN, CAP_FOWNER)
+│
+go-fsctl: zfs · btrfs · projquota (ioctls, no CLI)&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Un binario en lugar de dos demonios: una versión que desplegar, una definición de
+protocolo. El almacenamiento en sí lo gestiona &lt;a href="https://go-fsctl.github.io/" target="_blank" rel="noopener"&gt;go-fsctl&lt;/a&gt;
+(Go puro, sin los comandos &lt;code&gt;zfs&lt;/code&gt; ni &lt;code&gt;btrfs&lt;/code&gt;). El diseño, y lo que cambió durante su
+construcción, están en el
+&lt;a href="https://github.com/go-fileshare/fileshare/blob/v0.24.0/docs/volumes.md" target="_blank" rel="noopener"&gt;&lt;code&gt;docs/volumes.md&lt;/code&gt;&lt;/a&gt;
+del repositorio de fileshare.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="both-processes-configured"&gt;Los dos procesos, configurados&lt;span class="hx:absolute hx:-mt-20" id="both-processes-configured"&gt;&lt;/span&gt;
+&lt;a href="#both-processes-configured" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;fileshare serve&lt;/code&gt;, como el usuario &lt;code&gt;fileshare&lt;/code&gt; (uid 990):&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# /etc/fileshare/fileshare.hcl
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;admin&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; listen&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;unix:///run/fileshare/admin.sock&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; state_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/var/lib/fileshare/shares.json&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; source_roots&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;/srv/fileshare/volumes&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; provisioner&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;unix:///run/fileshare-provisioner/provisioner.sock&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; provisioner_uid&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;0&lt;/span&gt;&lt;span class="c1"&gt; # who must answer on that socket; 0 is the default
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; allowed_uids&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="m"&gt;990&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="c1"&gt; # who may call this API
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;clave&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;provisioner&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;el socket del aprovisionador, &lt;code&gt;unix:///ruta&lt;/code&gt;. Sin él, toda llamada de volúmenes responde &lt;code&gt;FAILED_PRECONDITION&lt;/code&gt; y no se crea ningún recurso compartido a partir de un volumen&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;provisioner_uid&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;el uid con el que debe ejecutarse el proceso que responde en ese socket, leído del núcleo (&lt;code&gt;SO_PEERCRED&lt;/code&gt;) en cada conexión: un socket que otro haya vinculado no recibe nada. Si no se establece, es 0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;allowed_uids&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;opcional, solo para socket unix: los únicos uid cuyas llamadas se responden; cualquier otro recibe &lt;code&gt;PERMISSION_DENIED&lt;/code&gt;, y queda auditado. Solo puede &lt;strong&gt;restringir&lt;/strong&gt; lo que permite el modo 0600 del socket (su propietario y root): root, por ejemplo, puede quedar sin permiso para llamar. Se rechaza por TCP, donde la comprobación es el certificado de cliente&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;La ruta de un volumen debe estar bajo &lt;code&gt;source_roots&lt;/code&gt;, como cualquier otro origen.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;fileshare provisioner&lt;/code&gt;, como root:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# /etc/fileshare-provisioner.hcl
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;provisioner&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; listen&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;unix:///run/fileshare-provisioner/provisioner.sock&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; client_uid&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;990&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; group&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;fileshare&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; max_volume&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;10T&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; state_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/var/lib/fileshare-provisioner/volumes.json&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;parent&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;tank&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; zfs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;tank/fileshare&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; root&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/fileshare/volumes/tank&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; parent &amp;#34;fast&amp;#34; { btrfs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/fileshare/volumes/fast&amp;#34;&lt;/span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;parent&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;plain&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; xfs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/fileshare/volumes/plain&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; project_ids&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;100000-199999&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;clave&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;listen&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;unix://&amp;lt;ruta absoluta&amp;gt;&lt;/code&gt; y nada más. El socket se crea con 0660, propiedad del usuario del aprovisionador (root) y de &lt;code&gt;&amp;lt;group&amp;gt;&lt;/code&gt;, y debe estar en un directorio en el que nadie más que el aprovisionador pueda escribir: el &lt;strong&gt;suyo&lt;/strong&gt; (&lt;code&gt;/run/fileshare-provisioner&lt;/code&gt;), no el de fileshare&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;client_uid&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;el único uid al que se responde: el de fileshare. &lt;strong&gt;0 se rechaza&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;group&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;es propietario de la raíz de cada volumen (&lt;code&gt;root:&amp;lt;group&amp;gt;&lt;/code&gt;, modo 2770). fileshare debe pertenecer a él: escribe en un volumen a través del grupo, nunca como propietario; el propietario de un directorio puede borrar su id de proyecto sin privilegios, y así salirse de una cuota XFS/ext4&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;max_volume&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;la cuota más grande que puede tener un volumen (&lt;code&gt;&amp;quot;10T&amp;quot;&lt;/code&gt;, &lt;code&gt;&amp;quot;500G&amp;quot;&lt;/code&gt;, &lt;code&gt;&amp;quot;1048576&amp;quot;&lt;/code&gt;); por encima, &lt;code&gt;OUT_OF_RANGE&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;state_file&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;lo que ha creado este proceso —ids de subvolúmenes btrfs, ids de proyecto XFS/ext4—, para que tras un reinicio sepa qué es suyo&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;parent &amp;quot;&amp;lt;id&amp;gt;&amp;quot;&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;dónde se pueden crear volúmenes, con el id que nombra una petición. Exactamente uno de &lt;code&gt;zfs&lt;/code&gt; (el dataset del que los volúmenes son hijos, con &lt;code&gt;root&lt;/code&gt; donde se montan), &lt;code&gt;btrfs&lt;/code&gt;, &lt;code&gt;xfs&lt;/code&gt; o &lt;code&gt;ext4&lt;/code&gt; (el directorio en el que se crean)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;project_ids&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;XFS/ext4: el rango de ids de proyecto que este padre puede asignar&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;enable_quota&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;btrfs: permite al aprovisionador activar las cuotas cuando están desactivadas. Sin ello, un padre btrfs con las cuotas desactivadas detiene el arranque: los qgroups ralentizan cada commit a medida que se multiplican las instantáneas, y esa es una decisión del operador&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;El archivo del aprovisionador no contiene nada más que su bloque &lt;code&gt;provisioner&lt;/code&gt;: el
+propio archivo de fileshare entregado por error se rechaza en lugar de leerse a
+medias.&lt;/p&gt;
+&lt;p&gt;Un volumen es siempre &lt;code&gt;&amp;lt;raíz del padre&amp;gt;/&amp;lt;nombre&amp;gt;&lt;/code&gt;: el dataset &lt;code&gt;tank/fileshare/&amp;lt;name&amp;gt;&lt;/code&gt;
+montado en &lt;code&gt;/srv/fileshare/volumes/tank/&amp;lt;name&amp;gt;&lt;/code&gt; (con &lt;code&gt;refquota&lt;/code&gt;), un subvolumen btrfs
+limitado por su qgroup, un directorio XFS o ext4 con un id de proyecto del rango y un
+límite estricto de bloques. XFS y ext4 necesitan la opción de montaje &lt;code&gt;prjquota&lt;/code&gt;
+(ext4, además, las funcionalidades &lt;code&gt;project,quota&lt;/code&gt;).&lt;/p&gt;
+&lt;h2 data-hextra-search-id="the-systemd-pair"&gt;La pareja de unidades systemd&lt;span class="hx:absolute hx:-mt-20" id="the-systemd-pair"&gt;&lt;/span&gt;
+&lt;a href="#the-systemd-pair" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;El aprovisionador:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-ini" data-lang="ini"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# fileshare-provisioner.service&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;[Service]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;ExecStart&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;/usr/local/bin/fileshare provisioner -c /etc/fileshare-provisioner.hcl&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;RuntimeDirectory&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;fileshare-provisioner&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;RuntimeDirectoryMode&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;0755&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;StateDirectory&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;fileshare-provisioner&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;StateDirectoryMode&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;0700&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;CapabilityBoundingSet&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;CAP_SYS_ADMIN CAP_CHOWN CAP_FOWNER&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# Run as root, or as a dedicated user with:&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# AmbientCapabilities=CAP_SYS_ADMIN CAP_CHOWN CAP_FOWNER&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;NoNewPrivileges&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;yes&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;SystemCallFilter&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;@system-service @mount quotactl quotactl_fd&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;SystemCallArchitectures&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;native&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;LockPersonality&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;yes&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;RestrictRealtime&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;yes&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# NOT ProtectSystem= nor ReadWritePaths=: they give the service its own&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# mount namespace, and the ZFS volumes it mounts would be seen by nobody&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# else. And no Landlock: a Landlock-restricted thread cannot mount(2).&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;El servidor, sin ninguna capability:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-ini" data-lang="ini"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# fileshare.service&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;[Unit]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;Requires&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;fileshare-provisioner.service&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;After&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;fileshare-provisioner.service&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;[Service]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;User&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;fileshare&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;Group&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;fileshare&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;ExecStart&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;/usr/local/bin/fileshare serve -c /etc/fileshare/fileshare.hcl&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;RuntimeDirectory&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;fileshare&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;StateDirectory&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;fileshare&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# No capability at all: CAP_SYS_RESOURCE would let it past an ext4 quota,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# and fileshare refuses to serve volumes with it.&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;CapabilityBoundingSet&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;AmbientCapabilities&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;NoNewPrivileges&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;yes&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;ProtectSystem&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;strict&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;ReadWritePaths&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;/srv/fileshare/volumes /var/lib/fileshare&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;ProtectSystem=&lt;/code&gt; no plantea problemas para el servidor: quien monta es el
+aprovisionador, y los montajes se propagan hacia el espacio de nombres del servidor,
+no fuera de él, así que un volumen ZFS montado después de que arrancara el servidor
+le resulta visible.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Ejemplos, no unidades probadas&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Ninguna de las dos unidades se ejercita en la CI: el job de extremo a
+extremo ejecuta ambos procesos con &lt;code&gt;sudo&lt;/code&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Actualice primero el aprovisionador&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;El aprovisionador rechaza un mensaje que lleve un campo que su versión no
+define —cierra la conexión—, así que &lt;code&gt;fileshare serve&lt;/code&gt; y
+&lt;code&gt;fileshare provisioner&lt;/code&gt; ejecutan la misma versión.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="the-admin-apis-volume-calls"&gt;Las llamadas de volúmenes de la API de administración&lt;span class="hx:absolute hx:-mt-20" id="the-admin-apis-volume-calls"&gt;&lt;/span&gt;
+&lt;a href="#the-admin-apis-volume-calls" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;fileshare serve&lt;/code&gt; las transmite al aprovisionador
+(&lt;a href="https://github.com/go-fileshare/fileshare/blob/v0.24.0/proto/fileshare/admin/v1/admin.proto" target="_blank" rel="noopener"&gt;&lt;code&gt;admin.proto&lt;/code&gt;&lt;/a&gt;):&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ListParents&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;dónde se pueden crear volúmenes: el id de cada padre, su tipo, su raíz, el espacio libre y total, si admite instantáneas; y &lt;code&gt;max_volume_bytes&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;CreateVolume&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;un volumen de &lt;code&gt;quota_bytes&lt;/code&gt; (0 se rechaza). Idempotente por nombre: la misma cuota responde con el volumen existente (&lt;code&gt;created&lt;/code&gt; a false), otra cuota da &lt;code&gt;ALREADY_EXISTS&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ResizeVolume&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;cambia la cuota, en uno u otro sentido; nunca por debajo de lo usado (&lt;code&gt;FAILED_PRECONDITION&lt;/code&gt;)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;SnapshotVolume&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;una instantánea con nombre, de solo lectura: ZFS y btrfs; &lt;code&gt;UNIMPLEMENTED&lt;/code&gt; en XFS y ext4&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;GetVolume&lt;/code&gt;, &lt;code&gt;ListVolumes&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;cada volumen con su cuota, lo que usa, sus instantáneas y &lt;strong&gt;los recursos compartidos que lo usan&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;DeleteVolume&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;se rechaza mientras un recurso compartido lo usa: elimine antes el recurso compartido. Un volumen con datos o instantáneas necesita &lt;code&gt;destroy_data&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;CreateShare&lt;/code&gt; con &lt;code&gt;volume { parent, name }&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;un recurso compartido servido a partir del volumen, como directorio&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;code&gt;DeleteShare&lt;/code&gt; nunca elimina un volumen. «Los recursos compartidos que lo usan» son los
+recursos compartidos creados a partir de él &lt;strong&gt;y&lt;/strong&gt; cualquier recurso compartido
+—también de los archivos de configuración, servido, desactivado o no disponible—
+cuya imagen o directorio esté dentro de él.&lt;/p&gt;
+&lt;p&gt;Un nombre cumple &lt;code&gt;^[a-z0-9][a-z0-9_-]{0,62}$&lt;/code&gt;, y una petición nunca lleva una ruta:
+nombra un &lt;code&gt;parent&lt;/code&gt; de la propia configuración del aprovisionador.&lt;/p&gt;
+&lt;p&gt;Con &lt;code&gt;reflection = true&lt;/code&gt; en el bloque &lt;code&gt;admin&lt;/code&gt;, &lt;code&gt;grpcurl&lt;/code&gt; puede hacer las llamadas. El
+socket es 0600 y el &lt;code&gt;allowed_uids&lt;/code&gt; de arriba solo nombra el uid de fileshare, así que
+ejecútelo como ese usuario:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nv"&gt;S&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/run/fileshare/admin.sock
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nv"&gt;A&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;fileshare.admin.v1.AdminService
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo -u fileshare grpcurl -plaintext -unix &lt;span class="nv"&gt;$S&lt;/span&gt; &lt;span class="nv"&gt;$A&lt;/span&gt;/ListParents
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# a 32 GiB volume on the XFS parent&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo -u fileshare grpcurl -plaintext -unix &lt;span class="nv"&gt;$S&lt;/span&gt; &lt;span class="se"&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; -d &lt;span class="s1"&gt;&amp;#39;{&amp;#34;parent&amp;#34;: &amp;#34;plain&amp;#34;, &amp;#34;name&amp;#34;: &amp;#34;projects&amp;#34;, &amp;#34;quota_bytes&amp;#34;: &amp;#34;34359738368&amp;#34;}&amp;#39;&lt;/span&gt; &lt;span class="se"&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nv"&gt;$A&lt;/span&gt;/CreateVolume
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# a share served from it&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo -u fileshare grpcurl -plaintext -unix &lt;span class="nv"&gt;$S&lt;/span&gt; &lt;span class="se"&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; -d &lt;span class="s1"&gt;&amp;#39;{&amp;#34;name&amp;#34;: &amp;#34;projects&amp;#34;,
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="s1"&gt; &amp;#34;volume&amp;#34;: {&amp;#34;parent&amp;#34;: &amp;#34;plain&amp;#34;, &amp;#34;name&amp;#34;: &amp;#34;projects&amp;#34;},
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="s1"&gt; &amp;#34;grants&amp;#34;: [{&amp;#34;subject&amp;#34;: {&amp;#34;group&amp;#34;: &amp;#34;staff&amp;#34;}, &amp;#34;access&amp;#34;: &amp;#34;ACCESS_WRITE&amp;#34;}]}&amp;#39;&lt;/span&gt; &lt;span class="se"&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nv"&gt;$A&lt;/span&gt;/CreateShare
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# grow it to 64 GiB&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo -u fileshare grpcurl -plaintext -unix &lt;span class="nv"&gt;$S&lt;/span&gt; &lt;span class="se"&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; -d &lt;span class="s1"&gt;&amp;#39;{&amp;#34;parent&amp;#34;: &amp;#34;plain&amp;#34;, &amp;#34;name&amp;#34;: &amp;#34;projects&amp;#34;, &amp;#34;quota_bytes&amp;#34;: &amp;#34;68719476736&amp;#34;}&amp;#39;&lt;/span&gt; &lt;span class="se"&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nv"&gt;$A&lt;/span&gt;/ResizeVolume&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h3 data-hextra-search-id="status-codes"&gt;Códigos de estado&lt;span class="hx:absolute hx:-mt-20" id="status-codes"&gt;&lt;/span&gt;
+&lt;a href="#status-codes" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Los códigos del aprovisionador se devuelven tal como los dio: &lt;code&gt;INVALID_ARGUMENT&lt;/code&gt; (un
+nombre fuera de la gramática, un padre desconocido, una cuota de 0), &lt;code&gt;OUT_OF_RANGE&lt;/code&gt;
+(por encima de &lt;code&gt;max_volume&lt;/code&gt;), &lt;code&gt;RESOURCE_EXHAUSTED&lt;/code&gt; (la cuota, o el crecimiento de un
+redimensionado, supera lo que el padre tiene libre ahora; o el rango de ids de
+proyecto se ha agotado), &lt;code&gt;ALREADY_EXISTS&lt;/code&gt;, &lt;code&gt;NOT_FOUND&lt;/code&gt;, &lt;code&gt;FAILED_PRECONDITION&lt;/code&gt;,
+&lt;code&gt;UNIMPLEMENTED&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Tres son propios de fileshare:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;ningún &lt;code&gt;provisioner&lt;/code&gt; configurado: &lt;code&gt;FAILED_PRECONDITION&lt;/code&gt;;&lt;/li&gt;
+&lt;li&gt;el aprovisionador rechaza el uid de este servidor: también &lt;code&gt;FAILED_PRECONDITION&lt;/code&gt;;
+es un error de despliegue (su &lt;code&gt;client_uid&lt;/code&gt; es incorrecto), no algo que el llamante
+de administración no tenga permitido;&lt;/li&gt;
+&lt;li&gt;el aprovisionador no responde: &lt;code&gt;UNAVAILABLE&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 data-hextra-search-id="what-is-checked-before-a-volume-is-served"&gt;Lo que se comprueba antes de servir un volumen&lt;span class="hx:absolute hx:-mt-20" id="what-is-checked-before-a-volume-is-served"&gt;&lt;/span&gt;
+&lt;a href="#what-is-checked-before-a-volume-is-served" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;fileshare pregunta al aprovisionador dónde está el volumen, y luego comprueba por sí
+mismo:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;que la ruta es limpia, absoluta y —una vez resuelta— está bajo &lt;code&gt;source_roots&lt;/code&gt;;&lt;/li&gt;
+&lt;li&gt;que es un directorio;&lt;/li&gt;
+&lt;li&gt;que &lt;code&gt;statfs&lt;/code&gt; indica el sistema de archivos del tipo (&lt;code&gt;ZFS_SUPER_MAGIC&lt;/code&gt;,
+&lt;code&gt;BTRFS_SUPER_MAGIC&lt;/code&gt;, &lt;code&gt;XFS_SUPER_MAGIC&lt;/code&gt;, &lt;code&gt;EXT4_SUPER_MAGIC&lt;/code&gt;);&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;ZFS&lt;/strong&gt;: que es un punto de montaje, es decir, que su dispositivo no es el de su
+padre. El directorio de un dataset sin montar aceptaría escrituras sin ninguna
+cuota. (No se verifica qué dataset está montado ahí: la respuesta del
+aprovisionador no lo indica.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;btrfs&lt;/strong&gt;: que es la raíz de un subvolumen; un directorio corriente bajo el padre
+no tiene qgroup;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;XFS y ext4&lt;/strong&gt;: que lleva un id de proyecto distinto de cero que heredan sus nuevos
+archivos; un directorio fuera de todo proyecto se sirve sin límite.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;El archivo de estado guarda el &lt;strong&gt;nombre&lt;/strong&gt; del volumen, no su ruta, y cada arranque
+vuelve a preguntar y a comprobar. Un volumen que ha desaparecido, que no supera una
+comprobación, o cuyo aprovisionador no responde en 10 s deja su recurso compartido
+&lt;strong&gt;definido y sin servir&lt;/strong&gt; —se indica al arrancar, en
+&lt;a href="https://go-fileshare.github.io/docs/0.24/es/configuration/check/"&gt;&lt;code&gt;fileshare check&lt;/code&gt;&lt;/a&gt; y en el campo &lt;code&gt;unavailable&lt;/code&gt;
+del recurso compartido— mientras el resto del servidor arranca. &lt;code&gt;EnableShare&lt;/code&gt; lo
+vuelve a intentar.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;fileshare serve&lt;/code&gt; se niega a servir volúmenes como root o con &lt;code&gt;CAP_SYS_RESOURCE&lt;/code&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;ext4 permite a cualquiera de los dos escribir más allá de una cuota de
+proyecto (fs/quota/dquot.c, &lt;code&gt;ignore_hardlimit&lt;/code&gt;): root escribió 16 MiB en un
+proyecto de 8 MiB en la CI de go-fsctl/projquota. XFS no tiene esa
+excepción, pero la regla es una sola para el proceso, en todos los tipos:
+fileshare lee su uid efectivo y &lt;code&gt;CapEff&lt;/code&gt;/&lt;code&gt;CapPrm&lt;/code&gt; en &lt;code&gt;/proc/self/status&lt;/code&gt;
+(una capability permitida está a un &lt;code&gt;capset(2)&lt;/code&gt; de ser efectiva), y un
+estado que no puede leer cuenta como si la tuviera. Se niega a &lt;strong&gt;servir&lt;/strong&gt;,
+no a las llamadas de volúmenes: crear almacenamiento como root es inofensivo,
+escribir en él como root no lo es. &lt;code&gt;fileshare check&lt;/code&gt; indica cuál es el caso.
+Por eso el aprovisionador rechaza &lt;code&gt;client_uid = 0&lt;/code&gt;, y la unidad del servidor
+de arriba tiene un &lt;code&gt;CapabilityBoundingSet=&lt;/code&gt; vacío.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="a-full-share"&gt;Un recurso compartido lleno&lt;span class="hx:absolute hx:-mt-20" id="a-full-share"&gt;&lt;/span&gt;
+&lt;a href="#a-full-share" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;XFS indica un proyecto lleno con &lt;code&gt;ENOSPC&lt;/code&gt;; ext4, btrfs y ZFS indican &lt;code&gt;EDQUOT&lt;/code&gt;. Desde
+la v0.21.1, todos los protocolos responden «lleno»:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;protocolo&lt;/th&gt;
+&lt;th&gt;sin espacio (&lt;code&gt;ENOSPC&lt;/code&gt;)&lt;/th&gt;
+&lt;th&gt;una cuota (&lt;code&gt;EDQUOT&lt;/code&gt;)&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;WebDAV&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;507 Insufficient Storage&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;507 Insufficient Storage&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;NFS&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;NFS3ERR_NOSPC&lt;/code&gt; (28)&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;NFS3ERR_DQUOT&lt;/code&gt; (69), como el RFC 1813 y el nfsd de Linux&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;SFTP&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;SSH_FX_FAILURE&lt;/code&gt;, &amp;ldquo;no space left on device (the share is full)&amp;rdquo;; la versión 3 no tiene código para ello&lt;/td&gt;
+&lt;td&gt;lo mismo&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;SMB&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;STATUS_DISK_FULL&lt;/code&gt; (0xC000007F)&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;STATUS_DISK_FULL&lt;/code&gt;, como hace Samba (&amp;ldquo;Windows apps need this, not NT_STATUS_QUOTA_EXCEEDED&amp;rdquo;)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;S3&lt;/td&gt;
+&lt;td&gt;servido en solo lectura&lt;/td&gt;
+&lt;td&gt;servido en solo lectura&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;En la v0.21.0, SMB respondía &lt;code&gt;STATUS_ACCESS_DENIED&lt;/code&gt; y NFS respondía a una cuota con
+&lt;code&gt;NFS3ERR_NOSPC&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Esto se aplica a todo &lt;a href="https://go-fileshare.github.io/docs/0.24/es/configuration/shares/"&gt;recurso compartido de directorio&lt;/a&gt;,
+no solo a los volúmenes; consulte la &lt;a href="https://go-fileshare.github.io/docs/0.24/es/status/"&gt;nota de actualización&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="the-size-a-client-sees"&gt;El tamaño que ve un cliente&lt;span class="hx:absolute hx:-mt-20" id="the-size-a-client-sees"&gt;&lt;/span&gt;
+&lt;a href="#the-size-a-client-sees" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Cada protocolo pregunta al servidor el tamaño de un recurso compartido en cada
+consulta: &lt;code&gt;FSSTAT&lt;/code&gt; en NFS, &lt;code&gt;FileFsFullSizeInformation&lt;/code&gt; en SMB y las propiedades de
+cuota de la RFC 4331 en WebDAV.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;ZFS, XFS y ext4&lt;/strong&gt;: el tamaño es lo que dice &lt;code&gt;statfs&lt;/code&gt; dentro del volumen, al que el
+núcleo responde con la cuota (&lt;code&gt;refquota&lt;/code&gt; en ZFS, la cuota de proyecto en XFS y ext4).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;btrfs&lt;/strong&gt; (desde fileshare v0.23.0): el &lt;code&gt;statfs&lt;/code&gt; de btrfs ignora los qgroups y
+declara el sistema de archivos entero, así que el servidor usa las cifras del
+aprovisionador. El tamaño es la cuota del volumen, y el espacio libre es la cuota
+menos los bytes referenciados del qgroup, o el espacio libre del sistema de archivos
+si es menor. El servidor consulta al aprovisionador en segundo plano, como mucho una
+vez cada 5 segundos mientras haya clientes preguntando, y mientras tanto responde con
+las últimas cifras. btrfs actualiza la cuenta de un qgroup al confirmar una
+transacción (cada 30 segundos por defecto), así que el espacio libre que ve un cliente
+puede ir con ese retraso respecto a las escrituras. Antes de la v0.23.0, un volumen
+btrfs mostraba el sistema de archivos entero; la cuota se aplicaba igualmente.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;El espacio usado procede del aprovisionador (&lt;code&gt;used_bytes&lt;/code&gt;): leer el uso de un
+proyecto XFS o ext4 requiere &lt;code&gt;CAP_SYS_ADMIN&lt;/code&gt;, que fileshare no tiene.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-the-provisioner-promises"&gt;Lo que promete el aprovisionador&lt;span class="hx:absolute hx:-mt-20" id="what-the-provisioner-promises"&gt;&lt;/span&gt;
+&lt;a href="#what-the-provisioner-promises" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Un único uid, leído del núcleo.&lt;/strong&gt; El par se identifica con &lt;code&gt;SO_PEERCRED&lt;/code&gt; cuando
+se conecta, y cualquiera que no sea &lt;code&gt;client_uid&lt;/code&gt; —root incluido— recibe
+&lt;code&gt;PERMISSION_DENIED&lt;/code&gt; antes de que se decodifique un solo byte de la petición.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Un conjunto cerrado de verbos.&lt;/strong&gt; Un método fuera de su servicio, o un mensaje que
+no se decodifica o que lleva un campo que no define, no recibe respuesta: la
+conexión se cierra.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Nunca toca lo que no ha creado.&lt;/strong&gt; ZFS: la propiedad &lt;code&gt;fileshare:volume&lt;/code&gt; propia del
+dataset, establecida en el dataset, ya que las propiedades de usuario se heredan y
+una marca heredada no es propia. btrfs: el id y el uuid del subvolumen registrados
+en &lt;code&gt;state_file&lt;/code&gt;. XFS/ext4: un id de proyecto dentro del rango del padre &lt;em&gt;y&lt;/em&gt;
+registrado. Se comprueba antes de cada redimensionado, instantánea y eliminación.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;La eliminación rechaza datos e instantáneas&lt;/strong&gt; salvo que se establezca
+&lt;code&gt;destroy_data&lt;/code&gt;, y se registra antes de que ocurra.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 data-hextra-search-id="measured"&gt;Medido&lt;span class="hx:absolute hx:-mt-20" id="measured"&gt;&lt;/span&gt;
+&lt;a href="#measured" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;En la CI de fileshare, como root sobre pools reales y sistemas de archivos sobre
+dispositivos loop, con &lt;code&gt;fileshare serve&lt;/code&gt; ejecutándose como &lt;code&gt;nobody&lt;/code&gt; y dirigido a
+través de la API de administración: las escrituras por WebDAV y por SFTP se detienen
+en la cuota de un volumen de 32 MiB en los cuatro tipos.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="not-yet"&gt;Todavía no&lt;span class="hx:absolute hx:-mt-20" id="not-yet"&gt;&lt;/span&gt;
+&lt;a href="#not-yet" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Ceph.&lt;/strong&gt; Las cuotas de CephFS y RBD llegarán en una fase posterior.&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>Salud y métricas</title><link>https://go-fileshare.github.io/docs/0.24/es/administration/health/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.24/es/administration/health/</guid><description>
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;metrics { listen&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;127.0.0.1:9100&amp;#34;&lt;/span&gt; } &lt;span class="err"&gt;#&lt;/span&gt; &lt;span class="k"&gt;or&lt;/span&gt; &lt;span class="k"&gt;unix&lt;/span&gt;&lt;span class="err"&gt;:///&lt;/span&gt;&lt;span class="k"&gt;run&lt;/span&gt;&lt;span class="err"&gt;/&lt;/span&gt;&lt;span class="k"&gt;fileshare&lt;/span&gt;&lt;span class="err"&gt;/&lt;/span&gt;&lt;span class="k"&gt;metrics&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="k"&gt;sock&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Tres endpoints, servidos por
+&lt;a href="https://github.com/go-net-health/endpoint" target="_blank" rel="noopener"&gt;go-net-health/endpoint&lt;/a&gt; en una escucha
+propia —&lt;strong&gt;nunca un puerto que sirve un protocolo&lt;/strong&gt;—, de modo que quien alcanza WebDAV
+no los alcanza:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;/healthz&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;el proceso responde&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;/readyz&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;todos los protocolos están vinculados &lt;strong&gt;y&lt;/strong&gt; hay una generación sirviendo. &lt;code&gt;503&lt;/code&gt;, con el motivo en el cuerpo, durante el arranque, al &lt;a href="https://go-fileshare.github.io/docs/0.24/es/administration/#a-change-is-a-new-generation"&gt;aplicar un cambio&lt;/a&gt; o al detenerse&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;/metrics&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;formato de texto de Prometheus&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Un socket unix se nombra con una ruta absoluta, &lt;code&gt;unix:///like/this&lt;/code&gt;; cualquier otra
+cosa debe ser un &lt;code&gt;host:port&lt;/code&gt;, o el bloque se rechaza.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-is-measured"&gt;Lo que se mide&lt;span class="hx:absolute hx:-mt-20" id="what-is-measured"&gt;&lt;/span&gt;
+&lt;a href="#what-is-measured" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;métrica&lt;/th&gt;
+&lt;th&gt;qué cuenta&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;fileshare_shares{origin}&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;recursos compartidos servidos, &lt;code&gt;origin&lt;/code&gt; = &lt;code&gt;config&lt;/code&gt; o &lt;code&gt;api&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;fileshare_shares_disabled&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;recursos compartidos retirados de servicio mediante la API de administración&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;fileshare_generation&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;cuántas listas de recursos compartidos se han servido desde el arranque&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;fileshare_connections_accepted_total{protocol}&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;conexiones aceptadas&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;fileshare_connections_open{protocol}&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;conexiones abiertas ahora&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;fileshare_admin_changes_total{result}&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;cambios de administración, &lt;code&gt;applied&lt;/code&gt; o &lt;code&gt;refused&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;fileshare_admin_requests_total{method,code}&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;llamadas a la API de administración, por método y estado gRPC&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;fileshare_directory_people&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;personas que contenía el directorio en su última lectura&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;fileshare_directory_reloads_total{result}&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://go-fileshare.github.io/docs/0.24/es/administration/reload/"&gt;recargas&lt;/a&gt;: &lt;code&gt;unchanged&lt;/code&gt;, &lt;code&gt;added&lt;/code&gt;, &lt;code&gt;swapped&lt;/code&gt;, &lt;code&gt;failed&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;fileshare_revocation_list_age_seconds{list}&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;antigüedad de la última copia válida de una &lt;a href="https://go-fileshare.github.io/docs/0.24/es/security/revocation-lists/"&gt;lista de revocación&lt;/a&gt;; &lt;code&gt;-1&lt;/code&gt; si nunca se descargó&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;fileshare_revocation_list_fetch_failures_total{list}&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;descargas fallidas de esa lista&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;fileshare_ssf_last_heard_seconds&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;segundos desde la última respuesta del transmisor de &lt;a href="https://go-fileshare.github.io/docs/0.24/es/security/shared-signals/"&gt;señales compartidas&lt;/a&gt;; &lt;code&gt;-1&lt;/code&gt; si nunca&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;fileshare_ssf_revoked_subjects&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;personas cuyas credenciales anteriores ha revocado el proveedor, tal como se conservan ahora&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;fileshare_sftp_domain_grant_total{result}&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;certificados SFTP sobre los que se consultó &lt;a href="https://go-fileshare.github.io/docs/0.24/es/protocols/sftp/#certificates-meant-for-this-host-the-domain-grant"&gt;&lt;code&gt;ssh_domains&lt;/code&gt;&lt;/a&gt;: &lt;code&gt;granted&lt;/code&gt;, &lt;code&gt;accepted_ungranted&lt;/code&gt;, &lt;code&gt;refused_not_granted&lt;/code&gt;, &lt;code&gt;refused_absent&lt;/code&gt;, &lt;code&gt;refused_malformed&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;fileshare_start_time_seconds&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;cuándo arrancó este proceso&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;más la información del runtime de Go y de compilación. Las familias de revocación y
+de señales compartidas solo aparecen cuando la configuración tiene una lista o un
+bloque &lt;code&gt;ssf&lt;/code&gt;, la de concesión de dominio solo cuando establece &lt;code&gt;ssh_domains&lt;/code&gt;, y la de
+peticiones de administración solo cuando tiene un bloque &lt;code&gt;admin&lt;/code&gt;.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Ninguna métrica nombra un recurso compartido ni a una persona&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;WebDAV responde &lt;strong&gt;404&lt;/strong&gt; para un recurso compartido que alguien no puede
+usar, para no confirmar que existe, y una recogida de métricas tampoco debe
+confirmarlo. Las etiquetas son protocolos, orígenes, resultados y nombres de
+método, nunca un recurso compartido ni una persona.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="what-to-alert-on"&gt;Sobre qué alertar&lt;span class="hx:absolute hx:-mt-20" id="what-to-alert-on"&gt;&lt;/span&gt;
+&lt;a href="#what-to-alert-on" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Las comprobaciones de revocación &lt;a href="https://go-fileshare.github.io/docs/0.24/es/security/#every-one-of-them-fails-closed"&gt;fallan en modo cerrado&lt;/a&gt;:
+una lista demasiado antigua, o un transmisor del que no se sabe nada, hace que el
+servidor &lt;strong&gt;rechace&lt;/strong&gt; las credenciales que gobierna. Alerte antes de que ocurra, no
+después:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;fileshare_revocation_list_age_seconds&lt;/code&gt; acercándose a &lt;code&gt;ssh_krl_max_age&lt;/code&gt; o a
+&lt;code&gt;crl_max_age&lt;/code&gt; (1h por defecto);&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;fileshare_ssf_last_heard_seconds&lt;/code&gt; acercándose al &lt;code&gt;max_age&lt;/code&gt; del bloque &lt;code&gt;ssf&lt;/code&gt;
+(10m por defecto);&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;fileshare_directory_reloads_total{result=&amp;quot;failed&amp;quot;}&lt;/code&gt; en aumento: el directorio no
+se puede leer, así que &lt;a href="https://go-fileshare.github.io/docs/0.24/es/administration/reload/"&gt;nada cambia&lt;/a&gt;, tampoco las bajas.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;--isolate&lt;/code&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Un bloque &lt;code&gt;metrics&lt;/code&gt; todavía no es compatible con &lt;code&gt;--isolate&lt;/code&gt;; la
+combinación se rechaza.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;</description></item><item><title>La API de administración</title><link>https://go-fileshare.github.io/docs/0.24/es/administration/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.24/es/administration/</guid><description>
+&lt;p&gt;Desde la v0.8.0, los recursos compartidos pueden cambiar mientras el servidor está en
+marcha. Un bloque &lt;code&gt;admin&lt;/code&gt; activa un servicio gRPC que crea, modifica y retira de
+servicio recursos compartidos sin reiniciar y sin editar ningún archivo.&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;admin&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; listen&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;unix:///run/fileshare/admin.sock&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # made 0600
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; state_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/var/lib/fileshare/shares.json&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; source_roots&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;/srv/images&amp;#34;, &amp;#34;/data&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Nada escucha salvo que se escriba el bloque.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-it-does"&gt;Lo que hace&lt;span class="hx:absolute hx:-mt-20" id="what-it-does"&gt;&lt;/span&gt;
+&lt;a href="#what-it-does" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;El servicio es
+&lt;a href="https://github.com/go-fileshare/fileshare/blob/v0.24.0/proto/fileshare/admin/v1/admin.proto" target="_blank" rel="noopener"&gt;&lt;code&gt;fileshare.admin.v1.AdminService&lt;/code&gt;&lt;/a&gt;:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;CreateShare&lt;/code&gt;, &lt;code&gt;UpdateShare&lt;/code&gt;, &lt;code&gt;DeleteShare&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;definir un recurso compartido a partir de una imagen, un directorio o (desde la v0.21.0) un volumen; cambiar &lt;code&gt;read_only&lt;/code&gt; o &lt;code&gt;protocols&lt;/code&gt; (su origen no puede cambiar: elimínelo y cree otro)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;DisableShare&lt;/code&gt;, &lt;code&gt;EnableShare&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;retirar un recurso compartido de servicio y volver a ponerlo&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;Grant&lt;/code&gt;, &lt;code&gt;Revoke&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;dar a un sujeto acceso de lectura o de escritura, o retirárselo&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ListShares&lt;/code&gt;, &lt;code&gt;GetShare&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;todos los recursos compartidos, con lo que sirven, por qué protocolos, y por qué no por los demás&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ListUsers&lt;/code&gt;, &lt;code&gt;ListGroups&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;a quién puede nombrar un permiso; cada usuario con los protocolos a los que pueden responder sus credenciales&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ReloadDirectory&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;volver a leer las personas, ahora; consulte &lt;a href="https://go-fileshare.github.io/docs/0.24/es/administration/reload/"&gt;volver a leer el directorio&lt;/a&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;GetServerInfo&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;el nombre, la versión, la hora de arranque, la generación y las escuchas&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ListParents&lt;/code&gt;, &lt;code&gt;CreateVolume&lt;/code&gt;, &lt;code&gt;ResizeVolume&lt;/code&gt;, &lt;code&gt;SnapshotVolume&lt;/code&gt;, &lt;code&gt;DeleteVolume&lt;/code&gt;, &lt;code&gt;GetVolume&lt;/code&gt;, &lt;code&gt;ListVolumes&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;almacenamiento creado mediante un aprovisionador con privilegios, y recursos compartidos servidos a partir de él; consulte &lt;a href="https://go-fileshare.github.io/docs/0.24/es/administration/volumes/"&gt;volúmenes&lt;/a&gt; (desde la v0.21.0)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Un permiso nombra a un &lt;strong&gt;usuario&lt;/strong&gt;, un &lt;strong&gt;grupo&lt;/strong&gt; (&lt;code&gt;@group&lt;/code&gt; en un archivo de
+configuración), un &lt;strong&gt;valor &lt;code&gt;oidc:groups:&lt;/code&gt;&lt;/strong&gt; o un &lt;strong&gt;nombre &lt;code&gt;oidc:user:&lt;/code&gt;&lt;/strong&gt;: el
+vocabulario que usa el archivo de configuración; consulte
+&lt;a href="https://go-fileshare.github.io/docs/0.24/es/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;las personas que nombra el proveedor de identidad&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;grpc.health.v1&lt;/code&gt; responde en la misma escucha. &lt;code&gt;reflection = true&lt;/code&gt; en el bloque
+activa la reflexión del servidor gRPC, para &lt;code&gt;grpcurl&lt;/code&gt;.&lt;/p&gt;
+&lt;h3 data-hextra-search-id="every-change-says-what-serving-it-did"&gt;Cada cambio indica lo que hizo al servirlo&lt;span class="hx:absolute hx:-mt-20" id="every-change-says-what-serving-it-did"&gt;&lt;/span&gt;
+&lt;a href="#every-change-says-what-serving-it-did" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Un cambio responde con un mensaje &lt;code&gt;Applied&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-proto" data-lang="proto"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;message&lt;/span&gt; &lt;span class="nc"&gt;Applied&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;uint64&lt;/span&gt; &lt;span class="n"&gt;generation&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="c1"&gt;// the generation now being served
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;uint64&lt;/span&gt; &lt;span class="n"&gt;connections_closed&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="c1"&gt;// how many the previous one had open, and closed
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Por eso cada RPC tiene un mensaje de respuesta propio en lugar de devolver el propio
+recurso compartido: el &lt;code&gt;.proto&lt;/code&gt; sigue las reglas de lint &lt;code&gt;STANDARD&lt;/code&gt; de
+&lt;a href="https://buf.build" target="_blank" rel="noopener"&gt;buf&lt;/a&gt;, comprobadas por &lt;code&gt;buf lint&lt;/code&gt; en la CI de fileshare, por
+encima del «devolver el recurso» de AIP-131; el envoltorio es lo que transporta
+&lt;code&gt;Applied&lt;/code&gt;.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="where-it-listens-and-who-may-call-it"&gt;Dónde escucha, y quién puede llamarla&lt;span class="hx:absolute hx:-mt-20" id="where-it-listens-and-who-may-call-it"&gt;&lt;/span&gt;
+&lt;a href="#where-it-listens-and-who-may-call-it" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Por TCP, TLS mutuo o nada&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;tls_cert_file&lt;/code&gt;, &lt;code&gt;tls_key_file&lt;/code&gt; y &lt;code&gt;client_ca_file&lt;/code&gt;, los tres, &lt;strong&gt;loopback
+incluido&lt;/strong&gt;: cualquier usuario local puede alcanzar loopback, y esta API
+decide quién lee los archivos de quién. Un socket unix se crea con &lt;strong&gt;0600&lt;/strong&gt;,
+y sus permisos son su control de acceso.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;admin&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; listen&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;127.0.0.1:7443&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; tls_cert_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/admin/server.pem&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; tls_key_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/admin/server.key&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; client_ca_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/admin/clients.pem&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; state_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/var/lib/fileshare/shares.json&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; source_roots&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;/srv/images&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;La escucha es
+&lt;a href="https://github.com/grpc-transports/control" target="_blank" rel="noopener"&gt;grpc-transports/control&lt;/a&gt;. Cada cambio
+se registra con quién lo hizo: el CN del certificado de cliente, o el uid del par del
+socket.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-it-will-and-will-not-touch"&gt;Lo que tocará y lo que no&lt;span class="hx:absolute hx:-mt-20" id="what-it-will-and-will-not-touch"&gt;&lt;/span&gt;
+&lt;a href="#what-it-will-and-will-not-touch" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;Gestiona los recursos compartidos que ha creado.&lt;/strong&gt; Un recurso compartido escrito en
+la configuración aparece en la lista, con los mismos campos, y un cambio en su
+definición se rechaza con &lt;code&gt;FAILED_PRECONDITION&lt;/code&gt;: un recurso compartido definido en
+dos sitios es una pregunta que nadie quiere responder, y el archivo es donde se
+define ese. Los recursos compartidos de la API viven en &lt;code&gt;state_file&lt;/code&gt;, escrito de
+forma atómica, y se vuelven a servir en el siguiente arranque; por eso se rechaza un
+bloque sin &lt;code&gt;state_file&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Un origen debe estar bajo &lt;code&gt;source_roots&lt;/code&gt;&lt;/strong&gt;, una vez resuelto —enlaces seguidos,
+&lt;code&gt;..&lt;/code&gt; eliminados—, y lo que se guarda es la ruta resuelta. Sin &lt;code&gt;source_roots&lt;/code&gt;, la API
+&lt;strong&gt;no puede crear ningún recurso compartido&lt;/strong&gt;: el proceso puede leer &lt;code&gt;/dev&lt;/code&gt; y &lt;code&gt;/etc&lt;/code&gt;,
+y nadie pretendía entregárselos a un llamante. Se vuelve a comprobar en cada
+arranque, y un recurso compartido de &lt;code&gt;state_file&lt;/code&gt; que ya no está bajo una raíz
+detiene el arranque, nombrándolo.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Todo recurso compartido tiene al menos un permiso.&lt;/strong&gt; Un recurso compartido sin
+ninguno está abierto a cualquiera que se autentique. El archivo puede decirlo a
+propósito; una llamada a la API no debería decirlo por omisión. Por eso
+&lt;code&gt;CreateShare&lt;/code&gt; necesita un permiso, y revocar el último se rechaza: elimine el recurso
+compartido en su lugar.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Nombres que un protocolo puede transportar.&lt;/strong&gt; Un nombre de recurso compartido
+tiene como máximo 80 caracteres, no empieza ni termina con un espacio, no es &lt;code&gt;.&lt;/code&gt; ni
+&lt;code&gt;..&lt;/code&gt;, y no contiene ningún carácter no imprimible ni ninguno de &lt;code&gt;:*?&amp;quot;&amp;lt;&amp;gt;|{}%&lt;/code&gt;. Los
+sujetos tampoco contienen caracteres no imprimibles, y un recurso compartido admite
+como máximo 1000 permisos: mucho antes, eso es trabajo para un grupo. Cada uno de
+estos casos se aceptaba antes de la v0.14.0, se escribía en &lt;code&gt;state_file&lt;/code&gt;, y luego era
+fatal en cada arranque.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Ningún recurso compartido puede contener&lt;/strong&gt; la configuración, el archivo de estado,
+ni los secretos que nombran: quien escribiera en él reescribiría quién puede hacer
+qué. Desde la v0.17.0, eso incluye &lt;code&gt;authorized_keys_file&lt;/code&gt;, el &lt;code&gt;dsn_file&lt;/code&gt; y el
+&lt;code&gt;bind_password_file&lt;/code&gt; de un bloque &lt;code&gt;users&lt;/code&gt;, el &lt;code&gt;ca_file&lt;/code&gt; del bloque &lt;code&gt;ssf&lt;/code&gt;, y una base
+de datos sqlite que nombre un DSN: quien pudiera añadir su clave al
+&lt;code&gt;authorized_keys&lt;/code&gt; de alguien iniciaría sesión como esa persona. &lt;strong&gt;Tampoco un recurso
+compartido puede contener otro recurso compartido&lt;/strong&gt; (consulte
+&lt;a href="https://go-fileshare.github.io/docs/0.24/es/configuration/shares/#a-directory-not-only-an-image"&gt;directorios&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Un cambio se comprueba como una configuración, se abre, se anota y luego se
+sirve.&lt;/strong&gt; Un cambio que el servidor no puede respetar —una imagen que no se abre, un
+nombre que nadie tiene en el directorio— se rechaza, y lo que se servía y lo que
+estaba escrito quedan como estaban.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="disabling-a-share"&gt;Desactivar un recurso compartido&lt;span class="hx:absolute hx:-mt-20" id="disabling-a-share"&gt;&lt;/span&gt;
+&lt;a href="#disabling-a-share" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;Desactivar es el &lt;code&gt;available = no&lt;/code&gt; de Samba&lt;/strong&gt;: el recurso compartido sigue definido
+y todo intento de conexión falla; sus conexiones abiertas se cierran y su imagen o
+directorio &lt;strong&gt;se libera&lt;/strong&gt;, de modo que el archivo puede sustituirse mientras está
+fuera de servicio. &lt;code&gt;EnableShare&lt;/code&gt; lo vuelve a servir, y se rechaza cuando su origen ya
+no se puede abrir. &lt;code&gt;CreateShare&lt;/code&gt; también puede crear un recurso compartido ya
+desactivado.&lt;/p&gt;
+&lt;p&gt;A diferencia de cualquier otro cambio, se aplica también a un recurso compartido
+&lt;strong&gt;de la configuración&lt;/strong&gt; —retirar de servicio un recurso compartido es una operación,
+no una definición— y sobrevive a un reinicio: se guarda en el archivo de estado.
+&lt;a href="https://go-fileshare.github.io/docs/0.24/es/configuration/check/"&gt;&lt;code&gt;fileshare check&lt;/code&gt;&lt;/a&gt; enumera lo que está fuera de
+servicio.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="a-change-is-a-new-generation"&gt;Un cambio es una nueva generación&lt;span class="hx:absolute hx:-mt-20" id="a-change-is-a-new-generation"&gt;&lt;/span&gt;
+&lt;a href="#a-change-is-a-new-generation" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Un cambio reinicia los servidores de protocolo, y cierra sus conexiones&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;SMB comprueba quién puede conectarse una vez por conexión de árbol, y SFTP
+construye el árbol de una persona una vez por inicio de sesión, así que una
+sesión que sobreviviera a una revocación conservaría el acceso recién
+retirado. «Revocado, salvo para quien ya estuviera conectado» no es una
+revocación.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Así que un cambio no se aplica &lt;em&gt;a&lt;/em&gt; los servidores en ejecución: estos se sustituyen
+por otros nuevos construidos a partir de la nueva lista —una &lt;strong&gt;generación&lt;/strong&gt;—, como
+haría un reinicio, sin renunciar a los puertos. Las bibliotecas no permitían otra
+cosa: go-filesystems/smb tiene &lt;code&gt;Share&lt;/code&gt; y no &lt;code&gt;Unshare&lt;/code&gt;, nfs tiene &lt;code&gt;Export&lt;/code&gt; y no
+&lt;code&gt;Unexport&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Los puertos siguen vinculados, así que un cliente que se conecta durante un cambio
+&lt;strong&gt;espera&lt;/strong&gt; en lugar de ser rechazado. Las imágenes cuyo recurso compartido no cambió
+conservan su controlador, sin abrirse una segunda vez. Los clientes se vuelven a
+conectar; ese es el precio, pagado en cada cambio, y por eso la API aplica un cambio
+por llamada y no uno por campo.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="limits"&gt;Límites&lt;span class="hx:absolute hx:-mt-20" id="limits"&gt;&lt;/span&gt;
+&lt;a href="#limits" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;--isolate&lt;/code&gt; todavía no es compatible con un bloque &lt;code&gt;admin&lt;/code&gt; —ni con un bloque
+&lt;code&gt;metrics&lt;/code&gt;—: no hay un único proceso al que se pueda aplicar un cambio. La
+combinación se rechaza.&lt;/li&gt;
+&lt;li&gt;Un binario compilado con &lt;code&gt;-tags nogrpc&lt;/code&gt; no tiene API de administración, y una
+configuración con un bloque &lt;code&gt;admin&lt;/code&gt; se &lt;strong&gt;rechaza&lt;/strong&gt; en lugar de servirse sin él.
+Esa etiqueta ahorra 11,7 MB; consulte
+&lt;a href="https://go-fileshare.github.io/docs/0.24/es/operations/build-tags/#the-admin-api-and-nogrpc"&gt;compilar solo lo que necesita&lt;/a&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 data-hextra-search-id="changing-the-proto"&gt;Modificar el &lt;code&gt;.proto&lt;/code&gt;&lt;span class="hx:absolute hx:-mt-20" id="changing-the-proto"&gt;&lt;/span&gt;
+&lt;a href="#changing-the-proto" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;El código Go de &lt;code&gt;proto/&lt;/code&gt; se genera y se incluye en el repositorio, así que
+&lt;code&gt;go install&lt;/code&gt; no necesita &lt;code&gt;protoc&lt;/code&gt;. Tras modificar un &lt;code&gt;.proto&lt;/code&gt; —el de la API de
+administración, o el &lt;code&gt;proto/fileshare/provision/v1/provision.proto&lt;/code&gt; del
+aprovisionador—, regenere ambos con las versiones que fija la CI de fileshare
+(protoc 34.1, protoc-gen-go v1.36.12, protoc-gen-go-grpc v1.6.2). La CI los
+regenera y falla cuando el código incluido difiere, o cuando se dejó código generado
+sin incluir:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;protoc -I proto --go_out&lt;span class="o"&gt;=&lt;/span&gt;. --go_opt&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;module&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;github.com/go-fileshare/fileshare &lt;span class="se"&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; --go-grpc_out&lt;span class="o"&gt;=&lt;/span&gt;. --go-grpc_opt&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;module&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;github.com/go-fileshare/fileshare &lt;span class="se"&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; proto/fileshare/admin/v1/admin.proto proto/fileshare/provision/v1/provision.proto&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;</description></item><item><title>Volver a leer el directorio</title><link>https://go-fileshare.github.io/docs/0.24/es/administration/reload/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.24/es/administration/reload/</guid><description>
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;reload&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;5m&amp;#34;&lt;/span&gt; &lt;span class="err"&gt;#&lt;/span&gt; &lt;span class="k"&gt;and&lt;/span&gt; &lt;span class="k"&gt;on&lt;/span&gt; &lt;span class="k"&gt;SIGHUP&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;and&lt;/span&gt; &lt;span class="k"&gt;on&lt;/span&gt; &lt;span class="k"&gt;the&lt;/span&gt; &lt;span class="k"&gt;admin&lt;/span&gt; &lt;span class="k"&gt;API&lt;/span&gt;&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="k"&gt;s&lt;/span&gt; &lt;span class="k"&gt;ReloadDirectory&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Las personas proceden de directorios que otras cosas modifican: go-authn/bridge
+escribe una contraseña de aplicación en una tabla, y borra la fila cuando la persona
+se desactiva. Sin recarga, el servidor sirve a quien estuviera cuando arrancó. Desde
+la v0.10.0 las vuelve a leer:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;en cada intervalo &lt;code&gt;reload&lt;/code&gt;, una duración de Go de &lt;strong&gt;al menos un segundo&lt;/strong&gt;: un
+directorio leído muchas veces por segundo es una carga para la base de datos de
+alguien, no un servidor más actualizado;&lt;/li&gt;
+&lt;li&gt;con &lt;strong&gt;&lt;code&gt;SIGHUP&lt;/code&gt;&lt;/strong&gt; (Unix);&lt;/li&gt;
+&lt;li&gt;con el &lt;strong&gt;&lt;code&gt;ReloadDirectory&lt;/code&gt;&lt;/strong&gt; de la &lt;a href="https://go-fileshare.github.io/docs/0.24/es/administration/"&gt;API de administración&lt;/a&gt;,
+que responde con quién se añadió, se eliminó y cambió, si empezó una nueva
+generación, y notas que una persona debería leer: un grupo que ya no existe,
+alguien a quien nombra un recurso compartido y que ya no está en el directorio.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Sin &lt;code&gt;reload&lt;/code&gt;, el directorio solo se lee al arrancar, con &lt;code&gt;SIGHUP&lt;/code&gt; y con
+&lt;code&gt;ReloadDirectory&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Lo que se vuelve a leer son los bloques &lt;code&gt;users&lt;/code&gt; —SQL, LDAP—. Los bloques &lt;code&gt;user&lt;/code&gt; y
+&lt;code&gt;group&lt;/code&gt; del archivo de configuración &lt;strong&gt;son&lt;/strong&gt; la configuración, leída al arrancar.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-a-reload-does-depends-on-what-changed"&gt;Lo que hace una recarga depende de lo que cambió&lt;span class="hx:absolute hx:-mt-20" id="what-a-reload-does-depends-on-what-changed"&gt;&lt;/span&gt;
+&lt;a href="#what-a-reload-does-depends-on-what-changed" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;La línea se traza en la &lt;strong&gt;revocación&lt;/strong&gt;:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;lo que cambió&lt;/th&gt;
+&lt;th&gt;lo que ocurre&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;solo altas&lt;/strong&gt;: alguien nuevo cuya llegada no cambia las listas expandidas de ningún recurso compartido (una nueva contraseña de aplicación, una persona a la que los recursos compartidos llegan mediante reglas &lt;code&gt;oidc:&lt;/code&gt; o de ninguna forma)&lt;/td&gt;
+&lt;td&gt;se añade &lt;strong&gt;en caliente&lt;/strong&gt;, incluido el servidor SMB en ejecución, y &lt;strong&gt;no se toca ninguna conexión&lt;/strong&gt;. Un bridge que crea contraseñas de aplicación todo el día no molesta a nadie.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;cualquier retirada&lt;/strong&gt;: alguien que se ha ido, una credencial cambiada, un recurso compartido cuyas listas expandidas cambiaron&lt;/td&gt;
+&lt;td&gt;una &lt;strong&gt;nueva generación&lt;/strong&gt;, y las conexiones de la anterior &lt;strong&gt;se cierran&lt;/strong&gt;, exactamente igual que con un &lt;a href="https://go-fileshare.github.io/docs/0.24/es/administration/#a-change-is-a-new-generation"&gt;cambio de administración&lt;/a&gt;. Una sesión que sobrevive a la baja de su persona es justo lo que una recarga existe para terminar.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;un directorio que no se puede leer&lt;/strong&gt;: la base de datos inalcanzable, una consulta que falla&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;nada cambia&lt;/strong&gt;. Una caída no debe vaciar un servidor de archivos, y «nadie» es el aspecto que tiene una lectura fallida.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Alguien nuevo que se une a un grupo que nombra un recurso compartido &lt;em&gt;sí&lt;/em&gt; cambia ese
+recurso compartido, y pasa por una nueva generación como cualquier otro cambio en él:
+SMB fija las listas de un recurso compartido cuando este arranca.&lt;/p&gt;
+&lt;p&gt;Un recurso compartido que nombra a alguien que se ha ido, o a un grupo que ya no
+existe, se sirve &lt;strong&gt;sin ellos&lt;/strong&gt; —la dirección segura— y se indica, en lugar de
+rechazarse como lo rechaza un arranque: rechazarlo conservaría las listas antiguas, y
+las listas antiguas son el acceso que se acaba de retirar.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="an-empty-group-is-not-everyone"&gt;Un grupo vacío no es todo el mundo&lt;span class="hx:absolute hx:-mt-20" id="an-empty-group-is-not-everyone"&gt;&lt;/span&gt;
+&lt;a href="#an-empty-group-is-not-everyone" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Un recurso compartido escrito para &lt;code&gt;@engineers&lt;/code&gt; cuyo último ingeniero se ha ido no se sirve a nadie&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Un &lt;code&gt;allow&lt;/code&gt; vacío significa «cualquiera que se autentique». Así que lo que
+decide si un recurso compartido está abierto es lo que se &lt;strong&gt;escribió&lt;/strong&gt;, no
+aquello en lo que se expande ahora: un recurso compartido escrito para un
+grupo sigue cerrado cuando ese grupo se vacía. Un recurso compartido así no
+se ofrece en absoluto por SMB, cuyo &lt;code&gt;AllowUsers&lt;/code&gt; vacío se interpretaría como
+«todo el mundo».&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="watching-it"&gt;Vigilarlo&lt;span class="hx:absolute hx:-mt-20" id="watching-it"&gt;&lt;/span&gt;
+&lt;a href="#watching-it" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;fileshare_directory_reloads_total{result}&lt;/code&gt; cuenta las recargas que no encontraron
+nada (&lt;code&gt;unchanged&lt;/code&gt;), que añadieron en caliente (&lt;code&gt;added&lt;/code&gt;), que iniciaron una generación
+(&lt;code&gt;swapped&lt;/code&gt;) o que no pudieron leer el directorio (&lt;code&gt;failed&lt;/code&gt;);
+&lt;code&gt;fileshare_directory_people&lt;/code&gt; indica cuántas personas contenía la última lectura.
+Consulte &lt;a href="https://go-fileshare.github.io/docs/0.24/es/administration/health/"&gt;salud y métricas&lt;/a&gt;.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Lo que no alcanza una recarga&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Las personas que el proveedor de identidad avala mediante un token o un
+certificado no están en el directorio, así que ninguna recarga les
+concierne. Retirarles el acceso a &lt;strong&gt;ellas&lt;/strong&gt; es tarea de las
+&lt;a href="https://go-fileshare.github.io/docs/0.24/es/security/"&gt;listas de revocación y las señales compartidas&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;</description></item></channel></rss>
