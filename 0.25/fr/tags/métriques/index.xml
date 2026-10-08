@@ -1,0 +1,148 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Métriques</title><link>https://go-fileshare.github.io/docs/0.25/fr/tags/m%C3%A9triques/</link><description>Recent content in Métriques on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>fr</language><atom:link href="https://go-fileshare.github.io/docs/0.25/fr/tags/m%C3%A9triques/index.xml" rel="self" type="application/rss+xml"/><item><title>Santé et métriques</title><link>https://go-fileshare.github.io/docs/0.25/fr/administration/health/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.25/fr/administration/health/</guid><description>
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;metrics { listen&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;127.0.0.1:9100&amp;#34;&lt;/span&gt; } &lt;span class="err"&gt;#&lt;/span&gt; &lt;span class="k"&gt;or&lt;/span&gt; &lt;span class="k"&gt;unix&lt;/span&gt;&lt;span class="err"&gt;:///&lt;/span&gt;&lt;span class="k"&gt;run&lt;/span&gt;&lt;span class="err"&gt;/&lt;/span&gt;&lt;span class="k"&gt;fileshare&lt;/span&gt;&lt;span class="err"&gt;/&lt;/span&gt;&lt;span class="k"&gt;metrics&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="k"&gt;sock&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copier le code"
+aria-label="Copier le code"
+data-copied-label="Copié !"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Trois points de terminaison, servis par
+&lt;a href="https://github.com/go-net-health/endpoint" target="_blank" rel="noopener"&gt;go-net-health/endpoint&lt;/a&gt; sur un
+écouteur qui leur est propre — &lt;strong&gt;jamais un port que sert un protocole&lt;/strong&gt; : le monde qui
+atteint WebDAV ne les atteint donc pas :&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;/healthz&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;le processus répond&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;/readyz&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;chaque protocole est lié &lt;strong&gt;et&lt;/strong&gt; une génération est servie. &lt;code&gt;503&lt;/code&gt;, avec la raison dans le corps, pendant le démarrage, l&amp;rsquo;&lt;a href="https://go-fileshare.github.io/docs/0.25/fr/administration/#a-change-is-a-new-generation"&gt;application d&amp;rsquo;une modification&lt;/a&gt; ou l&amp;rsquo;arrêt&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;/metrics&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;format texte Prometheus&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Un socket unix se nomme par un chemin absolu, &lt;code&gt;unix:///like/this&lt;/code&gt; ; tout le reste
+doit être un &lt;code&gt;host:port&lt;/code&gt;, sinon le bloc est refusé.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-is-measured"&gt;Ce qui est mesuré&lt;span class="hx:absolute hx:-mt-20" id="what-is-measured"&gt;&lt;/span&gt;
+&lt;a href="#what-is-measured" class="subheading-anchor" aria-label="Lien permanent vers cette section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;métrique&lt;/th&gt;
+&lt;th&gt;ce qu&amp;rsquo;elle compte&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;fileshare_shares{origin}&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;partages servis, &lt;code&gt;origin&lt;/code&gt; = &lt;code&gt;config&lt;/code&gt; ou &lt;code&gt;api&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;fileshare_shares_disabled&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;partages mis hors ligne par l&amp;rsquo;API d&amp;rsquo;administration&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;fileshare_generation&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;combien de listes de partages ont été servies depuis le démarrage&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;fileshare_connections_accepted_total{protocol}&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;connexions acceptées&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;fileshare_connections_open{protocol}&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;connexions ouvertes en ce moment&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;fileshare_admin_changes_total{result}&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;modifications d&amp;rsquo;administration, &lt;code&gt;applied&lt;/code&gt; ou &lt;code&gt;refused&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;fileshare_admin_requests_total{method,code}&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;appels à l&amp;rsquo;API d&amp;rsquo;administration, par méthode et par statut gRPC&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;fileshare_directory_people&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;personnes que contenait l&amp;rsquo;annuaire à sa dernière lecture&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;fileshare_directory_reloads_total{result}&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://go-fileshare.github.io/docs/0.25/fr/administration/reload/"&gt;rechargements&lt;/a&gt; : &lt;code&gt;unchanged&lt;/code&gt;, &lt;code&gt;added&lt;/code&gt;, &lt;code&gt;swapped&lt;/code&gt;, &lt;code&gt;failed&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;fileshare_revocation_list_age_seconds{list}&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;âge de la dernière bonne copie d&amp;rsquo;une &lt;a href="https://go-fileshare.github.io/docs/0.25/fr/security/revocation-lists/"&gt;liste de révocation&lt;/a&gt; ; &lt;code&gt;-1&lt;/code&gt; si elle n&amp;rsquo;a jamais été récupérée&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;fileshare_revocation_list_fetch_failures_total{list}&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;récupérations de cette liste qui ont échoué&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;fileshare_ssf_last_heard_seconds&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;secondes depuis la dernière réponse de l&amp;rsquo;émetteur de &lt;a href="https://go-fileshare.github.io/docs/0.25/fr/security/shared-signals/"&gt;signaux partagés&lt;/a&gt; ; &lt;code&gt;-1&lt;/code&gt; s&amp;rsquo;il n&amp;rsquo;a jamais répondu&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;fileshare_ssf_revoked_subjects&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;personnes dont le fournisseur a révoqué les identifiants antérieurs, telles que conservées actuellement&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;fileshare_sftp_domain_grant_total{result}&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;certificats SFTP soumis à &lt;a href="https://go-fileshare.github.io/docs/0.25/fr/protocols/sftp/#certificates-meant-for-this-host-the-domain-grant"&gt;&lt;code&gt;ssh_domains&lt;/code&gt;&lt;/a&gt; : &lt;code&gt;granted&lt;/code&gt;, &lt;code&gt;accepted_ungranted&lt;/code&gt;, &lt;code&gt;refused_not_granted&lt;/code&gt;, &lt;code&gt;refused_absent&lt;/code&gt;, &lt;code&gt;refused_malformed&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;fileshare_start_time_seconds&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;quand ce processus a démarré&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;plus les informations du runtime Go et de compilation. Les familles de révocation et de signaux partagés
+n&amp;rsquo;apparaissent que lorsque la configuration a une liste ou un bloc &lt;code&gt;ssf&lt;/code&gt;, la
+famille des délégations de domaine seulement quand elle définit &lt;code&gt;ssh_domains&lt;/code&gt;, et la famille des requêtes
+d&amp;rsquo;administration seulement quand elle a un bloc &lt;code&gt;admin&lt;/code&gt;.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Aucune métrique ne nomme un partage ou une personne&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;WebDAV répond &lt;strong&gt;404&lt;/strong&gt; pour un partage que quelqu&amp;rsquo;un ne peut pas utiliser, afin que son existence ne soit pas
+confirmée — et une collecte ne doit pas la confirmer non plus. Les étiquettes sont des
+protocoles, des origines, des résultats et des noms de méthodes, jamais un partage ou une personne.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="what-to-alert-on"&gt;Sur quoi alerter&lt;span class="hx:absolute hx:-mt-20" id="what-to-alert-on"&gt;&lt;/span&gt;
+&lt;a href="#what-to-alert-on" class="subheading-anchor" aria-label="Lien permanent vers cette section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Les vérifications de révocation &lt;a href="https://go-fileshare.github.io/docs/0.25/fr/security/#every-one-of-them-fails-closed"&gt;refusent en cas de doute&lt;/a&gt; :
+une liste trop ancienne, ou un émetteur dont on n&amp;rsquo;a plus de nouvelles, fait que le serveur
+&lt;strong&gt;refuse&lt;/strong&gt; les identifiants qu&amp;rsquo;il gouverne. Alertez avant que cela n&amp;rsquo;arrive, pas après :&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;fileshare_revocation_list_age_seconds&lt;/code&gt; qui approche &lt;code&gt;ssh_krl_max_age&lt;/code&gt; ou
+&lt;code&gt;crl_max_age&lt;/code&gt; (1h par défaut) ;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;fileshare_ssf_last_heard_seconds&lt;/code&gt; qui approche le &lt;code&gt;max_age&lt;/code&gt; du bloc &lt;code&gt;ssf&lt;/code&gt;
+(10m par défaut) ;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;fileshare_directory_reloads_total{result=&amp;quot;failed&amp;quot;}&lt;/code&gt; qui augmente : l&amp;rsquo;annuaire
+ne peut pas être lu, donc &lt;a href="https://go-fileshare.github.io/docs/0.25/fr/administration/reload/"&gt;rien ne change&lt;/a&gt; — suppressions comprises.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;--isolate&lt;/code&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Un bloc &lt;code&gt;metrics&lt;/code&gt; ne va pas encore avec &lt;code&gt;--isolate&lt;/code&gt; ; la combinaison est
+refusée.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;</description></item></channel></rss>

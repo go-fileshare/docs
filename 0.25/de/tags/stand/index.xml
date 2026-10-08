@@ -1,0 +1,259 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Stand</title><link>https://go-fileshare.github.io/docs/0.25/de/tags/stand/</link><description>Recent content in Stand on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>de</language><atom:link href="https://go-fileshare.github.io/docs/0.25/de/tags/stand/index.xml" rel="self" type="application/rss+xml"/><item><title>Stand</title><link>https://go-fileshare.github.io/docs/0.25/de/status/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.25/de/status/</guid><description>
+&lt;p&gt;Diese Seiten beschreiben &lt;strong&gt;fileshare v0.25.0&lt;/strong&gt;.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-each-release-added"&gt;Was jedes Release hinzugefügt hat&lt;span class="hx:absolute hx:-mt-20" id="what-each-release-added"&gt;&lt;/span&gt;
+&lt;a href="#what-each-release-added" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.7.0&lt;/td&gt;
+&lt;td&gt;eine eingeschränkte Freigabe über NFS, mit einem &lt;a href="https://go-fileshare.github.io/docs/0.25/de/protocols/nfs/#the-refusal-that-used-to-be-permanent"&gt;&lt;code&gt;kerberos&lt;/code&gt;-Block&lt;/a&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.8.0&lt;/td&gt;
+&lt;td&gt;die &lt;a href="https://go-fileshare.github.io/docs/0.25/de/administration/"&gt;Admin-API&lt;/a&gt; über gRPC; &lt;a href="https://go-fileshare.github.io/docs/0.25/de/configuration/shares/#a-directory-not-only-an-image"&gt;Verzeichnisfreigaben&lt;/a&gt;; &lt;a href="https://go-fileshare.github.io/docs/0.25/de/administration/health/"&gt;&lt;code&gt;/healthz&lt;/code&gt;, &lt;code&gt;/readyz&lt;/code&gt;, &lt;code&gt;/metrics&lt;/code&gt;&lt;/a&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.9.0&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://go-fileshare.github.io/docs/0.25/de/security/tls/"&gt;TLS&lt;/a&gt; für WebDAV, S3 und NFS, aus Dateien oder per ACME; &lt;strong&gt;WebDAV mit Passwörtern wird unverschlüsselt abgelehnt&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.10.0&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://go-fileshare.github.io/docs/0.25/de/administration/reload/"&gt;das Verzeichnis erneut einlesen&lt;/a&gt;: &lt;code&gt;reload = &amp;quot;5m&amp;quot;&lt;/code&gt;, &lt;code&gt;SIGHUP&lt;/code&gt;, &lt;code&gt;ReloadDirectory&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.11.0&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://go-fileshare.github.io/docs/0.25/de/protocols/sftp/#people-the-identity-provider-vouches-for"&gt;SFTP für Personen, für die der Identitätsanbieter bürgt&lt;/a&gt;: seine SSH-CA und opkssh&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.12.0&lt;/td&gt;
+&lt;td&gt;Widerruf: eine &lt;a href="https://go-fileshare.github.io/docs/0.25/de/security/revocation-lists/"&gt;KRL&lt;/a&gt; für die SSH-Zertifikate des Anbieters, eine CRL für &lt;a href="https://go-fileshare.github.io/docs/0.25/de/security/nfs-certificates/"&gt;NFS-Identitäten aus Zertifikaten&lt;/a&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.13.0&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://go-fileshare.github.io/docs/0.25/de/security/shared-signals/"&gt;Shared Signals&lt;/a&gt;: ein CAEP-&lt;code&gt;session-revoked&lt;/code&gt; macht alles ungültig, was der Anbieter zuvor ausgestellt hat, auf jedem Protokoll&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.14.0&lt;/td&gt;
+&lt;td&gt;die Korrekturen aus dem Sicherheitsreview: &lt;a href="https://go-fileshare.github.io/docs/0.25/de/administration/#what-it-will-and-will-not-touch"&gt;Freigabenamen, die ein Protokoll transportieren kann&lt;/a&gt;, keine Freigabe, die die Konfiguration oder ihre Geheimnisse enthält, &lt;code&gt;source_roots&lt;/code&gt; beim Start erneut geprüft, SSF &lt;code&gt;max_age&lt;/code&gt; ≥ 1m und &lt;code&gt;retain&lt;/code&gt; ≥ 169h&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.15.0&lt;/td&gt;
+&lt;td&gt;eine &lt;a href="https://go-fileshare.github.io/docs/0.25/de/security/revocation-lists/#signed-and-dated-from-ssh_krl_url"&gt;KRL aus &lt;code&gt;ssh_krl_url&lt;/code&gt; muss signiert und datiert sein&lt;/a&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.16.0&lt;/td&gt;
+&lt;td&gt;Sperrlisten &lt;a href="https://go-fileshare.github.io/docs/0.25/de/security/revocation-lists/#never-backwards-across-a-restart-too"&gt;gehen nie zurück&lt;/a&gt;, auch über einen Neustart hinweg, mit &lt;code&gt;ssh_krl_state_file&lt;/code&gt; / &lt;code&gt;crl_state_file&lt;/code&gt;; Vertrauensanker und Listendateien dürfen nicht in einer Freigabe liegen&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.16.1&lt;/td&gt;
+&lt;td&gt;erfordert Go 1.26.6: neun erreichbare Sicherheitshinweise der Standardbibliothek in 1.26.4&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.16.2&lt;/td&gt;
+&lt;td&gt;die &lt;a href="https://go-fileshare.github.io/docs/0.25/de/security/nfs-certificates/#revocation-the-crl"&gt;Signatur einer NFS-CRL wird geprüft, bevor sie geparst wird&lt;/a&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.16.3&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://go-fileshare.github.io/docs/0.25/de/protocols/webdav/#a-token-over-the-one-protocol-that-can-carry-one"&gt;niemand wird über eine unbestätigte E-Mail-Adresse benannt&lt;/a&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.16.4&lt;/td&gt;
+&lt;td&gt;nur Tests&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.16.5&lt;/td&gt;
+&lt;td&gt;nur Tests (&lt;a href="https://github.com/go-fileshare/fileshare/issues/36" target="_blank" rel="noopener"&gt;#36&lt;/a&gt;: ein Test las einen Transportfehler als Erfolg)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.16.6&lt;/td&gt;
+&lt;td&gt;die NFS-Ablehnung nennt beide Auswege: einen &lt;code&gt;kerberos&lt;/code&gt;-Block oder &lt;a href="https://go-fileshare.github.io/docs/0.25/de/security/nfs-certificates/"&gt;&lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt;&lt;/a&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.16.7&lt;/td&gt;
+&lt;td&gt;go-authn/oidc v0.2.2: die Größe eines RSA-Schlüssels wird in Bits gezählt. Zuvor verifizierte ein mit Null-Oktetten aufgefüllter 1024-Bit-Schlüssel ein WebDAV-Token oder ein opkssh-PK-Token&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.17.0&lt;/td&gt;
+&lt;td&gt;die Korrekturen eines Sicherheitsaudits: Eine Freigabe darf keine andere enthalten; Zugangsdateien (&lt;code&gt;authorized_keys_file&lt;/code&gt;, &lt;code&gt;dsn_file&lt;/code&gt;, …) dürfen nicht in einer Freigabe liegen; WebDAV wird nie anonym, weil das Lesen eines Verzeichnisses leer zurückkam; S3 beachtet &lt;code&gt;protocols&lt;/code&gt;; eine Verbindung, die sich nicht innerhalb von 30 s authentifiziert hat, wird geschlossen; eine opkssh-Sitzung endet bei &lt;code&gt;opkssh_max_age&lt;/code&gt;; eine widerrufene Sitzung bleibt widerrufen und wird geschlossen&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.17.1&lt;/td&gt;
+&lt;td&gt;go-authn/oidc v0.2.4 (kein Schlüsselsatz hinter einer Umleitung auf http), servercert v0.3.0 (der ACME-Cache-Pfad wird wie bei sshds StrictModes geprüft), krl v0.5.0, revocation v0.3.0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.17.2&lt;/td&gt;
+&lt;td&gt;go-filesystems/s3 v0.3.0: S3 verrät einem nicht authentifizierten Aufrufer nicht mehr, welche Access Keys existieren; vorsignierte URLs funktionieren, gelten höchstens eine Woche und werden vor ihrem eigenen Datum abgelehnt&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.18.0&lt;/td&gt;
+&lt;td&gt;die CI pinnt Go 1.27.1 statt &lt;code&gt;stable&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.18.1&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;fileshare check&lt;/code&gt; warnt, wenn ein &lt;code&gt;oidc&lt;/code&gt;-Block keine &lt;code&gt;domains&lt;/code&gt; hat: &lt;a href="https://go-fileshare.github.io/docs/0.25/de/configuration/identity/"&gt;Der bloße Name beim Anbieter erreicht das lokale Konto gleichen Namens&lt;/a&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.19.0&lt;/td&gt;
+&lt;td&gt;go-authn/directory v0.11.0: Ein &lt;code&gt;users &amp;quot;ldap&amp;quot;&lt;/code&gt;-Block lehnt einen &lt;a href="https://go-fileshare.github.io/docs/0.25/de/configuration/identity/"&gt;unverschlüsselten Bind an eine andere Maschine&lt;/a&gt; ab; Passwörter werden als Digests verglichen, in konstanter Zeit&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.20.0&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://go-fileshare.github.io/docs/0.25/de/configuration/identity/"&gt;&lt;code&gt;local_names&lt;/code&gt;&lt;/a&gt;: Die Namen des Anbieters sind nur dann lokale Namen, wenn der &lt;code&gt;oidc&lt;/code&gt;-Block das sagt (Sicherheitsaudit F4)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.21.0&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://go-fileshare.github.io/docs/0.25/de/administration/volumes/"&gt;Volumes&lt;/a&gt;: Ein privilegierter &lt;code&gt;fileshare provisioner&lt;/code&gt; legt ZFS-Datasets, btrfs-Subvolumes und XFS/ext4-Projekt-Quota-Verzeichnisse an, und die Admin-API stellt Freigaben daraus bereit; eine volle Verzeichnisfreigabe gibt auf jedem Protokoll dieselbe Antwort; &lt;code&gt;allowed_uids&lt;/code&gt; des Admin-Sockets&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.21.1&lt;/td&gt;
+&lt;td&gt;eine &lt;a href="https://go-fileshare.github.io/docs/0.25/de/administration/volumes/#a-full-share"&gt;volle Freigabe&lt;/a&gt; meldet das auch über SMB (&lt;code&gt;STATUS_DISK_FULL&lt;/code&gt;) und NFS (&lt;code&gt;NFS3ERR_NOSPC&lt;/code&gt; / &lt;code&gt;NFS3ERR_DQUOT&lt;/code&gt;)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.22.0&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://go-fileshare.github.io/docs/0.25/de/protocols/sftp/#certificates-meant-for-this-host-the-domain-grant"&gt;&lt;code&gt;ssh_domains&lt;/code&gt;&lt;/a&gt;: Ein SSH-Zertifikat wird nur dort akzeptiert, wo sein Domain-Grant (&lt;code&gt;ssh-domain-grant@core.aai.geant.org&lt;/code&gt;, das SSH-CA-Profil von EuroHPC) diesen Host nennt, fail-closed; &lt;code&gt;ssh_accept_ungranted&lt;/code&gt; lässt Zertifikate ohne Grant zu&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.22.1&lt;/td&gt;
+&lt;td&gt;go-filesystems/sftp v0.5.1: Ein &lt;a href="https://go-fileshare.github.io/docs/0.25/de/protocols/sftp/#a-certificate-pinned-to-an-address"&gt;an eine Adresse gebundenes&lt;/a&gt; Zertifikat (&lt;code&gt;source-address&lt;/code&gt;) wird von dieser Adresse aus unter &lt;code&gt;ssh_domains&lt;/code&gt; akzeptiert, ebenso bei den Zertifikaten des Anbieters und von OpenPubkey; zuvor wurde es von jeder Adresse abgelehnt&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.22.2&lt;/td&gt;
+&lt;td&gt;nur Tests und Dokumentation: &lt;code&gt;source-address&lt;/code&gt; wird von &lt;code&gt;::1&lt;/code&gt; und von einer zweiten IPv4-Adresse (&lt;code&gt;127.0.0.2&lt;/code&gt;) aus getestet, unter &lt;code&gt;ssh_domains&lt;/code&gt; und mit einem OpenPubkey-Zertifikat; unter Linux schlägt mit &lt;code&gt;FILESHARE_REQUIRE_JUDGE&lt;/code&gt; ein fehlender Judge fehl, statt übersprungen zu werden&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.23.0&lt;/td&gt;
+&lt;td&gt;ein &lt;a href="https://go-fileshare.github.io/docs/0.25/de/administration/volumes/#the-size-a-client-sees"&gt;btrfs-Volume&lt;/a&gt; hat über NFS, SMB und WebDAV die Größe seiner Quota (go-filesystems/nfs v0.7.0, smb v0.5.0, webdav v0.3.0 melden die Größe bei jeder Abfrage); zuvor zeigte btrfs das ganze Dateisystem. Ein Server, dessen Freigaben aus der Admin-API kommen, hält beim Start nicht mehr an, wenn er NFS anbietet und noch keine Freigabe hat&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.24.0&lt;/td&gt;
+&lt;td&gt;schnelleres Lesen: Ein WebDAV-GET einer Verzeichnis- oder Volume-Freigabe geht über einfaches HTTP (nicht über TLS) mit &lt;code&gt;sendfile(2)&lt;/code&gt; hinaus, NFS liest und schreibt in 1 MiB (rtmax/wtmax), und SMB-Clients lesen mehr als 64 KiB pro Anfrage (&lt;code&gt;CAP_LARGE_MTU&lt;/code&gt;). Auf dem CI-Runner, eine 256-MiB-Datei: WebDAV 6,6 GB/s, SMB 0,84, NFS 1,47 (ein Client)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.24.1&lt;/td&gt;
+&lt;td&gt;Sicherheit: Eine untätige NFS-Verbindung behält nicht mehr die 3 MiB ihres größten Aufrufs (24 untätige Verbindungen hielten 59 MiB); ein SMB-Frame-Header lässt den Server nicht mehr die angekündigten 8 MiB belegen, bevor die Bytes ankommen; eine SMB-Anfrage kann nicht mehr ein Credit für 4 GiB zahlen (go-filesystems/nfs v0.8.1, smb v0.6.1 und v0.6.2)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.25.0&lt;/td&gt;
+&lt;td&gt;SFTP beantwortet &lt;code&gt;limits@openssh.com&lt;/code&gt;, sodass OpenSSHs &lt;code&gt;sftp&lt;/code&gt; bis zu 255 KiB liest (+25 %); eine Sitzung hält höchstens 1024 offene Handles (go-filesystems/sftp v0.6.0)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Upgrade auf v0.21.0&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Eine &lt;strong&gt;volle Verzeichnisfreigabe&lt;/strong&gt; antwortet anders. &lt;code&gt;EDQUOT&lt;/code&gt; (eine Quota) und
+&lt;code&gt;ENOSPC&lt;/code&gt; sind jetzt ein einziger Fehler, „no space left on device (the share is full)&amp;quot;,
+auf jeder Verzeichnisfreigabe, nicht nur auf Volumes: Ein &lt;code&gt;EDQUOT&lt;/code&gt;, das bei WebDAV
+&lt;code&gt;500&lt;/code&gt; und bei NFS &lt;code&gt;NFS3ERR_IO&lt;/code&gt; war, ist jetzt &lt;code&gt;507&lt;/code&gt; und &lt;code&gt;NFS3ERR_NOSPC&lt;/code&gt;, und der Text bei SFTP
+ist dieser Satz, ohne den Pfad. SMB antwortet weiterhin mit „Zugriff verweigert&amp;quot;. Siehe
+&lt;a href="https://go-fileshare.github.io/docs/0.25/de/administration/volumes/#a-full-share"&gt;eine volle Freigabe&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Upgrade auf v0.20.0&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Die &lt;code&gt;alice&lt;/code&gt; des Anbieters erhält nicht mehr die Freigaben der lokalen &lt;code&gt;alice&lt;/code&gt;. Eine Installation,
+deren Namen beim Anbieter ihre lokalen Namen sind, ergänzt &lt;code&gt;local_names = true&lt;/code&gt; im
+&lt;code&gt;oidc&lt;/code&gt;-Block (und setzt &lt;code&gt;domains&lt;/code&gt;); der Server protokolliert diese Zeile für jeden Namen,
+den er mangels dieser Einstellung ablehnt.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Upgrade auf v0.19.0&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Ein &lt;code&gt;users &amp;quot;ldap&amp;quot;&lt;/code&gt;-Block, der ohne &lt;code&gt;start_tls = true&lt;/code&gt; auf &lt;code&gt;ldap://&lt;/code&gt; einer anderen Maschine
+zeigt, &lt;strong&gt;startet nicht mehr&lt;/strong&gt;: Verwenden Sie &lt;code&gt;ldaps://&lt;/code&gt; oder StartTLS.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Upgrade auf v0.17.0&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Eine Konfiguration mit einer Freigabe innerhalb einer anderen, zwei Freigaben auf einer Quelle
+oder einer Zugangsdatei (&lt;code&gt;authorized_keys_file&lt;/code&gt;, &lt;code&gt;dsn_file&lt;/code&gt;, &lt;code&gt;bind_password_file&lt;/code&gt;,
+die &lt;code&gt;ca_file&lt;/code&gt; von &lt;code&gt;ssf&lt;/code&gt;) innerhalb einer Freigabe &lt;strong&gt;startet nicht mehr&lt;/strong&gt;; der Fehler nennt
+die Freigabe und den Pfad.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Upgrade über v0.9.0 hinaus&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Eine Konfiguration, die WebDAV ohne TLS auf einer Adresse bereitstellt, die andere Maschinen
+erreichen können, und bei der sich jemand authentifizieren muss, &lt;strong&gt;startet nicht mehr&lt;/strong&gt;. Ergänzen Sie &lt;code&gt;tls = true&lt;/code&gt;
+und einen &lt;code&gt;tls&lt;/code&gt;-Block, oder &lt;code&gt;plaintext = true&lt;/code&gt; hinter einem Proxy, der TLS terminiert. Siehe
+&lt;a href="https://go-fileshare.github.io/docs/0.25/de/security/tls/#webdav-is-not-served-in-the-clear"&gt;TLS&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="verified"&gt;Geprüft&lt;span class="hx:absolute hx:-mt-20" id="verified"&gt;&lt;/span&gt;
+&lt;a href="#verified" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Dies sind Dinge, die ein Client, den dieses Projekt nicht geschrieben hat, tatsächlich tun musste, keine
+Behauptungen über den Code.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;macOS&lt;/strong&gt; hängt eine Freigabe über SMB ein, während &lt;code&gt;curl&lt;/code&gt; über WebDAV in dasselbe Image
+schreibt, und liest zurück, was WebDAV geschrieben hat. Bobs WebDAV-Schreibzugriff auf eine Freigabe,
+die er nur lesen darf, ergibt &lt;code&gt;403&lt;/code&gt;; ein falsches Passwort ergibt &lt;code&gt;401&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;go-smb2&lt;/strong&gt; – ein Client, den dieses Projekt nicht geschrieben hat – führt in der CI unter &lt;code&gt;-race&lt;/code&gt; zwanzig
+gleichzeitige Lesezugriffe über SMB aus, während zwanzig über WebDAV laufen.&lt;/li&gt;
+&lt;li&gt;Die Zugriffsregeln werden &lt;strong&gt;über jedes Protokoll&lt;/strong&gt; geprüft statt nur in der
+Konfiguration: alice schreibt und bob nicht, über SMB und über WebDAV,
+und NFS wird die Freigabe gar nicht erst angeboten.&lt;/li&gt;
+&lt;li&gt;SFTP-Zertifikate werden gegen den &lt;strong&gt;eigenen Client von OpenSSH&lt;/strong&gt; geprüft, der denselben
+Schlüssel auch ablehnt, sobald sein Zertifikat beiseitegelegt wird.&lt;/li&gt;
+&lt;li&gt;NFS-Identitäten aus Zertifikaten wurden mit einem &lt;strong&gt;echten Linux-Client&lt;/strong&gt;
+(Kernel 6.17, ktls-utils 0.9) in der CI von go-filesystems/nfs gemessen – so wurden
+&lt;a href="https://go-fileshare.github.io/docs/0.25/de/security/nfs-certificates/#measured-with-a-real-linux-client"&gt;&lt;code&gt;MNT&lt;/code&gt; im Klartext und die Fallstricke von &lt;code&gt;tlshd&lt;/code&gt;&lt;/a&gt;
+gefunden.&lt;/li&gt;
+&lt;li&gt;Die unsignierte Form der KRL ist eine Messung: OpenSSH 9.6 und 10.3 lesen eine signierte
+KRL und überspringen die Signatur (go-authn/krl, gegen beide).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Die Interop-Strecke von go-authn/bridge&lt;/strong&gt; (&lt;a href="https://github.com/go-authn/bridge/pull/12" target="_blank" rel="noopener"&gt;#12&lt;/a&gt;,
+&lt;a href="https://github.com/go-authn/bridge/pull/17" target="_blank" rel="noopener"&gt;#17&lt;/a&gt;) prüft fileshare v0.13.0
+gegen die echte Bridge: die KRL, die CRL über NFS, über Shared Signals widerrufene
+WebDAV-Tokens, ein per Scope deaktivierter IdP und opkssh über Shared Signals.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 data-hextra-search-id="not-yet"&gt;Noch nicht&lt;span class="hx:absolute hx:-mt-20" id="not-yet"&gt;&lt;/span&gt;
+&lt;a href="#not-yet" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;Schreibzugriffe über S3.&lt;/strong&gt; &lt;code&gt;PUT&lt;/code&gt; und &lt;code&gt;DELETE&lt;/code&gt; antworten mit 403. Die Bibliothek kann schreiben, aber
+eine Freigabe, die eine Person nur lesen darf, muss an derselben Stelle ablehnen wie SFTP, und
+das ist nicht verdrahtet. Ablehnen ist besser als ein halb geschriebenes Objekt.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Ein OIDC-Token über S3.&lt;/strong&gt; Tokens funktionieren über &lt;a href="https://go-fileshare.github.io/docs/0.25/de/protocols/webdav/"&gt;WebDAV&lt;/a&gt; und
+nirgendwo sonst. Der übliche Weg für S3 ist STS &lt;code&gt;AssumeRoleWithWebIdentity&lt;/code&gt;,
+das das Token gegen temporäre Zugangsdaten tauscht, mit denen der Client dann signiert –
+ein anderer Mechanismus als das Akzeptieren eines Bearer-Tokens, und nicht
+implementiert.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;&lt;code&gt;--isolate&lt;/code&gt; mit einem &lt;code&gt;admin&lt;/code&gt;- oder einem &lt;code&gt;metrics&lt;/code&gt;-Block.&lt;/strong&gt; Abgelehnt: Es gibt keinen einzelnen
+Prozess, auf den eine Änderung über die API angewendet werden könnte. Siehe
+&lt;a href="https://go-fileshare.github.io/docs/0.25/de/operations/isolation/#not-with-an-admin-or-a-metrics-block-yet"&gt;ein Prozess pro Protokoll&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Eine Person pro Benutzer auf einem gemeinsam genutzten Linux-NFS-Client, aus einem Zertifikat.&lt;/strong&gt; Ein Linux-Client
+bindet das Zertifikat an einen Mount, sodass jeder Benutzer des Mounts die Person ist, die es
+nennt. Das ist eine Eigenschaft des Clients, und die Antwort dort ist
+&lt;code&gt;sec=krb5&lt;/code&gt;. Siehe &lt;a href="https://go-fileshare.github.io/docs/0.25/de/security/nfs-certificates/#what-it-cannot-promise"&gt;was es nicht zusichern kann&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://go-fileshare.github.io/docs/0.25/de/protocols/s3/"&gt;S3 selbst&lt;/a&gt; ist ausgeliefert: Eine Freigabe ist ein Bucket, bereitgestellt über
+denselben Baum pro Benutzer, den SFTP verwendet.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="measured-and-stated-as-measured"&gt;Gemessen, und als gemessen ausgewiesen&lt;span class="hx:absolute hx:-mt-20" id="measured-and-stated-as-measured"&gt;&lt;/span&gt;
+&lt;a href="#measured-and-stated-as-measured" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Aussagen auf diesen Seiten, die Absicherung oder Messung sind statt
+Reproduktionen eines Fehlers, und die auch im Quellcode so formuliert sind:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Acht Goroutinen, die unter &lt;code&gt;-race&lt;/code&gt; über einen nicht umhüllten fat32-Treiber schreiben,
+erzeugen heute keinen Race. Die &lt;a href="https://go-fileshare.github.io/docs/0.25/de/operations/locking/"&gt;gemeinsame Sperre&lt;/a&gt; ist eine Absicherung
+eines Vertrags – &lt;code&gt;go-filesystems/interface&lt;/code&gt; sichert nichts über gleichzeitige
+pfadbasierte Aufrufe zu –, keine Korrektur eines beobachteten Fehlers.&lt;/li&gt;
+&lt;li&gt;Die &lt;a href="https://go-fileshare.github.io/docs/0.25/de/operations/build-tags/"&gt;Größen nach Build-Tag&lt;/a&gt; wurden gemessen, einschließlich der
+13,2 MB, die &lt;code&gt;hashicorp/go-plugin&lt;/code&gt; allein kostet – das gab den Ausschlag
+gegen ein Plugin-Framework –, und der 11,7 MB, die gRPC kostet, seit die Admin-API
+es mitbringt; deshalb gibt es &lt;code&gt;nogrpc&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Eine eigene Zertifikatserweiterung für Gruppen-Tags wurde entworfen und gegen den X.509-Parser von Go
+&lt;strong&gt;gemessen&lt;/strong&gt;, der das ganze Zertifikat ablehnte; die Gruppen
+reisen stattdessen als &lt;a href="https://go-fileshare.github.io/docs/0.25/de/security/nfs-certificates/#what-the-certificate-carries"&gt;Tag-URIs&lt;/a&gt;.&lt;/li&gt;
+&lt;/ul&gt;</description></item></channel></rss>
