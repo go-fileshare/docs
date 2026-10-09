@@ -5,7 +5,7 @@ description: "Which fileshare release these pages describe, what each release ad
 tags: [status, releases]
 ---
 
-These pages describe **fileshare v0.25.0**.
+These pages describe **fileshare v0.26.0**.
 
 ## What each release added
 
@@ -44,6 +44,7 @@ These pages describe **fileshare v0.25.0**.
 | v0.24.0 | faster reads: a WebDAV GET of a directory or volume share goes out with `sendfile(2)` over plain HTTP (not over TLS), NFS reads and writes in 1 MiB (rtmax/wtmax), and SMB clients read more than 64 KiB per request (`CAP_LARGE_MTU`). On the CI runner, a 256 MiB file: WebDAV 6.6 GB/s, SMB 0.84, NFS 1.47 (one client) |
 | v0.24.1 | security: an idle NFS connection no longer keeps the 3 MiB its largest call needed (24 idle connections held 59 MiB); an SMB frame header no longer makes the server allocate the 8 MiB it announces before the bytes arrive; an SMB request can no longer pay one credit for 4 GiB (go-filesystems/nfs v0.8.1, smb v0.6.1 and v0.6.2) |
 | v0.25.0 | SFTP answers `limits@openssh.com`, so OpenSSH's `sftp` reads in up to 255 KiB (+25%); one session holds at most 1024 open handles (go-filesystems/sftp v0.6.0) |
+| v0.26.0 | server-side copy on every protocol that has one: a WebDAV `COPY`, an SFTP `copy-data` (OpenSSH's `sftp cp`) and an SMB COPYCHUNK (Explorer, Linux `copy_file_range`) are made on the server, by `copy_file_range(2)` between files of the host — a reflink on btrfs and XFS, measured in CI as 0 bytes used for an 8 MiB copy. Security: a WebDAV `COPY` and every S3 `GET`/`HEAD` no longer read the whole file into memory; S3 streams objects of any size. Correction: v0.24.0's sendfile for WebDAV `GET` only happened on read-only shares — a wrapper hid it on writable ones; it happens on both since v0.26.0 |
 
 {{< callout type="warning" >}}
 **Upgrading to v0.21.0**

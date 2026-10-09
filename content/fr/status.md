@@ -5,7 +5,7 @@ description: "La version de fileshare que décrivent ces pages, ce que chaque ve
 tags: [état, versions]
 ---
 
-Ces pages décrivent **fileshare v0.25.0**.
+Ces pages décrivent **fileshare v0.26.0**.
 
 ## Ce que chaque version a ajouté {#what-each-release-added}
 
@@ -44,6 +44,7 @@ Ces pages décrivent **fileshare v0.25.0**.
 | v0.24.0 | lectures plus rapides : un GET WebDAV d'un partage de répertoire ou de volume part en `sendfile(2)` en HTTP clair (pas sous TLS), NFS lit et écrit par 1 Mio (rtmax/wtmax), et les clients SMB lisent plus de 64 Kio par requête (`CAP_LARGE_MTU`). Sur le runner de CI, un fichier de 256 Mio : WebDAV 6,6 Go/s, SMB 0,84, NFS 1,47 (un client) |
 | v0.24.1 | sécurité : une connexion NFS inactive ne garde plus les 3 Mio de son plus gros appel (24 connexions inactives retenaient 59 Mio) ; un en-tête de trame SMB ne fait plus allouer au serveur les 8 Mio qu'il annonce avant l'arrivée des octets ; une requête SMB ne peut plus payer un crédit pour 4 Gio (go-filesystems/nfs v0.8.1, smb v0.6.1 et v0.6.2) |
 | v0.25.0 | SFTP répond à `limits@openssh.com` : le `sftp` d'OpenSSH lit jusqu'à 255 Kio (+25 %) ; une session tient au plus 1024 handles ouverts (go-filesystems/sftp v0.6.0) |
+| v0.26.0 | copie côté serveur sur chaque protocole qui en a une : un `COPY` WebDAV, un `copy-data` SFTP (`sftp cp` d'OpenSSH) et un COPYCHUNK SMB (Explorateur, `copy_file_range` sous Linux) sont faits sur le serveur, par `copy_file_range(2)` entre fichiers de l'hôte — un reflink sur btrfs et XFS, mesuré en CI : 0 octet consommé pour une copie de 8 Mio. Sécurité : un `COPY` WebDAV et chaque `GET`/`HEAD` S3 ne lisent plus tout le fichier en mémoire ; S3 diffuse des objets de toute taille. Correction : le sendfile des `GET` WebDAV de la v0.24.0 n'avait lieu que sur les partages en lecture seule — une enveloppe le masquait sur ceux en écriture ; il a lieu sur les deux depuis la v0.26.0 |
 
 {{< callout type="warning" >}}
 **Passer à la v0.21.0**
