@@ -151,7 +151,7 @@ params:
   # The fileshare release these pages describe. Its minor version is the
   # documentation's version label (v0.22.2 -> 0.22): the CI reads it here.
   fileshare:
-    version: "v0.28.0"
+    version: "v0.28.1"
 
   # The language switch (foot of the sidebar) shows the translate icon, then
   # the language's flag. It appears once a second language is declared.
