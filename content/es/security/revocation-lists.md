@@ -118,7 +118,7 @@ escribiera allí decidiría quién entra.
 
 ## Un `sshd` normal junto a fileshare {#a-plain-sshd-next-to-fileshare}
 
-La misma verificación está disponible sin fileshare: el `revokd` de
+La misma verificación está disponible sin fileshare: el `authn-revokd` de
 go-authn/revocation descarga las listas, conserva solo las que se verifican, guarda
 su orden en disco, escribe `RevokedKeys` para `sshd` y, cuando una lista caduca,
 escribe una que revoca la propia CA, de modo que `sshd` también falla en modo

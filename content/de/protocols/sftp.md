@@ -206,7 +206,7 @@ oidc {
 }
 ```
 
-- **Ein Zertifikat, das die SSH-CA des Anbieters signiert hat** – `bridge ssh-cert` schreibt eines
+- **Ein Zertifikat, das die SSH-CA des Anbieters signiert hat** – `authn-bridge ssh-cert` schreibt eines
   nach einer Anmeldung über die Föderation. Sein Principal ist die Person, seine
   Erweiterung `groups@go-authn.org` deren Gruppen, sodass
   [`oidc:groups:`-Regeln]({{< relref "/configuration/identity.md#people-the-identity-provider-names-not-this-file" >}})
