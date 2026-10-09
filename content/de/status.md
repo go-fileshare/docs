@@ -5,7 +5,7 @@ description: "Welches fileshare-Release diese Seiten beschreiben, was jedes Rele
 tags: [stand, releases]
 ---
 
-Diese Seiten beschreiben **fileshare v0.28.0**.
+Diese Seiten beschreiben **fileshare v0.28.1**.
 
 ## Was jedes Release hinzugefügt hat {#what-each-release-added}
 
@@ -47,6 +47,7 @@ Diese Seiten beschreiben **fileshare v0.28.0**.
 | v0.26.0 | serverseitiges Kopieren bei jedem Protokoll, das es kennt: Ein WebDAV-`COPY`, ein SFTP-`copy-data` (OpenSSHs `sftp cp`) und ein SMB-COPYCHUNK (Explorer, Linux `copy_file_range`) werden auf dem Server ausgeführt, mit `copy_file_range(2)` zwischen Dateien des Hosts — ein Reflink auf btrfs und XFS, in der CI gemessen: 0 Byte belegt für eine 8-MiB-Kopie. Sicherheit: Ein WebDAV-`COPY` und jedes S3-`GET`/`HEAD` lesen nicht mehr die ganze Datei in den Speicher; S3 streamt Objekte jeder Größe. Korrektur: Der Sendfile-Weg für WebDAV-`GET` aus v0.24.0 griff nur bei schreibgeschützten Freigaben — eine Hülle verbarg ihn bei beschreibbaren; seit v0.26.0 greift er bei beiden |
 | v0.27.0 | ACME: Das Zertifikat wird **beim Start** angefordert, nicht bei der ersten Verbindung – neuer Versuch nach 1 min, verdoppelt bis 1 h, während der Server weiter bedient; ein Client, der **kein SNI** sendet (Verbindung per IP-Adresse), erhält das Zertifikat der ersten Domain statt eines gescheiterten Handshakes (go-authn/servercert v0.5.0). [HARICA]({{< relref "/security/tls.md#harica-gant-tcs-which-account-and-caa" >}}): Nur ein Enterprise-**Admin**-Konto (OV) stellt ohne Challenge aus, und CAA muss `harica.gr` erlauben |
 | v0.28.0 | die Admin-API wird auch [über HTTPS für OIDC-Tokens]({{< relref "/administration/_index.md#over-https-for-oidc-tokens" >}}) angeboten – Connect, gRPC-Web und gRPC auf einem Listener, eine Audience je Server, Aufrufer je Aussteller per Subject oder Gruppe benannt – der erste Schritt zu den Web- und nativen Oberflächen |
+| v0.28.1 | Sicherheit: gebaut mit Go 1.27.2 und golang.org/x/net v0.60.0, die GO-2026-6617 (eine Race im HPACK-Encoder von HTTP/2, die einen Server abstürzen lassen konnte), GO-2026-6613, -6612, -6611, -6610 und -6603 beheben. Die Admin-API über HTTPS spricht HTTP/2. `go install` verlangt nun Go 1.27.2 und wechselt selbst dorthin |
 
 {{< callout type="warning" >}}
 **Upgrade auf v0.21.0**
