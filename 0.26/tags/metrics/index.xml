@@ -1,0 +1,148 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Metrics</title><link>https://go-fileshare.github.io/docs/0.26/tags/metrics/</link><description>Recent content in Metrics on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>en</language><atom:link href="https://go-fileshare.github.io/docs/0.26/tags/metrics/index.xml" rel="self" type="application/rss+xml"/><item><title>Health and metrics</title><link>https://go-fileshare.github.io/docs/0.26/administration/health/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.26/administration/health/</guid><description>
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;metrics { listen&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;127.0.0.1:9100&amp;#34;&lt;/span&gt; } &lt;span class="err"&gt;#&lt;/span&gt; &lt;span class="k"&gt;or&lt;/span&gt; &lt;span class="k"&gt;unix&lt;/span&gt;&lt;span class="err"&gt;:///&lt;/span&gt;&lt;span class="k"&gt;run&lt;/span&gt;&lt;span class="err"&gt;/&lt;/span&gt;&lt;span class="k"&gt;fileshare&lt;/span&gt;&lt;span class="err"&gt;/&lt;/span&gt;&lt;span class="k"&gt;metrics&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="k"&gt;sock&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Three endpoints, served by
+&lt;a href="https://github.com/go-net-health/endpoint" target="_blank" rel="noopener"&gt;go-net-health/endpoint&lt;/a&gt; on a
+listener of their own — &lt;strong&gt;never a port a protocol serves&lt;/strong&gt;, so the world that
+reaches WebDAV does not reach them:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;/healthz&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;the process answers&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;/readyz&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;every protocol is bound &lt;strong&gt;and&lt;/strong&gt; a generation is serving. &lt;code&gt;503&lt;/code&gt;, and why, in the body, while starting, &lt;a href="https://go-fileshare.github.io/docs/0.26/administration/#a-change-is-a-new-generation"&gt;applying a change&lt;/a&gt; or stopping&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;/metrics&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Prometheus text format&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;A unix socket is named by an absolute path, &lt;code&gt;unix:///like/this&lt;/code&gt;; anything else
+must be a &lt;code&gt;host:port&lt;/code&gt;, or the block is refused.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-is-measured"&gt;What is measured&lt;span class="hx:absolute hx:-mt-20" id="what-is-measured"&gt;&lt;/span&gt;
+&lt;a href="#what-is-measured" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;metric&lt;/th&gt;
+&lt;th&gt;what it counts&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;fileshare_shares{origin}&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;shares served, &lt;code&gt;origin&lt;/code&gt; = &lt;code&gt;config&lt;/code&gt; or &lt;code&gt;api&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;fileshare_shares_disabled&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;shares taken offline through the admin API&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;fileshare_generation&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;how many lists of shares have been served since the start&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;fileshare_connections_accepted_total{protocol}&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;connections accepted&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;fileshare_connections_open{protocol}&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;connections open now&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;fileshare_admin_changes_total{result}&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;admin changes, &lt;code&gt;applied&lt;/code&gt; or &lt;code&gt;refused&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;fileshare_admin_requests_total{method,code}&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;admin API calls, by method and gRPC status&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;fileshare_directory_people&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;people the directory held at its last read&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;fileshare_directory_reloads_total{result}&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://go-fileshare.github.io/docs/0.26/administration/reload/"&gt;reloads&lt;/a&gt;: &lt;code&gt;unchanged&lt;/code&gt;, &lt;code&gt;added&lt;/code&gt;, &lt;code&gt;swapped&lt;/code&gt;, &lt;code&gt;failed&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;fileshare_revocation_list_age_seconds{list}&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;age of a &lt;a href="https://go-fileshare.github.io/docs/0.26/security/revocation-lists/"&gt;revocation list&lt;/a&gt;&amp;rsquo;s last good copy; &lt;code&gt;-1&lt;/code&gt; when never fetched&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;fileshare_revocation_list_fetch_failures_total{list}&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;fetches of that list that failed&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;fileshare_ssf_last_heard_seconds&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;seconds since the &lt;a href="https://go-fileshare.github.io/docs/0.26/security/shared-signals/"&gt;shared signals&lt;/a&gt; transmitter last answered; &lt;code&gt;-1&lt;/code&gt; when never&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;fileshare_ssf_revoked_subjects&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;people whose earlier credentials the provider has revoked, as kept now&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;fileshare_sftp_domain_grant_total{result}&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;SFTP certificates &lt;a href="https://go-fileshare.github.io/docs/0.26/protocols/sftp/#certificates-meant-for-this-host-the-domain-grant"&gt;&lt;code&gt;ssh_domains&lt;/code&gt;&lt;/a&gt; was asked about: &lt;code&gt;granted&lt;/code&gt;, &lt;code&gt;accepted_ungranted&lt;/code&gt;, &lt;code&gt;refused_not_granted&lt;/code&gt;, &lt;code&gt;refused_absent&lt;/code&gt;, &lt;code&gt;refused_malformed&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;fileshare_start_time_seconds&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;when this process started&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;plus the Go runtime and build information. The revocation and shared-signals
+families appear only when the configuration has a list or an &lt;code&gt;ssf&lt;/code&gt; block, the
+domain-grant family only when it sets &lt;code&gt;ssh_domains&lt;/code&gt;, and the admin requests
+family only when it has an &lt;code&gt;admin&lt;/code&gt; block.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;No metric names a share or a person&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;WebDAV answers &lt;strong&gt;404&lt;/strong&gt; for a share somebody may not use, so that it is not
+confirmed to exist — and a scrape must not confirm it either. The labels are
+protocols, origins, outcomes and method names, never a share or a person.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="what-to-alert-on"&gt;What to alert on&lt;span class="hx:absolute hx:-mt-20" id="what-to-alert-on"&gt;&lt;/span&gt;
+&lt;a href="#what-to-alert-on" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;The revocation checks &lt;a href="https://go-fileshare.github.io/docs/0.26/security/#every-one-of-them-fails-closed"&gt;fail closed&lt;/a&gt;:
+a list that is too old, or a transmitter not heard from, makes the server
+&lt;strong&gt;refuse&lt;/strong&gt; the credentials it governs. Alert before that happens, not after:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;fileshare_revocation_list_age_seconds&lt;/code&gt; approaching &lt;code&gt;ssh_krl_max_age&lt;/code&gt; or
+&lt;code&gt;crl_max_age&lt;/code&gt; (1h by default);&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;fileshare_ssf_last_heard_seconds&lt;/code&gt; approaching the &lt;code&gt;ssf&lt;/code&gt; block&amp;rsquo;s &lt;code&gt;max_age&lt;/code&gt;
+(10m by default);&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;fileshare_directory_reloads_total{result=&amp;quot;failed&amp;quot;}&lt;/code&gt; rising: the directory
+cannot be read, so &lt;a href="https://go-fileshare.github.io/docs/0.26/administration/reload/"&gt;nothing changes&lt;/a&gt; — including removals.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;--isolate&lt;/code&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;A &lt;code&gt;metrics&lt;/code&gt; block does not go with &lt;code&gt;--isolate&lt;/code&gt; yet; the combination is
+refused.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;</description></item></channel></rss>

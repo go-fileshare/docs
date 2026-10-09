@@ -1,0 +1,248 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Sql</title><link>https://go-fileshare.github.io/docs/0.26/tags/sql/</link><description>Recent content in Sql on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>en</language><atom:link href="https://go-fileshare.github.io/docs/0.26/tags/sql/index.xml" rel="self" type="application/rss+xml"/><item><title>Users, groups and directories</title><link>https://go-fileshare.github.io/docs/0.26/configuration/identity/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.26/configuration/identity/</guid><description>
+&lt;p&gt;A &lt;code&gt;user&lt;/code&gt; block is the whole directory for a household. A site whose people are
+already in a database or in LDAP should not copy them into a second place that
+goes stale, so a &lt;code&gt;users&lt;/code&gt; block reads them where they are.&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;users&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;sql&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; driver&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;postgres&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # or sqlite, or mysql
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; dsn_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/dsn&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # a DSN holds a password: it lives in a file
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; users&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;select login, null, nt_hash, ssh_keys from staff&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; groups&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;select team, member from team_members&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;users&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;ldap&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;ldaps://ldap.example.org&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; base_dn&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt; &amp;#34;ou&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;people,dc&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;example,dc&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;org&lt;/span&gt;&lt;span class="err"&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; bind_dn&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt; &amp;#34;cn&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;reader,dc&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;example,dc&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;org&lt;/span&gt;&lt;span class="err"&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; bind_password_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/bind.pw&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;The &lt;strong&gt;queries are yours&lt;/strong&gt;, because a site&amp;rsquo;s people are already in that site&amp;rsquo;s
+shape; a schema invented here would mean copying them into a second one. The
+people query&amp;rsquo;s columns are read &lt;strong&gt;by position&lt;/strong&gt;, not by name: a name, then
+any of a password, an NT hash, SSH keys (one per line) and a TOTP secret, in
+that order. A NULL is a credential that person does not have, which is why the
+example selects &lt;code&gt;null&lt;/code&gt; for the password. A password column is taken as the
+password itself: there is no setting here for a hashed one.&lt;/p&gt;
+&lt;p&gt;The LDAP side reads what a Samba-aware directory already publishes —
+&lt;code&gt;sambaNTPassword&lt;/code&gt;, &lt;code&gt;sshPublicKey&lt;/code&gt;, &lt;code&gt;memberUid&lt;/code&gt;. Where the people and groups
+are, and which attributes name them, is configurable: &lt;code&gt;user_filter&lt;/code&gt;
+(default &lt;code&gt;(objectClass=posixAccount)&lt;/code&gt;), &lt;code&gt;user_attribute&lt;/code&gt; (&lt;code&gt;uid&lt;/code&gt;),
+&lt;code&gt;group_base_dn&lt;/code&gt; (&lt;code&gt;base_dn&lt;/code&gt;), &lt;code&gt;group_filter&lt;/code&gt; (&lt;code&gt;(objectClass=posixGroup)&lt;/code&gt;),
+&lt;code&gt;group_attribute&lt;/code&gt; (&lt;code&gt;cn&lt;/code&gt;), &lt;code&gt;group_member_attribute&lt;/code&gt; (&lt;code&gt;memberUid&lt;/code&gt;), and
+&lt;code&gt;totp_attribute&lt;/code&gt;, which has no default. &lt;code&gt;sambaNTPassword&lt;/code&gt; and &lt;code&gt;sshPublicKey&lt;/code&gt;
+are read under those names.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;No cleartext bind to another machine (since v0.19.0)&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;A &lt;code&gt;users &amp;quot;ldap&amp;quot;&lt;/code&gt; block refuses &lt;code&gt;ldap://&lt;/code&gt; to another machine unless
+&lt;code&gt;start_tls = true&lt;/code&gt;: every password a bind checks would cross the network
+in the clear. &lt;code&gt;ldaps://&lt;/code&gt; is accepted, and so are &lt;code&gt;ldap://&lt;/code&gt; to a loopback
+address and &lt;code&gt;ldapi://&lt;/code&gt;, where nobody is on the way. There is no switch to
+turn this off (go-authn/directory v0.10.0).&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="order-and-the-one-exception"&gt;Order, and the one exception&lt;span class="hx:absolute hx:-mt-20" id="order-and-the-one-exception"&gt;&lt;/span&gt;
+&lt;a href="#order-and-the-one-exception" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Sources are asked &lt;strong&gt;in the order they are written&lt;/strong&gt;, and the first one that
+knows a name owns it. The &lt;code&gt;user&lt;/code&gt; and &lt;code&gt;group&lt;/code&gt; blocks come first, so a service
+account written down locally is not overridden by somebody with the same name
+in LDAP.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Groups are the exception&lt;/strong&gt;: a group&amp;rsquo;s members are the &lt;strong&gt;union&lt;/strong&gt; of every
+source, because a team can have people in a file and in a database.&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;photos&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; allow&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;@engineers&amp;#34;, &amp;#34;alice&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; writers&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;@owners&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Expanded at startup, and again at every reload&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Since v0.10.0 the &lt;code&gt;users&lt;/code&gt; blocks — SQL, LDAP — are read again every
+&lt;code&gt;reload = &amp;quot;5m&amp;quot;&lt;/code&gt;, on &lt;code&gt;SIGHUP&lt;/code&gt;, and on the admin API&amp;rsquo;s &lt;code&gt;ReloadDirectory&lt;/code&gt;; a
+membership that changes in LDAP no longer waits for a restart. What a reload
+applies in place and what it restarts, and why a group that empties does
+&lt;strong&gt;not&lt;/strong&gt; open its share to everybody, is in
+&lt;a href="https://go-fileshare.github.io/docs/0.26/administration/reload/"&gt;reading the directory again&lt;/a&gt;. The directory
+is still not asked on every connection: that is a different design, and this
+is not it.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="what-a-source-can-prove-and-what-each-protocol-needs"&gt;What a source can prove, and what each protocol needs&lt;span class="hx:absolute hx:-mt-20" id="what-a-source-can-prove-and-what-each-protocol-needs"&gt;&lt;/span&gt;
+&lt;a href="#what-a-source-can-prove-and-what-each-protocol-needs" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;This is the part a site discovers otherwise at a mount, so &lt;a href="https://go-fileshare.github.io/docs/0.26/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt;
+says it first:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;the source has&lt;/th&gt;
+&lt;th&gt;SMB&lt;/th&gt;
+&lt;th&gt;S3&lt;/th&gt;
+&lt;th&gt;WebDAV&lt;/th&gt;
+&lt;th&gt;SFTP&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;a password (file, or a cleartext column)&lt;/td&gt;
+&lt;td&gt;yes&lt;/td&gt;
+&lt;td&gt;yes&lt;/td&gt;
+&lt;td&gt;yes&lt;/td&gt;
+&lt;td&gt;—&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;an NT hash (&lt;code&gt;sambaNTPassword&lt;/code&gt;, &lt;code&gt;nt_hash&lt;/code&gt;)&lt;/td&gt;
+&lt;td&gt;yes&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;no&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;—&lt;/td&gt;
+&lt;td&gt;—&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;only a bind (LDAP)&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;no&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;no&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;yes&lt;/td&gt;
+&lt;td&gt;—&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;public keys, or a trusted CA&lt;/td&gt;
+&lt;td&gt;—&lt;/td&gt;
+&lt;td&gt;—&lt;/td&gt;
+&lt;td&gt;—&lt;/td&gt;
+&lt;td&gt;yes&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;NTLMv2 needs the password or its MD4, and nothing else will do&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;A client never sends a password to an SMB server — it sends a proof
+computed from it — so a directory that only &lt;em&gt;checks&lt;/em&gt; passwords cannot
+answer SMB, however good the check is. That is a property of the protocol,
+not a limitation of this program, and no amount of configuration changes
+it. WebDAV asks only &amp;ldquo;is this the right password&amp;rdquo;, which a bind answers.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;A person a directory names but proves nothing for is legitimate — a listing
+with the secrets elsewhere — and &lt;code&gt;check&lt;/code&gt; says so in one line rather than
+leaving them to find out.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="people-the-identity-provider-names-not-this-file"&gt;People the identity provider names, not this file&lt;span class="hx:absolute hx:-mt-20" id="people-the-identity-provider-names-not-this-file"&gt;&lt;/span&gt;
+&lt;a href="#people-the-identity-provider-names-not-this-file" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;A federation — RENATER through
+&lt;a href="https://github.com/go-authn/bridge" target="_blank" rel="noopener"&gt;go-authn/bridge&lt;/a&gt;, say — knows who is in a
+project, and a share can ask &lt;strong&gt;it&lt;/strong&gt; rather than copy the list. With an
+&lt;a href="https://go-fileshare.github.io/docs/0.26/protocols/webdav/#a-token-over-the-one-protocol-that-can-carry-one"&gt;&lt;code&gt;oidc&lt;/code&gt; block&lt;/a&gt;:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;photos&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/photos.img&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; allow&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;oidc:groups:urn:mace:univ-example.fr:photos&amp;#34;, &amp;#34;oidc:user:bob@univ-example.fr&amp;#34;, &amp;#34;alice&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; writers&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;oidc:groups:urn:mace:univ-example.fr:photos&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;oidc:groups:&amp;lt;value&amp;gt;&lt;/code&gt; is somebody whose token&amp;rsquo;s groups claim holds the value;
+&lt;code&gt;oidc:user:&amp;lt;name&amp;gt;&lt;/code&gt; is somebody the token names. The spelling is opkssh&amp;rsquo;s, so
+that one vocabulary says who reaches a shell and who reaches a share. Somebody
+a rule names is known to this server as far as the provider goes — the open
+shares too — and somebody no rule names is still a stranger. The same rules
+apply over &lt;a href="https://go-fileshare.github.io/docs/0.26/protocols/sftp/#people-the-identity-provider-vouches-for"&gt;SFTP&lt;/a&gt;,
+where the groups travel in the certificate instead of the token.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;A rule is about the provider&amp;rsquo;s people only&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;oidc:user:bob&lt;/code&gt; is the bob the provider vouches for; a local account called
+bob, with a password, is somebody else and matches no rule. A rule with no
+&lt;code&gt;oidc&lt;/code&gt; block, a malformed one, or one that may write without being allowed
+to connect is &lt;strong&gt;refused at startup&lt;/strong&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;The provider&amp;rsquo;s &lt;code&gt;alice&lt;/code&gt; is not the local &lt;code&gt;alice&lt;/code&gt; unless you say so (since v0.20.0)&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;A plain name in &lt;code&gt;allow&lt;/code&gt; or &lt;code&gt;writers&lt;/code&gt; is a local account; a token or a
+provider certificate is reached only by a share&amp;rsquo;s &lt;code&gt;oidc:&lt;/code&gt; rules. A site
+whose provider&amp;rsquo;s names ARE its local names writes &lt;code&gt;local_names = true&lt;/code&gt; in
+the &lt;code&gt;oidc&lt;/code&gt; block — and should set &lt;code&gt;domains&lt;/code&gt; with it, or take the name from
+a claim the provider controls: a provider where people choose their own
+&lt;code&gt;preferred_username&lt;/code&gt; would otherwise hand anybody who signs up a local
+account&amp;rsquo;s shares, write included. That was the default before v0.20.0
+(security audit F4). A federated name refused for want of &lt;code&gt;local_names&lt;/code&gt;
+is logged with the line to add, and &lt;code&gt;fileshare check&lt;/code&gt; says which rule is
+in force.&lt;/p&gt;
+&lt;p&gt;NFS client certificates (&lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt;) are the exception:
+their CA is the one &lt;code&gt;client_ca_file&lt;/code&gt; pins for exactly that, and plain
+names are the only way an NFS share can name somebody, so their names are
+local names whatever &lt;code&gt;local_names&lt;/code&gt; says.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h3 data-hextra-search-id="which-institutions"&gt;Which institutions&lt;span class="hx:absolute hx:-mt-20" id="which-institutions"&gt;&lt;/span&gt;
+&lt;a href="#which-institutions" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;oidc&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; issuer&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://login.example.org&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; audience&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;fileshare&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; domains&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;univ-a.fr&amp;#34;, &amp;#34;univ-b.fr&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="c1"&gt; # nobody else from the federation gets in
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;projet-x&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/projet-x.img&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; allow&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;oidc:groups:urn:mace:univ-a.fr:projet-x&amp;#34;, &amp;#34;oidc:domain:univ-b.fr&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; writers&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;oidc:groups:urn:mace:univ-a.fr:projet-x&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;domains&lt;/code&gt; is checked at authentication, over SFTP and WebDAV alike, and for
+NFS client certificates: a name must
+be &lt;code&gt;&amp;lt;something&amp;gt;@&amp;lt;one of them&amp;gt;&lt;/code&gt;, compared whole (&lt;code&gt;evilunivb.fr&lt;/code&gt; is not
+&lt;code&gt;univb.fr&lt;/code&gt;). &lt;code&gt;oidc:domain:&lt;/code&gt; is the same test for one share. The domain can be
+trusted as far as the provider: go-authn/bridge drops an eppn or subject-id
+whose scope the IdP&amp;rsquo;s federation metadata does not grant it.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Groups&lt;/strong&gt; are what the institution&amp;rsquo;s IdP releases, turned into the &lt;code&gt;groups&lt;/code&gt;
+claim by go-authn/bridge&amp;rsquo;s &lt;code&gt;claims { groups = [...] }&lt;/code&gt;: &lt;code&gt;eduPersonEntitlement&lt;/code&gt;
+by default (a lab&amp;rsquo;s or a VO&amp;rsquo;s groups), or &lt;code&gt;eduPersonScopedAffiliation&lt;/code&gt;
+(&lt;code&gt;staff@univ-a.fr&lt;/code&gt;, &lt;code&gt;student@univ-b.fr&lt;/code&gt;).&lt;/p&gt;</description></item></channel></rss>

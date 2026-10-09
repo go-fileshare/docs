@@ -1,0 +1,49 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Smb</title><link>https://go-fileshare.github.io/docs/0.26/es/tags/smb/</link><description>Recent content in Smb on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>es</language><atom:link href="https://go-fileshare.github.io/docs/0.26/es/tags/smb/index.xml" rel="self" type="application/rss+xml"/><item><title>SMB — NTLMv2</title><link>https://go-fileshare.github.io/docs/0.26/es/protocols/smb/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.26/es/protocols/smb/</guid><description>
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;serve &amp;#34;smb&amp;#34; { addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:445&amp;#34;&lt;/span&gt; }&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;La contraseña &lt;strong&gt;nunca cruza la red&lt;/strong&gt;: el cliente envía una prueba calculada a partir
+de ella. El recurso compartido indica a quien solo puede leer que es así —en la
+máscara de acceso, antes de que lo intente—, en lugar de hacer fallar una escritura
+más tarde.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-a-directory-must-hold"&gt;Lo que debe guardar un directorio&lt;span class="hx:absolute hx:-mt-20" id="what-a-directory-must-hold"&gt;&lt;/span&gt;
+&lt;a href="#what-a-directory-must-hold" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;NTLMv2 necesita la propia contraseña o su MD4 (&lt;code&gt;sambaNTPassword&lt;/code&gt;, una columna
+&lt;code&gt;nt_hash&lt;/code&gt;). &lt;strong&gt;Nada más sirve.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Un directorio que solo &lt;em&gt;comprueba&lt;/em&gt; contraseñas —un bind LDAP, una columna bcrypt—
+no puede responder a SMB, por buena que sea la comprobación, porque el servidor tiene
+que calcular la misma prueba que calculó el cliente. Es una propiedad del protocolo,
+no una limitación de este programa.&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://go-fileshare.github.io/docs/0.26/es/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt; imprime un &lt;code&gt;-&lt;/code&gt; en la columna SMB para esa
+persona, en el momento de la configuración, en lugar de dejar que lo descubra al
+montar.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="a-privileged-port-without-a-privileged-server"&gt;Un puerto privilegiado sin un servidor privilegiado&lt;span class="hx:absolute hx:-mt-20" id="a-privileged-port-without-a-privileged-server"&gt;&lt;/span&gt;
+&lt;a href="#a-privileged-port-without-a-privileged-server" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Con &lt;a href="https://go-fileshare.github.io/docs/0.26/es/operations/isolation/"&gt;&lt;code&gt;--isolate&lt;/code&gt;&lt;/a&gt; en Unix, el proceso padre se vincula
+al 445 y pasa la escucha al hijo, de modo que el proceso que realmente habla SMB
+nunca necesita el privilegio. Windows no tiene &lt;code&gt;ExtraFiles&lt;/code&gt;, así que allí el hijo se
+vincula él mismo a la dirección; el aislamiento es el mismo, la parte del puerto
+privilegiado no.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="verified-against-a-client-this-project-did-not-write"&gt;Verificado con un cliente que este proyecto no escribió&lt;span class="hx:absolute hx:-mt-20" id="verified-against-a-client-this-project-did-not-write"&gt;&lt;/span&gt;
+&lt;a href="#verified-against-a-client-this-project-did-not-write" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;a href="https://github.com/cloudsoda/go-smb2" target="_blank" rel="noopener"&gt;go-smb2&lt;/a&gt; realiza veinte lecturas
+concurrentes por SMB mientras otras veinte pasan por WebDAV, con &lt;code&gt;-race&lt;/code&gt;, en la CI.
+macOS monta un recurso compartido por SMB mientras &lt;code&gt;curl&lt;/code&gt; escribe en la misma imagen
+por WebDAV, y vuelve a leer lo que WebDAV escribió.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="when-the-people-change"&gt;Cuando cambian las personas&lt;span class="hx:absolute hx:-mt-20" id="when-the-people-change"&gt;&lt;/span&gt;
+&lt;a href="#when-the-people-change" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;SMB fija quién puede conectarse a un recurso compartido &lt;strong&gt;cuando se añade el recurso
+compartido&lt;/strong&gt;, y lo comprueba una vez por conexión de árbol (tree connect). Así, a
+alguien nuevo que encuentra una &lt;a href="https://go-fileshare.github.io/docs/0.26/es/administration/reload/"&gt;recarga del directorio&lt;/a&gt;
+se le añade en caliente, incluido el servidor SMB en ejecución, sin tocar ninguna
+conexión; pero cualquier cosa que se retire —una persona, una credencial, las listas
+expandidas de un recurso compartido— es una nueva generación, y las conexiones SMB
+abiertas se cierran, de modo que una revocación alcanza también a las sesiones ya
+abiertas. Un recurso compartido cuyo grupo &lt;code&gt;allow&lt;/code&gt; se ha vaciado &lt;strong&gt;no se ofrece por
+SMB en absoluto&lt;/strong&gt;: su &lt;code&gt;AllowUsers&lt;/code&gt; vacío se interpretaría como «todo el mundo».&lt;/p&gt;</description></item></channel></rss>

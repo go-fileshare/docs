@@ -1,0 +1,803 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Konfiguration</title><link>https://go-fileshare.github.io/docs/0.26/de/tags/konfiguration/</link><description>Recent content in Konfiguration on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>de</language><atom:link href="https://go-fileshare.github.io/docs/0.26/de/tags/konfiguration/index.xml" rel="self" type="application/rss+xml"/><item><title>Freigaben: Images, Geräte, Verzeichnisse</title><link>https://go-fileshare.github.io/docs/0.26/de/configuration/shares/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.26/de/configuration/shares/</guid><description>
+&lt;p&gt;Eine Freigabe stellt eines von drei Dingen bereit: ein &lt;strong&gt;Disk-Image&lt;/strong&gt;, einen &lt;strong&gt;Geräteknoten&lt;/strong&gt; oder ein
+&lt;strong&gt;Verzeichnis des Hosts&lt;/strong&gt;. Ein Image und ein Gerät tragen ein Dateisystem, das dieses
+Programm selbst liest; ein Verzeichnis ist das des Hosts.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="an-image-and-the-filesystem-inside-it"&gt;Ein Image und das Dateisystem darin&lt;span class="hx:absolute hx:-mt-20" id="an-image-and-the-filesystem-inside-it"&gt;&lt;/span&gt;
+&lt;a href="#an-image-and-the-filesystem-inside-it" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Das Dateisystem in einem Image wird &lt;strong&gt;ermittelt statt deklariert&lt;/strong&gt;.
+&lt;a href="https://github.com/go-filesystems/detect" target="_blank" rel="noopener"&gt;&lt;code&gt;go-filesystems/detect&lt;/code&gt;&lt;/a&gt; liest die
+Magic-Bytes und gibt den Treiber zurück, dem sie gehören: &lt;strong&gt;fat32, exfat, ext4, ntfs, ufs,
+iso9660, squashfs oder hfsplus&lt;/strong&gt; – jeder Treiber derselben Form,
+&lt;code&gt;OpenReader(io.ReaderAt, int64)&lt;/code&gt;, ein Dateisystem bei Offset null.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="the-four-that-cannot-be-sniffed"&gt;Die vier, die sich nicht erschnüffeln lassen&lt;span class="hx:absolute hx:-mt-20" id="the-four-that-cannot-be-sniffed"&gt;&lt;/span&gt;
+&lt;a href="#the-four-that-cannot-be-sniffed" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;apfs, btrfs, xfs und zfs&lt;/strong&gt; öffnen jeweils ein &lt;em&gt;Disk&lt;/em&gt;-Image und wählen eine &lt;strong&gt;Partition&lt;/strong&gt;,
+also gibt es bei Offset null keine Magic-Bytes zu finden. Eine Freigabe sagt, welches:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;photos&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/disk.img&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; filesystem&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;xfs&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; partition&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;2&lt;/span&gt;&lt;span class="c1"&gt; # or leave it out: the driver takes the first data partition
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Code kopieren"
+aria-label="Code kopieren"
+data-copied-label="Kopiert!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="a-partition-for-any-filesystem"&gt;Eine Partition, für jedes Dateisystem&lt;span class="hx:absolute hx:-mt-20" id="a-partition-for-any-filesystem"&gt;&lt;/span&gt;
+&lt;a href="#a-partition-for-any-filesystem" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Ein Disk-Image mit FAT32, ext4 oder exFAT hat ebenso oft eine Partitionstabelle davor
+wie eines mit XFS – und die Erkennung liest Offset null, wo ein
+partitioniertes Image die &lt;em&gt;Tabelle&lt;/em&gt; hat. Also wird zuerst die Partition gewählt, und der
+Treiber erhält eine Sicht darauf:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;photos&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/disk.img&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; partition_label&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;photos&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # what lsblk calls PARTLABEL
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Code kopieren"
+aria-label="Code kopieren"
+data-copied-label="Kopiert!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Drei Arten, eine zu benennen, und &lt;strong&gt;nur eine darf angegeben werden&lt;/strong&gt; – zwei, die sich widersprechen, würden
+diejenige bereitstellen, die der Code zuerst versucht hat:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;partition = 2&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;ab 1 gezählt, so wie Partitionierungswerkzeuge sie ausgeben&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;partition_label = &amp;quot;photos&amp;quot;&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;der GPT-Partitionsname&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;partition_uuid = &amp;quot;…&amp;quot;&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;die eindeutige GPT-GUID – Linux&amp;rsquo; &lt;code&gt;PARTUUID&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Ein Index verschiebt sich&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Eine neu partitionierte Platte, ein Werkzeug, das Einträge in anderer Reihenfolge schreibt, ein Image,
+das mit einer Partition weniger wiederhergestellt wurde – und &lt;code&gt;partition = 2&lt;/code&gt; benennt etwas
+anderes, &lt;strong&gt;stillschweigend&lt;/strong&gt;, weil dort immer noch ein Dateisystem gefunden wird. Ein Label oder eine
+UUID benennt die Partition selbst; deshalb verwenden fstabs seit Jahren keine Indizes
+mehr. Der Index ist für MBR-Images da, die weder das eine noch das andere haben.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Eine Freigabe, die eine Partition gewählt hat, ist &lt;strong&gt;schreibgeschützt&lt;/strong&gt; und sagt das beim Start: Die
+Offsets des Treibers sind die der Partition, während die Datei darunter die ganze
+Platte ist, sodass ein Schreibzugriff bei diesem Offset vom Anfang des &lt;em&gt;Images&lt;/em&gt; aus landen würde – nicht selten
+auf der Partitionstabelle.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="naming-a-filesystem-turns-detection-off"&gt;Ein Dateisystem zu benennen schaltet die Erkennung ab&lt;span class="hx:absolute hx:-mt-20" id="naming-a-filesystem-turns-detection-off"&gt;&lt;/span&gt;
+&lt;a href="#naming-a-filesystem-turns-detection-off" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Das ist der Zweck, und das ist das Risiko&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Das Image wird als &lt;em&gt;genau das&lt;/em&gt; geöffnet oder abgelehnt. Ein FAT32-Image, dem gesagt wird, es sei XFS,
+wird nicht zu einer XFS-Freigabe; es startet nicht und sagt, als was es
+geöffnet werden sollte.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;filesystem&lt;/code&gt; wird auch für die erkennbaren akzeptiert, und dann werden beide
+verglichen: Eine Freigabe, die &lt;code&gt;ext4&lt;/code&gt; über einem FAT32-Image angibt, wird mit &lt;em&gt;the
+share says ext4 and the image holds fat32&lt;/em&gt; abgelehnt. So lehnt eine Installation eine
+Fehlerkennung ab, statt sie später zu entdecken.
+&lt;a href="https://go-fileshare.github.io/docs/0.26/de/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt; markiert einen benannten Treiber mit einem Sternchen, weil diese Zeile nicht
+erkannt wurde – sie wurde festgelegt.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="a-device-not-only-an-image"&gt;Ein Gerät, nicht nur ein Image&lt;span class="hx:absolute hx:-mt-20" id="a-device-not-only-an-image"&gt;&lt;/span&gt;
+&lt;a href="#a-device-not-only-an-image" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;photos&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/dev/sda&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # a device node, not a file
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Code kopieren"
+aria-label="Code kopieren"
+data-copied-label="Kopiert!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;Kein Privileg ist im Spiel.&lt;/strong&gt; Hier wird nichts eingehängt – die
+&lt;a href="https://github.com/go-filesystems" target="_blank" rel="noopener"&gt;&lt;code&gt;go-filesystems&lt;/code&gt;&lt;/a&gt;-Treiber lesen ext4, xfs und
+die übrigen im Userspace –, also gibt es kein &lt;code&gt;mount(2)&lt;/code&gt; und daher kein
+&lt;code&gt;CAP_SYS_ADMIN&lt;/code&gt;. Ein Gerät zu öffnen ist ein gewöhnliches &lt;code&gt;open(2)&lt;/code&gt;, geregelt durch die
+Berechtigungen des Knotens:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;Eigentümer&lt;/th&gt;
+&lt;th&gt;Modus&lt;/th&gt;
+&lt;th&gt;genügt&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Linux &lt;code&gt;/dev/sda&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;root:disk&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;0660&lt;/td&gt;
+&lt;td&gt;Mitgliedschaft in &lt;code&gt;disk&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;macOS &lt;code&gt;/dev/disk0&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;root:operator&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;0640&lt;/td&gt;
+&lt;td&gt;Mitgliedschaft in &lt;code&gt;operator&lt;/code&gt;, plus Festplattenvollzugriff&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Eine Ablehnung nennt die Gruppe, statt &lt;code&gt;permission denied&lt;/code&gt; – die Antwort ist
+nie &lt;code&gt;sudo&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;⛔ &lt;strong&gt;Eine Gerätefreigabe ist schreibgeschützt&lt;/strong&gt;, aus demselben Grund wie eine Freigabe, die eine
+Partition gewählt hat: In eine laufende Platte zu schreiben ist keine Entscheidung, die man für Sie trifft.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Das Gerät wird exklusiv geöffnet, und dabei geht es um Korrektheit, nicht um Vorsicht&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Hat der Kernel ein Dateisystem davon eingehängt, hält der Page Cache des Dateisystems
+neuere Metadaten als das Gerät – sodass ein roher Leser einen
+Verzeichnisblock von vor einer Aktualisierung neben einem Inode-Block von danach sieht,
+einen Zustand, der zu keinem Zeitpunkt auf der Platte existiert hat. &lt;code&gt;O_EXCL&lt;/code&gt; auf einem Block-Device
+ist das eigene Primitiv des Kernels für „niemand sonst, auch kein Mount&amp;quot;;
+es ist das, was &lt;code&gt;mkfs&lt;/code&gt; und &lt;code&gt;fsck&lt;/code&gt; verwenden. Ein belegtes Gerät wird abgelehnt, mit Namen und
+Grund.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Zwei Dinge wurden gemessen statt angenommen:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Stat().Size()&lt;/code&gt; ist für ein Gerät &lt;strong&gt;0&lt;/strong&gt;, also wird die Länge beim Gerät
+selbst erfragt. Ein Seek ans Ende antwortet unter Linux und liefert unter macOS &lt;strong&gt;0 ohne Fehler&lt;/strong&gt;,
+weshalb Darwin stattdessen &lt;code&gt;DKIOCGETBLOCKCOUNT&lt;/code&gt; verwendet.&lt;/li&gt;
+&lt;li&gt;Ein &lt;strong&gt;roher&lt;/strong&gt; Knoten (&lt;code&gt;/dev/rdiskN&lt;/code&gt;, oder &lt;code&gt;O_DIRECT&lt;/code&gt; unter Linux) lehnt einen nicht ausgerichteten
+Lesezugriff ab, und ein Zwei-Byte-Feld bei Offset 11 zu lesen ist genau das, was das Parsen eines FAT-BPB
+&lt;em&gt;ist&lt;/em&gt;. Lesezugriffe auf ein Gerät werden auf ganze Blöcke aufgerundet; ohne das
+meldete &lt;code&gt;/dev/rdisk4&lt;/code&gt; &lt;code&gt;unknown filesystem&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 data-hextra-search-id="a-directory-not-only-an-image"&gt;Ein Verzeichnis, nicht nur ein Image&lt;span class="hx:absolute hx:-mt-20" id="a-directory-not-only-an-image"&gt;&lt;/span&gt;
+&lt;a href="#a-directory-not-only-an-image" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Seit v0.8.0 kann eine Freigabe statt eines Images ein Verzeichnis des Hosts bereitstellen – etwa das Volume
+eines Containers:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;photos&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; directory&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/data/photos&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; allow&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;@family&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Code kopieren"
+aria-label="Code kopieren"
+data-copied-label="Kopiert!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Es ist &lt;a href="https://github.com/go-filesystems/osfs" target="_blank" rel="noopener"&gt;go-filesystems/osfs&lt;/a&gt;, das
+den Baum über ein &lt;strong&gt;&lt;code&gt;os.Root&lt;/code&gt;&lt;/strong&gt; erreicht: &lt;code&gt;..&lt;/code&gt;, das hinausklettert, ein absoluter
+Pfad und ein symbolischer Link, der hinausführt, werden von der kernelgestützten Wurzel abgelehnt,
+nicht durch einen String-Vergleich. Ein Client darf einen Link auf &lt;code&gt;/etc&lt;/code&gt; &lt;em&gt;anlegen&lt;/em&gt;; nichts wird
+ihm folgen. Ein im Baum platziertes FIFO wird abgelehnt, statt den Server
+hängen zu lassen.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Eine Freigabe darf keine andere enthalten (seit v0.17.0)&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Eine Verzeichnisfreigabe, deren Baum das Image oder Verzeichnis einer anderen Freigabe enthält, wird
+&lt;strong&gt;beim Start abgelehnt&lt;/strong&gt;, und auch von der Admin-API: Wer die äußere
+Freigabe nutzen darf, würde die innere lesen und schreiben, ohne dass es ihm erlaubt ist –
+anonymes NFS eingeschlossen. Ebenso zwei Freigaben auf derselben Quelle, außer zwei
+verschiedenen Partitionen eines Disk-Images.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Nicht hinter der Image-Sperre&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Ein Image-Treiber besitzt eine Datei und sichert nichts über zwei gleichzeitige Aufrufe zu,
+weshalb &lt;a href="https://go-fileshare.github.io/docs/0.26/de/operations/locking/"&gt;jedes Image in eine Sperre gehüllt wird&lt;/a&gt;.
+Ein Baum des Hosts gehört dem Kernel, der serialisiert, was pro Aufruf serialisiert werden muss,
+und nicht mehr; ein Mutex vor jeder Datei jedes Clients wäre
+das Langsamste, was ein Dateiserver tun kann.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;⛔ Eine Freigabe hat ein &lt;code&gt;image&lt;/code&gt; &lt;strong&gt;oder&lt;/strong&gt; ein &lt;code&gt;directory&lt;/code&gt;, nie beides und nie keines von beiden.
+&lt;code&gt;filesystem&lt;/code&gt; und &lt;code&gt;partition&lt;/code&gt; sind für ein Image: Eine Verzeichnisfreigabe, die eines davon nennt, wird
+abgelehnt, weil die Angabe bedeutet, dass die Freigabe als Image gedacht war.
+&lt;code&gt;read_only = true&lt;/code&gt; funktioniert bei einem Verzeichnis wie bei einem Image; eine Freigabe, die das sagt
+und zugleich &lt;code&gt;writers&lt;/code&gt; auflistet, wird abgelehnt, weil &lt;code&gt;read_only&lt;/code&gt; gewinnen würde.&lt;/p&gt;
+&lt;p&gt;Die Kapazität, die einem Client mitgeteilt wird, ist die des Dateisystems, auf dem der Baum liegt; eine
+Plattform, die das nicht angeben kann, lässt sie bei null, was die Protokolle als
+„unbekannt&amp;quot; lesen statt als „voll&amp;quot;.&lt;/p&gt;</description></item><item><title>Die Konfiguration</title><link>https://go-fileshare.github.io/docs/0.26/de/configuration/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.26/de/configuration/</guid><description>
+&lt;p&gt;Eine Datei oder ein Verzeichnis kleiner Dateien. &lt;code&gt;--config /etc/fileshare.d&lt;/code&gt; führt
+sie zusammen, sodass ein Benutzer in einer Datei und eine Freigabe in einer anderen zusammengehören.&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;ATTIC&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;user &amp;#34;alice&amp;#34; { password_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/alice.pw&amp;#34;&lt;/span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;user &amp;#34;bob&amp;#34; { password_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/bob.pw&amp;#34;&lt;/span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;group &amp;#34;family&amp;#34; { members&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;alice&amp;#34;, &amp;#34;bob&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;photos&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/photos.img&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; allow&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;@family&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="c1"&gt; # a group, or a person, in either list
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; writers&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;alice&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="c1"&gt; # bob gets it read-only
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;scratch&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/scratch.img&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # anyone who authenticates, read-write
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;tls&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; cert_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/tls/fullchain.pem&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; key_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/tls/key.pem&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;serve &amp;#34;smb&amp;#34; { addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:445&amp;#34;&lt;/span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;webdav&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:443&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; tls&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;&lt;span class="c1"&gt; # HTTP Basic is the password: never in the clear
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;serve &amp;#34;sftp&amp;#34; { addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:2222&amp;#34;&lt;/span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;serve &amp;#34;nfs&amp;#34; { addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:2049&amp;#34;&lt;/span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;serve &amp;#34;s3&amp;#34; { addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:9000&amp;#34;&lt;/span&gt; }&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Code kopieren"
+aria-label="Code kopieren"
+data-copied-label="Kopiert!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Seit v0.9.0 wird WebDAV mit Passwörtern nicht unverschlüsselt bereitgestellt&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;serve &amp;quot;webdav&amp;quot; { addr = &amp;quot;0.0.0.0:8080&amp;quot; }&lt;/code&gt; – das Beispiel, das diese Seite
+bis dahin zeigte – wird jetzt &lt;strong&gt;beim Start abgelehnt&lt;/strong&gt;, sobald sich jemand authentifiziert:
+HTTP Basic ist das Passwort bei jeder Anfrage. Setzen Sie &lt;code&gt;tls = true&lt;/code&gt; mit einem &lt;code&gt;tls&lt;/code&gt;-Block,
+wie oben, oder &lt;code&gt;plaintext = true&lt;/code&gt;, wenn ein Proxy davor TLS
+terminiert. Siehe &lt;a href="https://go-fileshare.github.io/docs/0.26/de/security/tls/"&gt;TLS&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Eine Freigabe kann statt eines Images auch ein &lt;a href="https://go-fileshare.github.io/docs/0.26/de/configuration/shares/#a-device-not-only-an-image"&gt;Gerät&lt;/a&gt; oder ein
+&lt;a href="https://go-fileshare.github.io/docs/0.26/de/configuration/shares/#a-directory-not-only-an-image"&gt;Verzeichnis des Hosts&lt;/a&gt;
+sein.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-a-user-block-can-carry"&gt;Was ein &lt;code&gt;user&lt;/code&gt;-Block enthalten kann&lt;span class="hx:absolute hx:-mt-20" id="what-a-user-block-can-carry"&gt;&lt;/span&gt;
+&lt;a href="#what-a-user-block-can-carry" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Jedes Beispiel oben verwendet &lt;code&gt;password_file&lt;/code&gt;; das ist der übliche Fall und war
+eine Zeit lang der einzige, den dieses Programm las. Es ist nicht der ganze Block, und
+der Unterschied entscheidet, &lt;strong&gt;über welche Protokolle eine Person bedient werden kann&lt;/strong&gt; – es
+lohnt sich also, das an einer Stelle zu haben, statt es beim Einhängen herauszufinden.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Feld&lt;/th&gt;
+&lt;th&gt;was es ist&lt;/th&gt;
+&lt;th&gt;was es bringt&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;password&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;ein Passwort, in der Datei&lt;/td&gt;
+&lt;td&gt;jedes Protokoll, das ein Passwort beantwortet&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;password_file&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;dasselbe, in einer eigenen Datei&lt;/td&gt;
+&lt;td&gt;dasselbe, ohne das Geheimnis in der Konfiguration&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;nt_hash&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;MD4(UTF16LE(password))&lt;/code&gt;, 32 Hex-Zeichen&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;SMB&lt;/strong&gt;, für eine Person, deren Passwort diese Installation nicht hat&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;authorized_keys&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;authorized_keys&lt;/code&gt;-Zeilen, inline&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;SFTP&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;authorized_keys_file&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;dasselbe, aus einer Datei&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;SFTP&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;totp_secret&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;ein Base32-Geheimnis für Einmalcodes&lt;/td&gt;
+&lt;td&gt;noch nichts: Es wird gelesen und geprüft, und kein Protokoll hier fragt nach einem zweiten Faktor&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;⛔ &lt;code&gt;password&lt;/code&gt; und &lt;code&gt;password_file&lt;/code&gt; zusammen werden beim Start abgelehnt, unter Nennung der
+Person: Zwei Antworten auf „Wie lautet das Passwort?&amp;quot; werfen die Frage auf, welche
+gewinnt, und eine Konfiguration sollte nicht zweimal gelesen werden müssen, um das herauszufinden. Dasselbe gilt für
+&lt;code&gt;authorized_keys&lt;/code&gt; und &lt;code&gt;authorized_keys_file&lt;/code&gt; zusammen.&lt;/p&gt;
+&lt;p&gt;⛔ Ein &lt;code&gt;user&lt;/code&gt;-Block ohne &lt;code&gt;password&lt;/code&gt;, &lt;code&gt;password_file&lt;/code&gt;, &lt;code&gt;authorized_keys&lt;/code&gt;
+oder &lt;code&gt;authorized_keys_file&lt;/code&gt; wird ebenfalls abgelehnt – &lt;em&gt;has no way to authenticate&lt;/em&gt; –,
+es sei denn, &lt;code&gt;trusted_user_ca_file&lt;/code&gt; ist gesetzt. &lt;code&gt;nt_hash&lt;/code&gt; und &lt;code&gt;totp_secret&lt;/code&gt; zählen
+hier nicht.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-green-200 hx:bg-green-100 hx:text-green-900 hx:dark:border-green-200/30 hx:dark:bg-green-900/30 hx:dark:text-green-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Ein inline definierter Benutzer KANN über SMB bedient werden&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Bis vor Kurzem las dieser Block nur die Passwortfelder, sodass SMB für
+jemanden, der hier eingetragen ist, bedeutete, dieser Datei sein Passwort im
+Klartext zu geben – oder ihn in eine Datenbank zu verschieben. Mit &lt;code&gt;nt_hash&lt;/code&gt; ist das nicht mehr so:
+Eine Installation, die speichert, was Samba speichert, kann stattdessen das eintragen. Der Block braucht
+weiterhin eines der Felder oben daneben – etwa Schlüssel – oder
+&lt;code&gt;trusted_user_ca_file&lt;/code&gt;: &lt;code&gt;nt_hash&lt;/code&gt; allein wird beim Start abgelehnt. Siehe
+&lt;a href="https://go-fileshare.github.io/docs/0.26/de/configuration/identity/#what-a-source-can-prove-and-what-each-protocol-needs"&gt;was eine Quelle beweisen kann&lt;/a&gt;,
+dieselbe Tabelle eine Ebene höher.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Eine Gruppe wird &lt;code&gt;@name&lt;/code&gt; geschrieben, überall dort, wo eine Person stehen könnte.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-is-refused-at-startup-rather-than-later"&gt;Was beim Start abgelehnt wird statt später&lt;span class="hx:absolute hx:-mt-20" id="what-is-refused-at-startup-rather-than-later"&gt;&lt;/span&gt;
+&lt;a href="#what-is-refused-at-startup-rather-than-later" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Ein Name, der niemandem gehört&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;allow = [&amp;quot;alise&amp;quot;]&lt;/code&gt; würde Alice sonst aus ihrer eigenen Freigabe aussperren und
+fröhlich starten. Ein Name, den kein &lt;code&gt;user&lt;/code&gt;-Block und kein &lt;a href="https://go-fileshare.github.io/docs/0.26/de/configuration/identity/"&gt;&lt;code&gt;users&lt;/code&gt;-Verzeichnis&lt;/a&gt;
+kennt, wird abgelehnt, ebenso eine &lt;code&gt;@group&lt;/code&gt;, die keiner von ihnen hat.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Eine Freigabe, die nennt, wer sie nutzen darf, über NFS&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Eine Konfiguration, die sagt &lt;em&gt;photos gehört alice&lt;/em&gt;, und ein Protokoll, das
+photos jedem übergibt, der sich verbindet, können nicht beide eingehalten werden. Eine solche Freigabe wird
+nicht über NFS exportiert – es sei denn, ein &lt;code&gt;kerberos&lt;/code&gt;-Block oder &lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt;
+lässt NFS Personen unterscheiden –, und ein &lt;code&gt;nfs&lt;/code&gt;-&lt;code&gt;serve&lt;/code&gt;-Block, dem nichts zu
+transportieren bleibt, wird abgelehnt. Siehe &lt;a href="https://go-fileshare.github.io/docs/0.26/de/protocols/nfs/"&gt;NFS&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Ein Anbieter, dessen Wort nirgends ankommt&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Ein &lt;a href="https://go-fileshare.github.io/docs/0.26/de/protocols/webdav/"&gt;&lt;code&gt;oidc&lt;/code&gt;&lt;/a&gt;-Block wird abgelehnt, es sei denn, WebDAV wird
+bereitgestellt – das eine Protokoll, das einen &lt;code&gt;Authorization&lt;/code&gt;-Header transportiert –, oder SFTP
+wird mit eingeschalteten Zertifikaten des Anbieters bereitgestellt (&lt;code&gt;ssh_ca_file&lt;/code&gt; oder
+&lt;code&gt;opkssh_client_id&lt;/code&gt;, siehe &lt;a href="https://go-fileshare.github.io/docs/0.26/de/protocols/sftp/#people-the-identity-provider-vouches-for"&gt;SFTP&lt;/a&gt;).
+SMB und NFS haben für keines von beiden einen Platz.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Passwörter im Klartext&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;WebDAV auf einer Adresse, die andere Maschinen erreichen können, ohne &lt;code&gt;tls = true&lt;/code&gt; oder
+&lt;code&gt;plaintext = true&lt;/code&gt;, während sich jemand authentifiziert. Siehe
+&lt;a href="https://go-fileshare.github.io/docs/0.26/de/security/tls/#webdav-is-not-served-in-the-clear"&gt;TLS&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Ein Block, der nicht sicher bereitgestellt werden kann&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Ein &lt;code&gt;admin&lt;/code&gt;-Block ohne &lt;code&gt;state_file&lt;/code&gt; oder einer, der auf TCP ohne gegenseitiges
+TLS lauscht; ein &lt;code&gt;tls&lt;/code&gt;-Block, den kein &lt;code&gt;serve&lt;/code&gt;-Block verwendet; ein &lt;code&gt;reload&lt;/code&gt;, das kürzer als eine
+Sekunde ist; eine Sperrliste, die über einfaches HTTP abgerufen wird. Jedes davon ist dort beschrieben,
+wo es hingehört: &lt;a href="https://go-fileshare.github.io/docs/0.26/de/administration/"&gt;Administration&lt;/a&gt;,
+&lt;a href="https://go-fileshare.github.io/docs/0.26/de/security/tls/"&gt;TLS&lt;/a&gt;, &lt;a href="https://go-fileshare.github.io/docs/0.26/de/administration/reload/"&gt;Neuladen&lt;/a&gt;,
+&lt;a href="https://go-fileshare.github.io/docs/0.26/de/security/"&gt;Widerruf&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Ein Protokoll, ohne das dieses Binary gebaut wurde&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Die Meldung sagt &lt;em&gt;genau das&lt;/em&gt;, statt „es gibt kein solches Protokoll&amp;quot; – der Unterschied
+zwischen einem Tippfehler und einem &lt;a href="https://go-fileshare.github.io/docs/0.26/de/operations/build-tags/"&gt;Build-Tag&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Ein &lt;code&gt;serve&lt;/code&gt;-Block ohne &lt;code&gt;addr&lt;/code&gt; lauscht auf Loopback, &lt;code&gt;127.0.0.1&lt;/code&gt;, auf einem Port,
+der kein Privileg braucht: 4445 für SMB, 8080 für WebDAV, 2222 für SFTP, 2049
+für NFS, 9000 für S3.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="protocols-on-a-share"&gt;&lt;code&gt;protocols&lt;/code&gt; an einer Freigabe&lt;span class="hx:absolute hx:-mt-20" id="protocols-on-a-share"&gt;&lt;/span&gt;
+&lt;a href="#protocols-on-a-share" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;photos&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/photos.img&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; protocols&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;smb&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Code kopieren"
+aria-label="Code kopieren"
+data-copied-label="Kopiert!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Sagt, welche Protokolle sie transportieren. Für sich allein nützlich – eine als nur SMB deklarierte Freigabe ist
+eine Freigabe, von der der WebDAV-Prozess nie erfährt – und in manchen
+Konfigurationen unter &lt;a href="https://go-fileshare.github.io/docs/0.26/de/operations/isolation/"&gt;&lt;code&gt;--isolate&lt;/code&gt;&lt;/a&gt; erforderlich. Ein &lt;code&gt;serve&lt;/code&gt;-Block,
+der am Ende nichts transportieren würde, wird ebenfalls abgelehnt, bevor ein Image geöffnet wird,
+unter Nennung der Freigaben, die ihm vorenthalten wurden, und warum – es sei denn, ein &lt;code&gt;admin&lt;/code&gt;-Block ist
+da, um ihm später Freigaben zu geben.&lt;/p&gt;</description></item><item><title>Benutzer, Gruppen und Verzeichnisse</title><link>https://go-fileshare.github.io/docs/0.26/de/configuration/identity/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.26/de/configuration/identity/</guid><description>
+&lt;p&gt;Ein &lt;code&gt;user&lt;/code&gt;-Block ist das ganze Verzeichnis für einen Haushalt. Eine Installation, deren Personen
+bereits in einer Datenbank oder in LDAP stehen, sollte sie nicht an einen zweiten Ort kopieren, der
+veraltet; also liest ein &lt;code&gt;users&lt;/code&gt;-Block sie dort, wo sie sind.&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;users&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;sql&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; driver&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;postgres&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # or sqlite, or mysql
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; dsn_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/dsn&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # a DSN holds a password: it lives in a file
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; users&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;select login, null, nt_hash, ssh_keys from staff&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; groups&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;select team, member from team_members&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;users&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;ldap&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;ldaps://ldap.example.org&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; base_dn&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt; &amp;#34;ou&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;people,dc&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;example,dc&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;org&lt;/span&gt;&lt;span class="err"&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; bind_dn&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt; &amp;#34;cn&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;reader,dc&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;example,dc&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;org&lt;/span&gt;&lt;span class="err"&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; bind_password_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/bind.pw&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Code kopieren"
+aria-label="Code kopieren"
+data-copied-label="Kopiert!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Die &lt;strong&gt;Abfragen sind Ihre&lt;/strong&gt;, denn die Personen einer Installation liegen bereits in deren
+Form vor; ein hier erfundenes Schema würde bedeuten, sie in ein zweites zu kopieren. Die
+Spalten der Personenabfrage werden &lt;strong&gt;nach Position&lt;/strong&gt; gelesen, nicht nach Name: ein Name, dann
+beliebige von Passwort, NT-Hash, SSH-Schlüsseln (einer pro Zeile) und TOTP-Geheimnis, in
+dieser Reihenfolge. Ein NULL sind Zugangsdaten, die diese Person nicht hat; deshalb
+wählt das Beispiel &lt;code&gt;null&lt;/code&gt; für das Passwort. Eine Passwortspalte wird als das
+Passwort selbst genommen: Es gibt hier keine Einstellung für ein gehashtes.&lt;/p&gt;
+&lt;p&gt;Die LDAP-Seite liest, was ein Samba-fähiges Verzeichnis bereits veröffentlicht –
+&lt;code&gt;sambaNTPassword&lt;/code&gt;, &lt;code&gt;sshPublicKey&lt;/code&gt;, &lt;code&gt;memberUid&lt;/code&gt;. Wo die Personen und Gruppen
+liegen und welche Attribute sie benennen, ist konfigurierbar: &lt;code&gt;user_filter&lt;/code&gt;
+(Standard &lt;code&gt;(objectClass=posixAccount)&lt;/code&gt;), &lt;code&gt;user_attribute&lt;/code&gt; (&lt;code&gt;uid&lt;/code&gt;),
+&lt;code&gt;group_base_dn&lt;/code&gt; (&lt;code&gt;base_dn&lt;/code&gt;), &lt;code&gt;group_filter&lt;/code&gt; (&lt;code&gt;(objectClass=posixGroup)&lt;/code&gt;),
+&lt;code&gt;group_attribute&lt;/code&gt; (&lt;code&gt;cn&lt;/code&gt;), &lt;code&gt;group_member_attribute&lt;/code&gt; (&lt;code&gt;memberUid&lt;/code&gt;) und
+&lt;code&gt;totp_attribute&lt;/code&gt;, das keinen Standard hat. &lt;code&gt;sambaNTPassword&lt;/code&gt; und &lt;code&gt;sshPublicKey&lt;/code&gt;
+werden unter diesen Namen gelesen.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Kein unverschlüsselter Bind an eine andere Maschine (seit v0.19.0)&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Ein &lt;code&gt;users &amp;quot;ldap&amp;quot;&lt;/code&gt;-Block lehnt &lt;code&gt;ldap://&lt;/code&gt; zu einer anderen Maschine ab, es sei denn,
+&lt;code&gt;start_tls = true&lt;/code&gt; ist gesetzt: Jedes Passwort, das ein Bind prüft, ginge im Klartext
+über das Netz. &lt;code&gt;ldaps://&lt;/code&gt; wird akzeptiert, ebenso &lt;code&gt;ldap://&lt;/code&gt; zu einer Loopback-Adresse
+und &lt;code&gt;ldapi://&lt;/code&gt;, wo niemand dazwischen ist. Es gibt keinen Schalter, um
+das abzuschalten (go-authn/directory v0.10.0).&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="order-and-the-one-exception"&gt;Reihenfolge, und die eine Ausnahme&lt;span class="hx:absolute hx:-mt-20" id="order-and-the-one-exception"&gt;&lt;/span&gt;
+&lt;a href="#order-and-the-one-exception" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Quellen werden &lt;strong&gt;in der Reihenfolge gefragt, in der sie geschrieben sind&lt;/strong&gt;, und die erste, die
+einen Namen kennt, besitzt ihn. Die &lt;code&gt;user&lt;/code&gt;- und &lt;code&gt;group&lt;/code&gt;-Blöcke kommen zuerst, sodass ein lokal
+eingetragenes Dienstkonto nicht von jemandem mit demselben Namen
+in LDAP überschrieben wird.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Gruppen sind die Ausnahme&lt;/strong&gt;: Die Mitglieder einer Gruppe sind die &lt;strong&gt;Vereinigung&lt;/strong&gt; aller
+Quellen, denn ein Team kann Personen in einer Datei und in einer Datenbank haben.&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;photos&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; allow&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;@engineers&amp;#34;, &amp;#34;alice&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; writers&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;@owners&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Code kopieren"
+aria-label="Code kopieren"
+data-copied-label="Kopiert!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Beim Start aufgelöst, und erneut bei jedem Neuladen&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Seit v0.10.0 werden die &lt;code&gt;users&lt;/code&gt;-Blöcke – SQL, LDAP – alle
+&lt;code&gt;reload = &amp;quot;5m&amp;quot;&lt;/code&gt;, bei &lt;code&gt;SIGHUP&lt;/code&gt; und beim &lt;code&gt;ReloadDirectory&lt;/code&gt; der Admin-API erneut gelesen; eine
+Mitgliedschaft, die sich in LDAP ändert, wartet nicht mehr auf einen Neustart. Was ein Neuladen
+an Ort und Stelle anwendet und was es neu startet, und warum eine Gruppe, die sich leert,
+ihre Freigabe &lt;strong&gt;nicht&lt;/strong&gt; für alle öffnet, steht unter
+&lt;a href="https://go-fileshare.github.io/docs/0.26/de/administration/reload/"&gt;das Verzeichnis erneut einlesen&lt;/a&gt;. Das Verzeichnis
+wird weiterhin nicht bei jeder Verbindung gefragt: Das wäre ein anderes Design, und dieses
+ist es nicht.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="what-a-source-can-prove-and-what-each-protocol-needs"&gt;Was eine Quelle beweisen kann und was jedes Protokoll braucht&lt;span class="hx:absolute hx:-mt-20" id="what-a-source-can-prove-and-what-each-protocol-needs"&gt;&lt;/span&gt;
+&lt;a href="#what-a-source-can-prove-and-what-each-protocol-needs" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Das ist der Teil, den eine Installation sonst beim Einhängen entdeckt, also sagt &lt;a href="https://go-fileshare.github.io/docs/0.26/de/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt;
+ihn zuerst:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;die Quelle hat&lt;/th&gt;
+&lt;th&gt;SMB&lt;/th&gt;
+&lt;th&gt;S3&lt;/th&gt;
+&lt;th&gt;WebDAV&lt;/th&gt;
+&lt;th&gt;SFTP&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;ein Passwort (Datei oder eine Klartextspalte)&lt;/td&gt;
+&lt;td&gt;ja&lt;/td&gt;
+&lt;td&gt;ja&lt;/td&gt;
+&lt;td&gt;ja&lt;/td&gt;
+&lt;td&gt;—&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;einen NT-Hash (&lt;code&gt;sambaNTPassword&lt;/code&gt;, &lt;code&gt;nt_hash&lt;/code&gt;)&lt;/td&gt;
+&lt;td&gt;ja&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;nein&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;—&lt;/td&gt;
+&lt;td&gt;—&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;nur einen Bind (LDAP)&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;nein&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;nein&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;ja&lt;/td&gt;
+&lt;td&gt;—&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;öffentliche Schlüssel oder eine vertrauenswürdige CA&lt;/td&gt;
+&lt;td&gt;—&lt;/td&gt;
+&lt;td&gt;—&lt;/td&gt;
+&lt;td&gt;—&lt;/td&gt;
+&lt;td&gt;ja&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;NTLMv2 braucht das Passwort oder seinen MD4, und nichts anderes genügt&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Ein Client sendet einem SMB-Server nie ein Passwort – er sendet einen daraus
+berechneten Nachweis –, sodass ein Verzeichnis, das Passwörter nur &lt;em&gt;prüft&lt;/em&gt;, SMB nicht
+beantworten kann, so gut die Prüfung auch ist. Das ist eine Eigenschaft des Protokolls,
+keine Einschränkung dieses Programms, und keine Konfiguration ändert
+daran etwas. WebDAV fragt nur „Ist das das richtige Passwort?&amp;quot;, was ein Bind beantwortet.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Eine Person, die ein Verzeichnis nennt, für die es aber nichts beweist, ist legitim – eine Auflistung
+mit den Geheimnissen anderswo –, und &lt;code&gt;check&lt;/code&gt; sagt das in einer Zeile, statt
+sie es selbst herausfinden zu lassen.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="people-the-identity-provider-names-not-this-file"&gt;Personen, die der Identitätsanbieter nennt, nicht diese Datei&lt;span class="hx:absolute hx:-mt-20" id="people-the-identity-provider-names-not-this-file"&gt;&lt;/span&gt;
+&lt;a href="#people-the-identity-provider-names-not-this-file" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Eine Föderation – etwa RENATER über
+&lt;a href="https://github.com/go-authn/bridge" target="_blank" rel="noopener"&gt;go-authn/bridge&lt;/a&gt; – weiß, wer zu einem
+Projekt gehört, und eine Freigabe kann &lt;strong&gt;sie&lt;/strong&gt; fragen, statt die Liste zu kopieren. Mit einem
+&lt;a href="https://go-fileshare.github.io/docs/0.26/de/protocols/webdav/#a-token-over-the-one-protocol-that-can-carry-one"&gt;&lt;code&gt;oidc&lt;/code&gt;-Block&lt;/a&gt;:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;photos&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/photos.img&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; allow&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;oidc:groups:urn:mace:univ-example.fr:photos&amp;#34;, &amp;#34;oidc:user:bob@univ-example.fr&amp;#34;, &amp;#34;alice&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; writers&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;oidc:groups:urn:mace:univ-example.fr:photos&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Code kopieren"
+aria-label="Code kopieren"
+data-copied-label="Kopiert!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;oidc:groups:&amp;lt;value&amp;gt;&lt;/code&gt; ist jemand, dessen Groups-Claim im Token den Wert enthält;
+&lt;code&gt;oidc:user:&amp;lt;name&amp;gt;&lt;/code&gt; ist jemand, den das Token nennt. Die Schreibweise ist die von opkssh, damit
+ein einziges Vokabular sagt, wer eine Shell erreicht und wer eine Freigabe. Jemand,
+den eine Regel nennt, ist diesem Server bekannt, soweit der Anbieter reicht – auch für die offenen
+Freigaben –, und jemand, den keine Regel nennt, bleibt ein Fremder. Dieselben Regeln
+gelten über &lt;a href="https://go-fileshare.github.io/docs/0.26/de/protocols/sftp/#people-the-identity-provider-vouches-for"&gt;SFTP&lt;/a&gt;,
+wo die Gruppen statt im Token im Zertifikat reisen.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Eine Regel betrifft nur die Personen des Anbieters&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;oidc:user:bob&lt;/code&gt; ist der bob, für den der Anbieter bürgt; ein lokales Konto namens
+bob, mit einem Passwort, ist jemand anderes und erfüllt keine Regel. Eine Regel ohne
+&lt;code&gt;oidc&lt;/code&gt;-Block, eine fehlerhafte oder eine, die schreiben darf, ohne sich verbinden
+zu dürfen, wird &lt;strong&gt;beim Start abgelehnt&lt;/strong&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Die &lt;code&gt;alice&lt;/code&gt; des Anbieters ist nicht die lokale &lt;code&gt;alice&lt;/code&gt;, es sei denn, Sie sagen es (seit v0.20.0)&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Ein einfacher Name in &lt;code&gt;allow&lt;/code&gt; oder &lt;code&gt;writers&lt;/code&gt; ist ein lokales Konto; ein Token oder ein
+Zertifikat des Anbieters wird nur von den &lt;code&gt;oidc:&lt;/code&gt;-Regeln einer Freigabe erreicht. Eine Installation,
+deren Namen beim Anbieter ihre lokalen Namen SIND, schreibt &lt;code&gt;local_names = true&lt;/code&gt; in
+den &lt;code&gt;oidc&lt;/code&gt;-Block – und sollte dazu &lt;code&gt;domains&lt;/code&gt; setzen oder den Namen aus
+einem Claim nehmen, den der Anbieter kontrolliert: Ein Anbieter, bei dem Personen ihren
+&lt;code&gt;preferred_username&lt;/code&gt; selbst wählen, würde sonst jedem, der sich registriert, die Freigaben eines lokalen
+Kontos übergeben, Schreibzugriff eingeschlossen. Das war vor v0.20.0 der Standard
+(Sicherheitsaudit F4). Ein föderierter Name, der mangels &lt;code&gt;local_names&lt;/code&gt; abgelehnt wird,
+wird mit der zu ergänzenden Zeile protokolliert, und &lt;code&gt;fileshare check&lt;/code&gt; sagt, welche Regel
+gilt.&lt;/p&gt;
+&lt;p&gt;NFS-Client-Zertifikate (&lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt;) sind die Ausnahme:
+Ihre CA ist die, die &lt;code&gt;client_ca_file&lt;/code&gt; genau dafür festlegt, und einfache
+Namen sind die einzige Möglichkeit, mit der eine NFS-Freigabe jemanden benennen kann, also sind ihre Namen
+lokale Namen, was auch immer &lt;code&gt;local_names&lt;/code&gt; sagt.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h3 data-hextra-search-id="which-institutions"&gt;Welche Einrichtungen&lt;span class="hx:absolute hx:-mt-20" id="which-institutions"&gt;&lt;/span&gt;
+&lt;a href="#which-institutions" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;oidc&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; issuer&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://login.example.org&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; audience&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;fileshare&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; domains&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;univ-a.fr&amp;#34;, &amp;#34;univ-b.fr&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="c1"&gt; # nobody else from the federation gets in
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;projet-x&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/projet-x.img&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; allow&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;oidc:groups:urn:mace:univ-a.fr:projet-x&amp;#34;, &amp;#34;oidc:domain:univ-b.fr&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; writers&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;oidc:groups:urn:mace:univ-a.fr:projet-x&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Code kopieren"
+aria-label="Code kopieren"
+data-copied-label="Kopiert!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;domains&lt;/code&gt; wird bei der Authentifizierung geprüft, über SFTP und WebDAV gleichermaßen, und für
+NFS-Client-Zertifikate: Ein Name muss
+&lt;code&gt;&amp;lt;something&amp;gt;@&amp;lt;one of them&amp;gt;&lt;/code&gt; sein, als Ganzes verglichen (&lt;code&gt;evilunivb.fr&lt;/code&gt; ist nicht
+&lt;code&gt;univb.fr&lt;/code&gt;). &lt;code&gt;oidc:domain:&lt;/code&gt; ist derselbe Test für eine einzelne Freigabe. Der Domain kann man
+so weit vertrauen wie dem Anbieter: go-authn/bridge verwirft einen eppn oder eine subject-id,
+deren Scope die Föderationsmetadaten des IdP ihm nicht zugestehen.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Gruppen&lt;/strong&gt; sind das, was der IdP der Einrichtung freigibt, durch
+&lt;code&gt;claims { groups = [...] }&lt;/code&gt; von go-authn/bridge in den &lt;code&gt;groups&lt;/code&gt;-Claim umgewandelt: standardmäßig &lt;code&gt;eduPersonEntitlement&lt;/code&gt;
+(die Gruppen eines Labors oder einer VO) oder &lt;code&gt;eduPersonScopedAffiliation&lt;/code&gt;
+(&lt;code&gt;staff@univ-a.fr&lt;/code&gt;, &lt;code&gt;student@univ-b.fr&lt;/code&gt;).&lt;/p&gt;</description></item><item><title>check, bevor Sie etwas neu starten, das in Benutzung ist</title><link>https://go-fileshare.github.io/docs/0.26/de/configuration/check/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.26/de/configuration/check/</guid><description>
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;pre&gt;&lt;code&gt;$ fileshare check /etc/fileshare.d
+ATTIC
+SHARE IMAGE FILESYSTEM WHO MAY CONNECT WHO MAY WRITE SMB WEBDAV NFS SFTP
+photos /srv/photos.img fat32 alice and bob alice yes yes NO yes
+scratch /srv/scratch.img ext4 anyone who authenticates anyone who authenticates yes yes yes yes
+photos is not served over nfs: it is restricted to alice and bob, and NFSv3 on its own has no authentication: AUTH_UNIX is a claim the client makes about itself and the wire cannot disagree with it. A kerberos block lifts this: sec=krb5 carries a principal a ticket proves; so does identity = &amp;#34;certificate&amp;#34; on the nfs serve block: RPC-over-TLS with a client certificate naming the person
+USER FROM AUTHENTICATES WITH SMB WEBDAV SFTP
+alice the configuration file a password and 1 key from /etc/…/alice.pw yes yes yes
+bob the configuration file a password from /etc/…/bob.pw yes yes -
+dora ldaps://ldap.example.org a password check and an NT hash yes yes -
+eli ldaps://ldap.example.org a password check - yes -
+this configuration can be served&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Code kopieren"
+aria-label="Code kopieren"
+data-copied-label="Kopiert!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Jedes Image wird so geöffnet, wie der Server es öffnet, und wieder geschlossen; nichts wird
+bereitgestellt. Das heißt &lt;strong&gt;lesend und schreibend&lt;/strong&gt; für eine Freigabe, die nicht &lt;code&gt;read_only = true&lt;/code&gt; sagt
+– nur ein Gerät wird immer schreibgeschützt und exklusiv geöffnet, sodass ein Gerät, das der
+laufende Server hält, hier als belegt abgelehnt werden kann.&lt;/p&gt;
+&lt;p&gt;Es gibt aus, &lt;strong&gt;woher Zugangsdaten kommen, und nie, was sie enthalten&lt;/strong&gt; – und die
+Spalten pro Person sind der Grund, warum es
+&lt;a href="https://github.com/go-authn/directory" target="_blank" rel="noopener"&gt;&lt;code&gt;Identity.Can&lt;/code&gt;&lt;/a&gt; gibt: eli ist in
+derselben Gruppe wie dora, und SMB kann ihn trotzdem nicht bedienen, weil LDAP sein
+Passwort hält und es niemandem gibt.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="reading-the-columns"&gt;Die Spalten lesen&lt;span class="hx:absolute hx:-mt-20" id="reading-the-columns"&gt;&lt;/span&gt;
+&lt;a href="#reading-the-columns" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;ein Dateisystem mit Sternchen&lt;/td&gt;
+&lt;td&gt;der Treiber wurde von der Freigabe &lt;strong&gt;festgelegt&lt;/strong&gt;, nicht erkannt – siehe &lt;a href="https://go-fileshare.github.io/docs/0.26/de/configuration/shares/"&gt;Freigaben&lt;/a&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;NO&lt;/code&gt; unter einem Protokoll&lt;/td&gt;
+&lt;td&gt;diese Freigabe wird dort nicht exportiert, und der Grund steht unter der Tabelle&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-&lt;/code&gt; unter einem Protokoll, pro Freigabe&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;protocols&lt;/code&gt; der Freigabe lässt dieses weg&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-&lt;/code&gt; unter einem Protokoll, pro Benutzer&lt;/td&gt;
+&lt;td&gt;die Quelle dieser Person kann nicht beweisen, was das Protokoll braucht – siehe &lt;a href="https://go-fileshare.github.io/docs/0.26/de/configuration/identity/"&gt;Identität&lt;/a&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2 data-hextra-search-id="what-else-it-says"&gt;Was es außerdem sagt&lt;span class="hx:absolute hx:-mt-20" id="what-else-it-says"&gt;&lt;/span&gt;
+&lt;a href="#what-else-it-says" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Nach den Tabellen sagt &lt;code&gt;check&lt;/code&gt;, was man wissen muss, bevor man sich auf
+die Konfiguration verlässt, sofern es zutrifft:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;bei einem &lt;code&gt;oidc&lt;/code&gt;-Block, dass seine Tokens nur über WebDAV akzeptiert werden, und
+ob die Namen des Anbieters lokale Namen sind (&lt;code&gt;local_names&lt;/code&gt;) – siehe
+&lt;a href="https://go-fileshare.github.io/docs/0.26/de/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;Identität&lt;/a&gt;;&lt;/li&gt;
+&lt;li&gt;pro Protokoll, was &lt;strong&gt;verschlüsselt&lt;/strong&gt; ist und was &lt;strong&gt;absichtlich im Klartext&lt;/strong&gt;
+– siehe &lt;a href="https://go-fileshare.github.io/docs/0.26/de/security/tls/#what-check-says"&gt;TLS&lt;/a&gt;;&lt;/li&gt;
+&lt;li&gt;woher eine &lt;strong&gt;Sperrliste&lt;/strong&gt; kommt und was geschieht, solange sie nicht
+abgerufen werden kann – siehe &lt;a href="https://go-fileshare.github.io/docs/0.26/de/security/"&gt;was was widerruft&lt;/a&gt;;&lt;/li&gt;
+&lt;li&gt;welche Freigaben über &lt;code&gt;DisableShare&lt;/code&gt; der Admin-API &lt;strong&gt;offline genommen&lt;/strong&gt; wurden
+und nicht bereitgestellt werden – siehe &lt;a href="https://go-fileshare.github.io/docs/0.26/de/administration/#disabling-a-share"&gt;die Admin-API&lt;/a&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Bei einem Server mit einer KRL, NFS-Identitäten aus Zertifikaten und Shared Signals
+lautet dieser Teil:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;pre&gt;&lt;code&gt;sftp: the provider&amp;#39;s SSH certificates are checked against the KRL at https://bridge.example.org/ssh/krl, at login and on every operation; while it is unknown or older than 1h0m0s they are refused
+federated people: revocations come from the shared signals transmitter https://bridge.example.org (CAEP session-revoked, polled); whatever the provider issued them before a revocation is refused -- tokens, SSH and OpenPubkey certificates, NFS certificates -- and open sessions stop. Refused while it is not heard from within 10m0s; revocations kept 192h0m0s in /var/lib/fileshare/revocations.json
+nfs: identities come from client certificates signed by /etc/fileshare/bridge-x509-ca.pem, revoked by the CRL at https://bridge.example.org/x509/crl (refused while it is unknown or older than 1h0m0s).
+⛔ a Linux client&amp;#39;s certificate belongs to a MOUNT: every user of that mount is the person it names&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Code kopieren"
+aria-label="Code kopieren"
+data-copied-label="Kopiert!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;check&lt;/code&gt; ruft die Listen nicht ab: Es sagt, woher sie kommen und was ihr
+Fehlen bewirken wird. Das Discovery-Dokument und die Schlüssel des Identitätsanbieters
+werden dagegen &lt;strong&gt;sehr wohl&lt;/strong&gt; gelesen – ein &lt;code&gt;oidc&lt;/code&gt;-Block, dessen Aussteller nicht erreichbar ist,
+wird von &lt;code&gt;check&lt;/code&gt; abgelehnt.&lt;/p&gt;</description></item></channel></rss>

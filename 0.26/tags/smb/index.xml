@@ -1,0 +1,47 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Smb</title><link>https://go-fileshare.github.io/docs/0.26/tags/smb/</link><description>Recent content in Smb on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>en</language><atom:link href="https://go-fileshare.github.io/docs/0.26/tags/smb/index.xml" rel="self" type="application/rss+xml"/><item><title>SMB — NTLMv2</title><link>https://go-fileshare.github.io/docs/0.26/protocols/smb/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.26/protocols/smb/</guid><description>
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;serve &amp;#34;smb&amp;#34; { addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:445&amp;#34;&lt;/span&gt; }&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;The password &lt;strong&gt;never crosses the wire&lt;/strong&gt;: a client sends a proof computed from
+it. The share tells a reader they are one — in the access mask, before they
+try, rather than by failing a write later.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-a-directory-must-hold"&gt;What a directory must hold&lt;span class="hx:absolute hx:-mt-20" id="what-a-directory-must-hold"&gt;&lt;/span&gt;
+&lt;a href="#what-a-directory-must-hold" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;NTLMv2 needs the password itself or its MD4 (&lt;code&gt;sambaNTPassword&lt;/code&gt;, an &lt;code&gt;nt_hash&lt;/code&gt;
+column). &lt;strong&gt;Nothing else will do.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;A directory that only &lt;em&gt;checks&lt;/em&gt; passwords — an LDAP bind, a bcrypt column —
+cannot answer SMB, however good the check is, because the server has to compute
+the same proof the client did. That is a property of the protocol, not a
+limitation of this program.&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://go-fileshare.github.io/docs/0.26/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt; prints a &lt;code&gt;-&lt;/code&gt; in the SMB column for such a
+person, at configuration time, rather than leaving them to discover it at a
+mount.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="a-privileged-port-without-a-privileged-server"&gt;A privileged port without a privileged server&lt;span class="hx:absolute hx:-mt-20" id="a-privileged-port-without-a-privileged-server"&gt;&lt;/span&gt;
+&lt;a href="#a-privileged-port-without-a-privileged-server" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Under &lt;a href="https://go-fileshare.github.io/docs/0.26/operations/isolation/"&gt;&lt;code&gt;--isolate&lt;/code&gt;&lt;/a&gt; on Unix, the parent binds 445
+and passes the listener to the child, so the process actually speaking SMB
+never needs the privilege. Windows has no &lt;code&gt;ExtraFiles&lt;/code&gt;, so there the child
+binds the address itself; the isolation is the same, the privileged-port half
+is not.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="verified-against-a-client-this-project-did-not-write"&gt;Verified against a client this project did not write&lt;span class="hx:absolute hx:-mt-20" id="verified-against-a-client-this-project-did-not-write"&gt;&lt;/span&gt;
+&lt;a href="#verified-against-a-client-this-project-did-not-write" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;a href="https://github.com/cloudsoda/go-smb2" target="_blank" rel="noopener"&gt;go-smb2&lt;/a&gt; drives twenty concurrent
+reads through SMB while twenty run through WebDAV, under &lt;code&gt;-race&lt;/code&gt;, in CI. macOS
+mounts a share over SMB while &lt;code&gt;curl&lt;/code&gt; writes to the same image over WebDAV, and
+reads back what WebDAV wrote.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="when-the-people-change"&gt;When the people change&lt;span class="hx:absolute hx:-mt-20" id="when-the-people-change"&gt;&lt;/span&gt;
+&lt;a href="#when-the-people-change" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;SMB fixes who may connect to a share &lt;strong&gt;when the share is added&lt;/strong&gt;, and checks it
+once per tree connect. So somebody new whom a &lt;a href="https://go-fileshare.github.io/docs/0.26/administration/reload/"&gt;directory reload&lt;/a&gt;
+finds is added in place, SMB&amp;rsquo;s running server included, with no connection
+touched; but anything taken away — a person, a credential, a share&amp;rsquo;s expanded
+lists — is a new generation, and SMB&amp;rsquo;s open connections are closed, so a
+revocation reaches the sessions already open. A share whose &lt;code&gt;allow&lt;/code&gt; group has
+emptied is &lt;strong&gt;not offered over SMB at all&lt;/strong&gt;: its empty &lt;code&gt;AllowUsers&lt;/code&gt; would read as
+everyone.&lt;/p&gt;</description></item></channel></rss>

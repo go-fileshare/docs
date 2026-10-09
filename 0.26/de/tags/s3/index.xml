@@ -1,0 +1,150 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – S3</title><link>https://go-fileshare.github.io/docs/0.26/de/tags/s3/</link><description>Recent content in S3 on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>de</language><atom:link href="https://go-fileshare.github.io/docs/0.26/de/tags/s3/index.xml" rel="self" type="application/rss+xml"/><item><title>S3 – eine Freigabe ist ein Bucket</title><link>https://go-fileshare.github.io/docs/0.26/de/protocols/s3/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.26/de/protocols/s3/</guid><description>
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;serve &amp;#34;s3&amp;#34; { addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:9000&amp;#34;&lt;/span&gt; }&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Code kopieren"
+aria-label="Code kopieren"
+data-copied-label="Kopiert!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Oder über HTTPS, seit v0.9.0, mit &lt;code&gt;tls = true&lt;/code&gt; und einem
+&lt;a href="https://go-fileshare.github.io/docs/0.26/de/security/tls/"&gt;&lt;code&gt;tls&lt;/code&gt;-Block&lt;/a&gt;:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;s3&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:9000&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; tls&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Code kopieren"
+aria-label="Code kopieren"
+data-copied-label="Kopiert!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Das fünfte Protokoll, und dasjenige, das ein Image von allem aus erreichbar macht,
+was Objektspeicher spricht – ein Backup-Werkzeug, eine Datenpipeline, &lt;code&gt;rclone&lt;/code&gt;, das
+&lt;code&gt;fetch()&lt;/code&gt; eines Browsers. &lt;strong&gt;Nichts wird eingehängt.&lt;/strong&gt;&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;pre&gt;&lt;code&gt;GET / the shares this person may use, as buckets
+GET /photos?list-type=2 the files in that share, as keys
+GET /photos/holiday.jpg the file itself, Range and all&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Code kopieren"
+aria-label="Code kopieren"
+data-copied-label="Kopiert!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="a-share-is-a-bucket"&gt;Eine Freigabe ist ein Bucket&lt;span class="hx:absolute hx:-mt-20" id="a-share-is-a-bucket"&gt;&lt;/span&gt;
+&lt;a href="#a-share-is-a-bucket" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Bereitgestellt über &lt;strong&gt;denselben Baum pro Benutzer, den SFTP verwendet&lt;/strong&gt;: ein Dateisystem, dessen oberste Ebene
+aus den Freigaben besteht, die diese Person nutzen darf. Eine Freigabe, die alice nicht nutzen darf, ist also kein Bucket,
+den alice sehen kann, und die Zugriffsregeln werden an einer Stelle angewendet, statt
+in ein zweites Protokoll kopiert zu werden.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Ein Verzeichnis innerhalb einer Freigabe ist ein Präfix, kein Objekt&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Genau das nehmen S3-Clients ohnehin an – sie zeigen Präfixe, die auf
+das Trennzeichen enden, als Ordner an. Ein &lt;code&gt;GET&lt;/code&gt; auf ein Verzeichnis antwortet mit &lt;code&gt;NoSuchKey&lt;/code&gt;, weil
+eine Antwort 200 einen Client glauben ließe, er könne die Bytes eines Ordners abrufen.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="an-access-key-is-a-user-the-secret-key-is-their-password"&gt;Ein Access Key ist ein Benutzer; der Secret Key ist sein Passwort&lt;span class="hx:absolute hx:-mt-20" id="an-access-key-is-a-user-the-secret-key-is-their-password"&gt;&lt;/span&gt;
+&lt;a href="#an-access-key-is-a-user-the-secret-key-is-their-password" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;export&lt;/span&gt; &lt;span class="nv"&gt;AWS_ACCESS_KEY_ID&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;alice
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;export&lt;/span&gt; &lt;span class="nv"&gt;AWS_SECRET_ACCESS_KEY&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;cat alice.pw&lt;span class="k"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;aws --endpoint-url http://attic.example.org:9000 s3 ls&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Code kopieren"
+aria-label="Code kopieren"
+data-copied-label="Kopiert!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;SigV4 weist den Besitz des Geheimnisses nach, indem daraus ein HMAC berechnet wird – das
+Passwort geht nie über die Leitung, genau wie bei NTLMv2.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Daher muss das Verzeichnis das Passwort HALTEN, nicht nur prüfen&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Eine Quelle, die ein Passwort nur &lt;em&gt;verifizieren&lt;/em&gt; kann – ein LDAP-Bind, eine bcrypt-Spalte
+–, kann WebDAV beantworten und &lt;strong&gt;kann&lt;/strong&gt; S3 &lt;strong&gt;nicht&lt;/strong&gt; beantworten.&lt;/p&gt;
+&lt;p&gt;Und auch kein NT-Hash: Das ist der MD4-Wert, mit dem SMB arbeiten kann, und ein HMAC
+lässt sich daraus nicht berechnen. &lt;strong&gt;Eine Identität, die nur einen NT-Hash hält, bedient
+SMB und nicht S3&lt;/strong&gt; – nahe Nachbarn statt derselben Antwort.
+&lt;a href="https://go-fileshare.github.io/docs/0.26/de/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt; gibt die Spalte aus.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;⛔ Es gibt nirgends im Programm einen &lt;code&gt;Password()&lt;/code&gt;-Accessor: Das Passwort wird
+nur über &lt;code&gt;Identity.Derive&lt;/code&gt; erreicht, das eine Ableitung entgegennimmt und
+deren Ergebnis zurückgibt. Für S3 ist die Ableitung die Identität, weil der Schlüsselplan von SigV4
+in go-filesystems/s3 liegt; das Geheimnis geht an diese Signaturprüfung
+für diesen einen Benutzer und nirgendwo sonst hin.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-is-served"&gt;Was bereitgestellt wird&lt;span class="hx:absolute hx:-mt-20" id="what-is-served"&gt;&lt;/span&gt;
+&lt;a href="#what-is-served" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;ListBuckets&lt;/code&gt;, &lt;code&gt;HeadBucket&lt;/code&gt;, &lt;code&gt;ListObjectsV2&lt;/code&gt; mit Präfix, Trennzeichen, max-keys
+und Fortsetzung, &lt;code&gt;HeadObject&lt;/code&gt; und &lt;code&gt;GetObject&lt;/code&gt; mit &lt;code&gt;Range&lt;/code&gt;. SigV4 in beiden
+Formen, im Header und vorsigniert.&lt;/p&gt;
+&lt;p&gt;Die Objekt-API selbst ist
+&lt;a href="https://github.com/go-filesystems/s3" target="_blank" rel="noopener"&gt;&lt;code&gt;go-filesystems/s3&lt;/code&gt;&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-is-refused-and-why"&gt;Was abgelehnt wird, und warum&lt;span class="hx:absolute hx:-mt-20" id="what-is-refused-and-why"&gt;&lt;/span&gt;
+&lt;a href="#what-is-refused-and-why" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Schreibvorgänge antworten mit 403&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;PUT&lt;/code&gt;, &lt;code&gt;POST&lt;/code&gt; und &lt;code&gt;DELETE&lt;/code&gt; werden mit &lt;code&gt;AccessDenied&lt;/code&gt; („this export is
+read-only“) abgelehnt. fileshare hält den S3-Server schreibgeschützt, weil eine Freigabe, die eine Person
+nur lesen darf, an derselben Stelle ablehnen muss wie bei SFTP, und das ist noch nicht
+verdrahtet; go-filesystems/s3 v0.3.0, auf dem dieses Release aufbaut, lehnt
+ohnehin jeden Schreibvorgang ab. Ablehnen ist besser als ein halb geschriebenes Objekt.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Ein Bearer-Token wird hier nicht akzeptiert&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://go-fileshare.github.io/docs/0.26/de/protocols/webdav/"&gt;OIDC&lt;/a&gt; funktioniert über WebDAV und nirgendwo sonst. S3 authentifiziert mit
+einer SigV4-Signatur – einem HMAC über die Anfrage, ohne ein Feld, in das ein Bearer-Token
+passt.&lt;/p&gt;
+&lt;p&gt;Der übliche Weg ist STS &lt;code&gt;AssumeRoleWithWebIdentity&lt;/code&gt;, das ein OIDC-Token
+gegen temporäre Zugangsdaten tauscht, mit denen der Client dann signiert. Das ist ein
+anderer Mechanismus, und er ist &lt;strong&gt;nicht implementiert&lt;/strong&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Multipart-Upload, Versionierung, ACLs, Richtlinien, Lifecycle-Regeln, Replikation und
+Tagging sind nicht implementiert. Eines davon zu setzen oder einen Multipart-Upload
+zu beginnen, ist ein Schreibvorgang und antwortet wie jeder andere mit &lt;code&gt;AccessDenied&lt;/code&gt;. Ein &lt;code&gt;GET&lt;/code&gt;, das
+nach einem davon fragt (&lt;code&gt;?versioning&lt;/code&gt;, &lt;code&gt;?acl&lt;/code&gt;, &lt;code&gt;?tagging&lt;/code&gt;&amp;hellip;), wird nicht unterschieden:
+Die Query wird ignoriert, und das Listing des Buckets bzw. das Objekt wird zurückgegeben.
+&lt;code&gt;NotImplemented&lt;/code&gt; beantwortet ein anderes Listing als &lt;code&gt;list-type=2&lt;/code&gt;, jede Methode außer
+&lt;code&gt;GET&lt;/code&gt; auf &lt;code&gt;/&lt;/code&gt; und eine Methode, die keine Operation hier verwendet.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="two-limits-worth-knowing-before-pointing-it-at-something-large"&gt;Zwei Grenzen, die man kennen sollte, bevor man es auf etwas Großes richtet&lt;span class="hx:absolute hx:-mt-20" id="two-limits-worth-knowing-before-pointing-it-at-something-large"&gt;&lt;/span&gt;
+&lt;a href="#two-limits-worth-knowing-before-pointing-it-at-something-large" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;GetObject&lt;/code&gt; liest das ganze Objekt in den Arbeitsspeicher.&lt;/strong&gt; Die Treiberschnittstelle bietet
+&lt;code&gt;ReadFile&lt;/code&gt; und sonst nichts – keinen Opener, keinen Reader –, daher gibt es kein streamendes
+Lesen, das man nutzen könnte. Eine Obergrenze von 256 MiB antwortet mit &lt;code&gt;EntityTooLarge&lt;/code&gt;, statt
+den Prozess zum Absturz zu bringen.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;&lt;code&gt;LastModified&lt;/code&gt; ist die Epoche.&lt;/strong&gt; &lt;code&gt;filesystem.Stat&lt;/code&gt; trägt &lt;code&gt;Mode&lt;/code&gt;, &lt;code&gt;Size&lt;/code&gt; und
+&lt;code&gt;Inode&lt;/code&gt; und überhaupt keine Änderungszeit. Das Feld ist im S3-Schema nicht optional,
+also muss etwas gesendet werden; die Epoche ist offensichtlich keine echte Zeit,
+während &lt;code&gt;time.Now()&lt;/code&gt; wie eine gerade geänderte Datei aussähe und jedes Sync-Werkzeug
+bei jedem Lauf alles kopieren ließe.&lt;/p&gt;</description></item></channel></rss>

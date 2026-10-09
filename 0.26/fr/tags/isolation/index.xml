@@ -1,0 +1,88 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Isolation</title><link>https://go-fileshare.github.io/docs/0.26/fr/tags/isolation/</link><description>Recent content in Isolation on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>fr</language><atom:link href="https://go-fileshare.github.io/docs/0.26/fr/tags/isolation/index.xml" rel="self" type="application/rss+xml"/><item><title>Un processus par protocole</title><link>https://go-fileshare.github.io/docs/0.26/fr/operations/isolation/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.26/fr/operations/isolation/</guid><description>
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;fileshare --config /etc/fileshare.d --isolate&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copier le code"
+aria-label="Copier le code"
+data-copied-label="Copié !"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;pre&gt;&lt;code&gt;smb on 0.0.0.0:445 — process 19810, serving public, photos and scratch
+webdav on 0.0.0.0:8080 — process 19811, serving public and photos
+nfs on 0.0.0.0:2049 — process 19812, serving public&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copier le code"
+aria-label="Copier le code"
+data-copied-label="Copié !"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Le parent ouvre les écouteurs, puis se ré-exécute &lt;strong&gt;lui-même&lt;/strong&gt; une fois par protocole,
+en ne remettant à chaque enfant que les partages que ce protocole peut servir.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="checked-with-lsof-not-by-reading-the-code"&gt;Vérifié avec &lt;code&gt;lsof&lt;/code&gt;, pas en lisant le code&lt;span class="hx:absolute hx:-mt-20" id="checked-with-lsof-not-by-reading-the-code"&gt;&lt;/span&gt;
+&lt;a href="#checked-with-lsof-not-by-reading-the-code" class="subheading-anchor" aria-label="Lien permanent vers cette section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;pre&gt;&lt;code&gt;smb (pid 19810) has open: scratch.img photos.img
+webdav (pid 19811) has open: photos.img
+nfs (pid 19812) has open: photos.img&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copier le code"
+aria-label="Copier le code"
+data-copied-label="Copié !"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;L&amp;rsquo;image accessible en écriture est ouverte dans &lt;strong&gt;un seul processus&lt;/strong&gt;, et l&amp;rsquo;enfant WebDAV
+ne l&amp;rsquo;ouvre jamais.&lt;/p&gt;
+&lt;p&gt;C&amp;rsquo;est ce que les &lt;a href="https://go-fileshare.github.io/docs/0.26/fr/operations/build-tags/"&gt;étiquettes de compilation&lt;/a&gt; ne peuvent pas donner : une panique ou un tas
+épuisé dans un protocole n&amp;rsquo;abat que ce protocole, chaque enfant peut être confiné par
+tout ce que le système d&amp;rsquo;exploitation propose, et un bogue dans un analyseur ne peut pas atteindre une
+image que ce processus n&amp;rsquo;a jamais ouverte.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="privileged-ports"&gt;Ports privilégiés&lt;span class="hx:absolute hx:-mt-20" id="privileged-ports"&gt;&lt;/span&gt;
+&lt;a href="#privileged-ports" class="subheading-anchor" aria-label="Lien permanent vers cette section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Sous Unix, le parent passe l&amp;rsquo;écouteur déjà lié à l&amp;rsquo;enfant, si bien qu&amp;rsquo;&lt;strong&gt;un port privilégié
+fonctionne avec des enfants non privilégiés&lt;/strong&gt; — le parent se lie au port 445, l&amp;rsquo;enfant n&amp;rsquo;a jamais
+besoin du privilège.&lt;/p&gt;
+&lt;p&gt;Windows n&amp;rsquo;a pas d&amp;rsquo;&lt;code&gt;ExtraFiles&lt;/code&gt; : là, l&amp;rsquo;enfant se lie lui-même à l&amp;rsquo;adresse ; l&amp;rsquo;isolation
+est la même, la moitié « port privilégié » ne l&amp;rsquo;est pas.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="the-rule-that-makes-it-honest"&gt;La règle qui la rend honnête&lt;span class="hx:absolute hx:-mt-20" id="the-rule-that-makes-it-honest"&gt;&lt;/span&gt;
+&lt;a href="#the-rule-that-makes-it-honest" class="subheading-anchor" aria-label="Lien permanent vers cette section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Un enfant ouvre l&amp;rsquo;image lui-même : une image servie &lt;em&gt;en écriture&lt;/em&gt; par deux protocoles
+serait donc deux pilotes sur un même fichier &lt;strong&gt;sans aucun verrou entre eux&lt;/strong&gt; — exactement ce
+que le &lt;a href="https://go-fileshare.github.io/docs/0.26/fr/operations/locking/"&gt;verrou partagé&lt;/a&gt; empêche au sein d&amp;rsquo;un seul processus.&lt;/p&gt;
+&lt;p&gt;C&amp;rsquo;est refusé, et le refus dit comment corriger :&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;pre&gt;&lt;code&gt;scratch is writable over smb and webdav, and one process per protocol means
+that many drivers writing one file with no lock between them. Say
+`protocols = [&amp;#34;smb&amp;#34;]` on the share, or make it read_only, or do not isolate.&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copier le code"
+aria-label="Copier le code"
+data-copied-label="Copié !"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;protocols = [...]&lt;/code&gt; sur un partage est utile en soi, pas seulement sous
+&lt;code&gt;--isolate&lt;/code&gt; : un partage déclaré SMB seul est un partage dont on ne parle jamais au
+processus WebDAV. Un bloc &lt;code&gt;serve&lt;/code&gt; qui finirait par ne rien porter est refusé lui aussi,
+avant qu&amp;rsquo;aucune image ne soit ouverte, en nommant les partages qui lui ont été retirés et pourquoi.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="not-with-an-admin-or-a-metrics-block-yet"&gt;Pas encore avec un bloc &lt;code&gt;admin&lt;/code&gt; ou &lt;code&gt;metrics&lt;/code&gt;&lt;span class="hx:absolute hx:-mt-20" id="not-with-an-admin-or-a-metrics-block-yet"&gt;&lt;/span&gt;
+&lt;a href="#not-with-an-admin-or-a-metrics-block-yet" class="subheading-anchor" aria-label="Lien permanent vers cette section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;--isolate&lt;/code&gt; associé à un bloc &lt;a href="https://go-fileshare.github.io/docs/0.26/fr/administration/"&gt;&lt;code&gt;admin&lt;/code&gt;&lt;/a&gt; ou
+&lt;a href="https://go-fileshare.github.io/docs/0.26/fr/administration/health/"&gt;&lt;code&gt;metrics&lt;/code&gt;&lt;/a&gt; est refusé : les enfants ouvrent
+les images et le parent n&amp;rsquo;ouvre rien ; il n&amp;rsquo;y a donc aucun processus unique auquel une
+modification par l&amp;rsquo;API pourrait s&amp;rsquo;appliquer, ni dont une sonde interrogerait la disponibilité.&lt;/p&gt;</description></item></channel></rss>

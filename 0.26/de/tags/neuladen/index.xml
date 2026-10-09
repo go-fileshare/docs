@@ -1,0 +1,92 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Neuladen</title><link>https://go-fileshare.github.io/docs/0.26/de/tags/neuladen/</link><description>Recent content in Neuladen on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>de</language><atom:link href="https://go-fileshare.github.io/docs/0.26/de/tags/neuladen/index.xml" rel="self" type="application/rss+xml"/><item><title>Das Verzeichnis erneut einlesen</title><link>https://go-fileshare.github.io/docs/0.26/de/administration/reload/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.26/de/administration/reload/</guid><description>
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;reload&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;5m&amp;#34;&lt;/span&gt; &lt;span class="err"&gt;#&lt;/span&gt; &lt;span class="k"&gt;and&lt;/span&gt; &lt;span class="k"&gt;on&lt;/span&gt; &lt;span class="k"&gt;SIGHUP&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;and&lt;/span&gt; &lt;span class="k"&gt;on&lt;/span&gt; &lt;span class="k"&gt;the&lt;/span&gt; &lt;span class="k"&gt;admin&lt;/span&gt; &lt;span class="k"&gt;API&lt;/span&gt;&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="k"&gt;s&lt;/span&gt; &lt;span class="k"&gt;ReloadDirectory&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Code kopieren"
+aria-label="Code kopieren"
+data-copied-label="Kopiert!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Die Personen kommen aus Verzeichnissen, die andere verändern – go-authn/bridge schreibt
+ein Anwendungspasswort in eine Tabelle und löscht die Zeile, wenn die Person
+deaktiviert wird. Ohne Neuladen bedient der Server, wer beim Start da war.
+Seit v0.10.0 liest er sie erneut ein:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;in jedem &lt;code&gt;reload&lt;/code&gt;-Intervall, einer Go-Dauer von &lt;strong&gt;mindestens einer Sekunde&lt;/strong&gt; – ein Verzeichnis,
+das viele Male pro Sekunde gelesen wird, ist eine Last für die Datenbank von jemandem, kein aktuellerer
+Server;&lt;/li&gt;
+&lt;li&gt;bei &lt;strong&gt;&lt;code&gt;SIGHUP&lt;/code&gt;&lt;/strong&gt; (Unix);&lt;/li&gt;
+&lt;li&gt;bei &lt;strong&gt;&lt;code&gt;ReloadDirectory&lt;/code&gt;&lt;/strong&gt; der &lt;a href="https://go-fileshare.github.io/docs/0.26/de/administration/"&gt;Admin-API&lt;/a&gt;, das antwortet, wer
+hinzugefügt, entfernt und geändert wurde, ob eine neue Generation gestartet ist, und Hinweise gibt, die
+man lesen sollte – eine Gruppe, die es nicht mehr gibt, jemand, den eine Freigabe nennt,
+der nicht mehr im Verzeichnis steht.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Ohne &lt;code&gt;reload&lt;/code&gt; wird das Verzeichnis nur beim Start, bei &lt;code&gt;SIGHUP&lt;/code&gt; und bei
+&lt;code&gt;ReloadDirectory&lt;/code&gt; gelesen.&lt;/p&gt;
+&lt;p&gt;Es sind die &lt;code&gt;users&lt;/code&gt;-Blöcke – SQL, LDAP –, die erneut gelesen werden. Die &lt;code&gt;user&lt;/code&gt;- und
+&lt;code&gt;group&lt;/code&gt;-Blöcke der Konfigurationsdatei &lt;strong&gt;sind&lt;/strong&gt; die Konfiguration und werden beim
+Start gelesen.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-a-reload-does-depends-on-what-changed"&gt;Was ein Neuladen tut, hängt davon ab, was sich geändert hat&lt;span class="hx:absolute hx:-mt-20" id="what-a-reload-does-depends-on-what-changed"&gt;&lt;/span&gt;
+&lt;a href="#what-a-reload-does-depends-on-what-changed" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Die Grenze verläuft beim &lt;strong&gt;Widerruf&lt;/strong&gt;:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;was sich geändert hat&lt;/th&gt;
+&lt;th&gt;was geschieht&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;nur Hinzufügungen&lt;/strong&gt; – jemand Neues, dessen Ankunft die aufgelösten Listen keiner Freigabe ändert (ein neues Anwendungspasswort, eine Person, die die Freigaben über &lt;code&gt;oidc:&lt;/code&gt;-Regeln oder gar nicht erreichen)&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;an Ort und Stelle&lt;/strong&gt; hinzugefügt, einschließlich des laufenden SMB-Servers, und &lt;strong&gt;keine Verbindung wird angetastet&lt;/strong&gt;. Eine Bridge, die den ganzen Tag Anwendungspasswörter anlegt, stört niemanden.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;alles, was entzogen wird&lt;/strong&gt; – jemand ist weg, Zugangsdaten haben sich geändert, eine Freigabe, deren aufgelöste Listen sich geändert haben&lt;/td&gt;
+&lt;td&gt;eine &lt;strong&gt;neue Generation&lt;/strong&gt;, und die Verbindungen der alten werden &lt;strong&gt;geschlossen&lt;/strong&gt;, genau wie bei einer &lt;a href="https://go-fileshare.github.io/docs/0.26/de/administration/#a-change-is-a-new-generation"&gt;Admin-Änderung&lt;/a&gt;. Eine Sitzung, die die Entfernung ihrer Person überdauert hat, ist genau das, was ein Neuladen beenden soll.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;ein Verzeichnis, das nicht gelesen werden kann&lt;/strong&gt; – die Datenbank nicht erreichbar, eine Abfrage schlägt fehl&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;nichts ändert sich&lt;/strong&gt;. Ein Ausfall darf keinen Dateiserver leeren, und „niemand&amp;quot; ist genau das, wie ein fehlgeschlagenes Lesen aussieht.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Jemand Neues, der einer Gruppe beitritt, die eine Freigabe nennt, &lt;em&gt;ändert&lt;/em&gt; diese Freigabe sehr wohl und durchläuft
+eine neue Generation wie jede andere Änderung an ihr: SMB legt die Listen einer Freigabe
+bei deren Start fest.&lt;/p&gt;
+&lt;p&gt;Eine Freigabe, die jemanden nennt, der weg ist, oder eine Gruppe, die es nicht mehr gibt, wird
+&lt;strong&gt;ohne sie&lt;/strong&gt; bereitgestellt – die sichere Richtung – und das wird gemeldet, statt sie abzulehnen, wie es
+der Start tut: Ablehnen würde die alten Listen behalten, und die alten Listen sind der
+Zugriff, der gerade entzogen wurde.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="an-empty-group-is-not-everyone"&gt;Eine leere Gruppe ist nicht jeder&lt;span class="hx:absolute hx:-mt-20" id="an-empty-group-is-not-everyone"&gt;&lt;/span&gt;
+&lt;a href="#an-empty-group-is-not-everyone" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Eine für &lt;code&gt;@engineers&lt;/code&gt; geschriebene Freigabe, deren letzter Engineer gegangen ist, wird niemandem bereitgestellt&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Ein leeres &lt;code&gt;allow&lt;/code&gt; bedeutet „jeder, der sich authentifiziert&amp;quot;. Was also darüber entscheidet, ob
+eine Freigabe offen ist, ist das, was &lt;strong&gt;geschrieben&lt;/strong&gt; wurde, nicht das, wozu es jetzt aufgelöst wird: Eine
+für eine Gruppe geschriebene Freigabe bleibt geschlossen, wenn diese Gruppe sich leert. Eine solche Freigabe wird
+über SMB gar nicht erst angeboten, wo ein leeres &lt;code&gt;AllowUsers&lt;/code&gt; als
+jeder gelesen würde.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="watching-it"&gt;Es beobachten&lt;span class="hx:absolute hx:-mt-20" id="watching-it"&gt;&lt;/span&gt;
+&lt;a href="#watching-it" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;fileshare_directory_reloads_total{result}&lt;/code&gt; zählt Neuladevorgänge, die nichts gefunden haben
+(&lt;code&gt;unchanged&lt;/code&gt;), an Ort und Stelle hinzugefügt haben (&lt;code&gt;added&lt;/code&gt;), eine Generation gestartet haben (&lt;code&gt;swapped&lt;/code&gt;) oder
+das Verzeichnis nicht lesen konnten (&lt;code&gt;failed&lt;/code&gt;); &lt;code&gt;fileshare_directory_people&lt;/code&gt; ist die Anzahl
+der Personen beim letzten Lesen. Siehe &lt;a href="https://go-fileshare.github.io/docs/0.26/de/administration/health/"&gt;Health und Metriken&lt;/a&gt;.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Was ein Neuladen nicht erreicht&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Personen, für die der Identitätsanbieter über ein Token oder ein Zertifikat bürgt,
+stehen nicht im Verzeichnis, also betrifft sie kein Neuladen. &lt;strong&gt;Sie&lt;/strong&gt; zurückzunehmen
+ist die Aufgabe von &lt;a href="https://go-fileshare.github.io/docs/0.26/de/security/"&gt;Sperrlisten und Shared Signals&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;</description></item></channel></rss>

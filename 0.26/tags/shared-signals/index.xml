@@ -1,0 +1,182 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Shared Signals</title><link>https://go-fileshare.github.io/docs/0.26/tags/shared-signals/</link><description>Recent content in Shared Signals on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>en</language><atom:link href="https://go-fileshare.github.io/docs/0.26/tags/shared-signals/index.xml" rel="self" type="application/rss+xml"/><item><title>Revoking what no list covers: shared signals</title><link>https://go-fileshare.github.io/docs/0.26/security/shared-signals/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.26/security/shared-signals/</guid><description>
+&lt;p&gt;A certificate has a revocation list — the &lt;a href="https://go-fileshare.github.io/docs/0.26/security/revocation-lists/"&gt;KRL&lt;/a&gt;, the
+&lt;a href="https://go-fileshare.github.io/docs/0.26/security/nfs-certificates/#revocation-the-crl"&gt;CRL&lt;/a&gt;. An &lt;strong&gt;access token&lt;/strong&gt; fileshare
+verifies on its own, and an &lt;strong&gt;OpenPubkey certificate&lt;/strong&gt; the person&amp;rsquo;s own key
+signed, do not: they are valid until they expire, whatever happened to the
+person since.&lt;/p&gt;
+&lt;p&gt;Since v0.13.0, the &lt;a href="https://openid.net/specs/openid-sharedsignals-framework-1_0-final.html" target="_blank" rel="noopener"&gt;OpenID Shared Signals Framework&lt;/a&gt;
+closes that, with a &lt;a href="https://openid.net/specs/openid-caep-1_0-final.html" target="_blank" rel="noopener"&gt;CAEP&lt;/a&gt;
+&lt;strong&gt;&lt;code&gt;session-revoked&lt;/code&gt;&lt;/strong&gt; event:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;ssf&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; transmitter&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://bridge.example.org&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # its issuer
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; audience&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://files.example.org&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # what this server is to it
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; client_id&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;fileshare&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # OAuth client credentials,
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; client_secret_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/ssf.secret&amp;#34; # scope &amp;#34;ssf&amp;#34;&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;or&lt;/span&gt; &lt;span class="k"&gt;token_file&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; state_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/var/lib/fileshare/revocations.json&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; max_age&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt; &amp;#34;10m&amp;#34; # default; retain&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;192h&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;go-authn/bridge sends one when a person or an IdP is disabled; fileshare
+&lt;strong&gt;polls&lt;/strong&gt; for it (RFC 8936, the SSF default) and keeps, per person, &lt;strong&gt;when&lt;/strong&gt; it
+happened.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="everything-issued-before-is-refused-on-every-protocol"&gt;Everything issued before is refused, on every protocol&lt;span class="hx:absolute hx:-mt-20" id="everything-issued-before-is-refused-on-every-protocol"&gt;&lt;/span&gt;
+&lt;a href="#everything-issued-before-is-refused-on-every-protocol" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;From that moment, every federated credential &lt;strong&gt;issued before&lt;/strong&gt; it is refused —
+and &lt;strong&gt;the sessions those opened stop being served&lt;/strong&gt;, through the same gates as
+the KRL&amp;rsquo;s. What &amp;ldquo;issued&amp;rdquo; means depends on what carried it:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;protocol&lt;/th&gt;
+&lt;th&gt;credential&lt;/th&gt;
+&lt;th&gt;its issue time&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;WebDAV&lt;/td&gt;
+&lt;td&gt;an access token&lt;/td&gt;
+&lt;td&gt;its &lt;code&gt;iat&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;SFTP&lt;/td&gt;
+&lt;td&gt;a certificate the provider&amp;rsquo;s SSH CA signed&lt;/td&gt;
+&lt;td&gt;its validity start (&lt;code&gt;ValidAfter&lt;/code&gt;)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;SFTP&lt;/td&gt;
+&lt;td&gt;an OpenPubkey (opkssh) certificate&lt;/td&gt;
+&lt;td&gt;the ID token&amp;rsquo;s &lt;code&gt;iat&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;NFS&lt;/td&gt;
+&lt;td&gt;a client certificate (&lt;a href="https://go-fileshare.github.io/docs/0.26/security/nfs-certificates/"&gt;identity = &amp;ldquo;certificate&amp;rdquo;&lt;/a&gt;)&lt;/td&gt;
+&lt;td&gt;its &lt;code&gt;NotBefore&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;What the provider issues &lt;strong&gt;after&lt;/strong&gt; is theirs: a person re-enabled is not locked
+out.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;The same second counts as before&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;CAEP&amp;rsquo;s &lt;code&gt;event_timestamp&lt;/code&gt; and a token&amp;rsquo;s &lt;code&gt;iat&lt;/code&gt; are whole seconds, and a
+credential issued &lt;strong&gt;at or before&lt;/strong&gt; the revocation is refused — so one issued
+in the same second as a revocation is refused too, and a person re-enabled
+right after being disabled gets working credentials from the next second on.
+That is the conservative side, on purpose. An issue time that is not known
+is not &amp;ldquo;long ago&amp;rdquo;: it is refused once there is any revocation for that
+person.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="who-an-event-is-about"&gt;Who an event is about&lt;span class="hx:absolute hx:-mt-20" id="who-an-event-is-about"&gt;&lt;/span&gt;
+&lt;a href="#who-an-event-is-about" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;The subject is RFC 9493&amp;rsquo;s &lt;strong&gt;&lt;code&gt;account&lt;/code&gt;&lt;/strong&gt; (&lt;code&gt;acct:user@domain&lt;/code&gt;, the name the shares
+use), &lt;strong&gt;&lt;code&gt;iss_sub&lt;/code&gt;&lt;/strong&gt;, &lt;strong&gt;&lt;code&gt;email&lt;/code&gt;&lt;/strong&gt;, or &lt;strong&gt;&lt;code&gt;aliases&lt;/code&gt;&lt;/strong&gt; of them.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;An IdP disabled whole&lt;/strong&gt; arrives as a CAEP &lt;em&gt;tenant&lt;/em&gt; subject with the IdP&amp;rsquo;s
+scopes in the event: everyone whose name is &lt;code&gt;@&lt;/code&gt; one of them — compared whole,
+&lt;code&gt;evil-univ-a.fr&lt;/code&gt; is not &lt;code&gt;univ-a.fr&lt;/code&gt; — and whose credential was issued before,
+is refused, &lt;strong&gt;including people the provider no longer remembers&lt;/strong&gt;.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="how-the-receiver-authenticates"&gt;How the receiver authenticates&lt;span class="hx:absolute hx:-mt-20" id="how-the-receiver-authenticates"&gt;&lt;/span&gt;
+&lt;a href="#how-the-receiver-authenticates" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;With &lt;strong&gt;OAuth client credentials&lt;/strong&gt; (RFC 6749 §4.4, scope &lt;code&gt;ssf&lt;/code&gt;): &lt;code&gt;client_id&lt;/code&gt; and
+&lt;code&gt;client_secret_file&lt;/code&gt;, the token fetched from the transmitter&amp;rsquo;s own token
+endpoint — found in its OpenID configuration, or &lt;code&gt;token_url&lt;/code&gt; — and renewed
+before it expires. &lt;code&gt;token_file&lt;/code&gt; is there instead for transmitters that hand out
+a long-lived bearer token. One or the other: both, or neither, is refused.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;field&lt;/th&gt;
+&lt;th&gt;default&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;transmitter&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;its issuer, &lt;strong&gt;HTTPS only&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;audience&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;what this server is to the transmitter; required, or a SET addressed to another receiver would be believed here&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;client_id&lt;/code&gt;, &lt;code&gt;client_secret_file&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;OAuth client credentials, together&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;token_url&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;discovered&lt;/td&gt;
+&lt;td&gt;HTTPS only, or the secret crosses the network in the clear&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;token_file&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;a long-lived token instead of client credentials&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;state_file&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;required&lt;/strong&gt;: where revocations are written down&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ca_file&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;the system&amp;rsquo;s&lt;/td&gt;
+&lt;td&gt;pins the transmitter&amp;rsquo;s authorities&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;max_age&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;10m&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;how long without hearing from the transmitter before federated credentials are refused; at least a minute&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;retain&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;192h&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;how long a revocation is kept; at least 169h (since v0.14.0)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;A revocation is &lt;strong&gt;written down before it is acknowledged&lt;/strong&gt;, so an acknowledged
+one survives a restart; and it is kept for &lt;code&gt;retain&lt;/code&gt; — longer than any credential
+it could void (192h is past the longest-lived credential the provider issues, a
+168h SSH certificate).&lt;/p&gt;
+&lt;p&gt;An &lt;code&gt;ssf&lt;/code&gt; block with nothing federated to revoke — no &lt;code&gt;oidc&lt;/code&gt; block, no NFS
+&lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt; — is refused.&lt;/p&gt;
+&lt;p&gt;The transport is &lt;a href="https://github.com/hstern/go-ssf" target="_blank" rel="noopener"&gt;github.com/hstern/go-ssf&lt;/a&gt;:
+discovery, the RFC 8936 poller, the SET&amp;rsquo;s JWS layer. What an event &lt;strong&gt;means&lt;/strong&gt; is
+fileshare&amp;rsquo;s.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="it-fails-closed"&gt;It fails closed&lt;span class="hx:absolute hx:-mt-20" id="it-fails-closed"&gt;&lt;/span&gt;
+&lt;a href="#it-fails-closed" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;While the transmitter is silent, federated credentials are refused&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Like the KRL: while the transmitter has not answered a poll within
+&lt;code&gt;max_age&lt;/code&gt;, &lt;strong&gt;every federated credential&lt;/strong&gt; is refused, because &amp;ldquo;no
+revocation arrived&amp;rdquo; and &amp;ldquo;none could&amp;rdquo; look the same.
+&lt;code&gt;fileshare_ssf_last_heard_seconds&lt;/code&gt; is the metric to alert on;
+&lt;code&gt;fileshare_ssf_revoked_subjects&lt;/code&gt; is how many revocations are kept. See
+&lt;a href="https://go-fileshare.github.io/docs/0.26/administration/health/#what-to-alert-on"&gt;health and metrics&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="checked-end-to-end"&gt;Checked end to end&lt;span class="hx:absolute hx:-mt-20" id="checked-end-to-end"&gt;&lt;/span&gt;
+&lt;a href="#checked-end-to-end" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;go-authn/bridge&amp;rsquo;s interop lane
+(&lt;a href="https://github.com/go-authn/bridge/pull/12" target="_blank" rel="noopener"&gt;#12&lt;/a&gt;,
+&lt;a href="https://github.com/go-authn/bridge/pull/17" target="_blank" rel="noopener"&gt;#17&lt;/a&gt;) judges fileshare v0.13.0
+against the real bridge: the KRL, the CRL over NFS, WebDAV tokens revoked over
+SSF, an IdP disabled by scope, and opkssh over SSF — the case no revocation list
+reaches.&lt;/p&gt;</description></item></channel></rss>

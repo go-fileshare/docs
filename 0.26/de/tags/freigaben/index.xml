@@ -1,0 +1,238 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Freigaben</title><link>https://go-fileshare.github.io/docs/0.26/de/tags/freigaben/</link><description>Recent content in Freigaben on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>de</language><atom:link href="https://go-fileshare.github.io/docs/0.26/de/tags/freigaben/index.xml" rel="self" type="application/rss+xml"/><item><title>Freigaben: Images, Geräte, Verzeichnisse</title><link>https://go-fileshare.github.io/docs/0.26/de/configuration/shares/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.26/de/configuration/shares/</guid><description>
+&lt;p&gt;Eine Freigabe stellt eines von drei Dingen bereit: ein &lt;strong&gt;Disk-Image&lt;/strong&gt;, einen &lt;strong&gt;Geräteknoten&lt;/strong&gt; oder ein
+&lt;strong&gt;Verzeichnis des Hosts&lt;/strong&gt;. Ein Image und ein Gerät tragen ein Dateisystem, das dieses
+Programm selbst liest; ein Verzeichnis ist das des Hosts.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="an-image-and-the-filesystem-inside-it"&gt;Ein Image und das Dateisystem darin&lt;span class="hx:absolute hx:-mt-20" id="an-image-and-the-filesystem-inside-it"&gt;&lt;/span&gt;
+&lt;a href="#an-image-and-the-filesystem-inside-it" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Das Dateisystem in einem Image wird &lt;strong&gt;ermittelt statt deklariert&lt;/strong&gt;.
+&lt;a href="https://github.com/go-filesystems/detect" target="_blank" rel="noopener"&gt;&lt;code&gt;go-filesystems/detect&lt;/code&gt;&lt;/a&gt; liest die
+Magic-Bytes und gibt den Treiber zurück, dem sie gehören: &lt;strong&gt;fat32, exfat, ext4, ntfs, ufs,
+iso9660, squashfs oder hfsplus&lt;/strong&gt; – jeder Treiber derselben Form,
+&lt;code&gt;OpenReader(io.ReaderAt, int64)&lt;/code&gt;, ein Dateisystem bei Offset null.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="the-four-that-cannot-be-sniffed"&gt;Die vier, die sich nicht erschnüffeln lassen&lt;span class="hx:absolute hx:-mt-20" id="the-four-that-cannot-be-sniffed"&gt;&lt;/span&gt;
+&lt;a href="#the-four-that-cannot-be-sniffed" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;apfs, btrfs, xfs und zfs&lt;/strong&gt; öffnen jeweils ein &lt;em&gt;Disk&lt;/em&gt;-Image und wählen eine &lt;strong&gt;Partition&lt;/strong&gt;,
+also gibt es bei Offset null keine Magic-Bytes zu finden. Eine Freigabe sagt, welches:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;photos&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/disk.img&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; filesystem&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;xfs&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; partition&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;2&lt;/span&gt;&lt;span class="c1"&gt; # or leave it out: the driver takes the first data partition
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Code kopieren"
+aria-label="Code kopieren"
+data-copied-label="Kopiert!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="a-partition-for-any-filesystem"&gt;Eine Partition, für jedes Dateisystem&lt;span class="hx:absolute hx:-mt-20" id="a-partition-for-any-filesystem"&gt;&lt;/span&gt;
+&lt;a href="#a-partition-for-any-filesystem" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Ein Disk-Image mit FAT32, ext4 oder exFAT hat ebenso oft eine Partitionstabelle davor
+wie eines mit XFS – und die Erkennung liest Offset null, wo ein
+partitioniertes Image die &lt;em&gt;Tabelle&lt;/em&gt; hat. Also wird zuerst die Partition gewählt, und der
+Treiber erhält eine Sicht darauf:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;photos&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/disk.img&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; partition_label&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;photos&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # what lsblk calls PARTLABEL
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Code kopieren"
+aria-label="Code kopieren"
+data-copied-label="Kopiert!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Drei Arten, eine zu benennen, und &lt;strong&gt;nur eine darf angegeben werden&lt;/strong&gt; – zwei, die sich widersprechen, würden
+diejenige bereitstellen, die der Code zuerst versucht hat:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;partition = 2&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;ab 1 gezählt, so wie Partitionierungswerkzeuge sie ausgeben&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;partition_label = &amp;quot;photos&amp;quot;&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;der GPT-Partitionsname&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;partition_uuid = &amp;quot;…&amp;quot;&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;die eindeutige GPT-GUID – Linux&amp;rsquo; &lt;code&gt;PARTUUID&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Ein Index verschiebt sich&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Eine neu partitionierte Platte, ein Werkzeug, das Einträge in anderer Reihenfolge schreibt, ein Image,
+das mit einer Partition weniger wiederhergestellt wurde – und &lt;code&gt;partition = 2&lt;/code&gt; benennt etwas
+anderes, &lt;strong&gt;stillschweigend&lt;/strong&gt;, weil dort immer noch ein Dateisystem gefunden wird. Ein Label oder eine
+UUID benennt die Partition selbst; deshalb verwenden fstabs seit Jahren keine Indizes
+mehr. Der Index ist für MBR-Images da, die weder das eine noch das andere haben.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Eine Freigabe, die eine Partition gewählt hat, ist &lt;strong&gt;schreibgeschützt&lt;/strong&gt; und sagt das beim Start: Die
+Offsets des Treibers sind die der Partition, während die Datei darunter die ganze
+Platte ist, sodass ein Schreibzugriff bei diesem Offset vom Anfang des &lt;em&gt;Images&lt;/em&gt; aus landen würde – nicht selten
+auf der Partitionstabelle.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="naming-a-filesystem-turns-detection-off"&gt;Ein Dateisystem zu benennen schaltet die Erkennung ab&lt;span class="hx:absolute hx:-mt-20" id="naming-a-filesystem-turns-detection-off"&gt;&lt;/span&gt;
+&lt;a href="#naming-a-filesystem-turns-detection-off" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Das ist der Zweck, und das ist das Risiko&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Das Image wird als &lt;em&gt;genau das&lt;/em&gt; geöffnet oder abgelehnt. Ein FAT32-Image, dem gesagt wird, es sei XFS,
+wird nicht zu einer XFS-Freigabe; es startet nicht und sagt, als was es
+geöffnet werden sollte.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;filesystem&lt;/code&gt; wird auch für die erkennbaren akzeptiert, und dann werden beide
+verglichen: Eine Freigabe, die &lt;code&gt;ext4&lt;/code&gt; über einem FAT32-Image angibt, wird mit &lt;em&gt;the
+share says ext4 and the image holds fat32&lt;/em&gt; abgelehnt. So lehnt eine Installation eine
+Fehlerkennung ab, statt sie später zu entdecken.
+&lt;a href="https://go-fileshare.github.io/docs/0.26/de/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt; markiert einen benannten Treiber mit einem Sternchen, weil diese Zeile nicht
+erkannt wurde – sie wurde festgelegt.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="a-device-not-only-an-image"&gt;Ein Gerät, nicht nur ein Image&lt;span class="hx:absolute hx:-mt-20" id="a-device-not-only-an-image"&gt;&lt;/span&gt;
+&lt;a href="#a-device-not-only-an-image" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;photos&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/dev/sda&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # a device node, not a file
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Code kopieren"
+aria-label="Code kopieren"
+data-copied-label="Kopiert!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;Kein Privileg ist im Spiel.&lt;/strong&gt; Hier wird nichts eingehängt – die
+&lt;a href="https://github.com/go-filesystems" target="_blank" rel="noopener"&gt;&lt;code&gt;go-filesystems&lt;/code&gt;&lt;/a&gt;-Treiber lesen ext4, xfs und
+die übrigen im Userspace –, also gibt es kein &lt;code&gt;mount(2)&lt;/code&gt; und daher kein
+&lt;code&gt;CAP_SYS_ADMIN&lt;/code&gt;. Ein Gerät zu öffnen ist ein gewöhnliches &lt;code&gt;open(2)&lt;/code&gt;, geregelt durch die
+Berechtigungen des Knotens:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;Eigentümer&lt;/th&gt;
+&lt;th&gt;Modus&lt;/th&gt;
+&lt;th&gt;genügt&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Linux &lt;code&gt;/dev/sda&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;root:disk&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;0660&lt;/td&gt;
+&lt;td&gt;Mitgliedschaft in &lt;code&gt;disk&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;macOS &lt;code&gt;/dev/disk0&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;root:operator&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;0640&lt;/td&gt;
+&lt;td&gt;Mitgliedschaft in &lt;code&gt;operator&lt;/code&gt;, plus Festplattenvollzugriff&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Eine Ablehnung nennt die Gruppe, statt &lt;code&gt;permission denied&lt;/code&gt; – die Antwort ist
+nie &lt;code&gt;sudo&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;⛔ &lt;strong&gt;Eine Gerätefreigabe ist schreibgeschützt&lt;/strong&gt;, aus demselben Grund wie eine Freigabe, die eine
+Partition gewählt hat: In eine laufende Platte zu schreiben ist keine Entscheidung, die man für Sie trifft.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Das Gerät wird exklusiv geöffnet, und dabei geht es um Korrektheit, nicht um Vorsicht&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Hat der Kernel ein Dateisystem davon eingehängt, hält der Page Cache des Dateisystems
+neuere Metadaten als das Gerät – sodass ein roher Leser einen
+Verzeichnisblock von vor einer Aktualisierung neben einem Inode-Block von danach sieht,
+einen Zustand, der zu keinem Zeitpunkt auf der Platte existiert hat. &lt;code&gt;O_EXCL&lt;/code&gt; auf einem Block-Device
+ist das eigene Primitiv des Kernels für „niemand sonst, auch kein Mount&amp;quot;;
+es ist das, was &lt;code&gt;mkfs&lt;/code&gt; und &lt;code&gt;fsck&lt;/code&gt; verwenden. Ein belegtes Gerät wird abgelehnt, mit Namen und
+Grund.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Zwei Dinge wurden gemessen statt angenommen:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Stat().Size()&lt;/code&gt; ist für ein Gerät &lt;strong&gt;0&lt;/strong&gt;, also wird die Länge beim Gerät
+selbst erfragt. Ein Seek ans Ende antwortet unter Linux und liefert unter macOS &lt;strong&gt;0 ohne Fehler&lt;/strong&gt;,
+weshalb Darwin stattdessen &lt;code&gt;DKIOCGETBLOCKCOUNT&lt;/code&gt; verwendet.&lt;/li&gt;
+&lt;li&gt;Ein &lt;strong&gt;roher&lt;/strong&gt; Knoten (&lt;code&gt;/dev/rdiskN&lt;/code&gt;, oder &lt;code&gt;O_DIRECT&lt;/code&gt; unter Linux) lehnt einen nicht ausgerichteten
+Lesezugriff ab, und ein Zwei-Byte-Feld bei Offset 11 zu lesen ist genau das, was das Parsen eines FAT-BPB
+&lt;em&gt;ist&lt;/em&gt;. Lesezugriffe auf ein Gerät werden auf ganze Blöcke aufgerundet; ohne das
+meldete &lt;code&gt;/dev/rdisk4&lt;/code&gt; &lt;code&gt;unknown filesystem&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 data-hextra-search-id="a-directory-not-only-an-image"&gt;Ein Verzeichnis, nicht nur ein Image&lt;span class="hx:absolute hx:-mt-20" id="a-directory-not-only-an-image"&gt;&lt;/span&gt;
+&lt;a href="#a-directory-not-only-an-image" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Seit v0.8.0 kann eine Freigabe statt eines Images ein Verzeichnis des Hosts bereitstellen – etwa das Volume
+eines Containers:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;photos&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; directory&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/data/photos&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; allow&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;@family&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Code kopieren"
+aria-label="Code kopieren"
+data-copied-label="Kopiert!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Es ist &lt;a href="https://github.com/go-filesystems/osfs" target="_blank" rel="noopener"&gt;go-filesystems/osfs&lt;/a&gt;, das
+den Baum über ein &lt;strong&gt;&lt;code&gt;os.Root&lt;/code&gt;&lt;/strong&gt; erreicht: &lt;code&gt;..&lt;/code&gt;, das hinausklettert, ein absoluter
+Pfad und ein symbolischer Link, der hinausführt, werden von der kernelgestützten Wurzel abgelehnt,
+nicht durch einen String-Vergleich. Ein Client darf einen Link auf &lt;code&gt;/etc&lt;/code&gt; &lt;em&gt;anlegen&lt;/em&gt;; nichts wird
+ihm folgen. Ein im Baum platziertes FIFO wird abgelehnt, statt den Server
+hängen zu lassen.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Eine Freigabe darf keine andere enthalten (seit v0.17.0)&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Eine Verzeichnisfreigabe, deren Baum das Image oder Verzeichnis einer anderen Freigabe enthält, wird
+&lt;strong&gt;beim Start abgelehnt&lt;/strong&gt;, und auch von der Admin-API: Wer die äußere
+Freigabe nutzen darf, würde die innere lesen und schreiben, ohne dass es ihm erlaubt ist –
+anonymes NFS eingeschlossen. Ebenso zwei Freigaben auf derselben Quelle, außer zwei
+verschiedenen Partitionen eines Disk-Images.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Nicht hinter der Image-Sperre&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Ein Image-Treiber besitzt eine Datei und sichert nichts über zwei gleichzeitige Aufrufe zu,
+weshalb &lt;a href="https://go-fileshare.github.io/docs/0.26/de/operations/locking/"&gt;jedes Image in eine Sperre gehüllt wird&lt;/a&gt;.
+Ein Baum des Hosts gehört dem Kernel, der serialisiert, was pro Aufruf serialisiert werden muss,
+und nicht mehr; ein Mutex vor jeder Datei jedes Clients wäre
+das Langsamste, was ein Dateiserver tun kann.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;⛔ Eine Freigabe hat ein &lt;code&gt;image&lt;/code&gt; &lt;strong&gt;oder&lt;/strong&gt; ein &lt;code&gt;directory&lt;/code&gt;, nie beides und nie keines von beiden.
+&lt;code&gt;filesystem&lt;/code&gt; und &lt;code&gt;partition&lt;/code&gt; sind für ein Image: Eine Verzeichnisfreigabe, die eines davon nennt, wird
+abgelehnt, weil die Angabe bedeutet, dass die Freigabe als Image gedacht war.
+&lt;code&gt;read_only = true&lt;/code&gt; funktioniert bei einem Verzeichnis wie bei einem Image; eine Freigabe, die das sagt
+und zugleich &lt;code&gt;writers&lt;/code&gt; auflistet, wird abgelehnt, weil &lt;code&gt;read_only&lt;/code&gt; gewinnen würde.&lt;/p&gt;
+&lt;p&gt;Die Kapazität, die einem Client mitgeteilt wird, ist die des Dateisystems, auf dem der Baum liegt; eine
+Plattform, die das nicht angeben kann, lässt sie bei null, was die Protokolle als
+„unbekannt&amp;quot; lesen statt als „voll&amp;quot;.&lt;/p&gt;</description></item></channel></rss>

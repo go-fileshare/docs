@@ -1,0 +1,47 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Smb</title><link>https://go-fileshare.github.io/docs/0.26/de/tags/smb/</link><description>Recent content in Smb on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>de</language><atom:link href="https://go-fileshare.github.io/docs/0.26/de/tags/smb/index.xml" rel="self" type="application/rss+xml"/><item><title>SMB – NTLMv2</title><link>https://go-fileshare.github.io/docs/0.26/de/protocols/smb/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.26/de/protocols/smb/</guid><description>
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;serve &amp;#34;smb&amp;#34; { addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:445&amp;#34;&lt;/span&gt; }&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Code kopieren"
+aria-label="Code kopieren"
+data-copied-label="Kopiert!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Das Passwort &lt;strong&gt;geht nie über die Leitung&lt;/strong&gt;: Ein Client sendet einen daraus berechneten
+Nachweis. Die Freigabe teilt einer lesenden Person mit, dass sie nur liest – in der Zugriffsmaske, bevor sie
+es versucht, statt durch einen später fehlschlagenden Schreibvorgang.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-a-directory-must-hold"&gt;Was ein Verzeichnis enthalten muss&lt;span class="hx:absolute hx:-mt-20" id="what-a-directory-must-hold"&gt;&lt;/span&gt;
+&lt;a href="#what-a-directory-must-hold" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;NTLMv2 braucht das Passwort selbst oder seinen MD4-Hash (&lt;code&gt;sambaNTPassword&lt;/code&gt;, eine &lt;code&gt;nt_hash&lt;/code&gt;-Spalte).
+&lt;strong&gt;Nichts anderes genügt.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Ein Verzeichnis, das Passwörter nur &lt;em&gt;prüft&lt;/em&gt; – ein LDAP-Bind, eine bcrypt-Spalte –,
+kann SMB nicht beantworten, wie gut die Prüfung auch sein mag, weil der Server denselben
+Nachweis berechnen muss wie der Client. Das ist eine Eigenschaft des Protokolls, keine
+Einschränkung dieses Programms.&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://go-fileshare.github.io/docs/0.26/de/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt; gibt für eine solche Person ein &lt;code&gt;-&lt;/code&gt; in der SMB-Spalte aus,
+zum Zeitpunkt der Konfiguration, statt sie es erst beim Einhängen
+entdecken zu lassen.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="a-privileged-port-without-a-privileged-server"&gt;Ein privilegierter Port ohne privilegierten Server&lt;span class="hx:absolute hx:-mt-20" id="a-privileged-port-without-a-privileged-server"&gt;&lt;/span&gt;
+&lt;a href="#a-privileged-port-without-a-privileged-server" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Unter &lt;a href="https://go-fileshare.github.io/docs/0.26/de/operations/isolation/"&gt;&lt;code&gt;--isolate&lt;/code&gt;&lt;/a&gt; bindet unter Unix der Elternprozess Port 445
+und übergibt den Listener an den Kindprozess, sodass der Prozess, der tatsächlich SMB spricht,
+das Privileg nie braucht. Windows hat keine &lt;code&gt;ExtraFiles&lt;/code&gt;, daher bindet dort der Kindprozess
+die Adresse selbst; die Isolierung ist dieselbe, die Hälfte mit dem privilegierten Port
+nicht.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="verified-against-a-client-this-project-did-not-write"&gt;Geprüft mit einem Client, den dieses Projekt nicht geschrieben hat&lt;span class="hx:absolute hx:-mt-20" id="verified-against-a-client-this-project-did-not-write"&gt;&lt;/span&gt;
+&lt;a href="#verified-against-a-client-this-project-did-not-write" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;a href="https://github.com/cloudsoda/go-smb2" target="_blank" rel="noopener"&gt;go-smb2&lt;/a&gt; führt in der CI zwanzig gleichzeitige
+Lesevorgänge über SMB aus, während zwanzig über WebDAV laufen, unter &lt;code&gt;-race&lt;/code&gt;. macOS
+hängt eine Freigabe über SMB ein, während &lt;code&gt;curl&lt;/code&gt; über WebDAV in dasselbe Image schreibt, und
+liest zurück, was WebDAV geschrieben hat.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="when-the-people-change"&gt;Wenn sich die Personen ändern&lt;span class="hx:absolute hx:-mt-20" id="when-the-people-change"&gt;&lt;/span&gt;
+&lt;a href="#when-the-people-change" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;SMB legt fest, wer sich mit einer Freigabe verbinden darf, &lt;strong&gt;wenn die Freigabe hinzugefügt wird&lt;/strong&gt;, und prüft das
+einmal pro Tree Connect. Wer also neu ist und von einem &lt;a href="https://go-fileshare.github.io/docs/0.26/de/administration/reload/"&gt;Neuladen des Verzeichnisses&lt;/a&gt;
+gefunden wird, wird an Ort und Stelle hinzugefügt, einschließlich des laufenden SMB-Servers, ohne dass eine Verbindung
+angetastet wird; alles hingegen, was entzogen wird – eine Person, Zugangsdaten, die expandierten Listen einer Freigabe –,
+ist eine neue Generation, und die offenen SMB-Verbindungen werden geschlossen, sodass ein
+Widerruf die bereits offenen Sitzungen erreicht. Eine Freigabe, deren &lt;code&gt;allow&lt;/code&gt;-Gruppe sich
+geleert hat, wird &lt;strong&gt;überhaupt nicht über SMB angeboten&lt;/strong&gt;: Ihr leeres &lt;code&gt;AllowUsers&lt;/code&gt; würde als
+„alle“ gelesen.&lt;/p&gt;</description></item></channel></rss>
