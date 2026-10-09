@@ -116,7 +116,7 @@ entscheiden, wer hineinkommt.
 
 ## Ein einfaches `sshd` neben fileshare {#a-plain-sshd-next-to-fileshare}
 
-Dieselbe Prüfung gibt es auch ohne fileshare: `revokd` aus go-authn/revocation
+Dieselbe Prüfung gibt es auch ohne fileshare: `authn-revokd` aus go-authn/revocation
 ruft die Listen ab, behält nur die, die die Prüfung bestehen, hält ihre Reihenfolge auf
 der Festplatte fest, schreibt `RevokedKeys` für `sshd` und schreibt, wenn eine Liste
 verfällt, eine, die die CA selbst widerruft, sodass auch `sshd` geschlossen fehlschlägt.

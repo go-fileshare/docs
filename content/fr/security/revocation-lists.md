@@ -114,7 +114,7 @@ déciderait de qui entre.
 
 ## Un `sshd` ordinaire à côté de fileshare {#a-plain-sshd-next-to-fileshare}
 
-La même vérification est disponible sans fileshare : `revokd`, de go-authn/revocation,
+La même vérification est disponible sans fileshare : `authn-revokd`, de go-authn/revocation,
 récupère les listes, ne conserve que celles qui se vérifient, garde leur ordre sur
 disque, écrit `RevokedKeys` pour `sshd` et, quand une liste expire, en écrit une qui
 révoque l'AC elle-même, si bien que `sshd` refuse lui aussi en cas de doute.

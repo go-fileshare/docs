@@ -212,7 +212,7 @@ oidc {
 }
 ```
 
-- **Un certificado firmado por la CA SSH del proveedor**: `bridge ssh-cert` escribe
+- **Un certificado firmado por la CA SSH del proveedor**: `authn-bridge ssh-cert` escribe
   uno tras un inicio de sesión a través de la federación. Su principal es la
   persona, su extensión `groups@go-authn.org` sus grupos, de modo que se aplican las
   [reglas `oidc:groups:`]({{< relref "/configuration/identity.md#people-the-identity-provider-names-not-this-file" >}}).

@@ -115,7 +115,7 @@ decide who gets in.
 ## A plain `sshd` next to fileshare
 
 The same verification is available without fileshare: go-authn/revocation's
-`revokd` fetches the lists, keeps only those that verify, keeps their order on
+`authn-revokd` fetches the lists, keeps only those that verify, keeps their order on
 disk, writes `RevokedKeys` for `sshd`, and, when a list lapses, writes one that
 revokes the CA itself, so `sshd` fails closed too.
 
