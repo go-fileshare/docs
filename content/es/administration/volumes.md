@@ -34,7 +34,7 @@ Un binario en lugar de dos demonios: una versión que desplegar, una definición
 protocolo. El almacenamiento en sí lo gestiona [go-fsctl](https://go-fsctl.github.io/)
 (Go puro, sin los comandos `zfs` ni `btrfs`). El diseño, y lo que cambió durante su
 construcción, están en el
-[`docs/volumes.md`](https://github.com/go-fileshare/fileshare/blob/v0.26.0/docs/volumes.md)
+[`docs/volumes.md`](https://github.com/go-fileshare/fileshare/blob/v0.28.0/docs/volumes.md)
 del repositorio de fileshare.
 
 ## Los dos procesos, configurados {#both-processes-configured}
@@ -176,7 +176,7 @@ define —cierra la conexión—, así que `fileshare serve` y
 ## Las llamadas de volúmenes de la API de administración {#the-admin-apis-volume-calls}
 
 `fileshare serve` las transmite al aprovisionador
-([`admin.proto`](https://github.com/go-fileshare/fileshare/blob/v0.26.0/proto/fileshare/admin/v1/admin.proto)):
+([`admin.proto`](https://github.com/go-fileshare/fileshare/blob/v0.28.0/proto/fileshare/admin/v1/admin.proto)):
 
 | | |
 |---|---|

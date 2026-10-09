@@ -59,14 +59,41 @@ tls {
 |---|---|---|
 | tls-alpn-01 (RFC 8737) | Port **443** | auf 443 muss ein TLS-Protokoll bereitgestellt werden |
 | http-01 (RFC 8555 §8.3) | Port **80** | `http_challenge = "0.0.0.0:80"` beantwortet sie – oder die Adresse, an die ein Port 80 weitergeleitet wird |
-| keine | nichts | ein CA-Konto mit **vorab validierter** Domain verlangt keine Challenge: die Enterprise-EAB-Konten von HARICA für GÉANT TCS – daher erhält auch ein Server, **den von außen niemand erreichen kann**, sein Zertifikat |
+| keine | nichts | ein CA-Konto mit **vorab validierter** Domain verlangt keine Challenge: ein Enterprise-**Admin**-Konto von HARICA für GÉANT TCS (OV-Zertifikate) – daher erhält auch ein Server, **den von außen niemand erreichen kann**, sein Zertifikat |
 
 Die letzte Zeile ist die entscheidende für einen Dateiserver in einem Campusnetz:
 Mit einem GÉANT-TCS-Konto, dessen Domain die Einrichtung bei HARICA bereits
 validiert hat, muss überhaupt kein Port zum Internet geöffnet werden.
 
-Ein Zertifikat wird bei der **ersten TLS-Verbindung angefordert, die den Host
-benennt** (SNI); ein Client, der sich per IP-Adresse verbindet, erhält keines.
+#### HARICA (GÉANT TCS): welches Konto, und CAA {#harica-gant-tcs-which-account-and-caa}
+
+HARICAs ACME-Konten gibt es in zwei Arten, und nur eine kommt ohne Challenge
+aus:
+
+- ein **Enterprise-Admin**-Konto stellt **OV**-Zertifikate für Domains aus, die
+  die Einrichtung validiert hat: **keine Challenge** – das ist das Konto für
+  einen Server, den von außen niemand erreichen kann;
+- ein **Enterprise-User**-Konto stellt **DV**-Zertifikate aus, und DV heißt,
+  dass die CA den Namen bei jeder Bestellung prüft, mit tls-alpn-01 oder
+  http-01 wie oben.
+
+In beiden Fällen muss der **CAA**-Eintrag der Domain, falls es einen gibt,
+`harica.gr` erlauben, sonst wird die Bestellung abgelehnt.
+
+#### Wann das Zertifikat angefordert wird
+
+**Beim Start** (seit v0.27.0): Sobald die Listener laufen, wird das Zertifikat
+jeder konfigurierten Domain geholt oder aus dem Cache-Verzeichnis gelesen. Ein
+Fehlschlag hält den Server nicht an – er bedient weiter und versucht es nach
+1 Minute erneut, verdoppelt bis 1 Stunde –, und die erste TLS-Verbindung, die
+den Host benennt, fragt ohnehin erneut. Erneuert wird 30 Tage vor Ablauf, oder
+im letzten Drittel der Laufzeit, wenn das früher ist.
+
+**Ein Client, der kein SNI sendet** – einer, der sich per IP-Adresse verbindet –
+erhält das Zertifikat der **ersten** Domain (seit v0.27.0); vorher scheiterte
+der Handshake. Der Client prüft dieses Zertifikat weiterhin gegen die Adresse,
+die er gewählt hat: Es hilft einem Client, dem gesagt wurde, diesem Namen zu
+vertrauen, und täuscht niemanden.
 
 {{< callout type="info" >}}
 **ALPN**

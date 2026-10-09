@@ -59,14 +59,39 @@ tls {
 |---|---|---|
 | tls-alpn-01 (RFC 8737) | port **443** | a TLS protocol must be served on 443 |
 | http-01 (RFC 8555 §8.3) | port **80** | `http_challenge = "0.0.0.0:80"` answers it — or the address a port 80 is forwarded to |
-| none | nothing | a CA account with the domain **pre-validated** asks for no challenge: HARICA's enterprise EAB accounts for GÉANT TCS — so a server **nobody outside can reach** still gets its certificate |
+| none | nothing | a CA account with the domain **pre-validated** asks for no challenge: an HARICA Enterprise **Admin** account for GÉANT TCS (OV certificates) — so a server **nobody outside can reach** still gets its certificate |
 
 The last row is the one that matters for a file server inside a campus network:
 with a GÉANT TCS account whose domain the institution has already validated at
 HARICA, no port has to be opened to the Internet at all.
 
-A certificate is asked for at the **first TLS connection that names the host**
-(SNI); a client connecting by IP address gets none.
+#### HARICA (GÉANT TCS): which account, and CAA {#harica-gant-tcs-which-account-and-caa}
+
+HARICA's ACME accounts come in two kinds, and only one of them skips the
+challenge:
+
+- an **Enterprise Admin** account issues **OV** certificates for domains the
+  institution has validated: **no challenge** — this is the one for a server
+  nobody outside can reach;
+- an **Enterprise User** account issues **DV** certificates, and DV means the
+  CA checks the name at every order, with tls-alpn-01 or http-01 as above.
+
+Either way the domain's **CAA** record, if there is one, must allow
+`harica.gr`, or the order is refused.
+
+#### When the certificate is asked for
+
+**At start** (since v0.27.0): once the listeners are up, the certificate of
+every configured domain is fetched, or read back from the cache directory. A
+failure does not stop the server — it keeps serving and tries again after
+1 minute, doubling up to 1 hour — and the first TLS connection that names the
+host asks again in any case. It is renewed 30 days before it expires, or at the
+last third of its lifetime when that is shorter.
+
+**A client that sends no SNI** — one connecting by IP address — is given the
+**first** domain's certificate (since v0.27.0); before, the handshake failed.
+The client still checks that certificate against the address it dialled, so it
+helps a client that was told to trust that name, and fools nobody.
 
 {{< callout type="info" >}}
 **ALPN**

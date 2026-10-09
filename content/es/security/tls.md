@@ -59,14 +59,41 @@ tls {
 |---|---|---|
 | tls-alpn-01 (RFC 8737) | el puerto **443** | debe servirse un protocolo TLS en el 443 |
 | http-01 (RFC 8555 §8.3) | el puerto **80** | `http_challenge = "0.0.0.0:80"` lo responde, o la dirección a la que se reenvía un puerto 80 |
-| ninguno | nada | una cuenta de CA con el dominio **prevalidado** no pide ningún desafío: las cuentas EAB empresariales de HARICA para GÉANT TCS; así, un servidor **que nadie de fuera puede alcanzar** obtiene igualmente su certificado |
+| ninguno | nada | una cuenta de CA con el dominio **prevalidado** no pide ningún desafío: una cuenta Enterprise **Admin** de HARICA para GÉANT TCS (certificados OV); así, un servidor **que nadie de fuera puede alcanzar** obtiene igualmente su certificado |
 
 La última fila es la que importa para un servidor de archivos dentro de una red de
 campus: con una cuenta GÉANT TCS cuyo dominio la institución ya ha validado en
 HARICA, no hay que abrir ningún puerto a Internet.
 
-Un certificado se solicita en la **primera conexión TLS que nombra el host** (SNI);
-un cliente que se conecta por dirección IP no obtiene ninguno.
+#### HARICA (GÉANT TCS): qué cuenta, y CAA {#harica-gant-tcs-which-account-and-caa}
+
+Las cuentas ACME de HARICA son de dos clases, y solo una prescinde del
+desafío:
+
+- una cuenta **Enterprise Admin** emite certificados **OV** para los dominios
+  que la institución ha validado: **ningún desafío** — es la que necesita un
+  servidor que nadie de fuera puede alcanzar;
+- una cuenta **Enterprise User** emite certificados **DV**, y DV significa que
+  la CA comprueba el nombre en cada pedido, con tls-alpn-01 o http-01 como
+  arriba.
+
+En ambos casos, el registro **CAA** del dominio, si lo tiene, debe autorizar
+`harica.gr`, o el pedido se rechaza.
+
+#### Cuándo se pide el certificado
+
+**Al arrancar** (desde la v0.27.0): una vez abiertos los puertos, se obtiene el
+certificado de cada dominio configurado, o se relee del directorio de caché. Un
+fallo no detiene el servidor — sigue sirviendo y lo reintenta tras 1 minuto,
+duplicando hasta 1 hora — y la primera conexión TLS que nombra el host lo pide
+de nuevo en cualquier caso. Se renueva 30 días antes de caducar, o en el último
+tercio de su vida cuando eso es antes.
+
+**Un cliente que no envía SNI** — uno que se conecta por dirección IP — recibe
+el certificado del **primer** dominio (desde la v0.27.0); antes, el saludo
+fallaba. El cliente sigue comprobando ese certificado contra la dirección que
+marcó: ayuda a un cliente al que se le dijo que confiara en ese nombre, y no
+engaña a nadie.
 
 {{< callout type="info" >}}
 **ALPN**

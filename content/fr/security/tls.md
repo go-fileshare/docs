@@ -59,14 +59,41 @@ tls {
 |---|---|---|
 | tls-alpn-01 (RFC 8737) | port **443** | un protocole TLS doit être servi sur le 443 |
 | http-01 (RFC 8555 §8.3) | port **80** | `http_challenge = "0.0.0.0:80"` y répond — ou l'adresse vers laquelle un port 80 est redirigé |
-| aucun | rien | un compte d'AC dont le domaine est **prévalidé** ne demande aucun défi : les comptes EAB entreprise de HARICA pour GÉANT TCS — si bien qu'un serveur que **personne à l'extérieur ne peut joindre** obtient tout de même son certificat |
+| aucun | rien | un compte d'AC dont le domaine est **prévalidé** ne demande aucun défi : un compte Enterprise **Admin** de HARICA pour GÉANT TCS (certificats OV) — si bien qu'un serveur que **personne à l'extérieur ne peut joindre** obtient tout de même son certificat |
 
 La dernière ligne est celle qui compte pour un serveur de fichiers à l'intérieur d'un réseau de campus :
 avec un compte GÉANT TCS dont l'établissement a déjà validé le domaine auprès de
 HARICA, aucun port n'a besoin d'être ouvert sur Internet.
 
-Un certificat est demandé à la **première connexion TLS qui nomme l'hôte**
-(SNI) ; un client qui se connecte par adresse IP n'en obtient aucun.
+#### HARICA (GÉANT TCS) : quel compte, et le CAA {#harica-gant-tcs-which-account-and-caa}
+
+Les comptes ACME de HARICA sont de deux sortes, et une seule se passe de
+défi :
+
+- un compte **Enterprise Admin** délivre des certificats **OV** pour les
+  domaines que l'établissement a validés : **aucun défi** — c'est celui qu'il
+  faut à un serveur que personne à l'extérieur ne peut joindre ;
+- un compte **Enterprise User** délivre des certificats **DV**, et DV veut dire
+  que l'AC vérifie le nom à chaque commande, par tls-alpn-01 ou http-01 comme
+  ci-dessus.
+
+Dans les deux cas, l'enregistrement **CAA** du domaine, s'il en a un, doit
+autoriser `harica.gr`, sans quoi la commande est refusée.
+
+#### Quand le certificat est demandé
+
+**Au démarrage** (depuis la v0.27.0) : une fois les ports d'écoute ouverts, le
+certificat de chaque domaine configuré est obtenu, ou relu dans le répertoire de
+cache. Un échec n'arrête pas le serveur — il continue de servir et réessaie
+après 1 minute, en doublant jusqu'à 1 heure — et la première connexion TLS qui
+nomme l'hôte le redemande de toute façon. Il est renouvelé 30 jours avant son
+expiration, ou au dernier tiers de sa durée de vie quand c'est plus court.
+
+**Un client qui n'envoie pas de SNI** — qui se connecte par adresse IP — reçoit
+le certificat du **premier** domaine (depuis la v0.27.0) ; avant, la poignée de
+main échouait. Le client vérifie toujours ce certificat contre l'adresse qu'il a
+composée : cela aide un client à qui l'on a dit de faire confiance à ce nom, et
+ne trompe personne.
 
 {{< callout type="info" >}}
 **ALPN**

@@ -23,7 +23,7 @@ Nothing listens unless the block is written.
 ## What it does
 
 The service is
-[`fileshare.admin.v1.AdminService`](https://github.com/go-fileshare/fileshare/blob/v0.26.0/proto/fileshare/admin/v1/admin.proto):
+[`fileshare.admin.v1.AdminService`](https://github.com/go-fileshare/fileshare/blob/v0.28.0/proto/fileshare/admin/v1/admin.proto):
 
 | | |
 |---|---|
@@ -86,6 +86,58 @@ The listener is
 [grpc-transports/control](https://github.com/grpc-transports/control). Each
 change is logged with who made it: the client certificate's CN, or the socket
 peer's uid.
+
+## Over HTTPS, for OIDC tokens {#over-https-for-oidc-tokens}
+
+Since v0.28.0 the same API — the same state, the same audit — is also served
+over HTTPS when the `admin` block has a `web` block: **Connect, gRPC-Web and
+gRPC on one listener**, with the [`tls` block's]({{< relref "/security/tls.md" >}})
+certificate. It is what the web and native UIs talk to.
+
+```hcl
+admin {
+  listen     = "unix:///run/fileshare/admin.sock"
+  state_file = "/var/lib/fileshare/shares.json"
+  web {
+    listen = "0.0.0.0:8443"
+    issuer "https://login.example.org" {
+      audience = "fileshare-a"            # what THIS server is called there
+      groups   = ["fileshare-admins"]
+    }
+    issuer "https://login.partner.example.org" {
+      audience = "fileshare-a.partner"
+      subjects = ["5b0c…"]                # a person is (issuer, sub)
+    }
+  }
+}
+```
+
+| field | |
+|---|---|
+| `listen` | a TCP address; refused without a `tls` block — a bearer token is as good as a password |
+| `issuer "<url>"` | one block per identity provider, its `iss`; given twice is refused |
+| `audience` | the `aud` a token must name: **what this server is called** at that provider; required |
+| `subjects`, `groups` | who may call: a `sub`, or a group in the groups claim; at least one of the two |
+| `jwks_url` | skips OIDC discovery, for a provider that does not publish it |
+| `groups_claim` | the claim that carries the groups; default `groups` |
+
+**Who is answered.** A call is answered when one issuer's verifier accepts its
+bearer token — signature, `iss`, an `aud` naming this server, times — **and**
+that issuer's block names the token's subject or one of its groups. A subject
+listed at one issuer is nobody at another: a person is (issuer, `sub`). The
+check runs on the headers alone, before a byte of the message is decoded.
+
+**One audience per server.** A token addressed to several servers could be
+replayed by any of them to the others (RFC 8707, RFC 9068), so each server has
+its own, and a UI driving several servers asks for one token per server.
+
+**What a refused caller learns.** "Refused", and nothing more. The reason, and
+every change made, goes to the audit output as `oidc=<issuer> <sub>`.
+
+**No CORS.** Browsers do not call it directly: they reach it through the UIs'
+own server, which holds the tokens. Requests are bounded to 1 MiB and every
+phase of a connection has a timeout. Each issuer is contacted **at start**, to
+read its keys; one that cannot be reached stops the start, naming it.
 
 ## What it will and will not touch
 
