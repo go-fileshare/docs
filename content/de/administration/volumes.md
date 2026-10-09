@@ -33,7 +33,7 @@ Ein Binary statt zweier Daemons: eine Version zum Ausrollen, eine
 Protokolldefinition. Den Speicher selbst übernimmt [go-fsctl](https://go-fsctl.github.io/)
 (reines Go, kein `zfs`- oder `btrfs`-Kommando). Das Design und was sich während
 des Baus geändert hat, stehen im fileshare-Repository unter
-[`docs/volumes.md`](https://github.com/go-fileshare/fileshare/blob/v0.26.0/docs/volumes.md).
+[`docs/volumes.md`](https://github.com/go-fileshare/fileshare/blob/v0.28.0/docs/volumes.md).
 
 ## Beide Prozesse, konfiguriert {#both-processes-configured}
 
@@ -172,7 +172,7 @@ definiert – er schließt die Verbindung –, also laufen `fileshare serve` und
 ## Die Volume-Aufrufe der Admin-API {#the-admin-apis-volume-calls}
 
 `fileshare serve` leitet diese an den Provisioner weiter
-([`admin.proto`](https://github.com/go-fileshare/fileshare/blob/v0.26.0/proto/fileshare/admin/v1/admin.proto)):
+([`admin.proto`](https://github.com/go-fileshare/fileshare/blob/v0.28.0/proto/fileshare/admin/v1/admin.proto)):
 
 | | |
 |---|---|

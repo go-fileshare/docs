@@ -23,7 +23,7 @@ Nichts lauscht, solange der Block nicht geschrieben ist.
 ## Was sie tut {#what-it-does}
 
 Der Dienst ist
-[`fileshare.admin.v1.AdminService`](https://github.com/go-fileshare/fileshare/blob/v0.26.0/proto/fileshare/admin/v1/admin.proto):
+[`fileshare.admin.v1.AdminService`](https://github.com/go-fileshare/fileshare/blob/v0.28.0/proto/fileshare/admin/v1/admin.proto):
 
 | | |
 |---|---|
@@ -86,6 +86,63 @@ Der Listener ist
 [grpc-transports/control](https://github.com/grpc-transports/control). Jede
 Änderung wird mit ihrem Urheber protokolliert: dem CN des Client-Zertifikats oder der uid des
 Socket-Peers.
+
+## Über HTTPS, für OIDC-Tokens {#over-https-for-oidc-tokens}
+
+Seit v0.28.0 wird dieselbe API – derselbe Zustand, dasselbe Audit – auch über
+HTTPS angeboten, wenn der `admin`-Block einen `web`-Block hat: **Connect,
+gRPC-Web und gRPC auf einem Listener**, mit dem Zertifikat des
+[`tls`-Blocks]({{< relref "/security/tls.md" >}}). Mit ihr sprechen die Web- und
+die nativen Oberflächen.
+
+```hcl
+admin {
+  listen     = "unix:///run/fileshare/admin.sock"
+  state_file = "/var/lib/fileshare/shares.json"
+  web {
+    listen = "0.0.0.0:8443"
+    issuer "https://login.example.org" {
+      audience = "fileshare-a"            # what THIS server is called there
+      groups   = ["fileshare-admins"]
+    }
+    issuer "https://idp.partner.example" {
+      audience = "fileshare-a.partner"
+      subjects = ["5b0c…"]                # a person is (issuer, sub)
+    }
+  }
+}
+```
+
+| Feld | |
+|---|---|
+| `listen` | eine TCP-Adresse; ohne `tls`-Block abgelehnt – ein Bearer-Token ist so viel wert wie ein Passwort |
+| `issuer "<url>"` | ein Block je Identitätsanbieter, sein `iss`; doppelt angegeben wird abgelehnt |
+| `audience` | die `aud`, die ein Token nennen muss: **wie dieser Server** bei diesem Anbieter heißt; Pflicht |
+| `subjects`, `groups` | wer aufrufen darf: ein `sub` oder eine Gruppe im Gruppen-Claim; mindestens eines von beiden |
+| `jwks_url` | überspringt die OIDC-Discovery, für einen Anbieter, der sie nicht veröffentlicht |
+| `groups_claim` | der Claim, der die Gruppen trägt; Standard `groups` |
+
+**Wer eine Antwort erhält.** Ein Aufruf wird beantwortet, wenn der Verifier
+eines Ausstellers sein Bearer-Token annimmt – Signatur, `iss`, eine `aud`, die
+diesen Server nennt, Zeiten – **und** der Block dieses Ausstellers das Subject
+des Tokens oder eine seiner Gruppen nennt. Ein bei einem Aussteller
+eingetragenes Subject ist bei einem anderen niemand: Eine Person ist
+(Aussteller, `sub`). Geprüft wird allein anhand der Header, bevor ein Byte der
+Nachricht dekodiert wird.
+
+**Eine Audience je Server.** Ein an mehrere Server adressiertes Token könnte
+von jedem von ihnen bei den anderen wiederverwendet werden (RFC 8707,
+RFC 9068); daher hat jeder Server seine eigene, und eine Oberfläche, die
+mehrere Server steuert, holt ein Token je Server.
+
+**Was ein abgewiesener Aufrufer erfährt.** „Abgelehnt“, mehr nicht. Der Grund
+und jede vorgenommene Änderung gehen ins Audit, als `oidc=<Aussteller> <sub>`.
+
+**Kein CORS.** Browser rufen sie nicht direkt auf: Sie erreichen sie über den
+Server der Oberflächen, der die Tokens hält. Anfragen sind auf 1 MiB begrenzt,
+und jede Phase einer Verbindung hat ein Zeitlimit. Jeder Aussteller wird **beim
+Start** kontaktiert, um seine Schlüssel zu lesen; ist einer nicht erreichbar,
+bricht der Start ab und nennt ihn.
 
 ## Was sie anfasst und was nicht {#what-it-will-and-will-not-touch}
 

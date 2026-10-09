@@ -5,7 +5,7 @@ description: "Qué versión de fileshare describen estas páginas, qué añadió
 tags: [estado, versiones]
 ---
 
-Estas páginas describen **fileshare v0.26.0**.
+Estas páginas describen **fileshare v0.28.0**.
 
 ## Lo que añadió cada versión {#what-each-release-added}
 
@@ -45,6 +45,8 @@ Estas páginas describen **fileshare v0.26.0**.
 | v0.24.1 | seguridad: una conexión NFS inactiva ya no guarda los 3 MiB de su llamada más grande (24 conexiones inactivas retenían 59 MiB); una cabecera de trama SMB ya no hace que el servidor reserve los 8 MiB que anuncia antes de que lleguen los bytes; una petición SMB ya no puede pagar un crédito por 4 GiB (go-filesystems/nfs v0.8.1, smb v0.6.1 y v0.6.2) |
 | v0.25.0 | SFTP responde a `limits@openssh.com`, así que el `sftp` de OpenSSH lee hasta 255 KiB (+25 %); una sesión mantiene como mucho 1024 handles abiertos (go-filesystems/sftp v0.6.0) |
 | v0.26.0 | copia en el servidor en cada protocolo que la tiene: un `COPY` de WebDAV, un `copy-data` de SFTP (el `sftp cp` de OpenSSH) y un COPYCHUNK de SMB (Explorador, `copy_file_range` en Linux) se hacen en el servidor, con `copy_file_range(2)` entre archivos del host — un reflink en btrfs y XFS, medido en la CI: 0 bytes usados para una copia de 8 MiB. Seguridad: un `COPY` de WebDAV y cada `GET`/`HEAD` de S3 ya no leen el archivo entero en memoria; S3 transmite objetos de cualquier tamaño. Corrección: el sendfile de los `GET` WebDAV de la v0.24.0 solo ocurría en recursos de solo lectura — un envoltorio lo ocultaba en los de escritura; ocurre en ambos desde la v0.26.0 |
+| v0.27.0 | ACME: el certificado se pide **al arrancar**, no en la primera conexión — se reintenta tras 1 min, duplicando hasta 1 h, mientras el servidor sigue sirviendo; un cliente que **no envía SNI** (conexión por dirección IP) recibe el certificado del primer dominio en lugar de un saludo fallido (go-authn/servercert v0.5.0). [HARICA]({{< relref "/security/tls.md#harica-gant-tcs-which-account-and-caa" >}}): solo una cuenta Enterprise **Admin** (OV) emite sin desafío, y el CAA debe autorizar `harica.gr` |
+| v0.28.0 | la API de administración se sirve también [por HTTPS para tokens OIDC]({{< relref "/administration/_index.md#over-https-for-oidc-tokens" >}}) — Connect, gRPC-Web y gRPC en un solo puerto, una audiencia por servidor, quienes llaman nombrados por sujeto o grupo para cada emisor — el primer paso hacia las interfaces web y nativas |
 
 {{< callout type="warning" >}}
 **Actualizar a la v0.21.0**

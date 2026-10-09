@@ -10,7 +10,7 @@ description: "go-fileshare stellt Disk-Images und Verzeichnisse über SMB, NFS, 
 **Ein Disk-Image – oder ein Verzeichnis –, bereitgestellt über SMB, NFS, WebDAV, SFTP und S3:
 dieselben Benutzer, derselbe Zugriff pro Freigabe, aus einer einzigen Konfigurationsdatei.** Reines
 Go, `CGO_ENABLED=0`, ein Binary. Diese Seiten beschreiben
-[v0.26.0]({{< relref "/status.md" >}}).
+[v0.28.0]({{< relref "/status.md" >}}).
 
 ```sh
 go install github.com/go-fileshare/fileshare@latest

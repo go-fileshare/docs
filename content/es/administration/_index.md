@@ -23,7 +23,7 @@ Nada escucha salvo que se escriba el bloque.
 ## Lo que hace {#what-it-does}
 
 El servicio es
-[`fileshare.admin.v1.AdminService`](https://github.com/go-fileshare/fileshare/blob/v0.26.0/proto/fileshare/admin/v1/admin.proto):
+[`fileshare.admin.v1.AdminService`](https://github.com/go-fileshare/fileshare/blob/v0.28.0/proto/fileshare/admin/v1/admin.proto):
 
 | | |
 |---|---|
@@ -87,6 +87,62 @@ La escucha es
 [grpc-transports/control](https://github.com/grpc-transports/control). Cada cambio
 se registra con quién lo hizo: el CN del certificado de cliente, o el uid del par del
 socket.
+
+## Por HTTPS, para tokens OIDC {#over-https-for-oidc-tokens}
+
+Desde la v0.28.0 la misma API — el mismo estado, la misma auditoría — se sirve
+también por HTTPS cuando el bloque `admin` tiene un bloque `web`: **Connect,
+gRPC-Web y gRPC en un solo puerto**, con el certificado del
+[bloque `tls`]({{< relref "/security/tls.md" >}}). Es con ella con la que hablan
+las interfaces web y nativas.
+
+```hcl
+admin {
+  listen     = "unix:///run/fileshare/admin.sock"
+  state_file = "/var/lib/fileshare/shares.json"
+  web {
+    listen = "0.0.0.0:8443"
+    issuer "https://login.example.org" {
+      audience = "fileshare-a"            # what THIS server is called there
+      groups   = ["fileshare-admins"]
+    }
+    issuer "https://idp.partner.example" {
+      audience = "fileshare-a.partner"
+      subjects = ["5b0c…"]                # a person is (issuer, sub)
+    }
+  }
+}
+```
+
+| campo | |
+|---|---|
+| `listen` | una dirección TCP; rechazado sin bloque `tls` — un token portador vale lo que una contraseña |
+| `issuer "<url>"` | un bloque por proveedor de identidad, su `iss`; dado dos veces se rechaza |
+| `audience` | el `aud` que un token debe nombrar: **cómo se llama este servidor** en ese proveedor; obligatorio |
+| `subjects`, `groups` | quién puede llamar: un `sub`, o un grupo del claim de grupos; al menos uno de los dos |
+| `jwks_url` | omite el descubrimiento OIDC, para un proveedor que no lo publica |
+| `groups_claim` | el claim que lleva los grupos; `groups` por defecto |
+
+**A quién se responde.** Una llamada se atiende cuando el verificador de un
+emisor acepta su token portador — firma, `iss`, un `aud` que nombra este
+servidor, fechas — **y** el bloque de ese emisor nombra el sujeto del token o
+uno de sus grupos. Un sujeto inscrito en un emisor no es nadie en otro: una
+persona es (emisor, `sub`). La comprobación se hace solo con las cabeceras,
+antes de decodificar un byte del mensaje.
+
+**Una audiencia por servidor.** Un token dirigido a varios servidores podría
+ser reenviado por cualquiera de ellos a los demás (RFC 8707, RFC 9068): cada
+servidor tiene la suya, y una interfaz que maneja varios servidores pide un
+token por servidor.
+
+**Lo que sabe quien es rechazado.** «Rechazado», nada más. El motivo, y cada
+cambio hecho, van a la auditoría como `oidc=<emisor> <sub>`.
+
+**Sin CORS.** Los navegadores no la llaman directamente: llegan a ella a través
+del servidor de las interfaces, que guarda los tokens. Las peticiones se
+limitan a 1 MiB y cada fase de una conexión tiene un plazo. Cada emisor se
+contacta **al arrancar**, para leer sus claves; uno inalcanzable detiene el
+arranque, nombrándolo.
 
 ## Lo que tocará y lo que no {#what-it-will-and-will-not-touch}
 

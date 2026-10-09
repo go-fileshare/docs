@@ -23,7 +23,7 @@ Rien n'écoute tant que le bloc n'est pas écrit.
 ## Ce qu'elle fait {#what-it-does}
 
 Le service est
-[`fileshare.admin.v1.AdminService`](https://github.com/go-fileshare/fileshare/blob/v0.26.0/proto/fileshare/admin/v1/admin.proto) :
+[`fileshare.admin.v1.AdminService`](https://github.com/go-fileshare/fileshare/blob/v0.28.0/proto/fileshare/admin/v1/admin.proto) :
 
 | | |
 |---|---|
@@ -86,6 +86,62 @@ L'écouteur est
 [grpc-transports/control](https://github.com/grpc-transports/control). Chaque
 modification est journalisée avec son auteur : le CN du certificat client, ou l'uid du pair
 du socket.
+
+## En HTTPS, pour des jetons OIDC {#over-https-for-oidc-tokens}
+
+Depuis la v0.28.0, la même API — le même état, le même journal d'audit — est
+aussi servie en HTTPS quand le bloc `admin` a un bloc `web` : **Connect,
+gRPC-Web et gRPC sur un seul port d'écoute**, avec le certificat du
+[bloc `tls`]({{< relref "/security/tls.md" >}}). C'est à elle que parlent les
+interfaces web et natives.
+
+```hcl
+admin {
+  listen     = "unix:///run/fileshare/admin.sock"
+  state_file = "/var/lib/fileshare/shares.json"
+  web {
+    listen = "0.0.0.0:8443"
+    issuer "https://login.example.org" {
+      audience = "fileshare-a"            # what THIS server is called there
+      groups   = ["fileshare-admins"]
+    }
+    issuer "https://idp.partner.example" {
+      audience = "fileshare-a.partner"
+      subjects = ["5b0c…"]                # a person is (issuer, sub)
+    }
+  }
+}
+```
+
+| champ | |
+|---|---|
+| `listen` | une adresse TCP ; refusé sans bloc `tls` — un jeton porteur vaut un mot de passe |
+| `issuer "<url>"` | un bloc par fournisseur d'identité, son `iss` ; donné deux fois, il est refusé |
+| `audience` | l'`aud` qu'un jeton doit nommer : **le nom de ce serveur** chez ce fournisseur ; obligatoire |
+| `subjects`, `groups` | qui peut appeler : un `sub`, ou un groupe de la revendication de groupes ; au moins l'un des deux |
+| `jwks_url` | se passe de la découverte OIDC, pour un fournisseur qui ne la publie pas |
+| `groups_claim` | la revendication qui porte les groupes ; `groups` par défaut |
+
+**Qui obtient une réponse.** Un appel est servi quand le vérificateur d'un
+émetteur accepte son jeton porteur — signature, `iss`, un `aud` qui nomme ce
+serveur, dates — **et** que le bloc de cet émetteur nomme le sujet du jeton ou
+l'un de ses groupes. Un sujet inscrit chez un émetteur n'est personne chez un
+autre : une personne, c'est (émetteur, `sub`). La vérification porte sur les
+seuls en-têtes, avant qu'un octet du message soit décodé.
+
+**Une audience par serveur.** Un jeton adressé à plusieurs serveurs pourrait
+être rejoué par n'importe lequel d'entre eux auprès des autres (RFC 8707,
+RFC 9068) : chaque serveur a donc la sienne, et une interface qui pilote
+plusieurs serveurs demande un jeton par serveur.
+
+**Ce qu'apprend un appelant refusé.** « Refusé », rien de plus. La raison, et
+chaque modification faite, vont au journal d'audit sous `oidc=<émetteur> <sub>`.
+
+**Pas de CORS.** Les navigateurs ne l'appellent pas directement : ils passent par
+le serveur des interfaces, qui détient les jetons. Les requêtes sont bornées à
+1 Mio et chaque phase d'une connexion a un délai. Chaque émetteur est contacté
+**au démarrage**, pour lire ses clés ; un émetteur injoignable arrête le
+démarrage, en le nommant.
 
 ## Ce qu'elle touchera, et ce qu'elle ne touchera pas {#what-it-will-and-will-not-touch}
 
