@@ -1,5 +1,5 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – État</title><link>https://go-fileshare.github.io/docs/0.28/fr/tags/%C3%A9tat/</link><description>Recent content in État on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>fr</language><atom:link href="https://go-fileshare.github.io/docs/0.28/fr/tags/%C3%A9tat/index.xml" rel="self" type="application/rss+xml"/><item><title>État</title><link>https://go-fileshare.github.io/docs/0.28/fr/status/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.28/fr/status/</guid><description>
-&lt;p&gt;Ces pages décrivent &lt;strong&gt;fileshare v0.28.0&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;Ces pages décrivent &lt;strong&gt;fileshare v0.28.1&lt;/strong&gt;.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="what-each-release-added"&gt;Ce que chaque version a ajouté&lt;span class="hx:absolute hx:-mt-20" id="what-each-release-added"&gt;&lt;/span&gt;
 &lt;a href="#what-each-release-added" class="subheading-anchor" aria-label="Lien permanent vers cette section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
 &lt;thead&gt;
@@ -152,6 +152,10 @@
 &lt;tr&gt;
 &lt;td&gt;v0.28.0&lt;/td&gt;
 &lt;td&gt;l&amp;rsquo;API d&amp;rsquo;administration est aussi servie &lt;a href="https://go-fileshare.github.io/docs/0.28/fr/administration/#over-https-for-oidc-tokens"&gt;en HTTPS pour des jetons OIDC&lt;/a&gt; — Connect, gRPC-Web et gRPC sur un seul port d&amp;rsquo;écoute, une audience par serveur, les appelants désignés par sujet ou par groupe pour chaque émetteur — première étape vers les interfaces web et natives&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.28.1&lt;/td&gt;
+&lt;td&gt;sécurité : compilé avec Go 1.27.2 et golang.org/x/net v0.60.0, qui corrigent GO-2026-6617 (une concurrence dans l&amp;rsquo;encodeur HPACK d&amp;rsquo;HTTP/2 qui pouvait faire tomber un serveur), GO-2026-6613, -6612, -6611, -6610 et -6603. L&amp;rsquo;API d&amp;rsquo;administration en HTTPS parle HTTP/2. &lt;code&gt;go install&lt;/code&gt; exige désormais Go 1.27.2, et y passe de lui-même&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;

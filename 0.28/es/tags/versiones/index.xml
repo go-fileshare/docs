@@ -1,5 +1,5 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Versiones</title><link>https://go-fileshare.github.io/docs/0.28/es/tags/versiones/</link><description>Recent content in Versiones on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>es</language><atom:link href="https://go-fileshare.github.io/docs/0.28/es/tags/versiones/index.xml" rel="self" type="application/rss+xml"/><item><title>Estado</title><link>https://go-fileshare.github.io/docs/0.28/es/status/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.28/es/status/</guid><description>
-&lt;p&gt;Estas páginas describen &lt;strong&gt;fileshare v0.28.0&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;Estas páginas describen &lt;strong&gt;fileshare v0.28.1&lt;/strong&gt;.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="what-each-release-added"&gt;Lo que añadió cada versión&lt;span class="hx:absolute hx:-mt-20" id="what-each-release-added"&gt;&lt;/span&gt;
 &lt;a href="#what-each-release-added" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
 &lt;thead&gt;
@@ -152,6 +152,10 @@
 &lt;tr&gt;
 &lt;td&gt;v0.28.0&lt;/td&gt;
 &lt;td&gt;la API de administración se sirve también &lt;a href="https://go-fileshare.github.io/docs/0.28/es/administration/#over-https-for-oidc-tokens"&gt;por HTTPS para tokens OIDC&lt;/a&gt; — Connect, gRPC-Web y gRPC en un solo puerto, una audiencia por servidor, quienes llaman nombrados por sujeto o grupo para cada emisor — el primer paso hacia las interfaces web y nativas&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.28.1&lt;/td&gt;
+&lt;td&gt;seguridad: compilado con Go 1.27.2 y golang.org/x/net v0.60.0, que corrigen GO-2026-6617 (una carrera en el codificador HPACK de HTTP/2 que podía tumbar un servidor), GO-2026-6613, -6612, -6611, -6610 y -6603. La API de administración por HTTPS habla HTTP/2. &lt;code&gt;go install&lt;/code&gt; exige ahora Go 1.27.2, y cambia a él por sí solo&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
