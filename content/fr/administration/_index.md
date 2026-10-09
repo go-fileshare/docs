@@ -105,7 +105,7 @@ admin {
       audience = "fileshare-a"            # what THIS server is called there
       groups   = ["fileshare-admins"]
     }
-    issuer "https://idp.partner.example" {
+    issuer "https://login.partner.example.org" {
       audience = "fileshare-a.partner"
       subjects = ["5b0c…"]                # a person is (issuer, sub)
     }
