@@ -1,0 +1,313 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Grpc</title><link>https://go-fileshare.github.io/docs/0.28/de/tags/grpc/</link><description>Recent content in Grpc on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>de</language><atom:link href="https://go-fileshare.github.io/docs/0.28/de/tags/grpc/index.xml" rel="self" type="application/rss+xml"/><item><title>Die Admin-API</title><link>https://go-fileshare.github.io/docs/0.28/de/administration/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.28/de/administration/</guid><description>
+&lt;p&gt;Seit v0.8.0 können sich die Freigaben ändern, während der Server läuft. Ein &lt;code&gt;admin&lt;/code&gt;-Block
+schaltet einen gRPC-Dienst ein, der Freigaben ohne Neustart und ohne Bearbeiten einer Datei
+anlegt, ändert und offline nimmt.&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;admin&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; listen&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;unix:///run/fileshare/admin.sock&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # made 0600
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; state_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/var/lib/fileshare/shares.json&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; source_roots&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;/srv/images&amp;#34;, &amp;#34;/data&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Code kopieren"
+aria-label="Code kopieren"
+data-copied-label="Kopiert!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Nichts lauscht, solange der Block nicht geschrieben ist.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-it-does"&gt;Was sie tut&lt;span class="hx:absolute hx:-mt-20" id="what-it-does"&gt;&lt;/span&gt;
+&lt;a href="#what-it-does" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Der Dienst ist
+&lt;a href="https://github.com/go-fileshare/fileshare/blob/v0.28.0/proto/fileshare/admin/v1/admin.proto" target="_blank" rel="noopener"&gt;&lt;code&gt;fileshare.admin.v1.AdminService&lt;/code&gt;&lt;/a&gt;:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;CreateShare&lt;/code&gt;, &lt;code&gt;UpdateShare&lt;/code&gt;, &lt;code&gt;DeleteShare&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;eine Freigabe aus einem Image, einem Verzeichnis oder (seit v0.21.0) einem Volume definieren; &lt;code&gt;read_only&lt;/code&gt; oder &lt;code&gt;protocols&lt;/code&gt; ändern (ihre Quelle kann sich nicht ändern: löschen Sie sie und legen Sie eine neue an)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;DisableShare&lt;/code&gt;, &lt;code&gt;EnableShare&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;eine Freigabe offline nehmen und wieder online bringen&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;Grant&lt;/code&gt;, &lt;code&gt;Revoke&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;einem Subjekt Lese- oder Schreibzugriff geben oder ihn entziehen&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ListShares&lt;/code&gt;, &lt;code&gt;GetShare&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;jede Freigabe, mit dem, was sie bereitstellt, über welche Protokolle, und warum nicht über die anderen&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ListUsers&lt;/code&gt;, &lt;code&gt;ListGroups&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;wen eine Berechtigung nennen kann; jeder Benutzer mit den Protokollen, die seine Zugangsdaten beantworten können&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ReloadDirectory&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;die Personen jetzt erneut einlesen – siehe &lt;a href="https://go-fileshare.github.io/docs/0.28/de/administration/reload/"&gt;das Verzeichnis erneut einlesen&lt;/a&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;GetServerInfo&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Name, Version, Startzeit, Generation und Listener&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ListParents&lt;/code&gt;, &lt;code&gt;CreateVolume&lt;/code&gt;, &lt;code&gt;ResizeVolume&lt;/code&gt;, &lt;code&gt;SnapshotVolume&lt;/code&gt;, &lt;code&gt;DeleteVolume&lt;/code&gt;, &lt;code&gt;GetVolume&lt;/code&gt;, &lt;code&gt;ListVolumes&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;über einen privilegierten Provisioner angelegter Speicher und daraus bereitgestellte Freigaben – siehe &lt;a href="https://go-fileshare.github.io/docs/0.28/de/administration/volumes/"&gt;Volumes&lt;/a&gt; (seit v0.21.0)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Eine Berechtigung nennt einen &lt;strong&gt;Benutzer&lt;/strong&gt;, eine &lt;strong&gt;Gruppe&lt;/strong&gt; (&lt;code&gt;@group&lt;/code&gt; in einer Konfigurationsdatei), einen
+&lt;strong&gt;&lt;code&gt;oidc:groups:&lt;/code&gt;-Wert&lt;/strong&gt; oder einen &lt;strong&gt;&lt;code&gt;oidc:user:&lt;/code&gt;-Namen&lt;/strong&gt; – das Vokabular, das die
+Konfigurationsdatei verwendet, siehe
+&lt;a href="https://go-fileshare.github.io/docs/0.28/de/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;Personen, die der Identitätsanbieter nennt&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;grpc.health.v1&lt;/code&gt; antwortet auf demselben Listener. &lt;code&gt;reflection = true&lt;/code&gt; im Block
+schaltet gRPC-Server-Reflection ein, für &lt;code&gt;grpcurl&lt;/code&gt;.&lt;/p&gt;
+&lt;h3 data-hextra-search-id="every-change-says-what-serving-it-did"&gt;Jede Änderung sagt, was sie mit der Bereitstellung gemacht hat&lt;span class="hx:absolute hx:-mt-20" id="every-change-says-what-serving-it-did"&gt;&lt;/span&gt;
+&lt;a href="#every-change-says-what-serving-it-did" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Eine Änderung antwortet mit einer &lt;code&gt;Applied&lt;/code&gt;-Nachricht:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-proto" data-lang="proto"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;message&lt;/span&gt; &lt;span class="nc"&gt;Applied&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;uint64&lt;/span&gt; &lt;span class="n"&gt;generation&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="c1"&gt;// the generation now being served
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;uint64&lt;/span&gt; &lt;span class="n"&gt;connections_closed&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="c1"&gt;// how many the previous one had open, and closed
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Code kopieren"
+aria-label="Code kopieren"
+data-copied-label="Kopiert!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Deshalb hat jeder RPC eine eigene Antwortnachricht, statt
+die Freigabe selbst zurückzugeben: Die &lt;code&gt;.proto&lt;/code&gt; folgt den &lt;code&gt;STANDARD&lt;/code&gt;-Lint-Regeln von
+&lt;a href="https://buf.build" target="_blank" rel="noopener"&gt;buf&lt;/a&gt;, geprüft durch &lt;code&gt;buf lint&lt;/code&gt; in der CI von fileshare, vor dem
+„return the resource&amp;quot; von AIP-131 – die Hülle ist das, was &lt;code&gt;Applied&lt;/code&gt; transportiert.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="where-it-listens-and-who-may-call-it"&gt;Wo sie lauscht und wer sie aufrufen darf&lt;span class="hx:absolute hx:-mt-20" id="where-it-listens-and-who-may-call-it"&gt;&lt;/span&gt;
+&lt;a href="#where-it-listens-and-who-may-call-it" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Über TCP gilt gegenseitiges TLS oder gar nichts&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;tls_cert_file&lt;/code&gt;, &lt;code&gt;tls_key_file&lt;/code&gt; und &lt;code&gt;client_ca_file&lt;/code&gt;, alle drei,
+&lt;strong&gt;Loopback eingeschlossen&lt;/strong&gt;: Jeder lokale Benutzer kann Loopback erreichen, und diese API
+entscheidet, wer wessen Dateien liest. Ein Unix-Socket wird mit &lt;strong&gt;0600&lt;/strong&gt; angelegt, und seine
+Berechtigungen sind seine Zugriffskontrolle.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;admin&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; listen&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;127.0.0.1:7443&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; tls_cert_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/admin/server.pem&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; tls_key_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/admin/server.key&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; client_ca_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/admin/clients.pem&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; state_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/var/lib/fileshare/shares.json&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; source_roots&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;/srv/images&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Code kopieren"
+aria-label="Code kopieren"
+data-copied-label="Kopiert!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Der Listener ist
+&lt;a href="https://github.com/grpc-transports/control" target="_blank" rel="noopener"&gt;grpc-transports/control&lt;/a&gt;. Jede
+Änderung wird mit ihrem Urheber protokolliert: dem CN des Client-Zertifikats oder der uid des
+Socket-Peers.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="over-https-for-oidc-tokens"&gt;Über HTTPS, für OIDC-Tokens&lt;span class="hx:absolute hx:-mt-20" id="over-https-for-oidc-tokens"&gt;&lt;/span&gt;
+&lt;a href="#over-https-for-oidc-tokens" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Seit v0.28.0 wird dieselbe API – derselbe Zustand, dasselbe Audit – auch über
+HTTPS angeboten, wenn der &lt;code&gt;admin&lt;/code&gt;-Block einen &lt;code&gt;web&lt;/code&gt;-Block hat: &lt;strong&gt;Connect,
+gRPC-Web und gRPC auf einem Listener&lt;/strong&gt;, mit dem Zertifikat des
+&lt;a href="https://go-fileshare.github.io/docs/0.28/de/security/tls/"&gt;&lt;code&gt;tls&lt;/code&gt;-Blocks&lt;/a&gt;. Mit ihr sprechen die Web- und
+die nativen Oberflächen.&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;admin&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; listen&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;unix:///run/fileshare/admin.sock&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; state_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/var/lib/fileshare/shares.json&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;web&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; listen&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:8443&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;issuer&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://login.example.org&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; audience&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;fileshare-a&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # what THIS server is called there
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; groups&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;fileshare-admins&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;issuer&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://login.partner.example.org&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; audience&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;fileshare-a.partner&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; subjects&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;5b0c…&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="c1"&gt; # a person is (issuer, sub)
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Code kopieren"
+aria-label="Code kopieren"
+data-copied-label="Kopiert!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Feld&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;listen&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;eine TCP-Adresse; ohne &lt;code&gt;tls&lt;/code&gt;-Block abgelehnt – ein Bearer-Token ist so viel wert wie ein Passwort&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;issuer &amp;quot;&amp;lt;url&amp;gt;&amp;quot;&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;ein Block je Identitätsanbieter, sein &lt;code&gt;iss&lt;/code&gt;; doppelt angegeben wird abgelehnt&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;audience&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;die &lt;code&gt;aud&lt;/code&gt;, die ein Token nennen muss: &lt;strong&gt;wie dieser Server&lt;/strong&gt; bei diesem Anbieter heißt; Pflicht&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;subjects&lt;/code&gt;, &lt;code&gt;groups&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;wer aufrufen darf: ein &lt;code&gt;sub&lt;/code&gt; oder eine Gruppe im Gruppen-Claim; mindestens eines von beiden&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;jwks_url&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;überspringt die OIDC-Discovery, für einen Anbieter, der sie nicht veröffentlicht&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;groups_claim&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;der Claim, der die Gruppen trägt; Standard &lt;code&gt;groups&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;strong&gt;Wer eine Antwort erhält.&lt;/strong&gt; Ein Aufruf wird beantwortet, wenn der Verifier
+eines Ausstellers sein Bearer-Token annimmt – Signatur, &lt;code&gt;iss&lt;/code&gt;, eine &lt;code&gt;aud&lt;/code&gt;, die
+diesen Server nennt, Zeiten – &lt;strong&gt;und&lt;/strong&gt; der Block dieses Ausstellers das Subject
+des Tokens oder eine seiner Gruppen nennt. Ein bei einem Aussteller
+eingetragenes Subject ist bei einem anderen niemand: Eine Person ist
+(Aussteller, &lt;code&gt;sub&lt;/code&gt;). Geprüft wird allein anhand der Header, bevor ein Byte der
+Nachricht dekodiert wird.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Eine Audience je Server.&lt;/strong&gt; Ein an mehrere Server adressiertes Token könnte
+von jedem von ihnen bei den anderen wiederverwendet werden (RFC 8707,
+RFC 9068); daher hat jeder Server seine eigene, und eine Oberfläche, die
+mehrere Server steuert, holt ein Token je Server.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Was ein abgewiesener Aufrufer erfährt.&lt;/strong&gt; „Abgelehnt“, mehr nicht. Der Grund
+und jede vorgenommene Änderung gehen ins Audit, als &lt;code&gt;oidc=&amp;lt;Aussteller&amp;gt; &amp;lt;sub&amp;gt;&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Kein CORS.&lt;/strong&gt; Browser rufen sie nicht direkt auf: Sie erreichen sie über den
+Server der Oberflächen, der die Tokens hält. Anfragen sind auf 1 MiB begrenzt,
+und jede Phase einer Verbindung hat ein Zeitlimit. Jeder Aussteller wird &lt;strong&gt;beim
+Start&lt;/strong&gt; kontaktiert, um seine Schlüssel zu lesen; ist einer nicht erreichbar,
+bricht der Start ab und nennt ihn.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-it-will-and-will-not-touch"&gt;Was sie anfasst und was nicht&lt;span class="hx:absolute hx:-mt-20" id="what-it-will-and-will-not-touch"&gt;&lt;/span&gt;
+&lt;a href="#what-it-will-and-will-not-touch" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;Sie verwaltet die Freigaben, die sie angelegt hat.&lt;/strong&gt; Eine in der Konfiguration geschriebene Freigabe wird
+mit denselben Feldern aufgelistet, und eine Änderung ihrer Definition wird mit
+&lt;code&gt;FAILED_PRECONDITION&lt;/code&gt; abgelehnt: Eine an zwei Stellen definierte Freigabe ist eine Frage, die niemand
+beantworten will, und die Datei ist der Ort, an dem diese definiert ist. Die Freigaben der API liegen in
+&lt;code&gt;state_file&lt;/code&gt;, atomar geschrieben, und werden beim nächsten Start wieder bereitgestellt – deshalb
+wird ein Block ohne &lt;code&gt;state_file&lt;/code&gt; abgelehnt.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Eine Quelle muss unter &lt;code&gt;source_roots&lt;/code&gt; liegen&lt;/strong&gt;, aufgelöst – Links verfolgt, &lt;code&gt;..&lt;/code&gt;
+entfernt –, und es ist der aufgelöste Pfad, der gespeichert wird. Ohne &lt;code&gt;source_roots&lt;/code&gt; kann die
+API &lt;strong&gt;überhaupt keine Freigaben anlegen&lt;/strong&gt;: Der Prozess kann &lt;code&gt;/dev&lt;/code&gt; und &lt;code&gt;/etc&lt;/code&gt; lesen,
+und niemand wollte diese einem Aufrufer übergeben. Das wird bei jedem Start erneut geprüft,
+und eine Freigabe in &lt;code&gt;state_file&lt;/code&gt;, die nicht mehr unter einer Wurzel liegt, verhindert den Start
+und wird dabei genannt.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Jede Freigabe hat mindestens eine Berechtigung.&lt;/strong&gt; Eine Freigabe ohne ist für jeden offen, der sich
+authentifiziert. Die Datei darf das absichtlich sagen; ein API-Aufruf sollte es nicht
+durch Weglassen sagen. Also braucht &lt;code&gt;CreateShare&lt;/code&gt; eine Berechtigung, und das Widerrufen der letzten wird
+abgelehnt – löschen Sie stattdessen die Freigabe.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Namen, die ein Protokoll transportieren kann.&lt;/strong&gt; Ein Freigabename hat höchstens 80 Zeichen, beginnt
+und endet nicht mit einem Leerzeichen, ist nicht &lt;code&gt;.&lt;/code&gt; oder &lt;code&gt;..&lt;/code&gt; und enthält kein nicht druckbares
+Zeichen und keines von &lt;code&gt;:*?&amp;quot;&amp;lt;&amp;gt;|{}%&lt;/code&gt;. Subjekte enthalten ebenfalls kein nicht druckbares Zeichen,
+und eine Freigabe nimmt höchstens 1000 Berechtigungen auf – lange vorher eine Aufgabe für eine Gruppe.
+Jedes davon wurde vor v0.14.0 akzeptiert, in &lt;code&gt;state_file&lt;/code&gt; geschrieben und war dann
+bei jedem Start fatal.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Keine Freigabe darf enthalten:&lt;/strong&gt; die Konfiguration, die Zustandsdatei oder die Geheimnisse,
+die sie nennen: Wer hineinschreibt, würde umschreiben, wer was darf. Seit v0.17.0
+gehören dazu &lt;code&gt;authorized_keys_file&lt;/code&gt;, &lt;code&gt;dsn_file&lt;/code&gt; und
+&lt;code&gt;bind_password_file&lt;/code&gt; eines &lt;code&gt;users&lt;/code&gt;-Blocks, die &lt;code&gt;ca_file&lt;/code&gt; des &lt;code&gt;ssf&lt;/code&gt;-Blocks und eine SQLite-Datenbank, die ein DSN
+nennt: Wer schreiben darf und seinen Schlüssel zu den &lt;code&gt;authorized_keys&lt;/code&gt; eines anderen hinzufügen könnte, würde
+sich als dieser anmelden. &lt;strong&gt;Ebenso wenig darf eine Freigabe eine andere enthalten&lt;/strong&gt; (siehe
+&lt;a href="https://go-fileshare.github.io/docs/0.28/de/configuration/shares/#a-directory-not-only-an-image"&gt;Verzeichnisse&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Eine Änderung wird wie eine Konfiguration geprüft, geöffnet, festgeschrieben und dann
+bereitgestellt.&lt;/strong&gt; Eine Änderung, die der Server nicht einhalten kann – ein Image, das sich nicht öffnen lässt, ein
+Name, den niemand im Verzeichnis hat –, wird abgelehnt, wobei das Bereitgestellte und das
+Geschriebene unverändert bleiben.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="disabling-a-share"&gt;Eine Freigabe deaktivieren&lt;span class="hx:absolute hx:-mt-20" id="disabling-a-share"&gt;&lt;/span&gt;
+&lt;a href="#disabling-a-share" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;Deaktivieren entspricht Sambas &lt;code&gt;available = no&lt;/code&gt;&lt;/strong&gt;: Die Freigabe bleibt definiert, und jeder
+Verbindungsversuch schlägt fehl; ihre offenen Verbindungen werden geschlossen, und ihr Image oder
+Verzeichnis wird &lt;strong&gt;losgelassen&lt;/strong&gt;, sodass die Datei ersetzt werden kann, während sie offline ist.
+&lt;code&gt;EnableShare&lt;/code&gt; stellt sie wieder bereit und wird abgelehnt, wenn ihre Quelle sich nicht mehr
+öffnen lässt. &lt;code&gt;CreateShare&lt;/code&gt; kann eine Freigabe auch bereits deaktiviert anlegen.&lt;/p&gt;
+&lt;p&gt;Anders als jede andere Änderung gilt sie auch für eine Freigabe &lt;strong&gt;der Konfiguration&lt;/strong&gt; –
+eine Freigabe offline zu nehmen ist ein Vorgang, keine Definition –, und sie übersteht einen
+Neustart: Sie wird in der Zustandsdatei gespeichert. &lt;a href="https://go-fileshare.github.io/docs/0.28/de/configuration/check/"&gt;&lt;code&gt;fileshare check&lt;/code&gt;&lt;/a&gt;
+listet auf, was offline ist.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="a-change-is-a-new-generation"&gt;Eine Änderung ist eine neue Generation&lt;span class="hx:absolute hx:-mt-20" id="a-change-is-a-new-generation"&gt;&lt;/span&gt;
+&lt;a href="#a-change-is-a-new-generation" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Eine Änderung startet die Protokollserver neu und schließt ihre Verbindungen&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;SMB prüft einmal pro Tree Connect, wer sich verbinden darf, und SFTP baut den
+Baum einer Person einmal pro Anmeldung auf, sodass eine Sitzung, die einen Widerruf überdauert,
+den gerade entzogenen Zugriff behielte. „Widerrufen, außer für alle, die schon
+verbunden waren&amp;quot; ist kein Widerruf.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Eine Änderung wird also nicht &lt;em&gt;auf&lt;/em&gt; die laufenden Server angewendet: Sie werden durch neue
+ersetzt, die aus der neuen Liste gebaut werden – eine &lt;strong&gt;Generation&lt;/strong&gt; –, so wie es ein Neustart täte,
+ohne die Ports aufzugeben. Die Bibliotheken könnten es nicht anders:
+go-filesystems/smb hat &lt;code&gt;Share&lt;/code&gt; und kein &lt;code&gt;Unshare&lt;/code&gt;, nfs hat &lt;code&gt;Export&lt;/code&gt; und kein
+&lt;code&gt;Unexport&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Die Ports bleiben gebunden, sodass ein Client, der sich während einer Änderung verbindet, &lt;strong&gt;wartet&lt;/strong&gt;, statt
+abgelehnt zu werden. Images, deren Freigabe sich nicht geändert hat, behalten ihren Treiber und werden nie
+ein zweites Mal geöffnet. Clients verbinden sich neu; das ist der Preis, gezahlt bei jeder
+Änderung – deshalb wendet die API eine Änderung pro Aufruf an statt einer pro
+Feld.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="limits"&gt;Grenzen&lt;span class="hx:absolute hx:-mt-20" id="limits"&gt;&lt;/span&gt;
+&lt;a href="#limits" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;--isolate&lt;/code&gt; passt noch nicht zu einem &lt;code&gt;admin&lt;/code&gt;-Block – ebenso wenig zu einem &lt;code&gt;metrics&lt;/code&gt;-Block –:
+Es gibt keinen einzelnen Prozess, auf den eine Änderung angewendet werden könnte. Die Kombination wird
+abgelehnt.&lt;/li&gt;
+&lt;li&gt;Ein mit &lt;code&gt;-tags nogrpc&lt;/code&gt; gebautes Binary hat keine Admin-API, und eine Konfiguration mit
+einem &lt;code&gt;admin&lt;/code&gt;-Block wird &lt;strong&gt;abgelehnt&lt;/strong&gt;, statt ohne sie bereitgestellt zu werden. Dieses Tag spart
+11,7 MB; siehe &lt;a href="https://go-fileshare.github.io/docs/0.28/de/operations/build-tags/#the-admin-api-and-nogrpc"&gt;nur bauen, was Sie brauchen&lt;/a&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 data-hextra-search-id="changing-the-proto"&gt;Die &lt;code&gt;.proto&lt;/code&gt; ändern&lt;span class="hx:absolute hx:-mt-20" id="changing-the-proto"&gt;&lt;/span&gt;
+&lt;a href="#changing-the-proto" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Der Go-Code unter &lt;code&gt;proto/&lt;/code&gt; wird generiert und committet, sodass &lt;code&gt;go install&lt;/code&gt; kein
+&lt;code&gt;protoc&lt;/code&gt; braucht. Nach einer Änderung an einer &lt;code&gt;.proto&lt;/code&gt; – der der Admin-API oder der des Provisioners,
+&lt;code&gt;proto/fileshare/provision/v1/provision.proto&lt;/code&gt; – generieren Sie beide mit den
+Versionen neu, die die CI von fileshare pinnt (protoc 34.1, protoc-gen-go v1.36.12,
+protoc-gen-go-grpc v1.6.2). Die CI generiert sie neu und schlägt fehl, wenn der committete
+Code abweicht oder wenn generierter Code nicht committet wurde:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;protoc -I proto --go_out&lt;span class="o"&gt;=&lt;/span&gt;. --go_opt&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;module&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;github.com/go-fileshare/fileshare &lt;span class="se"&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; --go-grpc_out&lt;span class="o"&gt;=&lt;/span&gt;. --go-grpc_opt&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;module&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;github.com/go-fileshare/fileshare &lt;span class="se"&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; proto/fileshare/admin/v1/admin.proto proto/fileshare/provision/v1/provision.proto&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Code kopieren"
+aria-label="Code kopieren"
+data-copied-label="Kopiert!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;</description></item></channel></rss>

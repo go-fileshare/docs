@@ -1,0 +1,470 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Quotas</title><link>https://go-fileshare.github.io/docs/0.28/tags/quotas/</link><description>Recent content in Quotas on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>en</language><atom:link href="https://go-fileshare.github.io/docs/0.28/tags/quotas/index.xml" rel="self" type="application/rss+xml"/><item><title>Volumes: storage fileshare creates</title><link>https://go-fileshare.github.io/docs/0.28/administration/volumes/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.28/administration/volumes/</guid><description>
+&lt;p&gt;Since v0.21.0 the &lt;a href="https://go-fileshare.github.io/docs/0.28/administration/"&gt;admin API&lt;/a&gt; can &lt;strong&gt;create the storage a share
+serves&lt;/strong&gt; — a &lt;strong&gt;ZFS dataset&lt;/strong&gt;, a &lt;strong&gt;btrfs subvolume&lt;/strong&gt;, an &lt;strong&gt;XFS or ext4 directory
+under a project quota&lt;/strong&gt; — sized, owned and tracked, and serve a share from it.
+Linux only. Ceph is not supported yet.&lt;/p&gt;
+&lt;p&gt;Creating that storage needs &lt;code&gt;CAP_SYS_ADMIN&lt;/code&gt; (quotactl, the btrfs quota ioctls,
+&lt;code&gt;/dev/zfs&lt;/code&gt;, mount(2)). &lt;code&gt;fileshare serve&lt;/code&gt; parses five network protocols for
+strangers and holds no privilege, so the part that does is a second role of the
+same binary, &lt;code&gt;fileshare provisioner&lt;/code&gt;, behind a unix socket and a small, closed
+protocol:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;pre&gt;&lt;code&gt; admin gRPC (unix socket 0600 &amp;#43; peer uid, or mTLS)
+operator ─────────────────────────────────────────────▶ fileshare serve
+(unprivileged)
+│
+provision gRPC (unix socket, SO_PEERCRED = fileshare&amp;#39;s uid)
+▼
+fileshare provisioner
+(CAP_SYS_ADMIN, CAP_CHOWN, CAP_FOWNER)
+│
+go-fsctl: zfs · btrfs · projquota (ioctls, no CLI)&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;One binary rather than two daemons: one version to deploy, one protocol
+definition. The storage itself is done by &lt;a href="https://go-fsctl.github.io/" target="_blank" rel="noopener"&gt;go-fsctl&lt;/a&gt;
+(pure Go, no &lt;code&gt;zfs&lt;/code&gt; or &lt;code&gt;btrfs&lt;/code&gt; command). The design and what changed while
+building it are in the fileshare repository&amp;rsquo;s
+&lt;a href="https://github.com/go-fileshare/fileshare/blob/v0.28.0/docs/volumes.md" target="_blank" rel="noopener"&gt;&lt;code&gt;docs/volumes.md&lt;/code&gt;&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="both-processes-configured"&gt;Both processes, configured&lt;span class="hx:absolute hx:-mt-20" id="both-processes-configured"&gt;&lt;/span&gt;
+&lt;a href="#both-processes-configured" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;fileshare serve&lt;/code&gt;, as the user &lt;code&gt;fileshare&lt;/code&gt; (uid 990):&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# /etc/fileshare/fileshare.hcl
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;admin&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; listen&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;unix:///run/fileshare/admin.sock&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; state_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/var/lib/fileshare/shares.json&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; source_roots&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;/srv/fileshare/volumes&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; provisioner&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;unix:///run/fileshare-provisioner/provisioner.sock&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; provisioner_uid&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;0&lt;/span&gt;&lt;span class="c1"&gt; # who must answer on that socket; 0 is the default
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; allowed_uids&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="m"&gt;990&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="c1"&gt; # who may call this API
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;key&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;provisioner&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;the provisioner&amp;rsquo;s socket, &lt;code&gt;unix:///path&lt;/code&gt;. Without it every volume call answers &lt;code&gt;FAILED_PRECONDITION&lt;/code&gt; and no share is made from a volume&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;provisioner_uid&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;the uid the process answering on that socket must run as, read from the kernel (&lt;code&gt;SO_PEERCRED&lt;/code&gt;) at every connection: a socket somebody else bound gets nothing. Unset, it is 0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;allowed_uids&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;optional, unix socket only: the only uids whose calls are answered; any other is &lt;code&gt;PERMISSION_DENIED&lt;/code&gt;, and audited. It can only &lt;strong&gt;narrow&lt;/strong&gt; what the socket&amp;rsquo;s 0600 mode allows (its owner and root) — root, say, may then not call. Refused over TCP, where the client certificate is the check&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;A volume&amp;rsquo;s path must lie under &lt;code&gt;source_roots&lt;/code&gt;, like any other source.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;fileshare provisioner&lt;/code&gt;, as root:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# /etc/fileshare-provisioner.hcl
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;provisioner&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; listen&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;unix:///run/fileshare-provisioner/provisioner.sock&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; client_uid&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;990&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; group&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;fileshare&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; max_volume&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;10T&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; state_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/var/lib/fileshare-provisioner/volumes.json&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;parent&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;tank&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; zfs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;tank/fileshare&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; root&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/fileshare/volumes/tank&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; parent &amp;#34;fast&amp;#34; { btrfs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/fileshare/volumes/fast&amp;#34;&lt;/span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;parent&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;plain&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; xfs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/fileshare/volumes/plain&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; project_ids&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;100000-199999&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;key&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;listen&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;unix://&amp;lt;absolute path&amp;gt;&lt;/code&gt; and nothing else. The socket is made 0660, owned by the provisioner&amp;rsquo;s user (root) and &lt;code&gt;&amp;lt;group&amp;gt;&lt;/code&gt;, and must be in a directory nobody but the provisioner may write — its &lt;strong&gt;own&lt;/strong&gt; (&lt;code&gt;/run/fileshare-provisioner&lt;/code&gt;), not fileshare&amp;rsquo;s&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;client_uid&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;the one uid answered: fileshare&amp;rsquo;s. &lt;strong&gt;0 is refused&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;group&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;owns every volume root (&lt;code&gt;root:&amp;lt;group&amp;gt;&lt;/code&gt;, mode 2770). fileshare must be in it: it writes into a volume through the group, never as its owner — the owner of a directory may clear its project id without privilege, and so step out of an XFS/ext4 quota&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;max_volume&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;the largest quota one volume may have (&lt;code&gt;&amp;quot;10T&amp;quot;&lt;/code&gt;, &lt;code&gt;&amp;quot;500G&amp;quot;&lt;/code&gt;, &lt;code&gt;&amp;quot;1048576&amp;quot;&lt;/code&gt;); above it is &lt;code&gt;OUT_OF_RANGE&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;state_file&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;what this process created — btrfs subvolume ids, XFS/ext4 project ids — so that after a restart it knows what is its own&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;parent &amp;quot;&amp;lt;id&amp;gt;&amp;quot;&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;where volumes may be created, under the id a request names. Exactly one of &lt;code&gt;zfs&lt;/code&gt; (the dataset volumes are children of, with &lt;code&gt;root&lt;/code&gt; where they are mounted), &lt;code&gt;btrfs&lt;/code&gt;, &lt;code&gt;xfs&lt;/code&gt; or &lt;code&gt;ext4&lt;/code&gt; (the directory they are created in)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;project_ids&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;XFS/ext4: the range of project ids this parent may give out&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;enable_quota&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;btrfs: let the provisioner turn quotas on when they are off. Without it a btrfs parent with quotas off stops the start — qgroups slow every commit as snapshots multiply, and that is the operator&amp;rsquo;s choice&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;The provisioner&amp;rsquo;s file holds nothing but its &lt;code&gt;provisioner&lt;/code&gt; block: fileshare&amp;rsquo;s
+own file handed to it by mistake is refused rather than half-read.&lt;/p&gt;
+&lt;p&gt;A volume is always &lt;code&gt;&amp;lt;parent root&amp;gt;/&amp;lt;name&amp;gt;&lt;/code&gt;: dataset &lt;code&gt;tank/fileshare/&amp;lt;name&amp;gt;&lt;/code&gt;
+mounted at &lt;code&gt;/srv/fileshare/volumes/tank/&amp;lt;name&amp;gt;&lt;/code&gt; (with &lt;code&gt;refquota&lt;/code&gt;), a btrfs
+subvolume limited by its qgroup, an XFS or ext4 directory with a project id
+from the range and a hard block limit. XFS and ext4 need the &lt;code&gt;prjquota&lt;/code&gt; mount
+option (ext4 also the &lt;code&gt;project,quota&lt;/code&gt; features).&lt;/p&gt;
+&lt;h2 data-hextra-search-id="the-systemd-pair"&gt;The systemd pair&lt;span class="hx:absolute hx:-mt-20" id="the-systemd-pair"&gt;&lt;/span&gt;
+&lt;a href="#the-systemd-pair" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;The provisioner:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-ini" data-lang="ini"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# fileshare-provisioner.service&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;[Service]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;ExecStart&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;/usr/local/bin/fileshare provisioner -c /etc/fileshare-provisioner.hcl&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;RuntimeDirectory&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;fileshare-provisioner&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;RuntimeDirectoryMode&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;0755&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;StateDirectory&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;fileshare-provisioner&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;StateDirectoryMode&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;0700&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;CapabilityBoundingSet&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;CAP_SYS_ADMIN CAP_CHOWN CAP_FOWNER&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# Run as root, or as a dedicated user with:&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# AmbientCapabilities=CAP_SYS_ADMIN CAP_CHOWN CAP_FOWNER&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;NoNewPrivileges&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;yes&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;SystemCallFilter&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;@system-service @mount quotactl quotactl_fd&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;SystemCallArchitectures&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;native&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;LockPersonality&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;yes&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;RestrictRealtime&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;yes&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# NOT ProtectSystem= nor ReadWritePaths=: they give the service its own&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# mount namespace, and the ZFS volumes it mounts would be seen by nobody&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# else. And no Landlock: a Landlock-restricted thread cannot mount(2).&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;The server, with no capability at all:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-ini" data-lang="ini"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# fileshare.service&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;[Unit]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;Requires&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;fileshare-provisioner.service&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;After&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;fileshare-provisioner.service&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;[Service]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;User&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;fileshare&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;Group&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;fileshare&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;ExecStart&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;/usr/local/bin/fileshare serve -c /etc/fileshare/fileshare.hcl&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;RuntimeDirectory&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;fileshare&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;StateDirectory&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;fileshare&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# No capability at all: CAP_SYS_RESOURCE would let it past an ext4 quota,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# and fileshare refuses to serve volumes with it.&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;CapabilityBoundingSet&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;AmbientCapabilities&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;NoNewPrivileges&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;yes&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;ProtectSystem&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;strict&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;ReadWritePaths&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;/srv/fileshare/volumes /var/lib/fileshare&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;ProtectSystem=&lt;/code&gt; is fine for the server: it is the provisioner that mounts, and
+mounts propagate into the server&amp;rsquo;s namespace, not out of it, so a ZFS volume
+mounted after the server started is visible to it.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Examples, not tested units&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Neither unit is exercised in CI: the end-to-end job runs both processes
+under &lt;code&gt;sudo&lt;/code&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Upgrade the provisioner first&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The provisioner refuses a message carrying a field its version does not
+define — it closes the connection — so &lt;code&gt;fileshare serve&lt;/code&gt; and
+&lt;code&gt;fileshare provisioner&lt;/code&gt; run the same version.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="the-admin-apis-volume-calls"&gt;The admin API&amp;rsquo;s volume calls&lt;span class="hx:absolute hx:-mt-20" id="the-admin-apis-volume-calls"&gt;&lt;/span&gt;
+&lt;a href="#the-admin-apis-volume-calls" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;fileshare serve&lt;/code&gt; relays these to the provisioner
+(&lt;a href="https://github.com/go-fileshare/fileshare/blob/v0.28.0/proto/fileshare/admin/v1/admin.proto" target="_blank" rel="noopener"&gt;&lt;code&gt;admin.proto&lt;/code&gt;&lt;/a&gt;):&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ListParents&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;where volumes may be created: each parent&amp;rsquo;s id, kind, root, free and total space, whether it takes snapshots; and &lt;code&gt;max_volume_bytes&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;CreateVolume&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;a volume of &lt;code&gt;quota_bytes&lt;/code&gt; (0 is refused). Idempotent by name: the same quota answers with the volume that exists (&lt;code&gt;created&lt;/code&gt; false), another quota is &lt;code&gt;ALREADY_EXISTS&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ResizeVolume&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;change the quota, either way — never below what is used (&lt;code&gt;FAILED_PRECONDITION&lt;/code&gt;)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;SnapshotVolume&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;a read-only, named snapshot: ZFS and btrfs; &lt;code&gt;UNIMPLEMENTED&lt;/code&gt; on XFS and ext4&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;GetVolume&lt;/code&gt;, &lt;code&gt;ListVolumes&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;each volume with its quota, what it uses, its snapshots and &lt;strong&gt;the shares that use it&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;DeleteVolume&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;refused while a share uses it — delete the share first. A volume holding data or snapshots needs &lt;code&gt;destroy_data&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;CreateShare&lt;/code&gt; with &lt;code&gt;volume { parent, name }&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;a share served from the volume, as a directory&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;code&gt;DeleteShare&lt;/code&gt; never deletes a volume. &amp;ldquo;The shares that use it&amp;rdquo; are the shares
+made from it &lt;strong&gt;and&lt;/strong&gt; any share — of the configuration files too, served,
+disabled or unavailable — whose image or directory lies inside it.&lt;/p&gt;
+&lt;p&gt;A name matches &lt;code&gt;^[a-z0-9][a-z0-9_-]{0,62}$&lt;/code&gt;, and a request never carries a
+path: it names a &lt;code&gt;parent&lt;/code&gt; from the provisioner&amp;rsquo;s own configuration.&lt;/p&gt;
+&lt;p&gt;With &lt;code&gt;reflection = true&lt;/code&gt; in the &lt;code&gt;admin&lt;/code&gt; block, &lt;code&gt;grpcurl&lt;/code&gt; can make the calls.
+The socket is 0600 and &lt;code&gt;allowed_uids&lt;/code&gt; above names only fileshare&amp;rsquo;s uid, so run
+it as that user:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nv"&gt;S&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/run/fileshare/admin.sock
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nv"&gt;A&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;fileshare.admin.v1.AdminService
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo -u fileshare grpcurl -plaintext -unix &lt;span class="nv"&gt;$S&lt;/span&gt; &lt;span class="nv"&gt;$A&lt;/span&gt;/ListParents
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# a 32 GiB volume on the XFS parent&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo -u fileshare grpcurl -plaintext -unix &lt;span class="nv"&gt;$S&lt;/span&gt; &lt;span class="se"&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; -d &lt;span class="s1"&gt;&amp;#39;{&amp;#34;parent&amp;#34;: &amp;#34;plain&amp;#34;, &amp;#34;name&amp;#34;: &amp;#34;projects&amp;#34;, &amp;#34;quota_bytes&amp;#34;: &amp;#34;34359738368&amp;#34;}&amp;#39;&lt;/span&gt; &lt;span class="se"&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nv"&gt;$A&lt;/span&gt;/CreateVolume
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# a share served from it&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo -u fileshare grpcurl -plaintext -unix &lt;span class="nv"&gt;$S&lt;/span&gt; &lt;span class="se"&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; -d &lt;span class="s1"&gt;&amp;#39;{&amp;#34;name&amp;#34;: &amp;#34;projects&amp;#34;,
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="s1"&gt; &amp;#34;volume&amp;#34;: {&amp;#34;parent&amp;#34;: &amp;#34;plain&amp;#34;, &amp;#34;name&amp;#34;: &amp;#34;projects&amp;#34;},
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="s1"&gt; &amp;#34;grants&amp;#34;: [{&amp;#34;subject&amp;#34;: {&amp;#34;group&amp;#34;: &amp;#34;staff&amp;#34;}, &amp;#34;access&amp;#34;: &amp;#34;ACCESS_WRITE&amp;#34;}]}&amp;#39;&lt;/span&gt; &lt;span class="se"&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nv"&gt;$A&lt;/span&gt;/CreateShare
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# grow it to 64 GiB&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo -u fileshare grpcurl -plaintext -unix &lt;span class="nv"&gt;$S&lt;/span&gt; &lt;span class="se"&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; -d &lt;span class="s1"&gt;&amp;#39;{&amp;#34;parent&amp;#34;: &amp;#34;plain&amp;#34;, &amp;#34;name&amp;#34;: &amp;#34;projects&amp;#34;, &amp;#34;quota_bytes&amp;#34;: &amp;#34;68719476736&amp;#34;}&amp;#39;&lt;/span&gt; &lt;span class="se"&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nv"&gt;$A&lt;/span&gt;/ResizeVolume&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h3 data-hextra-search-id="status-codes"&gt;Status codes&lt;span class="hx:absolute hx:-mt-20" id="status-codes"&gt;&lt;/span&gt;
+&lt;a href="#status-codes" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;The provisioner&amp;rsquo;s codes come back as it gave them: &lt;code&gt;INVALID_ARGUMENT&lt;/code&gt; (a name
+outside the grammar, an unknown parent, a quota of 0), &lt;code&gt;OUT_OF_RANGE&lt;/code&gt; (above
+&lt;code&gt;max_volume&lt;/code&gt;), &lt;code&gt;RESOURCE_EXHAUSTED&lt;/code&gt; (the quota, or a resize&amp;rsquo;s growth, is more
+than the parent has free now; or the project-id range is used up),
+&lt;code&gt;ALREADY_EXISTS&lt;/code&gt;, &lt;code&gt;NOT_FOUND&lt;/code&gt;, &lt;code&gt;FAILED_PRECONDITION&lt;/code&gt;, &lt;code&gt;UNIMPLEMENTED&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Three are fileshare&amp;rsquo;s own:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;no &lt;code&gt;provisioner&lt;/code&gt; configured: &lt;code&gt;FAILED_PRECONDITION&lt;/code&gt;;&lt;/li&gt;
+&lt;li&gt;the provisioner refuses this server&amp;rsquo;s uid: &lt;code&gt;FAILED_PRECONDITION&lt;/code&gt; too — it is
+a deployment mistake (its &lt;code&gt;client_uid&lt;/code&gt; is wrong), not something the admin
+caller may not do;&lt;/li&gt;
+&lt;li&gt;the provisioner does not answer: &lt;code&gt;UNAVAILABLE&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 data-hextra-search-id="what-is-checked-before-a-volume-is-served"&gt;What is checked before a volume is served&lt;span class="hx:absolute hx:-mt-20" id="what-is-checked-before-a-volume-is-served"&gt;&lt;/span&gt;
+&lt;a href="#what-is-checked-before-a-volume-is-served" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;fileshare asks the provisioner where the volume is, and then checks, itself:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;the path is clean, absolute and — resolved — under &lt;code&gt;source_roots&lt;/code&gt;;&lt;/li&gt;
+&lt;li&gt;it is a directory;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;statfs&lt;/code&gt; reports the kind&amp;rsquo;s filesystem (&lt;code&gt;ZFS_SUPER_MAGIC&lt;/code&gt;,
+&lt;code&gt;BTRFS_SUPER_MAGIC&lt;/code&gt;, &lt;code&gt;XFS_SUPER_MAGIC&lt;/code&gt;, &lt;code&gt;EXT4_SUPER_MAGIC&lt;/code&gt;);&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;ZFS&lt;/strong&gt;: it is a mount point — its device is not its parent&amp;rsquo;s. An unmounted
+dataset&amp;rsquo;s directory would take writes under no quota. (Which dataset is
+mounted there is not verified: the provisioner&amp;rsquo;s answer does not say.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;btrfs&lt;/strong&gt;: it is a subvolume&amp;rsquo;s root — a plain directory under the parent has
+no qgroup;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;XFS and ext4&lt;/strong&gt;: it carries a non-zero project id that its new files
+inherit — a directory outside every project is served unbounded.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The state file keeps the volume&amp;rsquo;s &lt;strong&gt;name&lt;/strong&gt;, not its path, and every start asks
+and checks again. A volume that is gone, fails a check, or whose provisioner
+does not answer within 10 s leaves its share &lt;strong&gt;defined and not served&lt;/strong&gt; — said
+at the start, by &lt;a href="https://go-fileshare.github.io/docs/0.28/configuration/check/"&gt;&lt;code&gt;fileshare check&lt;/code&gt;&lt;/a&gt;, and in the
+share&amp;rsquo;s &lt;code&gt;unavailable&lt;/code&gt; field — while the rest of the server starts.
+&lt;code&gt;EnableShare&lt;/code&gt; tries it again.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;fileshare serve&lt;/code&gt; refuses to serve volumes as root or with &lt;code&gt;CAP_SYS_RESOURCE&lt;/code&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;ext4 lets either write past a project quota (fs/quota/dquot.c,
+&lt;code&gt;ignore_hardlimit&lt;/code&gt;): root wrote 16 MiB into an 8 MiB project in
+go-fsctl/projquota&amp;rsquo;s CI. XFS has no such exemption, but the rule is one
+rule for the process, on every kind: fileshare reads its effective uid and
+&lt;code&gt;CapEff&lt;/code&gt;/&lt;code&gt;CapPrm&lt;/code&gt; in &lt;code&gt;/proc/self/status&lt;/code&gt; (a permitted capability is one
+&lt;code&gt;capset(2)&lt;/code&gt; away from effective), and a status it cannot read counts as
+holding it. It refuses &lt;strong&gt;serving&lt;/strong&gt;, not the volume calls — creating storage
+as root is harmless, writing into it as root is not. &lt;code&gt;fileshare check&lt;/code&gt; says
+which it is. Hence &lt;code&gt;client_uid = 0&lt;/code&gt; is refused by the provisioner, and the
+server&amp;rsquo;s unit above has an empty &lt;code&gt;CapabilityBoundingSet=&lt;/code&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="a-full-share"&gt;A full share&lt;span class="hx:absolute hx:-mt-20" id="a-full-share"&gt;&lt;/span&gt;
+&lt;a href="#a-full-share" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;XFS says a full project with &lt;code&gt;ENOSPC&lt;/code&gt;; ext4, btrfs and ZFS say &lt;code&gt;EDQUOT&lt;/code&gt;. Since
+v0.21.1 every protocol answers &amp;ldquo;full&amp;rdquo;:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;protocol&lt;/th&gt;
+&lt;th&gt;no space (&lt;code&gt;ENOSPC&lt;/code&gt;)&lt;/th&gt;
+&lt;th&gt;a quota (&lt;code&gt;EDQUOT&lt;/code&gt;)&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;WebDAV&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;507 Insufficient Storage&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;507 Insufficient Storage&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;NFS&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;NFS3ERR_NOSPC&lt;/code&gt; (28)&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;NFS3ERR_DQUOT&lt;/code&gt; (69), as RFC 1813 and Linux&amp;rsquo;s nfsd&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;SFTP&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;SSH_FX_FAILURE&lt;/code&gt;, &amp;ldquo;no space left on device (the share is full)&amp;rdquo; — version 3 has no code for it&lt;/td&gt;
+&lt;td&gt;the same&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;SMB&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;STATUS_DISK_FULL&lt;/code&gt; (0xC000007F)&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;STATUS_DISK_FULL&lt;/code&gt;, as Samba does (&amp;ldquo;Windows apps need this, not NT_STATUS_QUOTA_EXCEEDED&amp;rdquo;)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;S3&lt;/td&gt;
+&lt;td&gt;served read-only&lt;/td&gt;
+&lt;td&gt;served read-only&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;In v0.21.0, SMB answered &lt;code&gt;STATUS_ACCESS_DENIED&lt;/code&gt; and NFS answered a quota with
+&lt;code&gt;NFS3ERR_NOSPC&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;This applies to every &lt;a href="https://go-fileshare.github.io/docs/0.28/configuration/shares/"&gt;directory share&lt;/a&gt;, not only
+to volumes — see the &lt;a href="https://go-fileshare.github.io/docs/0.28/status/"&gt;upgrade note&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="the-size-a-client-sees"&gt;The size a client sees&lt;span class="hx:absolute hx:-mt-20" id="the-size-a-client-sees"&gt;&lt;/span&gt;
+&lt;a href="#the-size-a-client-sees" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Every protocol asks the server for a share&amp;rsquo;s size at each query: NFS
+&lt;code&gt;FSSTAT&lt;/code&gt;, SMB &lt;code&gt;FileFsFullSizeInformation&lt;/code&gt; and WebDAV&amp;rsquo;s RFC 4331 quota
+properties.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;ZFS, XFS and ext4&lt;/strong&gt;: the size is what &lt;code&gt;statfs&lt;/code&gt; says inside the volume,
+which the kernel answers with the quota (&lt;code&gt;refquota&lt;/code&gt; for ZFS, the project
+quota for XFS and ext4).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;btrfs&lt;/strong&gt; (since fileshare v0.23.0): btrfs&amp;rsquo;s &lt;code&gt;statfs&lt;/code&gt; ignores qgroups and
+reports the whole filesystem, so the server uses the provisioner&amp;rsquo;s numbers
+instead. The size is the volume&amp;rsquo;s quota, and the free space is the quota
+less the qgroup&amp;rsquo;s referenced bytes, or the filesystem&amp;rsquo;s own free space when
+that is less. The server asks the provisioner in the background, at most
+once every 5 seconds while clients are asking, and answers from the last
+numbers in the meantime. btrfs updates a qgroup&amp;rsquo;s count when it commits a
+transaction (every 30 seconds by default), so the free space a client sees
+can lag behind writes by that long. Before v0.23.0, a btrfs volume showed
+the whole filesystem; the quota held all the same.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Used space comes from the provisioner (&lt;code&gt;used_bytes&lt;/code&gt;): reading an XFS or ext4
+project&amp;rsquo;s usage needs &lt;code&gt;CAP_SYS_ADMIN&lt;/code&gt;, which fileshare does not have.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-the-provisioner-promises"&gt;What the provisioner promises&lt;span class="hx:absolute hx:-mt-20" id="what-the-provisioner-promises"&gt;&lt;/span&gt;
+&lt;a href="#what-the-provisioner-promises" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;One uid, read from the kernel.&lt;/strong&gt; The peer is identified with &lt;code&gt;SO_PEERCRED&lt;/code&gt;
+when it connects, and anybody but &lt;code&gt;client_uid&lt;/code&gt; — root included — is
+&lt;code&gt;PERMISSION_DENIED&lt;/code&gt; before a byte of the request is decoded.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;A closed set of verbs.&lt;/strong&gt; A method outside its service, or a message that
+does not decode or carries a field it does not define, gets no answer: the
+connection is closed.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;It never touches what it did not create.&lt;/strong&gt; ZFS: the dataset&amp;rsquo;s own
+&lt;code&gt;fileshare:volume&lt;/code&gt; property — set on the dataset, since user properties are
+inherited and an inherited mark is not its own. btrfs: the subvolume id and
+uuid recorded in &lt;code&gt;state_file&lt;/code&gt;. XFS/ext4: a project id inside the parent&amp;rsquo;s
+range &lt;em&gt;and&lt;/em&gt; recorded. Checked before every resize, snapshot and delete.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Delete refuses data and snapshots&lt;/strong&gt; unless &lt;code&gt;destroy_data&lt;/code&gt; is set, and is
+logged before it happens.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 data-hextra-search-id="measured"&gt;Measured&lt;span class="hx:absolute hx:-mt-20" id="measured"&gt;&lt;/span&gt;
+&lt;a href="#measured" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;In fileshare&amp;rsquo;s CI, as root on real pools and loop-backed filesystems, with &lt;code&gt;fileshare serve&lt;/code&gt; running as &lt;code&gt;nobody&lt;/code&gt; and driven through the
+admin API: writes over WebDAV and over SFTP stop at a 32 MiB volume&amp;rsquo;s quota on
+all four kinds.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="not-yet"&gt;Not yet&lt;span class="hx:absolute hx:-mt-20" id="not-yet"&gt;&lt;/span&gt;
+&lt;a href="#not-yet" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Ceph.&lt;/strong&gt; CephFS quotas and RBD are a later phase.&lt;/li&gt;
+&lt;/ul&gt;</description></item></channel></rss>

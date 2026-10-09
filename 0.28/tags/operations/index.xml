@@ -1,0 +1,267 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Operations</title><link>https://go-fileshare.github.io/docs/0.28/tags/operations/</link><description>Recent content in Operations on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>en</language><atom:link href="https://go-fileshare.github.io/docs/0.28/tags/operations/index.xml" rel="self" type="application/rss+xml"/><item><title>Building only what you want</title><link>https://go-fileshare.github.io/docs/0.28/operations/build-tags/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.28/operations/build-tags/</guid><description>
+&lt;p&gt;Each protocol is behind a build tag, and a tag leaves it out &lt;strong&gt;entirely&lt;/strong&gt;: no
+listener, no parser, no dependency, no code.&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;go install -tags nonfs,nowebdav,nosftp,nos3 github.com/go-fileshare/fileshare@latest &lt;span class="c1"&gt;# SMB only&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;go build -tags nosmb,nonfs,nosftp,nos3 . &lt;span class="c1"&gt;# WebDAV only&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Where the &lt;strong&gt;people&lt;/strong&gt; come from is behind tags of its own: &lt;code&gt;nosql&lt;/code&gt; leaves out
+the three database drivers, &lt;code&gt;noldap&lt;/code&gt; the LDAP client.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;build&lt;/th&gt;
+&lt;th&gt;size&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;everything&lt;/td&gt;
+&lt;td&gt;31.2 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags noldap&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;30.9 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags nosftp&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;30.6 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags noopenpubkey&lt;/code&gt; (no opkssh logins over SFTP)&lt;/td&gt;
+&lt;td&gt;about 2 MB less&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags nos3&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;31.1 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags nonfs,nowebdav,nosftp,nos3&lt;/code&gt; (SMB only)&lt;/td&gt;
+&lt;td&gt;28.1 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags nopartitioned&lt;/code&gt; (no apfs, btrfs, xfs, zfs)&lt;/td&gt;
+&lt;td&gt;29.2 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags nosql&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;20.2 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags nosql,noldap&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;19.8 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags nosql,noldap,nonfs,nowebdav,nosftp,nos3&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;16.2 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;These are the figures the fileshare README gives, measured before the admin
+API arrived; the table below is the later measurement.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="the-admin-api-and-nogrpc"&gt;The admin API, and &lt;code&gt;nogrpc&lt;/code&gt;&lt;span class="hx:absolute hx:-mt-20" id="the-admin-api-and-nogrpc"&gt;&lt;/span&gt;
+&lt;a href="#the-admin-api-and-nogrpc" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;The &lt;a href="https://go-fileshare.github.io/docs/0.28/administration/"&gt;admin API&lt;/a&gt; brought gRPC and protobuf in, and
+they are behind &lt;code&gt;nogrpc&lt;/code&gt; (linux/amd64, measured 2026-09-29, when the rows above
+had grown to 34.1 MB for everything):&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;build&lt;/th&gt;
+&lt;th&gt;size&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;everything, with the admin API&lt;/td&gt;
+&lt;td&gt;46.1 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags nogrpc&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;34.4 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags nosql,noldap,nogrpc&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;22.5 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;gRPC costs &lt;strong&gt;11.7 MB&lt;/strong&gt; — the &lt;a href="#why-not-subprocess-plugins"&gt;plugin measurement&lt;/a&gt;
+below, taken again, now that it is here for a reason of its own. A site that
+manages its shares in files does not need to carry it.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;An &lt;code&gt;admin&lt;/code&gt; block in a &lt;code&gt;nogrpc&lt;/code&gt; build is refused&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Rather than served without one: a configuration that asks for the API and
+starts without it does not do what it says.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;nogrpc&lt;/code&gt; leaves out the admin API and, with it, the
+&lt;a href="https://go-fileshare.github.io/docs/0.28/administration/volumes/"&gt;provisioner&lt;/a&gt;. &lt;a href="https://go-fileshare.github.io/docs/0.28/administration/health/"&gt;Health and metrics&lt;/a&gt;
+are plain HTTP and stay.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;-tags noprovisioner&lt;/code&gt; leaves out only the provisioner, the privileged
+&lt;code&gt;fileshare provisioner&lt;/code&gt; role, and go-fsctl&amp;rsquo;s zfs, btrfs and projquota with it:
+a server that never serves volumes need not carry the code that creates them.
+&lt;code&gt;fileshare provisioner&lt;/code&gt; in such a build says so rather than &amp;ldquo;unknown command&amp;rdquo;.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;nosql&lt;/code&gt; is by a distance the biggest lever: PostgreSQL, MySQL and SQLite
+together weigh &lt;strong&gt;11.7 MB&lt;/strong&gt;, more than every protocol in this program put
+together. A site whose users are in the file wants it. The drivers are imported
+by the command and not by the library that uses them, which is what makes the
+choice a build tag rather than a fork.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;A protocol this binary was built without&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;A configuration naming one is told &lt;em&gt;that&lt;/em&gt;, rather than &amp;ldquo;there is no such
+protocol&amp;rdquo; — the difference between a typo and a build tag. The same holds
+for &lt;code&gt;opkssh_client_id&lt;/code&gt; under &lt;code&gt;noopenpubkey&lt;/code&gt; and an &lt;code&gt;admin&lt;/code&gt; block under
+&lt;code&gt;nogrpc&lt;/code&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="why-not-subprocess-plugins"&gt;Why not subprocess plugins&lt;span class="hx:absolute hx:-mt-20" id="why-not-subprocess-plugins"&gt;&lt;/span&gt;
+&lt;a href="#why-not-subprocess-plugins" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;It was &lt;strong&gt;measured rather than argued&lt;/strong&gt;: &lt;code&gt;hashicorp/go-plugin&lt;/code&gt; brings gRPC and
+protobuf, which cost &lt;strong&gt;13.2 MB on their own&lt;/strong&gt; — more than this entire binary
+with all three protocols and every driver in it. A plugin host would be twice
+the size before loading anything, and each plugin binary would carry gRPC
+again.&lt;/p&gt;
+&lt;p&gt;For attack surface, a tag is also the stronger tool for anything you do not
+run: &lt;strong&gt;code that was never compiled cannot be reached&lt;/strong&gt;, sandboxed or not.&lt;/p&gt;
+&lt;p&gt;What tags do &lt;em&gt;not&lt;/em&gt; give is isolation between the protocols you &lt;strong&gt;do&lt;/strong&gt; run, nor
+a way to add a protocol without recompiling. Both are real, and both are
+arguments for a process boundary rather than for a smaller binary — which is
+&lt;a href="https://go-fileshare.github.io/docs/0.28/operations/isolation/"&gt;one process per protocol&lt;/a&gt;, using this same binary, not a plugin
+framework.&lt;/p&gt;</description></item><item><title>One process per protocol</title><link>https://go-fileshare.github.io/docs/0.28/operations/isolation/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.28/operations/isolation/</guid><description>
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;fileshare --config /etc/fileshare.d --isolate&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;pre&gt;&lt;code&gt;smb on 0.0.0.0:445 — process 19810, serving public, photos and scratch
+webdav on 0.0.0.0:8080 — process 19811, serving public and photos
+nfs on 0.0.0.0:2049 — process 19812, serving public&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;The parent binds the listeners and then execs &lt;strong&gt;itself&lt;/strong&gt; once per protocol,
+handing each child only the shares that protocol may serve.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="checked-with-lsof-not-by-reading-the-code"&gt;Checked with &lt;code&gt;lsof&lt;/code&gt;, not by reading the code&lt;span class="hx:absolute hx:-mt-20" id="checked-with-lsof-not-by-reading-the-code"&gt;&lt;/span&gt;
+&lt;a href="#checked-with-lsof-not-by-reading-the-code" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;pre&gt;&lt;code&gt;smb (pid 19810) has open: scratch.img photos.img
+webdav (pid 19811) has open: photos.img
+nfs (pid 19812) has open: photos.img&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;The writable image is open in &lt;strong&gt;exactly one process&lt;/strong&gt;, and the WebDAV child
+never opens it at all.&lt;/p&gt;
+&lt;p&gt;That is what &lt;a href="https://go-fileshare.github.io/docs/0.28/operations/build-tags/"&gt;build tags&lt;/a&gt; cannot give: a panic or an exhausted
+heap in one protocol takes down one protocol, each child can be confined by
+whatever the operating system offers, and a bug in one parser cannot reach an
+image that process never opened.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="privileged-ports"&gt;Privileged ports&lt;span class="hx:absolute hx:-mt-20" id="privileged-ports"&gt;&lt;/span&gt;
+&lt;a href="#privileged-ports" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;On Unix the parent passes the bound listener to the child, so &lt;strong&gt;a privileged
+port works with unprivileged children&lt;/strong&gt; — the parent binds 445, the child never
+needs the privilege.&lt;/p&gt;
+&lt;p&gt;Windows has no &lt;code&gt;ExtraFiles&lt;/code&gt;, so there the child binds the address itself; the
+isolation is the same, the privileged-port half is not.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="the-rule-that-makes-it-honest"&gt;The rule that makes it honest&lt;span class="hx:absolute hx:-mt-20" id="the-rule-that-makes-it-honest"&gt;&lt;/span&gt;
+&lt;a href="#the-rule-that-makes-it-honest" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;A child opens the image itself, so an image served &lt;em&gt;writable&lt;/em&gt; by two protocols
+would be two drivers over one file with &lt;strong&gt;no lock between them&lt;/strong&gt; — exactly what
+the &lt;a href="https://go-fileshare.github.io/docs/0.28/operations/locking/"&gt;shared lock&lt;/a&gt; prevents inside one process.&lt;/p&gt;
+&lt;p&gt;That is refused, and the refusal says how to fix it:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;pre&gt;&lt;code&gt;scratch is writable over smb and webdav, and one process per protocol means
+that many drivers writing one file with no lock between them. Say
+`protocols = [&amp;#34;smb&amp;#34;]` on the share, or make it read_only, or do not isolate.&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;protocols = [...]&lt;/code&gt; on a share is useful on its own, not only under
+&lt;code&gt;--isolate&lt;/code&gt;: a share declared SMB-only is a share the WebDAV process is never
+told about. A &lt;code&gt;serve&lt;/code&gt; block that would end up carrying nothing is refused too,
+before any image is opened, naming the shares that were kept from it and why.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="not-with-an-admin-or-a-metrics-block-yet"&gt;Not with an &lt;code&gt;admin&lt;/code&gt; or a &lt;code&gt;metrics&lt;/code&gt; block, yet&lt;span class="hx:absolute hx:-mt-20" id="not-with-an-admin-or-a-metrics-block-yet"&gt;&lt;/span&gt;
+&lt;a href="#not-with-an-admin-or-a-metrics-block-yet" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;--isolate&lt;/code&gt; together with an &lt;a href="https://go-fileshare.github.io/docs/0.28/administration/"&gt;&lt;code&gt;admin&lt;/code&gt;&lt;/a&gt; or a
+&lt;a href="https://go-fileshare.github.io/docs/0.28/administration/health/"&gt;&lt;code&gt;metrics&lt;/code&gt;&lt;/a&gt; block is refused: the children open
+the images and the parent opens nothing, so there is no one process an API
+change could be applied to, or whose readiness a probe would be asking about.&lt;/p&gt;</description></item><item><title>One image, several protocols, one lock</title><link>https://go-fileshare.github.io/docs/0.28/operations/locking/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.28/operations/locking/</guid><description>
+&lt;p&gt;Every server in this family serialises the driver itself, because
+&lt;a href="https://github.com/go-filesystems/interface" target="_blank" rel="noopener"&gt;&lt;code&gt;go-filesystems/interface&lt;/code&gt;&lt;/a&gt;
+promises nothing about concurrent path-based calls — and each of them holds
+&lt;strong&gt;its own&lt;/strong&gt; lock, knowing nothing about the others.&lt;/p&gt;
+&lt;p&gt;Serving one image over three protocols at once would therefore have no common
+lock anywhere. So the image is wrapped &lt;strong&gt;once&lt;/strong&gt;, here, and the same wrapper is
+handed to all of them.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="stated-as-measured-so-as-not-to-overstate-it"&gt;Stated as measured, so as not to overstate it&lt;span class="hx:absolute hx:-mt-20" id="stated-as-measured-so-as-not-to-overstate-it"&gt;&lt;/span&gt;
+&lt;a href="#stated-as-measured-so-as-not-to-overstate-it" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Eight goroutines writing through an &lt;strong&gt;unwrapped&lt;/strong&gt; fat32 driver under &lt;code&gt;-race&lt;/code&gt;
+produce &lt;strong&gt;no race today&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;This is insurance on a contract, not a reproduction of a defect — ext4 and ntfs
+are not fat32, and a driver update is not a thing this program should have to
+re-audit.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="the-wrapper-carries-capabilities-through"&gt;The wrapper carries capabilities through&lt;span class="hx:absolute hx:-mt-20" id="the-wrapper-carries-capabilities-through"&gt;&lt;/span&gt;
+&lt;a href="#the-wrapper-carries-capabilities-through" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;It does not hide them:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;a driver that answers &lt;code&gt;Opener&lt;/code&gt; gets a &lt;strong&gt;locked &lt;code&gt;File&lt;/code&gt;&lt;/strong&gt; back;&lt;/li&gt;
+&lt;li&gt;one whose &lt;code&gt;File&lt;/code&gt; answers &lt;code&gt;WritableFile&lt;/code&gt; keeps its &lt;strong&gt;positional writes&lt;/strong&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The difference between those and the whole-file fallback was measured at
+&lt;strong&gt;~70×&lt;/strong&gt; elsewhere in the family, so a wrapper that erased them would be a
+performance defect disguised as safety.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="under-isolate-the-lock-cannot-help"&gt;Under &lt;code&gt;--isolate&lt;/code&gt; the lock cannot help&lt;span class="hx:absolute hx:-mt-20" id="under-isolate-the-lock-cannot-help"&gt;&lt;/span&gt;
+&lt;a href="#under-isolate-the-lock-cannot-help" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;A child process opens the image itself, so there is no shared wrapper between
+children. That is why an image served writable by two protocols is
+&lt;a href="https://go-fileshare.github.io/docs/0.28/operations/isolation/#the-rule-that-makes-it-honest"&gt;refused&lt;/a&gt; rather than quietly
+served without a lock.&lt;/p&gt;</description></item><item><title>Operations</title><link>https://go-fileshare.github.io/docs/0.28/operations/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.28/operations/</guid><description>
+&lt;div class="hextra-cards hx:mt-4 hx:gap-4 hx:grid not-prose" style="--hextra-cards-grid-cols: 3;"&gt;
+&lt;a class="hextra-card hx:group hx:flex hx:flex-col hx:justify-start hx:overflow-hidden hx:rounded-lg hx:border hx:border-gray-200 hx:text-current hx:no-underline hx:dark:shadow-none hx:hover:shadow-gray-100 hx:dark:hover:shadow-none hx:shadow-gray-100 hx:active:shadow-sm hx:active:shadow-gray-200 hx:transition-all hx:duration-200 hx:hover:border-gray-300 hx:bg-transparent hx:shadow-xs hx:dark:border-neutral-800 hx:hover:bg-slate-50 hx:hover:shadow-md hx:dark:hover:border-neutral-700 hx:dark:hover:bg-neutral-900" href="build-tags/"&gt;&lt;div&gt;
+&lt;span class="hextra-card-icon hx:flex hx:font-semibold hx:items-start hx:gap-2 hx:pt-4 hx:px-4 hx:text-gray-700 hx:hover:text-gray-900 hx:dark:text-neutral-200 hx:dark:hover:text-neutral-50"&gt;&lt;svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/&gt;&lt;/svg&gt;Building only what you want&lt;/span&gt;&lt;div class="hextra-card-subtitle hx:line-clamp-3 hx:text-sm hx:font-normal hx:text-gray-500 hx:dark:text-gray-400 hx:px-4 hx:mb-4 hx:mt-2"&gt;A build tag leaves a protocol, or the admin API, out of the binary entirely.&lt;/div&gt;&lt;/div&gt;&lt;/a&gt;
+&lt;a class="hextra-card hx:group hx:flex hx:flex-col hx:justify-start hx:overflow-hidden hx:rounded-lg hx:border hx:border-gray-200 hx:text-current hx:no-underline hx:dark:shadow-none hx:hover:shadow-gray-100 hx:dark:hover:shadow-none hx:shadow-gray-100 hx:active:shadow-sm hx:active:shadow-gray-200 hx:transition-all hx:duration-200 hx:hover:border-gray-300 hx:bg-transparent hx:shadow-xs hx:dark:border-neutral-800 hx:hover:bg-slate-50 hx:hover:shadow-md hx:dark:hover:border-neutral-700 hx:dark:hover:bg-neutral-900" href="isolation/"&gt;&lt;div&gt;
+&lt;span class="hextra-card-icon hx:flex hx:font-semibold hx:items-start hx:gap-2 hx:pt-4 hx:px-4 hx:text-gray-700 hx:hover:text-gray-900 hx:dark:text-neutral-200 hx:dark:hover:text-neutral-50"&gt;&lt;svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/&gt;&lt;/svg&gt;One process per protocol&lt;/span&gt;&lt;div class="hextra-card-subtitle hx:line-clamp-3 hx:text-sm hx:font-normal hx:text-gray-500 hx:dark:text-gray-400 hx:px-4 hx:mb-4 hx:mt-2"&gt;&amp;ndash;isolate: each protocol in a process of its own.&lt;/div&gt;&lt;/div&gt;&lt;/a&gt;
+&lt;a class="hextra-card hx:group hx:flex hx:flex-col hx:justify-start hx:overflow-hidden hx:rounded-lg hx:border hx:border-gray-200 hx:text-current hx:no-underline hx:dark:shadow-none hx:hover:shadow-gray-100 hx:dark:hover:shadow-none hx:shadow-gray-100 hx:active:shadow-sm hx:active:shadow-gray-200 hx:transition-all hx:duration-200 hx:hover:border-gray-300 hx:bg-transparent hx:shadow-xs hx:dark:border-neutral-800 hx:hover:bg-slate-50 hx:hover:shadow-md hx:dark:hover:border-neutral-700 hx:dark:hover:bg-neutral-900" href="locking/"&gt;&lt;div&gt;
+&lt;span class="hextra-card-icon hx:flex hx:font-semibold hx:items-start hx:gap-2 hx:pt-4 hx:px-4 hx:text-gray-700 hx:hover:text-gray-900 hx:dark:text-neutral-200 hx:dark:hover:text-neutral-50"&gt;&lt;svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/&gt;&lt;/svg&gt;One image, several protocols, one lock&lt;/span&gt;&lt;div class="hextra-card-subtitle hx:line-clamp-3 hx:text-sm hx:font-normal hx:text-gray-500 hx:dark:text-gray-400 hx:px-4 hx:mb-4 hx:mt-2"&gt;Writes from several protocols to one image go through one shared lock.&lt;/div&gt;&lt;/div&gt;&lt;/a&gt;
+&lt;/div&gt;</description></item></channel></rss>
