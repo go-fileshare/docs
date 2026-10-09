@@ -5,7 +5,7 @@ description: "Welches fileshare-Release diese Seiten beschreiben, was jedes Rele
 tags: [stand, releases]
 ---
 
-Diese Seiten beschreiben **fileshare v0.25.0**.
+Diese Seiten beschreiben **fileshare v0.26.0**.
 
 ## Was jedes Release hinzugefügt hat {#what-each-release-added}
 
@@ -44,6 +44,7 @@ Diese Seiten beschreiben **fileshare v0.25.0**.
 | v0.24.0 | schnelleres Lesen: Ein WebDAV-GET einer Verzeichnis- oder Volume-Freigabe geht über einfaches HTTP (nicht über TLS) mit `sendfile(2)` hinaus, NFS liest und schreibt in 1 MiB (rtmax/wtmax), und SMB-Clients lesen mehr als 64 KiB pro Anfrage (`CAP_LARGE_MTU`). Auf dem CI-Runner, eine 256-MiB-Datei: WebDAV 6,6 GB/s, SMB 0,84, NFS 1,47 (ein Client) |
 | v0.24.1 | Sicherheit: Eine untätige NFS-Verbindung behält nicht mehr die 3 MiB ihres größten Aufrufs (24 untätige Verbindungen hielten 59 MiB); ein SMB-Frame-Header lässt den Server nicht mehr die angekündigten 8 MiB belegen, bevor die Bytes ankommen; eine SMB-Anfrage kann nicht mehr ein Credit für 4 GiB zahlen (go-filesystems/nfs v0.8.1, smb v0.6.1 und v0.6.2) |
 | v0.25.0 | SFTP beantwortet `limits@openssh.com`, sodass OpenSSHs `sftp` bis zu 255 KiB liest (+25 %); eine Sitzung hält höchstens 1024 offene Handles (go-filesystems/sftp v0.6.0) |
+| v0.26.0 | serverseitiges Kopieren bei jedem Protokoll, das es kennt: Ein WebDAV-`COPY`, ein SFTP-`copy-data` (OpenSSHs `sftp cp`) und ein SMB-COPYCHUNK (Explorer, Linux `copy_file_range`) werden auf dem Server ausgeführt, mit `copy_file_range(2)` zwischen Dateien des Hosts — ein Reflink auf btrfs und XFS, in der CI gemessen: 0 Byte belegt für eine 8-MiB-Kopie. Sicherheit: Ein WebDAV-`COPY` und jedes S3-`GET`/`HEAD` lesen nicht mehr die ganze Datei in den Speicher; S3 streamt Objekte jeder Größe. Korrektur: Der Sendfile-Weg für WebDAV-`GET` aus v0.24.0 griff nur bei schreibgeschützten Freigaben — eine Hülle verbarg ihn bei beschreibbaren; seit v0.26.0 greift er bei beiden |
 
 {{< callout type="warning" >}}
 **Upgrade auf v0.21.0**

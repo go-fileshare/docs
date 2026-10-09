@@ -23,7 +23,7 @@ Nichts lauscht, solange der Block nicht geschrieben ist.
 ## Was sie tut {#what-it-does}
 
 Der Dienst ist
-[`fileshare.admin.v1.AdminService`](https://github.com/go-fileshare/fileshare/blob/v0.25.0/proto/fileshare/admin/v1/admin.proto):
+[`fileshare.admin.v1.AdminService`](https://github.com/go-fileshare/fileshare/blob/v0.26.0/proto/fileshare/admin/v1/admin.proto):
 
 | | |
 |---|---|
