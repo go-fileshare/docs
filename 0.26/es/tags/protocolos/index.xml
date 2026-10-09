@@ -566,7 +566,7 @@ data-copied-label="¡Copiado!"
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;Un certificado firmado por la CA SSH del proveedor&lt;/strong&gt;: &lt;code&gt;bridge ssh-cert&lt;/code&gt; escribe
+&lt;li&gt;&lt;strong&gt;Un certificado firmado por la CA SSH del proveedor&lt;/strong&gt;: &lt;code&gt;authn-bridge ssh-cert&lt;/code&gt; escribe
 uno tras un inicio de sesión a través de la federación. Su principal es la
 persona, su extensión &lt;code&gt;groups@go-authn.org&lt;/code&gt; sus grupos, de modo que se aplican las
 &lt;a href="https://go-fileshare.github.io/docs/0.26/es/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;reglas &lt;code&gt;oidc:groups:&lt;/code&gt;&lt;/a&gt;.

@@ -554,7 +554,7 @@ data-copied-label="Copié !"
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;Un certificat signé par l&amp;rsquo;AC SSH du fournisseur&lt;/strong&gt; — &lt;code&gt;bridge ssh-cert&lt;/code&gt; en écrit un
+&lt;li&gt;&lt;strong&gt;Un certificat signé par l&amp;rsquo;AC SSH du fournisseur&lt;/strong&gt; — &lt;code&gt;authn-bridge ssh-cert&lt;/code&gt; en écrit un
 après une connexion par la fédération. Son principal est la personne, son
 extension &lt;code&gt;groups@go-authn.org&lt;/code&gt; ses groupes : les
 &lt;a href="https://go-fileshare.github.io/docs/0.26/fr/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;règles &lt;code&gt;oidc:groups:&lt;/code&gt;&lt;/a&gt;

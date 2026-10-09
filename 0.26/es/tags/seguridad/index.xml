@@ -446,7 +446,7 @@ una lista más antigua, aún firmada y sin caducar.&lt;/p&gt;
 &lt;code&gt;ca_file&lt;/code&gt; de &lt;code&gt;ssf&lt;/code&gt;, &lt;strong&gt;no pueden estar dentro de un recurso compartido&lt;/strong&gt;: quien
 escribiera allí decidiría quién entra.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="a-plain-sshd-next-to-fileshare"&gt;Un &lt;code&gt;sshd&lt;/code&gt; normal junto a fileshare&lt;span class="hx:absolute hx:-mt-20" id="a-plain-sshd-next-to-fileshare"&gt;&lt;/span&gt;
-&lt;a href="#a-plain-sshd-next-to-fileshare" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;La misma verificación está disponible sin fileshare: el &lt;code&gt;revokd&lt;/code&gt; de
+&lt;a href="#a-plain-sshd-next-to-fileshare" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;La misma verificación está disponible sin fileshare: el &lt;code&gt;authn-revokd&lt;/code&gt; de
 go-authn/revocation descarga las listas, conserva solo las que se verifican, guarda
 su orden en disco, escribe &lt;code&gt;RevokedKeys&lt;/code&gt; para &lt;code&gt;sshd&lt;/code&gt; y, cuando una lista caduca,
 escribe una que revoca la propia CA, de modo que &lt;code&gt;sshd&lt;/code&gt; también falla en modo

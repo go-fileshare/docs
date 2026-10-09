@@ -442,7 +442,7 @@ v0.17.0) &lt;code&gt;authorized_keys_file&lt;/code&gt;, &lt;code&gt;dsn_file&lt;
 &lt;code&gt;ca_file&lt;/code&gt; de &lt;code&gt;ssf&lt;/code&gt;, &lt;strong&gt;ne peuvent pas se trouver dans un partage&lt;/strong&gt; : quiconque y écrit
 déciderait de qui entre.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="a-plain-sshd-next-to-fileshare"&gt;Un &lt;code&gt;sshd&lt;/code&gt; ordinaire à côté de fileshare&lt;span class="hx:absolute hx:-mt-20" id="a-plain-sshd-next-to-fileshare"&gt;&lt;/span&gt;
-&lt;a href="#a-plain-sshd-next-to-fileshare" class="subheading-anchor" aria-label="Lien permanent vers cette section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;La même vérification est disponible sans fileshare : &lt;code&gt;revokd&lt;/code&gt;, de go-authn/revocation,
+&lt;a href="#a-plain-sshd-next-to-fileshare" class="subheading-anchor" aria-label="Lien permanent vers cette section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;La même vérification est disponible sans fileshare : &lt;code&gt;authn-revokd&lt;/code&gt;, de go-authn/revocation,
 récupère les listes, ne conserve que celles qui se vérifient, garde leur ordre sur
 disque, écrit &lt;code&gt;RevokedKeys&lt;/code&gt; pour &lt;code&gt;sshd&lt;/code&gt; et, quand une liste expire, en écrit une qui
 révoque l&amp;rsquo;AC elle-même, si bien que &lt;code&gt;sshd&lt;/code&gt; refuse lui aussi en cas de doute.&lt;/p&gt;

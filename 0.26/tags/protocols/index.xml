@@ -554,7 +554,7 @@ data-copied-label="Copied!"
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;A certificate the provider&amp;rsquo;s SSH CA signed&lt;/strong&gt; — &lt;code&gt;bridge ssh-cert&lt;/code&gt; writes one
+&lt;li&gt;&lt;strong&gt;A certificate the provider&amp;rsquo;s SSH CA signed&lt;/strong&gt; — &lt;code&gt;authn-bridge ssh-cert&lt;/code&gt; writes one
 after a login through the federation. Its principal is the person, its
 &lt;code&gt;groups@go-authn.org&lt;/code&gt; extension their groups, so
 &lt;a href="https://go-fileshare.github.io/docs/0.26/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;&lt;code&gt;oidc:groups:&lt;/code&gt; rules&lt;/a&gt;

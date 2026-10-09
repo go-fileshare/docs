@@ -443,7 +443,7 @@ v0.17.0) &lt;code&gt;authorized_keys_file&lt;/code&gt;, &lt;code&gt;dsn_file&lt;
 decide who gets in.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="a-plain-sshd-next-to-fileshare"&gt;A plain &lt;code&gt;sshd&lt;/code&gt; next to fileshare&lt;span class="hx:absolute hx:-mt-20" id="a-plain-sshd-next-to-fileshare"&gt;&lt;/span&gt;
 &lt;a href="#a-plain-sshd-next-to-fileshare" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;The same verification is available without fileshare: go-authn/revocation&amp;rsquo;s
-&lt;code&gt;revokd&lt;/code&gt; fetches the lists, keeps only those that verify, keeps their order on
+&lt;code&gt;authn-revokd&lt;/code&gt; fetches the lists, keeps only those that verify, keeps their order on
 disk, writes &lt;code&gt;RevokedKeys&lt;/code&gt; for &lt;code&gt;sshd&lt;/code&gt;, and, when a list lapses, writes one that
 revokes the CA itself, so &lt;code&gt;sshd&lt;/code&gt; fails closed too.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="what-it-does-not-cover"&gt;What it does not cover&lt;span class="hx:absolute hx:-mt-20" id="what-it-does-not-cover"&gt;&lt;/span&gt;

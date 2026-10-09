@@ -141,7 +141,7 @@ v0.17.0) &lt;code&gt;authorized_keys_file&lt;/code&gt;, &lt;code&gt;dsn_file&lt;
 &lt;code&gt;ssf&lt;/code&gt;-&lt;code&gt;ca_file&lt;/code&gt;, &lt;strong&gt;nicht innerhalb einer Freigabe liegen&lt;/strong&gt;: Wer dort schreibt, würde
 entscheiden, wer hineinkommt.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="a-plain-sshd-next-to-fileshare"&gt;Ein einfaches &lt;code&gt;sshd&lt;/code&gt; neben fileshare&lt;span class="hx:absolute hx:-mt-20" id="a-plain-sshd-next-to-fileshare"&gt;&lt;/span&gt;
-&lt;a href="#a-plain-sshd-next-to-fileshare" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Dieselbe Prüfung gibt es auch ohne fileshare: &lt;code&gt;revokd&lt;/code&gt; aus go-authn/revocation
+&lt;a href="#a-plain-sshd-next-to-fileshare" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Dieselbe Prüfung gibt es auch ohne fileshare: &lt;code&gt;authn-revokd&lt;/code&gt; aus go-authn/revocation
 ruft die Listen ab, behält nur die, die die Prüfung bestehen, hält ihre Reihenfolge auf
 der Festplatte fest, schreibt &lt;code&gt;RevokedKeys&lt;/code&gt; für &lt;code&gt;sshd&lt;/code&gt; und schreibt, wenn eine Liste
 verfällt, eine, die die CA selbst widerruft, sodass auch &lt;code&gt;sshd&lt;/code&gt; geschlossen fehlschlägt.&lt;/p&gt;

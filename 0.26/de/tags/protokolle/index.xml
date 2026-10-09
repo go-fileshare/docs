@@ -554,7 +554,7 @@ data-copied-label="Kopiert!"
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;Ein Zertifikat, das die SSH-CA des Anbieters signiert hat&lt;/strong&gt; – &lt;code&gt;bridge ssh-cert&lt;/code&gt; schreibt eines
+&lt;li&gt;&lt;strong&gt;Ein Zertifikat, das die SSH-CA des Anbieters signiert hat&lt;/strong&gt; – &lt;code&gt;authn-bridge ssh-cert&lt;/code&gt; schreibt eines
 nach einer Anmeldung über die Föderation. Sein Principal ist die Person, seine
 Erweiterung &lt;code&gt;groups@go-authn.org&lt;/code&gt; deren Gruppen, sodass
 &lt;a href="https://go-fileshare.github.io/docs/0.26/de/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;&lt;code&gt;oidc:groups:&lt;/code&gt;-Regeln&lt;/a&gt;
