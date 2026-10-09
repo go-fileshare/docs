@@ -1,3 +1,4 @@
 # Chaînes du site, en plus de celles de Hextra (themes/hextra/i18n/fr.yaml).
 copyright: "© 2026 les auteurs de go-fileshare · BSD-3-Clause"
 version: "Version"
+projects: "Projets"

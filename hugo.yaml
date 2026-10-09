@@ -108,7 +108,23 @@ module:
 
 menu:
   main:
-    # Navbar, left to right: version, theme, search, sources.
+    # Navbar, left to right: the sibling projects, version, theme, search,
+    # sources.
+    - name: Projects
+      identifier: projects
+      weight: 2
+    - name: go-authn
+      parent: projects
+      url: https://go-authn.github.io/
+      weight: 1
+    - name: go-filesystems
+      parent: projects
+      url: https://go-filesystems.github.io/
+      weight: 2
+    - name: go-fsctl
+      parent: projects
+      url: https://go-fsctl.github.io/
+      weight: 3
     - name: Version
       weight: 3
       params:
