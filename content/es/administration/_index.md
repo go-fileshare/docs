@@ -144,6 +144,30 @@ limitan a 1 MiB y cada fase de una conexión tiene un plazo. Cada emisor se
 contacta **al arrancar**, para leer sus claves; uno inalcanzable detiene el
 arranque, nombrándolo.
 
+### En un navegador: la consola {#in-a-browser-the-console}
+
+[go-fileshare/console](https://github.com/go-fileshare/console) es la consola
+de administración que llama a esta API: recursos compartidos, detalles,
+permisos, crear, activar, desactivar, borrar, conceder y retirar, en todos los
+servidores a la vez. Funciona en un navegador detrás de
+[go-fileshare/portal](https://github.com/go-fileshare/portal), que autentica a
+las personas con OpenID Connect y guarda sus tokens: uno por servidor, dirigido
+solo a ese servidor. El navegador nunca tiene ninguno.
+
+```hcl
+# portal.hcl
+server "paris" {
+  url      = "https://fs-paris.example.org:8443"   # este puerto web
+  issuer   = "https://login.example.org"
+  resource = "https://fs-paris.example.org/"       # la audiencia de este servidor, arriba
+}
+ui "console" { dir = "/usr/share/fileshare-console" }
+```
+
+La `audience` de cada servidor es la `resource` que el portal usa para él. No
+hace falta escribir una consola propia para usar la API: sirve cualquier
+cliente Connect, gRPC-Web o gRPC con un token para este servidor.
+
 ## Lo que tocará y lo que no {#what-it-will-and-will-not-touch}
 
 **Gestiona los recursos compartidos que ha creado.** Un recurso compartido escrito en
