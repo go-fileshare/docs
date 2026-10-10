@@ -130,11 +130,21 @@ jobs:
               # template, like the placeholders above.
               https://acme-v02.harica.gr/acme/) continue ;;
             esac
+            # github.com answers curl's blob pages with 503 most of the time
+            # (7 of 8 on 2026-10-10, all 3 attempts on every run of
+            # go-ndarray/docs), while the raw host answers 200 for a file and
+            # 404 for a missing one. A blob link claims "this file exists at
+            # this ref", so ask the raw host.
+            probe=$u
+            case "$u" in
+              https://github.com/*/*/blob/*)
+                probe=https://raw.githubusercontent.com/$(printf '%s' "${u#https://github.com/}" | sed -E 's#^([^/]+/[^/]+)/blob/#\1/#; s/[?#].*$//') ;;
+            esac
             # Three attempts: one is a flake detector rather than a link
             # checker, and a lane that fails at random gets ignored.
             code=000
             for _ in 1 2 3; do
-              code=$(curl -sS -o /dev/null -w '%{http_code}' -L --max-time 25 "$u" 2>/dev/null) || true
+              code=$(curl -sS -o /dev/null -w '%{http_code}' -L --max-time 25 "$probe" 2>/dev/null) || true
               code=${code:-000}
               case "$code" in 2*|3*) break ;; esac
               sleep 3
