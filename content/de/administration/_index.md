@@ -144,6 +144,30 @@ und jede Phase einer Verbindung hat ein Zeitlimit. Jeder Aussteller wird **beim
 Start** kontaktiert, um seine Schlüssel zu lesen; ist einer nicht erreichbar,
 bricht der Start ab und nennt ihn.
 
+### Im Browser: die Konsole {#in-a-browser-the-console}
+
+[go-fileshare/console](https://github.com/go-fileshare/console) ist die
+Admin-Konsole, die diese API aufruft: Freigaben, Details, Berechtigungen,
+Anlegen, Aktivieren, Deaktivieren, Löschen, Gewähren und Entziehen, über alle
+Server zugleich. Sie läuft im Browser hinter
+[go-fileshare/portal](https://github.com/go-fileshare/portal), das Personen per
+OpenID Connect anmeldet und ihre Tokens verwahrt: eines je Server, an diesen
+Server allein adressiert. Der Browser hält nie eines.
+
+```hcl
+# portal.hcl
+server "paris" {
+  url      = "https://fs-paris.example.org:8443"   # dieser Web-Listener
+  issuer   = "https://login.example.org"
+  resource = "https://fs-paris.example.org/"       # die Audience dieses Servers oben
+}
+ui "console" { dir = "/usr/share/fileshare-console" }
+```
+
+Die `audience` jedes Servers ist die `resource`, die das Portal für ihn
+verwendet. Eine eigene Konsole braucht es nicht, um die API zu nutzen: Jeder
+Connect-, gRPC-Web- oder gRPC-Client mit einem Token für diesen Server genügt.
+
 ## Was sie anfasst und was nicht {#what-it-will-and-will-not-touch}
 
 **Sie verwaltet die Freigaben, die sie angelegt hat.** Eine in der Konfiguration geschriebene Freigabe wird

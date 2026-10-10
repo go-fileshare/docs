@@ -143,6 +143,30 @@ le serveur des interfaces, qui détient les jetons. Les requêtes sont bornées 
 **au démarrage**, pour lire ses clés ; un émetteur injoignable arrête le
 démarrage, en le nommant.
 
+### Dans un navigateur : la console {#in-a-browser-the-console}
+
+[go-fileshare/console](https://github.com/go-fileshare/console) est la console
+d'administration qui appelle cette API : partages, détails, droits, création,
+activation, désactivation, suppression, octroi et retrait, sur tous les serveurs
+à la fois. Elle tourne dans un navigateur derrière
+[go-fileshare/portal](https://github.com/go-fileshare/portal), qui authentifie
+les personnes en OpenID Connect et garde leurs jetons : un par serveur, adressé
+à ce seul serveur. Le navigateur n'en détient jamais.
+
+```hcl
+# portal.hcl
+server "paris" {
+  url      = "https://fs-paris.example.org:8443"   # ce port d'écoute web
+  issuer   = "https://login.example.org"
+  resource = "https://fs-paris.example.org/"       # l'audience de ce serveur ci-dessus
+}
+ui "console" { dir = "/usr/share/fileshare-console" }
+```
+
+L'`audience` de chaque serveur est la `resource` que le portail lui donne. Nul
+besoin d'écrire sa propre console pour utiliser l'API : tout client Connect,
+gRPC-Web ou gRPC muni d'un jeton pour ce serveur convient.
+
 ## Ce qu'elle touchera, et ce qu'elle ne touchera pas {#what-it-will-and-will-not-touch}
 
 **Elle gère les partages qu'elle a créés.** Un partage écrit dans la configuration est

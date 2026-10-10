@@ -139,6 +139,29 @@ own server, which holds the tokens. Requests are bounded to 1 MiB and every
 phase of a connection has a timeout. Each issuer is contacted **at start**, to
 read its keys; one that cannot be reached stops the start, naming it.
 
+### In a browser: the console {#in-a-browser-the-console}
+
+[go-fileshare/console](https://github.com/go-fileshare/console) is the admin
+console that calls this API: shares, details, grants, create, enable, disable,
+delete, grant and revoke, over every server at once. It runs in a browser behind
+[go-fileshare/portal](https://github.com/go-fileshare/portal), which logs people
+in with OpenID Connect and keeps their tokens: one per server, addressed to that
+server alone. The browser never holds one.
+
+```hcl
+# portal.hcl
+server "paris" {
+  url      = "https://fs-paris.example.org:8443"   # this web listener
+  issuer   = "https://login.example.org"
+  resource = "https://fs-paris.example.org/"       # this server's audience above
+}
+ui "console" { dir = "/usr/share/fileshare-console" }
+```
+
+Each server's `audience` is the portal's `resource` for it. Writing a console
+of your own is not required to use the API: any Connect, gRPC-Web or gRPC client
+with a token for this server will do.
+
 ## What it will and will not touch
 
 **It manages the shares it created.** A share written in the configuration is
