@@ -214,6 +214,36 @@ Server der Oberflächen, der die Tokens hält. Anfragen sind auf 1 MiB begrenzt,
 und jede Phase einer Verbindung hat ein Zeitlimit. Jeder Aussteller wird &lt;strong&gt;beim
 Start&lt;/strong&gt; kontaktiert, um seine Schlüssel zu lesen; ist einer nicht erreichbar,
 bricht der Start ab und nennt ihn.&lt;/p&gt;
+&lt;h3 data-hextra-search-id="in-a-browser-the-console"&gt;Im Browser: die Konsole&lt;span class="hx:absolute hx:-mt-20" id="in-a-browser-the-console"&gt;&lt;/span&gt;
+&lt;a href="#in-a-browser-the-console" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;&lt;a href="https://github.com/go-fileshare/console" target="_blank" rel="noopener"&gt;go-fileshare/console&lt;/a&gt; ist die
+Admin-Konsole, die diese API aufruft: Freigaben, Details, Berechtigungen,
+Anlegen, Aktivieren, Deaktivieren, Löschen, Gewähren und Entziehen, über alle
+Server zugleich. Sie läuft im Browser hinter
+&lt;a href="https://github.com/go-fileshare/portal" target="_blank" rel="noopener"&gt;go-fileshare/portal&lt;/a&gt;, das Personen per
+OpenID Connect anmeldet und ihre Tokens verwahrt: eines je Server, an diesen
+Server allein adressiert. Der Browser hält nie eines.&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# portal.hcl
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;server&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;paris&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://fs-paris.example.org:8443&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # dieser Web-Listener
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; issuer&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://login.example.org&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; resource&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://fs-paris.example.org/&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # die Audience dieses Servers oben
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;ui &amp;#34;console&amp;#34; { dir&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/usr/share/fileshare-console&amp;#34;&lt;/span&gt; }&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Code kopieren"
+aria-label="Code kopieren"
+data-copied-label="Kopiert!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Die &lt;code&gt;audience&lt;/code&gt; jedes Servers ist die &lt;code&gt;resource&lt;/code&gt;, die das Portal für ihn
+verwendet. Eine eigene Konsole braucht es nicht, um die API zu nutzen: Jeder
+Connect-, gRPC-Web- oder gRPC-Client mit einem Token für diesen Server genügt.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="what-it-will-and-will-not-touch"&gt;Was sie anfasst und was nicht&lt;span class="hx:absolute hx:-mt-20" id="what-it-will-and-will-not-touch"&gt;&lt;/span&gt;
 &lt;a href="#what-it-will-and-will-not-touch" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;Sie verwaltet die Freigaben, die sie angelegt hat.&lt;/strong&gt; Eine in der Konfiguration geschriebene Freigabe wird
 mit denselben Feldern aufgelistet, und eine Änderung ihrer Definition wird mit

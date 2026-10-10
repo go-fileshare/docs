@@ -213,6 +213,36 @@ le serveur des interfaces, qui détient les jetons. Les requêtes sont bornées 
 1 Mio et chaque phase d&amp;rsquo;une connexion a un délai. Chaque émetteur est contacté
 &lt;strong&gt;au démarrage&lt;/strong&gt;, pour lire ses clés ; un émetteur injoignable arrête le
 démarrage, en le nommant.&lt;/p&gt;
+&lt;h3 data-hextra-search-id="in-a-browser-the-console"&gt;Dans un navigateur : la console&lt;span class="hx:absolute hx:-mt-20" id="in-a-browser-the-console"&gt;&lt;/span&gt;
+&lt;a href="#in-a-browser-the-console" class="subheading-anchor" aria-label="Lien permanent vers cette section"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;&lt;a href="https://github.com/go-fileshare/console" target="_blank" rel="noopener"&gt;go-fileshare/console&lt;/a&gt; est la console
+d&amp;rsquo;administration qui appelle cette API : partages, détails, droits, création,
+activation, désactivation, suppression, octroi et retrait, sur tous les serveurs
+à la fois. Elle tourne dans un navigateur derrière
+&lt;a href="https://github.com/go-fileshare/portal" target="_blank" rel="noopener"&gt;go-fileshare/portal&lt;/a&gt;, qui authentifie
+les personnes en OpenID Connect et garde leurs jetons : un par serveur, adressé
+à ce seul serveur. Le navigateur n&amp;rsquo;en détient jamais.&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# portal.hcl
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;server&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;paris&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://fs-paris.example.org:8443&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # ce port d&amp;#39;écoute web
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; issuer&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://login.example.org&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; resource&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://fs-paris.example.org/&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # l&amp;#39;audience de ce serveur ci-dessus
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;ui &amp;#34;console&amp;#34; { dir&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/usr/share/fileshare-console&amp;#34;&lt;/span&gt; }&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copier le code"
+aria-label="Copier le code"
+data-copied-label="Copié !"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;L&amp;rsquo;&lt;code&gt;audience&lt;/code&gt; de chaque serveur est la &lt;code&gt;resource&lt;/code&gt; que le portail lui donne. Nul
+besoin d&amp;rsquo;écrire sa propre console pour utiliser l&amp;rsquo;API : tout client Connect,
+gRPC-Web ou gRPC muni d&amp;rsquo;un jeton pour ce serveur convient.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="what-it-will-and-will-not-touch"&gt;Ce qu&amp;rsquo;elle touchera, et ce qu&amp;rsquo;elle ne touchera pas&lt;span class="hx:absolute hx:-mt-20" id="what-it-will-and-will-not-touch"&gt;&lt;/span&gt;
 &lt;a href="#what-it-will-and-will-not-touch" class="subheading-anchor" aria-label="Lien permanent vers cette section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;Elle gère les partages qu&amp;rsquo;elle a créés.&lt;/strong&gt; Un partage écrit dans la configuration est
 listé, avec les mêmes champs, et une modification de sa définition est refusée avec
