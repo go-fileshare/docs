@@ -80,7 +80,7 @@ défi :
 Dans les deux cas, l'enregistrement **CAA** du domaine, s'il en a un, doit
 autoriser `harica.gr`, sans quoi la commande est refusée.
 
-#### Quand le certificat est demandé
+#### Quand le certificat est demandé {#when-the-certificate-is-asked-for}
 
 **Au démarrage** (depuis la v0.27.0) : une fois les ports d'écoute ouverts, le
 certificat de chaque domaine configuré est obtenu, ou relu dans le répertoire de
