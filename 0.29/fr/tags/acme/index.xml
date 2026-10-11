@@ -128,8 +128,8 @@ ci-dessus.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;Dans les deux cas, l&amp;rsquo;enregistrement &lt;strong&gt;CAA&lt;/strong&gt; du domaine, s&amp;rsquo;il en a un, doit
 autoriser &lt;code&gt;harica.gr&lt;/code&gt;, sans quoi la commande est refusée.&lt;/p&gt;
-&lt;h4 data-hextra-search-id="quand-le-certificat-est-demandé"&gt;Quand le certificat est demandé&lt;span class="hx:absolute hx:-mt-20" id="quand-le-certificat-est-demandé"&gt;&lt;/span&gt;
-&lt;a href="#quand-le-certificat-est-demand%c3%a9" class="subheading-anchor" aria-label="Lien permanent vers cette section"&gt;&lt;/a&gt;&lt;/h4&gt;&lt;p&gt;&lt;strong&gt;Au démarrage&lt;/strong&gt; (depuis la v0.27.0) : une fois les ports d&amp;rsquo;écoute ouverts, le
+&lt;h4 data-hextra-search-id="when-the-certificate-is-asked-for"&gt;Quand le certificat est demandé&lt;span class="hx:absolute hx:-mt-20" id="when-the-certificate-is-asked-for"&gt;&lt;/span&gt;
+&lt;a href="#when-the-certificate-is-asked-for" class="subheading-anchor" aria-label="Lien permanent vers cette section"&gt;&lt;/a&gt;&lt;/h4&gt;&lt;p&gt;&lt;strong&gt;Au démarrage&lt;/strong&gt; (depuis la v0.27.0) : une fois les ports d&amp;rsquo;écoute ouverts, le
 certificat de chaque domaine configuré est obtenu, ou relu dans le répertoire de
 cache. Un échec n&amp;rsquo;arrête pas le serveur — il continue de servir et réessaie
 après 1 minute, en doublant jusqu&amp;rsquo;à 1 heure — et la première connexion TLS qui

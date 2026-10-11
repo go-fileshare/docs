@@ -128,8 +128,8 @@ http-01 wie oben.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;In beiden Fällen muss der &lt;strong&gt;CAA&lt;/strong&gt;-Eintrag der Domain, falls es einen gibt,
 &lt;code&gt;harica.gr&lt;/code&gt; erlauben, sonst wird die Bestellung abgelehnt.&lt;/p&gt;
-&lt;h4 data-hextra-search-id="wann-das-zertifikat-angefordert-wird"&gt;Wann das Zertifikat angefordert wird&lt;span class="hx:absolute hx:-mt-20" id="wann-das-zertifikat-angefordert-wird"&gt;&lt;/span&gt;
-&lt;a href="#wann-das-zertifikat-angefordert-wird" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h4&gt;&lt;p&gt;&lt;strong&gt;Beim Start&lt;/strong&gt; (seit v0.27.0): Sobald die Listener laufen, wird das Zertifikat
+&lt;h4 data-hextra-search-id="when-the-certificate-is-asked-for"&gt;Wann das Zertifikat angefordert wird&lt;span class="hx:absolute hx:-mt-20" id="when-the-certificate-is-asked-for"&gt;&lt;/span&gt;
+&lt;a href="#when-the-certificate-is-asked-for" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h4&gt;&lt;p&gt;&lt;strong&gt;Beim Start&lt;/strong&gt; (seit v0.27.0): Sobald die Listener laufen, wird das Zertifikat
 jeder konfigurierten Domain geholt oder aus dem Cache-Verzeichnis gelesen. Ein
 Fehlschlag hält den Server nicht an – er bedient weiter und versucht es nach
 1 Minute erneut, verdoppelt bis 1 Stunde –, und die erste TLS-Verbindung, die
