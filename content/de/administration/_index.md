@@ -198,7 +198,7 @@ stehen in `explorer.hcl`, jeder mit seiner `dav_url` (nur https) und der
 `resource` seines `oidc`-Blocks. Keiner der beiden nativen Clients folgt mit
 einem Token einer Umleitung: Der HTTP-Client von Go behält `Authorization` bei
 einer Umleitung auf denselben Host mit jedem Schema, was ein falsch
-konfigurierter Proxy mit `307 http://...` in ein im Klartext gesendetes Token
+konfigurierter Proxy mit einem `307` auf eine einfache `http`-Adresse in ein im Klartext gesendetes Token
 verwandeln würde.
 
 Die `audience` jedes Servers ist die `resource`, die das Portal für ihn

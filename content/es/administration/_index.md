@@ -198,7 +198,7 @@ servidores se listan en `explorer.hcl`, cada uno con su `dav_url` (solo https)
 y la `resource` de su bloque `oidc`. Ninguno de los dos clientes nativos sigue
 una redirección con un token: el cliente HTTP de Go conserva `Authorization` en
 una redirección al mismo host con cualquier esquema, lo que un proxy mal
-configurado que respondiera `307 http://...` convertiría en un token enviado en
+configurado que respondiera con un `307` hacia una dirección `http` simple convertiría en un token enviado en
 claro.
 
 La `audience` de cada servidor es la `resource` que el portal usa para él. No

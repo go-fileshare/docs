@@ -190,7 +190,7 @@ calls each server's WebDAV with a token for that server alone. Its servers are
 listed in `explorer.hcl`, each with its `dav_url` (https only) and the
 `resource` of its `oidc` block. Neither native client follows a redirect with
 a token: Go's HTTP client keeps `Authorization` across one to the same host on
-any scheme, which a misconfigured proxy answering `307 http://...` would turn
+any scheme, which a misconfigured proxy answering a `307` to a plain-`http` address would turn
 into a token sent in clear.
 
 Each server's `audience` is the portal's `resource` for it. Writing a console
