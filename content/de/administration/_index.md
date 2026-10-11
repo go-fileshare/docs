@@ -164,6 +164,12 @@ server "paris" {
 ui "console" { dir = "/usr/share/fileshare-console" }
 ```
 
+Dieselbe Konsole läuft auch **nativ**, ohne Portal. Sie meldet sich über den
+Systembrowser und einen lokalen Listener an, als öffentlicher Client
+([go-authn/rp](https://github.com/go-authn/rp), RFC 8252), und ruft jeden Server
+mit einem Token nur für ihn auf. Die Server stehen in ihrer eigenen
+`console.hcl`, mit denselben `url` und `resource` wie hier.
+
 Die `audience` jedes Servers ist die `resource`, die das Portal für ihn
 verwendet. Eine eigene Konsole braucht es nicht, um die API zu nutzen: Jeder
 Connect-, gRPC-Web- oder gRPC-Client mit einem Token für diesen Server genügt.
