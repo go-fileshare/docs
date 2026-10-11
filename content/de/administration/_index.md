@@ -148,8 +148,10 @@ bricht der Start ab und nennt ihn.
 
 [go-fileshare/console](https://github.com/go-fileshare/console) ist die
 Admin-Konsole, die diese API aufruft: Freigaben, Details, Berechtigungen,
-Anlegen, Aktivieren, Deaktivieren, Löschen, Gewähren und Entziehen, über alle
-Server zugleich. Sie läuft im Browser hinter
+Anlegen, Aktivieren, Deaktivieren, Löschen, Gewähren und Entziehen, und
+[Volumes]({{< relref "/administration/volumes.md" >}}) (anlegen, vergrößern,
+Snapshot, freigeben, löschen -- ohne je Daten zu vernichten), über alle Server
+zugleich. Sie läuft im Browser hinter
 [go-fileshare/portal](https://github.com/go-fileshare/portal), das Personen per
 OpenID Connect anmeldet und ihre Tokens verwahrt: eines je Server, an diesen
 Server allein adressiert. Der Browser hält nie eines.

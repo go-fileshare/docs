@@ -143,7 +143,9 @@ read its keys; one that cannot be reached stops the start, naming it.
 
 [go-fileshare/console](https://github.com/go-fileshare/console) is the admin
 console that calls this API: shares, details, grants, create, enable, disable,
-delete, grant and revoke, over every server at once. It runs in a browser behind
+delete, grant and revoke, and [volumes]({{< relref "/administration/volumes.md" >}})
+(create, resize, snapshot, share, delete -- never destroying data), over every
+server at once. It runs in a browser behind
 [go-fileshare/portal](https://github.com/go-fileshare/portal), which logs people
 in with OpenID Connect and keeps their tokens: one per server, addressed to that
 server alone. The browser never holds one.

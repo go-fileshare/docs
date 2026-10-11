@@ -147,8 +147,10 @@ démarrage, en le nommant.
 
 [go-fileshare/console](https://github.com/go-fileshare/console) est la console
 d'administration qui appelle cette API : partages, détails, droits, création,
-activation, désactivation, suppression, octroi et retrait, sur tous les serveurs
-à la fois. Elle tourne dans un navigateur derrière
+activation, désactivation, suppression, octroi et retrait, et
+[volumes]({{< relref "/administration/volumes.md" >}}) (création, redimensionnement,
+instantané, partage, suppression -- sans jamais détruire de données), sur tous
+les serveurs à la fois. Elle tourne dans un navigateur derrière
 [go-fileshare/portal](https://github.com/go-fileshare/portal), qui authentifie
 les personnes en OpenID Connect et garde leurs jetons : un par serveur, adressé
 à ce seul serveur. Le navigateur n'en détient jamais.
