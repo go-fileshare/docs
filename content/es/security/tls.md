@@ -80,7 +80,7 @@ desafío:
 En ambos casos, el registro **CAA** del dominio, si lo tiene, debe autorizar
 `harica.gr`, o el pedido se rechaza.
 
-#### Cuándo se pide el certificado
+#### Cuándo se pide el certificado {#when-the-certificate-is-asked-for}
 
 **Al arrancar** (desde la v0.27.0): una vez abiertos los puertos, se obtiene el
 certificado de cada dominio configurado, o se relee del directorio de caché. Un
