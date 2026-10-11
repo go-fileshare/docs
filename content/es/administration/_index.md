@@ -148,7 +148,9 @@ arranque, nombrándolo.
 
 [go-fileshare/console](https://github.com/go-fileshare/console) es la consola
 de administración que llama a esta API: recursos compartidos, detalles,
-permisos, crear, activar, desactivar, borrar, conceder y retirar, en todos los
+permisos, crear, activar, desactivar, borrar, conceder y retirar, y
+[volúmenes]({{< relref "/administration/volumes.md" >}}) (crear, redimensionar,
+instantánea, compartir, borrar -- sin destruir nunca datos), en todos los
 servidores a la vez. Funciona en un navegador detrás de
 [go-fileshare/portal](https://github.com/go-fileshare/portal), que autentica a
 las personas con OpenID Connect y guarda sus tokens: uno por servidor, dirigido
