@@ -47,3 +47,18 @@ oidc {
 
 There is **no login flow** here: no redirect, no client secret, no cookies.
 This is the resource server.
+
+## The root, and uploads in pieces
+
+**The root lists the shares** (since v0.29.0). A browser at `/` gets a page of
+the shares it may open; a `PROPFIND` of `/` gets them as collections (`207`),
+so a file manager can mount the whole server rather than one share. Depth
+`infinity` is refused (`403`, `propfind-finite-depth`, as RFC 4918 allows), and
+so is anything that would write at the root (`405`).
+
+**A large upload can go in pieces** (since v0.29.0). One `PUT` is held in
+memory whole, up to 1 GiB, so a client that cannot stream — a browser, the
+[explorer](../ui.md) — sends an empty `PUT`, then each piece with a
+`Content-Range` that starts exactly where the last one ended, then a `MOVE` to
+the real name. A range that starts past the end is still `416`: it would leave
+bytes nobody sent.

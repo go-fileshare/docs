@@ -53,4 +53,5 @@ nav:
       - "Building only what you want": operations/build-tags.md
       - "One process per protocol": operations/isolation.md
       - "One image, several protocols, one lock": operations/locking.md
+  - "Web UIs": ui.md
   - Status: status.md
