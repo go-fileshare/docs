@@ -191,6 +191,16 @@ server "paris" {
 ui "explorer" { dir = "/usr/share/fileshare-explorer" }
 ```
 
+Der Explorer läuft auch **nativ** (explorer v0.2.0), ohne Portal, wie die
+Konsole: Er meldet sich über den Systembrowser als öffentlicher Client an und
+ruft das WebDAV jedes Servers mit einem Token nur für ihn auf. Seine Server
+stehen in `explorer.hcl`, jeder mit seiner `dav_url` (nur https) und der
+`resource` seines `oidc`-Blocks. Keiner der beiden nativen Clients folgt mit
+einem Token einer Umleitung: Der HTTP-Client von Go behält `Authorization` bei
+einer Umleitung auf denselben Host mit jedem Schema, was ein falsch
+konfigurierter Proxy mit einem `307` auf eine einfache `http`-Adresse in ein im Klartext gesendetes Token
+verwandeln würde.
+
 Die `audience` jedes Servers ist die `resource`, die das Portal für ihn
 verwendet. Eine eigene Konsole braucht es nicht, um die API zu nutzen: Jeder
 Connect-, gRPC-Web- oder gRPC-Client mit einem Token für diesen Server genügt.

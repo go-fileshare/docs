@@ -190,6 +190,15 @@ server "paris" {
 ui "explorer" { dir = "/usr/share/fileshare-explorer" }
 ```
 
+L'explorateur tourne aussi **en natif** (explorer v0.2.0), sans portail, comme
+la console : il s'authentifie par le navigateur du système en client public et
+appelle le WebDAV de chaque serveur avec un jeton pour lui seul. Ses serveurs
+sont listés dans `explorer.hcl`, chacun avec son `dav_url` (https uniquement)
+et la `resource` de son bloc `oidc`. Aucun des deux clients natifs ne suit une
+redirection avec un jeton : le client HTTP de Go garde `Authorization` lors
+d'une redirection vers le même hôte quel que soit le schéma, ce qu'un proxy mal
+configuré répondant par un `307` vers une adresse en `http` simple transformerait en jeton envoyé en clair.
+
 L'`audience` de chaque serveur est la `resource` que le portail lui donne. Nul
 besoin d'écrire sa propre console pour utiliser l'API : tout client Connect,
 gRPC-Web ou gRPC muni d'un jeton pour ce serveur convient.
