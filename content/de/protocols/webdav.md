@@ -118,3 +118,20 @@ Ein Token wird hier für sich allein geprüft und ist gültig, bis es abläuft �
 der Person seitdem widerfahren ist. Keine Sperrliste kann es benennen. Ein
 [`ssf`-Block]({{< relref "/security/shared-signals.md" >}}) sorgt dafür, dass ein CAEP-`session-revoked`
 vom Anbieter jedes zuvor (`iat`) ausgestellte Token ungültig macht.
+
+## Die Wurzel, und Uploads in Stücken {#the-root-and-uploads-in-pieces}
+
+**Die Wurzel listet die Freigaben** (seit v0.29.0). Ein Browser auf `/` bekommt
+eine Seite mit den Freigaben, die er öffnen darf; ein `PROPFIND` auf `/` bekommt
+sie als Collections (`207`), sodass ein Dateimanager den ganzen Server statt
+einer Freigabe einbinden kann. Tiefe `infinity` wird abgelehnt (`403`,
+`propfind-finite-depth`, wie RFC 4918 es erlaubt), ebenso alles, was an der
+Wurzel schreiben würde (`405`). Bis v0.28 bekam jede Methode auf `/` die Seite.
+
+**Ein großer Upload kann in Stücken erfolgen** (seit v0.29.0). Ein `PUT` wird
+vollständig im Speicher gehalten, bis 1 GiB; ein Client, der nicht streamen
+kann — ein Browser, der [Datei-Explorer]({{< relref "/administration/_index.md" >}}) —
+sendet daher ein leeres `PUT`, dann jedes Stück mit einem `Content-Range`, das
+genau dort beginnt, wo das vorige endete, dann ein `MOVE` auf den richtigen
+Namen. Ein Bereich, der hinter dem Ende beginnt, bleibt `416`: Er hinterließe
+Bytes, die niemand gesendet hat.
