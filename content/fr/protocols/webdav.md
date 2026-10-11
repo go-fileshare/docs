@@ -118,3 +118,21 @@ Un jeton est vérifié ici, de façon autonome, et reste valide jusqu'à son exp
 qu'il soit arrivé à la personne depuis. Aucune liste de révocation ne peut le nommer. Un
 [bloc `ssf`]({{< relref "/security/shared-signals.md" >}}) fait qu'un `session-revoked` CAEP
 venu du fournisseur annule tout jeton émis (`iat`) avant lui.
+
+## La racine, et les envois par morceaux {#the-root-and-uploads-in-pieces}
+
+**La racine liste les partages** (depuis v0.29.0). Un navigateur sur `/` reçoit
+une page des partages qu'il peut ouvrir ; un `PROPFIND` de `/` les reçoit comme
+collections (`207`), si bien qu'un gestionnaire de fichiers peut monter tout le
+serveur plutôt qu'un partage. La profondeur `infinity` est refusée (`403`,
+`propfind-finite-depth`, comme le permet la RFC 4918), de même que tout ce qui
+écrirait à la racine (`405`). Jusqu'à v0.28, toute méthode sur `/` recevait la
+page.
+
+**Un gros envoi peut se faire par morceaux** (depuis v0.29.0). Un `PUT` est
+tenu en mémoire en entier, jusqu'à 1 Gio ; un client qui ne sait pas diffuser —
+un navigateur, l'[explorateur de fichiers]({{< relref "/administration/_index.md" >}}) —
+envoie donc un `PUT` vide, puis chaque morceau avec un `Content-Range` qui
+commence exactement où finissait le précédent, puis un `MOVE` vers le vrai nom.
+Une plage qui commence après la fin reste en `416` : elle laisserait des octets
+que personne n'a envoyés.

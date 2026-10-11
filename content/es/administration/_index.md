@@ -172,6 +172,25 @@ con el navegador del sistema y un puerto local, como cliente público
 servidor con un token solo para él. Los servidores se listan en su propio
 `console.hcl`, con los mismos `url` y `resource` que aquí.
 
+El **explorador de archivos**, [go-fileshare/explorer](https://github.com/go-fileshare/explorer),
+funciona detrás del mismo portal: navegar, subir, descargar, renombrar, copiar y
+borrar, en cada recurso compartido que una persona puede usar. Llega al WebDAV
+de cada servidor a través del portal (`/dav/<servidor>/...`) con un token para
+ese servidor, y el portal sirve lo que vuelve **inerte**
+(`Content-Security-Policy: sandbox`, como adjunto): una página guardada en un
+recurso nunca se ejecuta en nombre del portal. Necesita fileshare **v0.29.0** o
+posterior, cuyo [WebDAV]({{< relref "/protocols/webdav.md#the-root-and-uploads-in-pieces" >}})
+lista los recursos en su raíz y acepta una subida por partes.
+
+```hcl
+# portal.hcl, el mismo servidor
+server "paris" {
+  # ... como arriba, y su WebDAV:
+  dav_url = "https://fs-paris.example.org"
+}
+ui "explorer" { dir = "/usr/share/fileshare-explorer" }
+```
+
 La `audience` de cada servidor es la `resource` que el portal usa para él. No
 hace falta escribir una consola propia para usar la API: sirve cualquier
 cliente Connect, gRPC-Web o gRPC con un token para este servidor.

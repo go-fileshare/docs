@@ -121,3 +121,20 @@ Un token se verifica aquí, por sí solo, y es válido hasta que caduca, pase lo
 pase después con la persona. Ninguna lista de revocación puede nombrarlo. Un
 [bloque `ssf`]({{< relref "/security/shared-signals.md" >}}) hace que un `session-revoked` de CAEP
 procedente del proveedor invalide todos los tokens emitidos (`iat`) antes de él.
+
+## La raíz, y las subidas por partes {#the-root-and-uploads-in-pieces}
+
+**La raíz lista los recursos compartidos** (desde v0.29.0). Un navegador en `/`
+recibe una página con los recursos que puede abrir; un `PROPFIND` de `/` los
+recibe como colecciones (`207`), así que un gestor de archivos puede montar todo
+el servidor en lugar de un solo recurso. La profundidad `infinity` se rechaza
+(`403`, `propfind-finite-depth`, como permite la RFC 4918), igual que todo lo que
+escribiría en la raíz (`405`). Hasta v0.28, cualquier método en `/` recibía la
+página.
+
+**Una subida grande puede hacerse por partes** (desde v0.29.0). Un `PUT` se
+guarda entero en memoria, hasta 1 GiB, así que un cliente que no puede enviar en
+flujo — un navegador, el [explorador de archivos]({{< relref "/administration/_index.md" >}}) —
+envía un `PUT` vacío, luego cada parte con un `Content-Range` que empieza
+exactamente donde terminó la anterior, y luego un `MOVE` al nombre real. Un rango
+que empieza después del final sigue siendo `416`: dejaría bytes que nadie envió.

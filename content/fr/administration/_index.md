@@ -171,6 +171,25 @@ le navigateur du système et un port d'écoute local, en client public
 serveur avec un jeton pour lui seul. Les serveurs sont listés dans son propre
 `console.hcl`, avec les mêmes `url` et `resource` qu'ici.
 
+L'**explorateur de fichiers**, [go-fileshare/explorer](https://github.com/go-fileshare/explorer),
+tourne derrière le même portail : parcourir, téléverser, télécharger, renommer,
+copier et supprimer, sur chaque partage qu'une personne peut utiliser. Il atteint
+le WebDAV de chaque serveur à travers le portail (`/dav/<serveur>/...`) avec un
+jeton pour ce serveur, et le portail sert ce qui revient **inerte**
+(`Content-Security-Policy: sandbox`, en pièce jointe) : une page posée sur un
+partage ne s'exécute jamais au nom du portail. Il faut fileshare **v0.29.0** ou
+plus, dont le [WebDAV]({{< relref "/protocols/webdav.md#the-root-and-uploads-in-pieces" >}})
+liste les partages à sa racine et accepte un envoi par morceaux.
+
+```hcl
+# portal.hcl, le même serveur
+server "paris" {
+  # ... comme plus haut, et son WebDAV :
+  dav_url = "https://fs-paris.example.org"
+}
+ui "explorer" { dir = "/usr/share/fileshare-explorer" }
+```
+
 L'`audience` de chaque serveur est la `resource` que le portail lui donne. Nul
 besoin d'écrire sa propre console pour utiliser l'API : tout client Connect,
 gRPC-Web ou gRPC muni d'un jeton pour ce serveur convient.
