@@ -845,7 +845,9 @@ arranque, nombrándolo.&lt;/p&gt;
 &lt;h3 data-hextra-search-id="in-a-browser-the-console"&gt;En un navegador: la consola&lt;span class="hx:absolute hx:-mt-20" id="in-a-browser-the-console"&gt;&lt;/span&gt;
 &lt;a href="#in-a-browser-the-console" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;&lt;a href="https://github.com/go-fileshare/console" target="_blank" rel="noopener"&gt;go-fileshare/console&lt;/a&gt; es la consola
 de administración que llama a esta API: recursos compartidos, detalles,
-permisos, crear, activar, desactivar, borrar, conceder y retirar, en todos los
+permisos, crear, activar, desactivar, borrar, conceder y retirar, y
+&lt;a href="https://go-fileshare.github.io/docs/0.28/es/administration/volumes/"&gt;volúmenes&lt;/a&gt; (crear, redimensionar,
+instantánea, compartir, borrar &amp;ndash; sin destruir nunca datos), en todos los
 servidores a la vez. Funciona en un navegador detrás de
 &lt;a href="https://github.com/go-fileshare/portal" target="_blank" rel="noopener"&gt;go-fileshare/portal&lt;/a&gt;, que autentica a
 las personas con OpenID Connect y guarda sus tokens: uno por servidor, dirigido

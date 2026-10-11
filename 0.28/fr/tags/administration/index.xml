@@ -831,8 +831,10 @@ démarrage, en le nommant.&lt;/p&gt;
 &lt;h3 data-hextra-search-id="in-a-browser-the-console"&gt;Dans un navigateur : la console&lt;span class="hx:absolute hx:-mt-20" id="in-a-browser-the-console"&gt;&lt;/span&gt;
 &lt;a href="#in-a-browser-the-console" class="subheading-anchor" aria-label="Lien permanent vers cette section"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;&lt;a href="https://github.com/go-fileshare/console" target="_blank" rel="noopener"&gt;go-fileshare/console&lt;/a&gt; est la console
 d&amp;rsquo;administration qui appelle cette API : partages, détails, droits, création,
-activation, désactivation, suppression, octroi et retrait, sur tous les serveurs
-à la fois. Elle tourne dans un navigateur derrière
+activation, désactivation, suppression, octroi et retrait, et
+&lt;a href="https://go-fileshare.github.io/docs/0.28/fr/administration/volumes/"&gt;volumes&lt;/a&gt; (création, redimensionnement,
+instantané, partage, suppression &amp;ndash; sans jamais détruire de données), sur tous
+les serveurs à la fois. Elle tourne dans un navigateur derrière
 &lt;a href="https://github.com/go-fileshare/portal" target="_blank" rel="noopener"&gt;go-fileshare/portal&lt;/a&gt;, qui authentifie
 les personnes en OpenID Connect et garde leurs jetons : un par serveur, adressé
 à ce seul serveur. Le navigateur n&amp;rsquo;en détient jamais.&lt;/p&gt;
