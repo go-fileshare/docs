@@ -890,6 +890,15 @@ data-copied-label="Kopiert!"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
+&lt;p&gt;Der Explorer läuft auch &lt;strong&gt;nativ&lt;/strong&gt; (explorer v0.2.0), ohne Portal, wie die
+Konsole: Er meldet sich über den Systembrowser als öffentlicher Client an und
+ruft das WebDAV jedes Servers mit einem Token nur für ihn auf. Seine Server
+stehen in &lt;code&gt;explorer.hcl&lt;/code&gt;, jeder mit seiner &lt;code&gt;dav_url&lt;/code&gt; (nur https) und der
+&lt;code&gt;resource&lt;/code&gt; seines &lt;code&gt;oidc&lt;/code&gt;-Blocks. Keiner der beiden nativen Clients folgt mit
+einem Token einer Umleitung: Der HTTP-Client von Go behält &lt;code&gt;Authorization&lt;/code&gt; bei
+einer Umleitung auf denselben Host mit jedem Schema, was ein falsch
+konfigurierter Proxy mit einem &lt;code&gt;307&lt;/code&gt; auf eine einfache &lt;code&gt;http&lt;/code&gt;-Adresse in ein im Klartext gesendetes Token
+verwandeln würde.&lt;/p&gt;
 &lt;p&gt;Die &lt;code&gt;audience&lt;/code&gt; jedes Servers ist die &lt;code&gt;resource&lt;/code&gt;, die das Portal für ihn
 verwendet. Eine eigene Konsole braucht es nicht, um die API zu nutzen: Jeder
 Connect-, gRPC-Web- oder gRPC-Client mit einem Token für diesen Server genügt.&lt;/p&gt;
