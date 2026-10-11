@@ -164,6 +164,12 @@ server "paris" {
 ui "console" { dir = "/usr/share/fileshare-console" }
 ```
 
+La misma consola funciona también **de forma nativa**, sin portal. Se autentica
+con el navegador del sistema y un puerto local, como cliente público
+([go-authn/rp](https://github.com/go-authn/rp), RFC 8252), y llama a cada
+servidor con un token solo para él. Los servidores se listan en su propio
+`console.hcl`, con los mismos `url` y `resource` que aquí.
+
 La `audience` de cada servidor es la `resource` que el portal usa para él. No
 hace falta escribir una consola propia para usar la API: sirve cualquier
 cliente Connect, gRPC-Web o gRPC con un token para este servidor.
