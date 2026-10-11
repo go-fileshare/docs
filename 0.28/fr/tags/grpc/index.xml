@@ -240,6 +240,11 @@ data-copied-label="Copié !"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
+&lt;p&gt;La même console tourne aussi &lt;strong&gt;en natif&lt;/strong&gt;, sans portail. Elle s&amp;rsquo;authentifie par
+le navigateur du système et un port d&amp;rsquo;écoute local, en client public
+(&lt;a href="https://github.com/go-authn/rp" target="_blank" rel="noopener"&gt;go-authn/rp&lt;/a&gt;, RFC 8252), et appelle chaque
+serveur avec un jeton pour lui seul. Les serveurs sont listés dans son propre
+&lt;code&gt;console.hcl&lt;/code&gt;, avec les mêmes &lt;code&gt;url&lt;/code&gt; et &lt;code&gt;resource&lt;/code&gt; qu&amp;rsquo;ici.&lt;/p&gt;
 &lt;p&gt;L&amp;rsquo;&lt;code&gt;audience&lt;/code&gt; de chaque serveur est la &lt;code&gt;resource&lt;/code&gt; que le portail lui donne. Nul
 besoin d&amp;rsquo;écrire sa propre console pour utiliser l&amp;rsquo;API : tout client Connect,
 gRPC-Web ou gRPC muni d&amp;rsquo;un jeton pour ce serveur convient.&lt;/p&gt;

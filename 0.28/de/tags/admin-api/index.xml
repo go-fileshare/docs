@@ -241,6 +241,11 @@ data-copied-label="Kopiert!"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
+&lt;p&gt;Dieselbe Konsole läuft auch &lt;strong&gt;nativ&lt;/strong&gt;, ohne Portal. Sie meldet sich über den
+Systembrowser und einen lokalen Listener an, als öffentlicher Client
+(&lt;a href="https://github.com/go-authn/rp" target="_blank" rel="noopener"&gt;go-authn/rp&lt;/a&gt;, RFC 8252), und ruft jeden Server
+mit einem Token nur für ihn auf. Die Server stehen in ihrer eigenen
+&lt;code&gt;console.hcl&lt;/code&gt;, mit denselben &lt;code&gt;url&lt;/code&gt; und &lt;code&gt;resource&lt;/code&gt; wie hier.&lt;/p&gt;
 &lt;p&gt;Die &lt;code&gt;audience&lt;/code&gt; jedes Servers ist die &lt;code&gt;resource&lt;/code&gt;, die das Portal für ihn
 verwendet. Eine eigene Konsole braucht es nicht, um die API zu nutzen: Jeder
 Connect-, gRPC-Web- oder gRPC-Client mit einem Token für diesen Server genügt.&lt;/p&gt;

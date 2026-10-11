@@ -869,6 +869,11 @@ data-copied-label="¡Copiado!"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
+&lt;p&gt;La misma consola funciona también &lt;strong&gt;de forma nativa&lt;/strong&gt;, sin portal. Se autentica
+con el navegador del sistema y un puerto local, como cliente público
+(&lt;a href="https://github.com/go-authn/rp" target="_blank" rel="noopener"&gt;go-authn/rp&lt;/a&gt;, RFC 8252), y llama a cada
+servidor con un token solo para él. Los servidores se listan en su propio
+&lt;code&gt;console.hcl&lt;/code&gt;, con los mismos &lt;code&gt;url&lt;/code&gt; y &lt;code&gt;resource&lt;/code&gt; que aquí.&lt;/p&gt;
 &lt;p&gt;La &lt;code&gt;audience&lt;/code&gt; de cada servidor es la &lt;code&gt;resource&lt;/code&gt; que el portal usa para él. No
 hace falta escribir una consola propia para usar la API: sirve cualquier
 cliente Connect, gRPC-Web o gRPC con un token para este servidor.&lt;/p&gt;

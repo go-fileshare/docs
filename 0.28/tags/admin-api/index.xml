@@ -235,6 +235,11 @@ data-copied-label="Copied!"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
+&lt;p&gt;The same console also runs &lt;strong&gt;natively&lt;/strong&gt;, with no portal. It logs in through the
+system browser and a loopback listener, as a public client
+(&lt;a href="https://github.com/go-authn/rp" target="_blank" rel="noopener"&gt;go-authn/rp&lt;/a&gt;, RFC 8252), and calls each server
+with a token for that server alone. The servers are listed in its own
+&lt;code&gt;console.hcl&lt;/code&gt;, with the same &lt;code&gt;url&lt;/code&gt; and &lt;code&gt;resource&lt;/code&gt; as here.&lt;/p&gt;
 &lt;p&gt;Each server&amp;rsquo;s &lt;code&gt;audience&lt;/code&gt; is the portal&amp;rsquo;s &lt;code&gt;resource&lt;/code&gt; for it. Writing a console
 of your own is not required to use the API: any Connect, gRPC-Web or gRPC client
 with a token for this server will do.&lt;/p&gt;
