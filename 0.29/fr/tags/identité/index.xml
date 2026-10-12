@@ -270,7 +270,7 @@ plus à jour ;&lt;/li&gt;
 &lt;li&gt;sur &lt;strong&gt;&lt;code&gt;SIGHUP&lt;/code&gt;&lt;/strong&gt; (Unix) ;&lt;/li&gt;
 &lt;li&gt;sur le &lt;strong&gt;&lt;code&gt;ReloadDirectory&lt;/code&gt;&lt;/strong&gt; de l&amp;rsquo;&lt;a href="https://go-fileshare.github.io/docs/0.29/fr/administration/"&gt;API d&amp;rsquo;administration&lt;/a&gt;, qui répond en indiquant qui
 a été ajouté, supprimé et modifié, si une nouvelle génération a démarré, et des remarques qu&amp;rsquo;une
-personne devrait lire — un groupe qui n&amp;rsquo;existe plus, quelqu&amp;rsquo;un qu&amp;rsquo;un partage nomme
+personne devrait lire — un groupe qui n&amp;rsquo;existe plus ou n&amp;rsquo;a plus de membres, quelqu&amp;rsquo;un qu&amp;rsquo;un partage nomme
 et qui n&amp;rsquo;est plus dans l&amp;rsquo;annuaire.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;Sans &lt;code&gt;reload&lt;/code&gt;, l&amp;rsquo;annuaire n&amp;rsquo;est lu qu&amp;rsquo;au démarrage, sur &lt;code&gt;SIGHUP&lt;/code&gt; et sur
@@ -305,7 +305,8 @@ démarrage.&lt;/p&gt;
 &lt;p&gt;Une nouvelle personne qui rejoint un groupe que nomme un partage modifie &lt;em&gt;bel et bien&lt;/em&gt; ce partage, et passe
 par une nouvelle génération comme toute autre modification de celui-ci : SMB fixe les listes d&amp;rsquo;un partage
 à son démarrage.&lt;/p&gt;
-&lt;p&gt;Un partage qui nomme quelqu&amp;rsquo;un de parti, ou un groupe qui n&amp;rsquo;existe plus, est servi
+&lt;p&gt;Un partage qui nomme quelqu&amp;rsquo;un de parti, ou un groupe qui n&amp;rsquo;existe plus ou n&amp;rsquo;a
+plus aucun membre (distingués depuis v0.29.1), est servi
 &lt;strong&gt;sans eux&lt;/strong&gt; — le sens sûr — et c&amp;rsquo;est signalé, plutôt que refusé comme le refuserait un
 démarrage : refuser conserverait les anciennes listes, et les anciennes listes sont
 l&amp;rsquo;accès qui vient d&amp;rsquo;être retiré.&lt;/p&gt;

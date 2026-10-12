@@ -276,7 +276,7 @@ alguien, no un servidor más actualizado;&lt;/li&gt;
 &lt;li&gt;con &lt;strong&gt;&lt;code&gt;SIGHUP&lt;/code&gt;&lt;/strong&gt; (Unix);&lt;/li&gt;
 &lt;li&gt;con el &lt;strong&gt;&lt;code&gt;ReloadDirectory&lt;/code&gt;&lt;/strong&gt; de la &lt;a href="https://go-fileshare.github.io/docs/0.29/es/administration/"&gt;API de administración&lt;/a&gt;,
 que responde con quién se añadió, se eliminó y cambió, si empezó una nueva
-generación, y notas que una persona debería leer: un grupo que ya no existe,
+generación, y notas que una persona debería leer: un grupo que ya no existe o no tiene miembros,
 alguien a quien nombra un recurso compartido y que ya no está en el directorio.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;Sin &lt;code&gt;reload&lt;/code&gt;, el directorio solo se lee al arrancar, con &lt;code&gt;SIGHUP&lt;/code&gt; y con
@@ -311,7 +311,7 @@ alguien a quien nombra un recurso compartido y que ya no está en el directorio.
 recurso compartido, y pasa por una nueva generación como cualquier otro cambio en él:
 SMB fija las listas de un recurso compartido cuando este arranca.&lt;/p&gt;
 &lt;p&gt;Un recurso compartido que nombra a alguien que se ha ido, o a un grupo que ya no
-existe, se sirve &lt;strong&gt;sin ellos&lt;/strong&gt; —la dirección segura— y se indica, en lugar de
+existe o ya no tiene ningún miembro (distinguidos desde v0.29.1), se sirve &lt;strong&gt;sin ellos&lt;/strong&gt; —la dirección segura— y se indica, en lugar de
 rechazarse como lo rechaza un arranque: rechazarlo conservaría las listas antiguas, y
 las listas antiguas son el acceso que se acaba de retirar.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="an-empty-group-is-not-everyone"&gt;Un grupo vacío no es todo el mundo&lt;span class="hx:absolute hx:-mt-20" id="an-empty-group-is-not-everyone"&gt;&lt;/span&gt;

@@ -270,7 +270,7 @@ server;&lt;/li&gt;
 &lt;li&gt;on &lt;strong&gt;&lt;code&gt;SIGHUP&lt;/code&gt;&lt;/strong&gt; (Unix);&lt;/li&gt;
 &lt;li&gt;on the &lt;a href="https://go-fileshare.github.io/docs/0.29/administration/"&gt;admin API&lt;/a&gt;&amp;rsquo;s &lt;strong&gt;&lt;code&gt;ReloadDirectory&lt;/code&gt;&lt;/strong&gt;, which answers with who
 was added, removed and changed, whether a new generation started, and notes a
-person should read — a group that no longer exists, somebody a share names
+person should read — a group that no longer exists or has no members, somebody a share names
 who is no longer in the directory.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;Without &lt;code&gt;reload&lt;/code&gt;, the directory is read at the start, on &lt;code&gt;SIGHUP&lt;/code&gt; and on
@@ -305,7 +305,8 @@ start.&lt;/p&gt;
 &lt;p&gt;Somebody new who joins a group a share names &lt;em&gt;does&lt;/em&gt; change that share, and goes
 through a new generation like any other change to it: SMB fixes a share&amp;rsquo;s lists
 when it starts.&lt;/p&gt;
-&lt;p&gt;A share naming somebody who is gone, or a group that no longer exists, is served
+&lt;p&gt;A share naming somebody who is gone, or a group that no longer exists or no
+longer has any members (told apart since v0.29.1), is served
 &lt;strong&gt;without them&lt;/strong&gt; — the safe direction — and said, rather than refused the way a
 startup refuses it: refusing would keep the old lists, and the old lists are the
 access that was just taken away.&lt;/p&gt;

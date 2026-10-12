@@ -23,7 +23,7 @@ Server;&lt;/li&gt;
 &lt;li&gt;bei &lt;strong&gt;&lt;code&gt;SIGHUP&lt;/code&gt;&lt;/strong&gt; (Unix);&lt;/li&gt;
 &lt;li&gt;bei &lt;strong&gt;&lt;code&gt;ReloadDirectory&lt;/code&gt;&lt;/strong&gt; der &lt;a href="https://go-fileshare.github.io/docs/0.29/de/administration/"&gt;Admin-API&lt;/a&gt;, das antwortet, wer
 hinzugefügt, entfernt und geändert wurde, ob eine neue Generation gestartet ist, und Hinweise gibt, die
-man lesen sollte – eine Gruppe, die es nicht mehr gibt, jemand, den eine Freigabe nennt,
+man lesen sollte – eine Gruppe, die es nicht mehr gibt oder die keine Mitglieder hat, jemand, den eine Freigabe nennt,
 der nicht mehr im Verzeichnis steht.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;Ohne &lt;code&gt;reload&lt;/code&gt; wird das Verzeichnis nur beim Start, bei &lt;code&gt;SIGHUP&lt;/code&gt; und bei
@@ -58,7 +58,8 @@ Start gelesen.&lt;/p&gt;
 &lt;p&gt;Jemand Neues, der einer Gruppe beitritt, die eine Freigabe nennt, &lt;em&gt;ändert&lt;/em&gt; diese Freigabe sehr wohl und durchläuft
 eine neue Generation wie jede andere Änderung an ihr: SMB legt die Listen einer Freigabe
 bei deren Start fest.&lt;/p&gt;
-&lt;p&gt;Eine Freigabe, die jemanden nennt, der weg ist, oder eine Gruppe, die es nicht mehr gibt, wird
+&lt;p&gt;Eine Freigabe, die jemanden nennt, der weg ist, oder eine Gruppe, die es nicht mehr gibt oder
+die keine Mitglieder mehr hat (seit v0.29.1 unterschieden), wird
 &lt;strong&gt;ohne sie&lt;/strong&gt; bereitgestellt – die sichere Richtung – und das wird gemeldet, statt sie abzulehnen, wie es
 der Start tut: Ablehnen würde die alten Listen behalten, und die alten Listen sind der
 Zugriff, der gerade entzogen wurde.&lt;/p&gt;
