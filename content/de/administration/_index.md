@@ -201,6 +201,14 @@ einer Umleitung auf denselben Host mit jedem Schema, was ein falsch
 konfigurierter Proxy mit einem `307` auf eine einfache `http`-Adresse in ein im Klartext gesendetes Token
 verwandeln würde.
 
+**Ein fehlgeschlagener Upload wird fortgesetzt** (explorer v0.3.0). Die
+Teildatei ist nach der Datei benannt -- Name, Größe und Änderungszeit --, sodass
+ein erneuter Upload derselben Datei dort weitermacht, wo die Teildatei endet,
+nachdem ihre letzten 64 KiB zurückgelesen und als die der Datei erkannt wurden.
+Eine andere Datei wird nie fortgesetzt. Ein Ausfall des Netzes oder des Servers
+behält die Teildatei; eine Ablehnung (403, eine volle Freigabe: 507) entfernt
+sie.
+
 Die `audience` jedes Servers ist die `resource`, die das Portal für ihn
 verwendet. Eine eigene Konsole braucht es nicht, um die API zu nutzen: Jeder
 Connect-, gRPC-Web- oder gRPC-Client mit einem Token für diesen Server genügt.

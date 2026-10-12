@@ -201,6 +201,13 @@ una redirección al mismo host con cualquier esquema, lo que un proxy mal
 configurado que respondiera con un `307` hacia una dirección `http` simple convertiría en un token enviado en
 claro.
 
+**Una subida que falla se reanuda** (explorer v0.3.0). El archivo parcial lleva
+el nombre del archivo -- su nombre, tamaño y fecha de modificación --, así que
+subir de nuevo el mismo archivo continúa donde termina el parcial, una vez
+releídos sus últimos 64 KiB y comprobado que son los del archivo. Un archivo
+distinto nunca se continúa. Un fallo de la red o del servidor conserva el
+parcial; un rechazo (403, un recurso lleno: 507) lo elimina.
+
 La `audience` de cada servidor es la `resource` que el portal usa para él. No
 hace falta escribir una consola propia para usar la API: sirve cualquier
 cliente Connect, gRPC-Web o gRPC con un token para este servidor.
