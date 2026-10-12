@@ -892,6 +892,12 @@ listed in &lt;code&gt;explorer.hcl&lt;/code&gt;, each with its &lt;code&gt;dav_u
 a token: Go&amp;rsquo;s HTTP client keeps &lt;code&gt;Authorization&lt;/code&gt; across one to the same host on
 any scheme, which a misconfigured proxy answering a &lt;code&gt;307&lt;/code&gt; to a plain-&lt;code&gt;http&lt;/code&gt; address would turn
 into a token sent in clear.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;An upload that fails resumes&lt;/strong&gt; (explorer v0.3.0). The part file is named after
+the file &amp;ndash; its name, size and modification time &amp;ndash; so uploading the same file
+again continues where the part ends, once the part&amp;rsquo;s last 64 KiB, read back,
+are found to be the file&amp;rsquo;s. A different file is never continued. A failure of
+the network or the server keeps the part; a refusal (403, a full share: 507)
+removes it.&lt;/p&gt;
 &lt;p&gt;Each server&amp;rsquo;s &lt;code&gt;audience&lt;/code&gt; is the portal&amp;rsquo;s &lt;code&gt;resource&lt;/code&gt; for it. Writing a console
 of your own is not required to use the API: any Connect, gRPC-Web or gRPC client
 with a token for this server will do.&lt;/p&gt;

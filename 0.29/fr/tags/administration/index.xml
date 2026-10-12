@@ -897,6 +897,12 @@ et la &lt;code&gt;resource&lt;/code&gt; de son bloc &lt;code&gt;oidc&lt;/code&gt
 redirection avec un jeton : le client HTTP de Go garde &lt;code&gt;Authorization&lt;/code&gt; lors
 d&amp;rsquo;une redirection vers le même hôte quel que soit le schéma, ce qu&amp;rsquo;un proxy mal
 configuré répondant par un &lt;code&gt;307&lt;/code&gt; vers une adresse en &lt;code&gt;http&lt;/code&gt; simple transformerait en jeton envoyé en clair.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Un envoi qui échoue reprend&lt;/strong&gt; (explorer v0.3.0). Le fichier partiel est nommé
+d&amp;rsquo;après le fichier &amp;ndash; son nom, sa taille et sa date de modification &amp;ndash;, si bien
+qu&amp;rsquo;envoyer à nouveau le même fichier reprend là où s&amp;rsquo;arrête le partiel, une fois
+ses 64 Kio de fin relus et trouvés identiques à ceux du fichier. Un autre
+fichier n&amp;rsquo;est jamais continué. Une panne du réseau ou du serveur garde le
+partiel ; un refus (403, un partage plein : 507) le supprime.&lt;/p&gt;
 &lt;p&gt;L&amp;rsquo;&lt;code&gt;audience&lt;/code&gt; de chaque serveur est la &lt;code&gt;resource&lt;/code&gt; que le portail lui donne. Nul
 besoin d&amp;rsquo;écrire sa propre console pour utiliser l&amp;rsquo;API : tout client Connect,
 gRPC-Web ou gRPC muni d&amp;rsquo;un jeton pour ce serveur convient.&lt;/p&gt;
