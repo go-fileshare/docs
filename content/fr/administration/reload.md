@@ -20,7 +20,7 @@ Depuis la v0.10.0, il les relit :
 - sur **`SIGHUP`** (Unix) ;
 - sur le **`ReloadDirectory`** de l'[API d'administration]({{< relref "/administration/_index.md" >}}), qui répond en indiquant qui
   a été ajouté, supprimé et modifié, si une nouvelle génération a démarré, et des remarques qu'une
-  personne devrait lire — un groupe qui n'existe plus, quelqu'un qu'un partage nomme
+  personne devrait lire — un groupe qui n'existe plus ou n'a plus de membres, quelqu'un qu'un partage nomme
   et qui n'est plus dans l'annuaire.
 
 Sans `reload`, l'annuaire n'est lu qu'au démarrage, sur `SIGHUP` et sur
@@ -44,7 +44,8 @@ Une nouvelle personne qui rejoint un groupe que nomme un partage modifie *bel et
 par une nouvelle génération comme toute autre modification de celui-ci : SMB fixe les listes d'un partage
 à son démarrage.
 
-Un partage qui nomme quelqu'un de parti, ou un groupe qui n'existe plus, est servi
+Un partage qui nomme quelqu'un de parti, ou un groupe qui n'existe plus ou n'a
+plus aucun membre (distingués depuis v0.29.1), est servi
 **sans eux** — le sens sûr — et c'est signalé, plutôt que refusé comme le refuserait un
 démarrage : refuser conserverait les anciennes listes, et les anciennes listes sont
 l'accès qui vient d'être retiré.

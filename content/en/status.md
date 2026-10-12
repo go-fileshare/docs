@@ -5,7 +5,7 @@ description: "Which fileshare release these pages describe, what each release ad
 tags: [status, releases]
 ---
 
-These pages describe **fileshare v0.29.0**.
+These pages describe **fileshare v0.29.1**.
 
 ## What each release added
 
@@ -48,6 +48,7 @@ These pages describe **fileshare v0.29.0**.
 | v0.27.0 | ACME: the certificate is asked for **at start**, not at the first connection — retried after 1 min, doubling up to 1 h, while the server keeps serving; a client that sends **no SNI** (connecting by IP address) is given the first domain's certificate instead of a failed handshake (go-authn/servercert v0.5.0). [HARICA]({{< relref "/security/tls.md#harica-gant-tcs-which-account-and-caa" >}}): only an Enterprise **Admin** (OV) account issues without a challenge, and CAA must allow `harica.gr` |
 | v0.28.0 | the admin API is also served [over HTTPS for OIDC tokens]({{< relref "/administration/_index.md#over-https-for-oidc-tokens" >}}) — Connect, gRPC-Web and gRPC on one listener, one audience per server, callers named by subject or group per issuer — the first step towards the web and native UIs |
 | v0.28.1 | security: built with Go 1.27.2 and golang.org/x/net v0.60.0, which fix GO-2026-6617 (an HTTP/2 HPACK race that could crash a server), GO-2026-6613, -6612, -6611, -6610 and -6603. The admin API over HTTPS speaks HTTP/2. `go install` now requires Go 1.27.2, and switches to it by itself |
+| v0.29.1 | a [reload]({{< relref "/administration/reload.md" >}}) treats a group emptied in the directory as it treats a deleted one: it grants nothing, and the reload's notes say `group @x has no members: it grants nothing` (go-authn/directory v0.12.0, which tells an empty group from a missing one) |
 | v0.29.0 | WebDAV: [a `PROPFIND` of the root lists the shares]({{< relref "/protocols/webdav.md#the-root-and-uploads-in-pieces" >}}) (207; Depth infinity 403, writes 405), so a file manager can mount the whole server; an upload can go in pieces, each `Content-Range` appended where the last ended (go-filesystems/webdav v0.6.0) — what the [file explorer]({{< relref "/administration/_index.md" >}}) needs |
 
 {{< callout type="warning" >}}
