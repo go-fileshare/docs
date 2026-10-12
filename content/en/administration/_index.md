@@ -193,6 +193,13 @@ a token: Go's HTTP client keeps `Authorization` across one to the same host on
 any scheme, which a misconfigured proxy answering a `307` to a plain-`http` address would turn
 into a token sent in clear.
 
+**An upload that fails resumes** (explorer v0.3.0). The part file is named after
+the file -- its name, size and modification time -- so uploading the same file
+again continues where the part ends, once the part's last 64 KiB, read back,
+are found to be the file's. A different file is never continued. A failure of
+the network or the server keeps the part; a refusal (403, a full share: 507)
+removes it.
+
 Each server's `audience` is the portal's `resource` for it. Writing a console
 of your own is not required to use the API: any Connect, gRPC-Web or gRPC client
 with a token for this server will do.

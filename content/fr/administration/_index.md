@@ -199,6 +199,13 @@ redirection avec un jeton : le client HTTP de Go garde `Authorization` lors
 d'une redirection vers le même hôte quel que soit le schéma, ce qu'un proxy mal
 configuré répondant par un `307` vers une adresse en `http` simple transformerait en jeton envoyé en clair.
 
+**Un envoi qui échoue reprend** (explorer v0.3.0). Le fichier partiel est nommé
+d'après le fichier -- son nom, sa taille et sa date de modification --, si bien
+qu'envoyer à nouveau le même fichier reprend là où s'arrête le partiel, une fois
+ses 64 Kio de fin relus et trouvés identiques à ceux du fichier. Un autre
+fichier n'est jamais continué. Une panne du réseau ou du serveur garde le
+partiel ; un refus (403, un partage plein : 507) le supprime.
+
 L'`audience` de chaque serveur est la `resource` que le portail lui donne. Nul
 besoin d'écrire sa propre console pour utiliser l'API : tout client Connect,
 gRPC-Web ou gRPC muni d'un jeton pour ce serveur convient.
