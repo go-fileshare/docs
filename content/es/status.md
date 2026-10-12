@@ -5,7 +5,7 @@ description: "Qué versión de fileshare describen estas páginas, qué añadió
 tags: [estado, versiones]
 ---
 
-Estas páginas describen **fileshare v0.29.0**.
+Estas páginas describen **fileshare v0.29.1**.
 
 ## Lo que añadió cada versión {#what-each-release-added}
 
@@ -48,6 +48,7 @@ Estas páginas describen **fileshare v0.29.0**.
 | v0.27.0 | ACME: el certificado se pide **al arrancar**, no en la primera conexión — se reintenta tras 1 min, duplicando hasta 1 h, mientras el servidor sigue sirviendo; un cliente que **no envía SNI** (conexión por dirección IP) recibe el certificado del primer dominio en lugar de un saludo fallido (go-authn/servercert v0.5.0). [HARICA]({{< relref "/security/tls.md#harica-gant-tcs-which-account-and-caa" >}}): solo una cuenta Enterprise **Admin** (OV) emite sin desafío, y el CAA debe autorizar `harica.gr` |
 | v0.28.0 | la API de administración se sirve también [por HTTPS para tokens OIDC]({{< relref "/administration/_index.md#over-https-for-oidc-tokens" >}}) — Connect, gRPC-Web y gRPC en un solo puerto, una audiencia por servidor, quienes llaman nombrados por sujeto o grupo para cada emisor — el primer paso hacia las interfaces web y nativas |
 | v0.28.1 | seguridad: compilado con Go 1.27.2 y golang.org/x/net v0.60.0, que corrigen GO-2026-6617 (una carrera en el codificador HPACK de HTTP/2 que podía tumbar un servidor), GO-2026-6613, -6612, -6611, -6610 y -6603. La API de administración por HTTPS habla HTTP/2. `go install` exige ahora Go 1.27.2, y cambia a él por sí solo |
+| v0.29.1 | una [recarga]({{< relref "/administration/reload.md" >}}) trata un grupo vaciado en el directorio como uno eliminado: no concede nada, y las notas de la recarga dicen `group @x has no members: it grants nothing` (go-authn/directory v0.12.0, que distingue un grupo vacío de uno inexistente) |
 | v0.29.0 | WebDAV: [un `PROPFIND` de la raíz lista los recursos compartidos]({{< relref "/protocols/webdav.md#the-root-and-uploads-in-pieces" >}}) (207; profundidad infinity 403, escrituras 405), así que un gestor de archivos puede montar todo el servidor; una subida puede hacerse por partes, cada `Content-Range` añadido donde terminó el anterior (go-filesystems/webdav v0.6.0) — lo que necesita el [explorador de archivos]({{< relref "/administration/_index.md" >}}) |
 
 {{< callout type="warning" >}}

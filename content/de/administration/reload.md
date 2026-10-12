@@ -20,7 +20,7 @@ Seit v0.10.0 liest er sie erneut ein:
 - bei **`SIGHUP`** (Unix);
 - bei **`ReloadDirectory`** der [Admin-API]({{< relref "/administration/_index.md" >}}), das antwortet, wer
   hinzugefügt, entfernt und geändert wurde, ob eine neue Generation gestartet ist, und Hinweise gibt, die
-  man lesen sollte – eine Gruppe, die es nicht mehr gibt, jemand, den eine Freigabe nennt,
+  man lesen sollte – eine Gruppe, die es nicht mehr gibt oder die keine Mitglieder hat, jemand, den eine Freigabe nennt,
   der nicht mehr im Verzeichnis steht.
 
 Ohne `reload` wird das Verzeichnis nur beim Start, bei `SIGHUP` und bei
@@ -44,7 +44,8 @@ Jemand Neues, der einer Gruppe beitritt, die eine Freigabe nennt, *ändert* dies
 eine neue Generation wie jede andere Änderung an ihr: SMB legt die Listen einer Freigabe
 bei deren Start fest.
 
-Eine Freigabe, die jemanden nennt, der weg ist, oder eine Gruppe, die es nicht mehr gibt, wird
+Eine Freigabe, die jemanden nennt, der weg ist, oder eine Gruppe, die es nicht mehr gibt oder
+die keine Mitglieder mehr hat (seit v0.29.1 unterschieden), wird
 **ohne sie** bereitgestellt – die sichere Richtung – und das wird gemeldet, statt sie abzulehnen, wie es
 der Start tut: Ablehnen würde die alten Listen behalten, und die alten Listen sind der
 Zugriff, der gerade entzogen wurde.

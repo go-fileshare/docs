@@ -20,7 +20,7 @@ Since v0.10.0 it reads them again:
 - on **`SIGHUP`** (Unix);
 - on the [admin API]({{< relref "/administration/_index.md" >}})'s **`ReloadDirectory`**, which answers with who
   was added, removed and changed, whether a new generation started, and notes a
-  person should read — a group that no longer exists, somebody a share names
+  person should read — a group that no longer exists or has no members, somebody a share names
   who is no longer in the directory.
 
 Without `reload`, the directory is read at the start, on `SIGHUP` and on
@@ -44,7 +44,8 @@ Somebody new who joins a group a share names *does* change that share, and goes
 through a new generation like any other change to it: SMB fixes a share's lists
 when it starts.
 
-A share naming somebody who is gone, or a group that no longer exists, is served
+A share naming somebody who is gone, or a group that no longer exists or no
+longer has any members (told apart since v0.29.1), is served
 **without them** — the safe direction — and said, rather than refused the way a
 startup refuses it: refusing would keep the old lists, and the old lists are the
 access that was just taken away.

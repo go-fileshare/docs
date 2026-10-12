@@ -20,7 +20,7 @@ la v0.10.0 las vuelve a leer:
 - con **`SIGHUP`** (Unix);
 - con el **`ReloadDirectory`** de la [API de administración]({{< relref "/administration/_index.md" >}}),
   que responde con quién se añadió, se eliminó y cambió, si empezó una nueva
-  generación, y notas que una persona debería leer: un grupo que ya no existe,
+  generación, y notas que una persona debería leer: un grupo que ya no existe o no tiene miembros,
   alguien a quien nombra un recurso compartido y que ya no está en el directorio.
 
 Sin `reload`, el directorio solo se lee al arrancar, con `SIGHUP` y con
@@ -44,7 +44,7 @@ recurso compartido, y pasa por una nueva generación como cualquier otro cambio 
 SMB fija las listas de un recurso compartido cuando este arranca.
 
 Un recurso compartido que nombra a alguien que se ha ido, o a un grupo que ya no
-existe, se sirve **sin ellos** —la dirección segura— y se indica, en lugar de
+existe o ya no tiene ningún miembro (distinguidos desde v0.29.1), se sirve **sin ellos** —la dirección segura— y se indica, en lugar de
 rechazarse como lo rechaza un arranque: rechazarlo conservaría las listas antiguas, y
 las listas antiguas son el acceso que se acaba de retirar.
 
