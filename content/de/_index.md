@@ -10,7 +10,7 @@ description: "go-fileshare stellt Disk-Images und Verzeichnisse über SMB, NFS, 
 **Ein Disk-Image – oder ein Verzeichnis –, bereitgestellt über SMB, NFS, WebDAV, SFTP und S3:
 dieselben Benutzer, derselbe Zugriff pro Freigabe, aus einer einzigen Konfigurationsdatei.** Reines
 Go, `CGO_ENABLED=0`, ein Binary. Diese Seiten beschreiben
-[v0.29.1]({{< relref "/status.md" >}}).
+[v0.29.2]({{< relref "/status.md" >}}).
 
 ```sh
 go install github.com/go-fileshare/fileshare@latest
@@ -18,6 +18,13 @@ go install github.com/go-fileshare/fileshare@latest
 fileshare --image disk.img --user alice --password-file pw   # one image, now
 fileshare --config /etc/fileshare.d                          # several, with users
 ```
+
+Oder **ein Binary, ganz ohne Go**: Jedes Release seit v0.29.1 hat ein
+statisches Binary pro Plattform auf seiner [Release-Seite](https://github.com/go-fileshare/fileshare/releases)
+(Linux auf sechs Architekturen, macOS, Windows, FreeBSD, OpenBSD, und NetBSD seit
+v0.29.2). Prüfen Sie es mit `sha256sum -c --ignore-missing SHA256SUMS`, und mit
+`gh attestation verify <Archiv> -R go-fileshare/fileshare`, um zu bestätigen,
+dass GitHub es aus dem Tag gebaut hat.
 
 Das Passwort kommt aus einer **Datei**, nie aus einem Flag: Ein Argument ist in der
 Prozessliste für jeden Benutzer der Maschine sichtbar.

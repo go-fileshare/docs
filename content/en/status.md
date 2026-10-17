@@ -5,7 +5,7 @@ description: "Which fileshare release these pages describe, what each release ad
 tags: [status, releases]
 ---
 
-These pages describe **fileshare v0.29.1**.
+These pages describe **fileshare v0.29.2**.
 
 ## What each release added
 
@@ -49,6 +49,7 @@ These pages describe **fileshare v0.29.1**.
 | v0.28.0 | the admin API is also served [over HTTPS for OIDC tokens]({{< relref "/administration/_index.md#over-https-for-oidc-tokens" >}}) — Connect, gRPC-Web and gRPC on one listener, one audience per server, callers named by subject or group per issuer — the first step towards the web and native UIs |
 | v0.28.1 | security: built with Go 1.27.2 and golang.org/x/net v0.60.0, which fix GO-2026-6617 (an HTTP/2 HPACK race that could crash a server), GO-2026-6613, -6612, -6611, -6610 and -6603. The admin API over HTTPS speaks HTTP/2. `go install` now requires Go 1.27.2, and switches to it by itself |
 | v0.29.1 | a [reload]({{< relref "/administration/reload.md" >}}) treats a group emptied in the directory as it treats a deleted one: it grants nothing, and the reload's notes say `group @x has no members: it grants nothing` (go-authn/directory v0.12.0, which tells an empty group from a missing one) |
+| v0.29.2 | **binaries for NetBSD (amd64) and OpenBSD on arm64**: fileshare did not build on NetBSD, because awnumar/memcall v0.1.2, which it gets through memguard and OpenPubkey, uses `MADV_DONTDUMP`, a flag NetBSD lacks. memguard v0.23.0 and memcall v0.4.0 fix it upstream. Every release platform is now cross-built on every pull request. Since v0.29.1, every release carries a static binary per platform, with `SHA256SUMS` and a provenance attestation, on its [release page](https://github.com/go-fileshare/fileshare/releases) |
 | v0.29.0 | WebDAV: [a `PROPFIND` of the root lists the shares]({{< relref "/protocols/webdav.md#the-root-and-uploads-in-pieces" >}}) (207; Depth infinity 403, writes 405), so a file manager can mount the whole server; an upload can go in pieces, each `Content-Range` appended where the last ended (go-filesystems/webdav v0.6.0) — what the [file explorer]({{< relref "/administration/_index.md" >}}) needs |
 
 {{< callout type="warning" >}}
