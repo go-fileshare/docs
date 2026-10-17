@@ -10,7 +10,7 @@ description: "go-fileshare sert des images disque et des répertoires en SMB, NF
 **Une image disque — ou un répertoire — servie en SMB, NFS, WebDAV, SFTP et S3 :
 les mêmes utilisateurs, le même accès par partage, depuis un seul fichier de configuration.** Pur
 Go, `CGO_ENABLED=0`, un seul binaire. Ces pages décrivent la
-[v0.29.1]({{< relref "/status.md" >}}).
+[v0.29.2]({{< relref "/status.md" >}}).
 
 ```sh
 go install github.com/go-fileshare/fileshare@latest
@@ -18,6 +18,13 @@ go install github.com/go-fileshare/fileshare@latest
 fileshare --image disk.img --user alice --password-file pw   # one image, now
 fileshare --config /etc/fileshare.d                          # several, with users
 ```
+
+Ou **un binaire, sans Go du tout** : chaque version depuis la v0.29.1 a un
+binaire statique par plateforme sur sa [page de publication](https://github.com/go-fileshare/fileshare/releases)
+(Linux sur six architectures, macOS, Windows, FreeBSD, OpenBSD, et NetBSD depuis
+la v0.29.2). Vérifiez-le avec `sha256sum -c --ignore-missing SHA256SUMS`, et avec
+`gh attestation verify <archive> -R go-fileshare/fileshare` pour confirmer que
+GitHub l'a construit à partir de l'étiquette.
 
 Le mot de passe vient d'un **fichier**, jamais d'une option : un argument est visible
 dans la liste des processus par tous les utilisateurs de la machine.

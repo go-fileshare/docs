@@ -5,7 +5,7 @@ description: "Qué versión de fileshare describen estas páginas, qué añadió
 tags: [estado, versiones]
 ---
 
-Estas páginas describen **fileshare v0.29.1**.
+Estas páginas describen **fileshare v0.29.2**.
 
 ## Lo que añadió cada versión {#what-each-release-added}
 
@@ -49,6 +49,7 @@ Estas páginas describen **fileshare v0.29.1**.
 | v0.28.0 | la API de administración se sirve también [por HTTPS para tokens OIDC]({{< relref "/administration/_index.md#over-https-for-oidc-tokens" >}}) — Connect, gRPC-Web y gRPC en un solo puerto, una audiencia por servidor, quienes llaman nombrados por sujeto o grupo para cada emisor — el primer paso hacia las interfaces web y nativas |
 | v0.28.1 | seguridad: compilado con Go 1.27.2 y golang.org/x/net v0.60.0, que corrigen GO-2026-6617 (una carrera en el codificador HPACK de HTTP/2 que podía tumbar un servidor), GO-2026-6613, -6612, -6611, -6610 y -6603. La API de administración por HTTPS habla HTTP/2. `go install` exige ahora Go 1.27.2, y cambia a él por sí solo |
 | v0.29.1 | una [recarga]({{< relref "/administration/reload.md" >}}) trata un grupo vaciado en el directorio como uno eliminado: no concede nada, y las notas de la recarga dicen `group @x has no members: it grants nothing` (go-authn/directory v0.12.0, que distingue un grupo vacío de uno inexistente) |
+| v0.29.2 | **binarios para NetBSD (amd64) y OpenBSD en arm64**: fileshare no compilaba en NetBSD, porque awnumar/memcall v0.1.2, que recibe a través de memguard y OpenPubkey, usa `MADV_DONTDUMP`, un indicador que NetBSD no tiene. memguard v0.23.0 y memcall v0.4.0 lo corrigen en origen. Cada plataforma de publicación se compila ahora en cada solicitud de fusión. Desde la v0.29.1, cada versión lleva un binario estático por plataforma, con `SHA256SUMS` y una atestación de procedencia, en su [página de publicación](https://github.com/go-fileshare/fileshare/releases) |
 | v0.29.0 | WebDAV: [un `PROPFIND` de la raíz lista los recursos compartidos]({{< relref "/protocols/webdav.md#the-root-and-uploads-in-pieces" >}}) (207; profundidad infinity 403, escrituras 405), así que un gestor de archivos puede montar todo el servidor; una subida puede hacerse por partes, cada `Content-Range` añadido donde terminó el anterior (go-filesystems/webdav v0.6.0) — lo que necesita el [explorador de archivos]({{< relref "/administration/_index.md" >}}) |
 
 {{< callout type="warning" >}}

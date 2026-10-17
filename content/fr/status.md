@@ -5,7 +5,7 @@ description: "La version de fileshare que décrivent ces pages, ce que chaque ve
 tags: [état, versions]
 ---
 
-Ces pages décrivent **fileshare v0.29.1**.
+Ces pages décrivent **fileshare v0.29.2**.
 
 ## Ce que chaque version a ajouté {#what-each-release-added}
 
@@ -49,6 +49,7 @@ Ces pages décrivent **fileshare v0.29.1**.
 | v0.28.0 | l'API d'administration est aussi servie [en HTTPS pour des jetons OIDC]({{< relref "/administration/_index.md#over-https-for-oidc-tokens" >}}) — Connect, gRPC-Web et gRPC sur un seul port d'écoute, une audience par serveur, les appelants désignés par sujet ou par groupe pour chaque émetteur — première étape vers les interfaces web et natives |
 | v0.28.1 | sécurité : compilé avec Go 1.27.2 et golang.org/x/net v0.60.0, qui corrigent GO-2026-6617 (une concurrence dans l'encodeur HPACK d'HTTP/2 qui pouvait faire tomber un serveur), GO-2026-6613, -6612, -6611, -6610 et -6603. L'API d'administration en HTTPS parle HTTP/2. `go install` exige désormais Go 1.27.2, et y passe de lui-même |
 | v0.29.1 | un [rechargement]({{< relref "/administration/reload.md" >}}) traite un groupe vidé dans l'annuaire comme un groupe supprimé : il n'accorde rien, et les remarques du rechargement disent `group @x has no members: it grants nothing` (go-authn/directory v0.12.0, qui distingue un groupe vide d'un groupe absent) |
+| v0.29.2 | **binaires pour NetBSD (amd64) et OpenBSD sur arm64** : fileshare ne se compilait pas sous NetBSD, parce qu'awnumar/memcall v0.1.2, qu'il reçoit par memguard et OpenPubkey, utilise `MADV_DONTDUMP`, un drapeau que NetBSD n'a pas. memguard v0.23.0 et memcall v0.4.0 le corrigent en amont. Chaque plateforme de publication est désormais compilée à chaque demande de fusion. Depuis la v0.29.1, chaque version porte un binaire statique par plateforme, avec `SHA256SUMS` et une attestation de provenance, sur sa [page de publication](https://github.com/go-fileshare/fileshare/releases) |
 | v0.29.0 | WebDAV : [un `PROPFIND` de la racine liste les partages]({{< relref "/protocols/webdav.md#the-root-and-uploads-in-pieces" >}}) (207 ; profondeur infinity 403, écritures 405), si bien qu'un gestionnaire de fichiers peut monter tout le serveur ; un envoi peut se faire par morceaux, chaque `Content-Range` ajouté là où finissait le précédent (go-filesystems/webdav v0.6.0) — ce dont l'[explorateur de fichiers]({{< relref "/administration/_index.md" >}}) a besoin |
 
 {{< callout type="warning" >}}
