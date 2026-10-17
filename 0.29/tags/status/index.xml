@@ -1,5 +1,5 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Status</title><link>https://go-fileshare.github.io/docs/0.29/tags/status/</link><description>Recent content in Status on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>en</language><atom:link href="https://go-fileshare.github.io/docs/0.29/tags/status/index.xml" rel="self" type="application/rss+xml"/><item><title>Status</title><link>https://go-fileshare.github.io/docs/0.29/status/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.29/status/</guid><description>
-&lt;p&gt;These pages describe &lt;strong&gt;fileshare v0.29.1&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;These pages describe &lt;strong&gt;fileshare v0.29.2&lt;/strong&gt;.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="what-each-release-added"&gt;What each release added&lt;span class="hx:absolute hx:-mt-20" id="what-each-release-added"&gt;&lt;/span&gt;
 &lt;a href="#what-each-release-added" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
 &lt;thead&gt;
@@ -160,6 +160,10 @@
 &lt;tr&gt;
 &lt;td&gt;v0.29.1&lt;/td&gt;
 &lt;td&gt;a &lt;a href="https://go-fileshare.github.io/docs/0.29/administration/reload/"&gt;reload&lt;/a&gt; treats a group emptied in the directory as it treats a deleted one: it grants nothing, and the reload&amp;rsquo;s notes say &lt;code&gt;group @x has no members: it grants nothing&lt;/code&gt; (go-authn/directory v0.12.0, which tells an empty group from a missing one)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.29.2&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;binaries for NetBSD (amd64) and OpenBSD on arm64&lt;/strong&gt;: fileshare did not build on NetBSD, because awnumar/memcall v0.1.2, which it gets through memguard and OpenPubkey, uses &lt;code&gt;MADV_DONTDUMP&lt;/code&gt;, a flag NetBSD lacks. memguard v0.23.0 and memcall v0.4.0 fix it upstream. Every release platform is now cross-built on every pull request. Since v0.29.1, every release carries a static binary per platform, with &lt;code&gt;SHA256SUMS&lt;/code&gt; and a provenance attestation, on its &lt;a href="https://github.com/go-fileshare/fileshare/releases" target="_blank" rel="noopener"&gt;release page&lt;/a&gt;&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
 &lt;td&gt;v0.29.0&lt;/td&gt;
