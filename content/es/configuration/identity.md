@@ -36,10 +36,17 @@ como la propia contraseña: aquí no hay ningún ajuste para una contraseña con
 El lado LDAP lee lo que ya publica un directorio adaptado a Samba: `sambaNTPassword`,
 `sshPublicKey`, `memberUid`. Dónde están las personas y los grupos, y qué atributos
 los nombran, es configurable: `user_filter` (por defecto
-`(objectClass=posixAccount)`), `user_attribute` (`uid`), `group_base_dn`
-(`base_dn`), `group_filter` (`(objectClass=posixGroup)`), `group_attribute` (`cn`),
-`group_member_attribute` (`memberUid`), y `totp_attribute`, que no tiene valor por
-defecto. `sambaNTPassword` y `sshPublicKey` se leen con esos nombres.
+`(|(objectClass=posixAccount)(objectClass=account)(objectClass=uidObject))`),
+`user_attribute` (`uid`), `group_base_dn` (`base_dn`), `group_filter`
+(`(|(objectClass=posixGroup)(objectClass=groupOfNames))`), `group_attribute` (`cn`),
+`group_member_attribute` (`memberUid` y `member` a la vez, por defecto), y
+`totp_attribute`, que no tiene valor por defecto. `sambaNTPassword` y
+`sshPublicKey` se leen con esos nombres. Un valor `member` es un DN, y solo cuenta
+si es el DN de alguien que devolvió la búsqueda de personas: un `uid=alice` en otra
+parte del árbol no es alice. Estos valores por defecto (desde la v0.30.0) leen lo
+que publica go-authn/authnd v0.11.0; antes eran `(objectClass=posixAccount)` y
+`(objectClass=posixGroup)` solos, y frente al directorio de una institución ahora
+leen más entradas.
 
 {{< callout type="error" >}}
 **Ningún bind sin cifrar hacia otra máquina (desde la v0.19.0)**

@@ -5,7 +5,7 @@ description: "Which fileshare release these pages describe, what each release ad
 tags: [status, releases]
 ---
 
-These pages describe **fileshare v0.29.2**.
+These pages describe **fileshare v0.30.0**.
 
 ## What each release added
 
@@ -51,6 +51,7 @@ These pages describe **fileshare v0.29.2**.
 | v0.29.1 | a [reload]({{< relref "/administration/reload.md" >}}) treats a group emptied in the directory as it treats a deleted one: it grants nothing, and the reload's notes say `group @x has no members: it grants nothing` (go-authn/directory v0.12.0, which tells an empty group from a missing one) |
 | v0.29.2 | **binaries for NetBSD (amd64) and OpenBSD on arm64**: fileshare did not build on NetBSD, because awnumar/memcall v0.1.2, which it gets through memguard and OpenPubkey, uses `MADV_DONTDUMP`, a flag NetBSD lacks. memguard v0.23.0 and memcall v0.4.0 fix it upstream. Every release platform is now cross-built on every pull request. Since v0.29.1, every release carries a static binary per platform, with `SHA256SUMS` and a provenance attestation, on its [release page](https://github.com/go-fileshare/fileshare/releases) |
 | v0.29.0 | WebDAV: [a `PROPFIND` of the root lists the shares]({{< relref "/protocols/webdav.md#the-root-and-uploads-in-pieces" >}}) (207; Depth infinity 403, writes 405), so a file manager can mount the whole server; an upload can go in pieces, each `Content-Range` appended where the last ended (go-filesystems/webdav v0.6.0) — what the [file explorer]({{< relref "/administration/_index.md" >}}) needs |
+| v0.30.0 | go-authn/directory v0.14.0: a [`users "ldap"` block]({{< relref "/configuration/identity.md" >}}) reads by default what go-authn/authnd v0.11.0 publishes — people `(\|(objectClass=posixAccount)(objectClass=account)(objectClass=uidObject))`, groups `(\|(objectClass=posixGroup)(objectClass=groupOfNames))`, a `member` DN counting only when it is the DN of somebody the people search returned. ⛔ Against an institution's own directory, more entries are read by default; an explicit `user_filter` or `group_filter` is unchanged |
 
 {{< callout type="warning" >}}
 **Upgrading to v0.21.0**

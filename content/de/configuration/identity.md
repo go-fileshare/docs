@@ -36,11 +36,17 @@ Passwort selbst genommen: Es gibt hier keine Einstellung für ein gehashtes.
 Die LDAP-Seite liest, was ein Samba-fähiges Verzeichnis bereits veröffentlicht –
 `sambaNTPassword`, `sshPublicKey`, `memberUid`. Wo die Personen und Gruppen
 liegen und welche Attribute sie benennen, ist konfigurierbar: `user_filter`
-(Standard `(objectClass=posixAccount)`), `user_attribute` (`uid`),
-`group_base_dn` (`base_dn`), `group_filter` (`(objectClass=posixGroup)`),
-`group_attribute` (`cn`), `group_member_attribute` (`memberUid`) und
-`totp_attribute`, das keinen Standard hat. `sambaNTPassword` und `sshPublicKey`
-werden unter diesen Namen gelesen.
+(Standard `(|(objectClass=posixAccount)(objectClass=account)(objectClass=uidObject))`),
+`user_attribute` (`uid`), `group_base_dn` (`base_dn`), `group_filter`
+(`(|(objectClass=posixGroup)(objectClass=groupOfNames))`), `group_attribute`
+(`cn`), `group_member_attribute` (standardmäßig `memberUid` und `member`
+zugleich) und `totp_attribute`, das keinen Standard hat. `sambaNTPassword` und
+`sshPublicKey` werden unter diesen Namen gelesen. Ein `member`-Wert ist ein DN
+und zählt nur, wenn er der DN einer Person ist, die die Personensuche geliefert
+hat: ein `uid=alice` anderswo im Baum ist nicht alice. Diese Standards (seit
+v0.30.0) lesen, was go-authn/authnd v0.11.0 veröffentlicht; vorher waren es
+`(objectClass=posixAccount)` und `(objectClass=posixGroup)` allein, und gegenüber
+dem Verzeichnis einer Einrichtung lesen sie nun mehr Einträge.
 
 {{< callout type="error" >}}
 **Kein unverschlüsselter Bind an eine andere Maschine (seit v0.19.0)**
