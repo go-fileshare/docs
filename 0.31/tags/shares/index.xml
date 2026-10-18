@@ -1,0 +1,384 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Shares</title><link>https://go-fileshare.github.io/docs/0.31/tags/shares/</link><description>Recent content in Shares on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>en</language><atom:link href="https://go-fileshare.github.io/docs/0.31/tags/shares/index.xml" rel="self" type="application/rss+xml"/><item><title>Shares: images, devices, directories</title><link>https://go-fileshare.github.io/docs/0.31/configuration/shares/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/configuration/shares/</guid><description>
+&lt;p&gt;A share serves one of three things: a &lt;strong&gt;disk image&lt;/strong&gt;, a &lt;strong&gt;device&lt;/strong&gt; node, or a
+&lt;strong&gt;directory of the host&lt;/strong&gt;. An image and a device carry a filesystem this
+program reads itself; a directory is the host&amp;rsquo;s own.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="an-image-and-the-filesystem-inside-it"&gt;An image, and the filesystem inside it&lt;span class="hx:absolute hx:-mt-20" id="an-image-and-the-filesystem-inside-it"&gt;&lt;/span&gt;
+&lt;a href="#an-image-and-the-filesystem-inside-it" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;The filesystem inside an image is &lt;strong&gt;worked out rather than declared&lt;/strong&gt;.
+&lt;a href="https://github.com/go-filesystems/detect" target="_blank" rel="noopener"&gt;&lt;code&gt;go-filesystems/detect&lt;/code&gt;&lt;/a&gt; reads the
+magic and hands back the driver that owns it: &lt;strong&gt;fat32, exfat, ext4, ntfs, ufs,
+iso9660, squashfs or hfsplus&lt;/strong&gt; — every driver of the one shape,
+&lt;code&gt;OpenReader(io.ReaderAt, int64)&lt;/code&gt;, a filesystem at offset zero.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="the-four-that-cannot-be-sniffed"&gt;The four that cannot be sniffed&lt;span class="hx:absolute hx:-mt-20" id="the-four-that-cannot-be-sniffed"&gt;&lt;/span&gt;
+&lt;a href="#the-four-that-cannot-be-sniffed" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;apfs, btrfs, xfs and zfs&lt;/strong&gt; each open a &lt;em&gt;disk&lt;/em&gt; image and pick a &lt;strong&gt;partition&lt;/strong&gt;,
+so there is no magic at offset zero to find. A share says which:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;photos&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/disk.img&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; filesystem&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;xfs&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; partition&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;2&lt;/span&gt;&lt;span class="c1"&gt; # or leave it out: the driver takes the first data partition
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="a-partition-for-any-filesystem"&gt;A partition, for any filesystem&lt;span class="hx:absolute hx:-mt-20" id="a-partition-for-any-filesystem"&gt;&lt;/span&gt;
+&lt;a href="#a-partition-for-any-filesystem" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;A disk image holding FAT32, ext4 or exFAT has a partition table in front of it
+as often as one holding XFS does — and detection reads offset zero, where a
+partitioned image has the &lt;em&gt;table&lt;/em&gt;. So the partition is chosen first, and the
+driver is handed a view of it:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;photos&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/disk.img&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; partition_label&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;photos&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # what lsblk calls PARTLABEL
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Three ways to name one, and &lt;strong&gt;only one may be given&lt;/strong&gt; — two that disagree would
+serve whichever the code tried first:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;partition = 2&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;counting from 1, the way partitioning tools print them&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;partition_label = &amp;quot;photos&amp;quot;&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;the GPT partition name&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;partition_uuid = &amp;quot;…&amp;quot;&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;the GPT unique GUID — Linux&amp;rsquo;s &lt;code&gt;PARTUUID&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;An index moves&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;A disk repartitioned, a tool that writes entries in another order, an image
+restored with one partition fewer — and &lt;code&gt;partition = 2&lt;/code&gt; names something
+else, &lt;strong&gt;silently&lt;/strong&gt;, because a filesystem is still found there. A label or a
+UUID names the partition itself, which is why fstabs stopped using indexes
+years ago. The index is here for MBR images, which have neither.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;A share that chose a partition is &lt;strong&gt;read-only&lt;/strong&gt;, and says so at startup: the
+driver&amp;rsquo;s offsets are the partition&amp;rsquo;s while the file underneath is the whole
+disk, so a write would land at that offset from the start of the &lt;em&gt;image&lt;/em&gt; — on
+the partition table, as often as not.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="naming-a-filesystem-turns-detection-off"&gt;Naming a filesystem turns detection off&lt;span class="hx:absolute hx:-mt-20" id="naming-a-filesystem-turns-detection-off"&gt;&lt;/span&gt;
+&lt;a href="#naming-a-filesystem-turns-detection-off" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;That is the point, and it is the risk&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The image is opened as &lt;em&gt;that&lt;/em&gt; or refused. A FAT32 image told it is XFS does
+not become an XFS share; it fails to start, saying what it was asked to
+open it as.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;filesystem&lt;/code&gt; is accepted for the sniffable ones too, and then the two are
+compared: a share that says &lt;code&gt;ext4&lt;/code&gt; over a FAT32 image is refused with &lt;em&gt;the
+share says ext4 and the image holds fat32&lt;/em&gt;. That is how a site refuses a
+misdetection rather than discovering one later.
+&lt;a href="https://go-fileshare.github.io/docs/0.31/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt; marks a named driver with an asterisk, because that row was
+not recognised — it was asserted.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="a-device-not-only-an-image"&gt;A device, not only an image&lt;span class="hx:absolute hx:-mt-20" id="a-device-not-only-an-image"&gt;&lt;/span&gt;
+&lt;a href="#a-device-not-only-an-image" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;photos&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/dev/sda&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # a device node, not a file
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;No privilege is involved.&lt;/strong&gt; Nothing here mounts anything — the
+&lt;a href="https://github.com/go-filesystems" target="_blank" rel="noopener"&gt;&lt;code&gt;go-filesystems&lt;/code&gt;&lt;/a&gt; drivers read ext4, xfs and
+the rest in user space — so there is no &lt;code&gt;mount(2)&lt;/code&gt; and therefore no
+&lt;code&gt;CAP_SYS_ADMIN&lt;/code&gt;. Opening a device is an ordinary &lt;code&gt;open(2)&lt;/code&gt;, governed by the
+permissions on the node:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;owner&lt;/th&gt;
+&lt;th&gt;mode&lt;/th&gt;
+&lt;th&gt;enough&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Linux &lt;code&gt;/dev/sda&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;root:disk&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;0660&lt;/td&gt;
+&lt;td&gt;membership of &lt;code&gt;disk&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;macOS &lt;code&gt;/dev/disk0&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;root:operator&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;0640&lt;/td&gt;
+&lt;td&gt;membership of &lt;code&gt;operator&lt;/code&gt;, plus Full Disk Access&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;A refusal says which group, rather than &lt;code&gt;permission denied&lt;/code&gt; — the answer is
+never &lt;code&gt;sudo&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;⛔ &lt;strong&gt;A device share is read-only&lt;/strong&gt;, for the same reason as a share that chose a
+partition: writing to a live disk is not a decision to make on your behalf.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;The device is opened exclusively, and that is about correctness, not caution&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;If the kernel has a filesystem mounted from it, the filesystem&amp;rsquo;s page cache
+holds newer metadata than the device does — so a raw reader sees a
+directory block from before an update beside an inode block from after it,
+a state that never existed on disk at any one moment. &lt;code&gt;O_EXCL&lt;/code&gt; on a block
+device is the kernel&amp;rsquo;s own primitive for &amp;ldquo;nobody else, a mount included&amp;rdquo;;
+it is what &lt;code&gt;mkfs&lt;/code&gt; and &lt;code&gt;fsck&lt;/code&gt; use. A device in use is refused, by name, with
+the reason.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Two things were measured rather than assumed:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Stat().Size()&lt;/code&gt; is &lt;strong&gt;0&lt;/strong&gt; for a device, so the length is asked of the device
+itself. Seeking to the end answers on Linux and returns &lt;strong&gt;0 with no error&lt;/strong&gt;
+on macOS, which is why Darwin uses &lt;code&gt;DKIOCGETBLOCKCOUNT&lt;/code&gt; instead.&lt;/li&gt;
+&lt;li&gt;A &lt;strong&gt;raw&lt;/strong&gt; node (&lt;code&gt;/dev/rdiskN&lt;/code&gt;, or &lt;code&gt;O_DIRECT&lt;/code&gt; on Linux) refuses an unaligned
+read, and reading a two-byte field at offset 11 is what parsing a FAT BPB
+&lt;em&gt;is&lt;/em&gt;. Reads to a device are rounded out to whole blocks; without that,
+&lt;code&gt;/dev/rdisk4&lt;/code&gt; reported &lt;code&gt;unknown filesystem&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 data-hextra-search-id="a-directory-not-only-an-image"&gt;A directory, not only an image&lt;span class="hx:absolute hx:-mt-20" id="a-directory-not-only-an-image"&gt;&lt;/span&gt;
+&lt;a href="#a-directory-not-only-an-image" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Since v0.8.0 a share may serve a directory of the host — a container&amp;rsquo;s volume,
+say — instead of an image:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;photos&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; directory&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/data/photos&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; allow&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;@family&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;It is &lt;a href="https://github.com/go-filesystems/osfs" target="_blank" rel="noopener"&gt;go-filesystems/osfs&lt;/a&gt;, which
+reaches the tree through an &lt;strong&gt;&lt;code&gt;os.Root&lt;/code&gt;&lt;/strong&gt;: &lt;code&gt;..&lt;/code&gt; that climbs out, an absolute
+path, and a symbolic link leading out are refused by the kernel-backed root,
+not by a string test. A client may &lt;em&gt;create&lt;/em&gt; a link to &lt;code&gt;/etc&lt;/code&gt;; nothing will
+follow it. A FIFO planted in the tree is refused rather than left to hang the
+server.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;One share may not hold another (since v0.17.0)&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;A directory share whose tree holds another share&amp;rsquo;s image or directory is
+&lt;strong&gt;refused at start&lt;/strong&gt;, and by the admin API: whoever may use the outer
+share would read and write the inner one without being allowed it —
+anonymous NFS included. So are two shares on the same source, except two
+different partitions of one disk image.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Not behind the image lock&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;An image driver owns one file and promises nothing about two calls at once,
+which is why &lt;a href="https://go-fileshare.github.io/docs/0.31/operations/locking/"&gt;every image is wrapped in one lock&lt;/a&gt;.
+A host tree is the kernel&amp;rsquo;s, which serialises what must be serialised per
+call and no more; one mutex in front of every file of every client would be
+the slowest thing a file server can do.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;⛔ A share has an &lt;code&gt;image&lt;/code&gt; &lt;strong&gt;or&lt;/strong&gt; a &lt;code&gt;directory&lt;/code&gt;, never both, and never neither.
+&lt;code&gt;filesystem&lt;/code&gt; and &lt;code&gt;partition&lt;/code&gt; are for an image: a directory share naming one is
+refused, because saying one means the share was meant to be an image.
+&lt;code&gt;read_only = true&lt;/code&gt; works on a directory as on an image; a share that says it
+and also lists &lt;code&gt;writers&lt;/code&gt; is refused, because &lt;code&gt;read_only&lt;/code&gt; would win.&lt;/p&gt;
+&lt;p&gt;The capacity a client is told is that of the filesystem the tree lives on; a
+platform that cannot say leaves it at zero, which the protocols read as
+&amp;ldquo;unknown&amp;rdquo; rather than &amp;ldquo;full&amp;rdquo;.&lt;/p&gt;</description></item><item><title>Directories served as each person</title><link>https://go-fileshare.github.io/docs/0.31/configuration/as-each-person/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/configuration/as-each-person/</guid><description>
+&lt;p&gt;Ordinarily one fileshare process serves everybody as one account: fileshare
+decides who may do what, and every file it creates belongs to that account.
+A directory share can instead be served &lt;strong&gt;as each person&lt;/strong&gt;. Whoever logged
+in has their files opened by a process running with their uid, gid and
+groups, so the kernel applies the tree&amp;rsquo;s permissions and what they create
+belongs to them.&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;identity&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; service_user&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;fileshare&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # the account the protocols are served as
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; min_uid&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;1000&lt;/span&gt;&lt;span class="c1"&gt; # the default; uid 0 is refused whatever this says
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; min_gid&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;1000&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; deny_uids&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="m"&gt;65534&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; idle&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;2m&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # how long an unused worker is kept
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;home&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; directory&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/home&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; identity&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;system&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="three-processes"&gt;Three processes&lt;span class="hx:absolute hx:-mt-20" id="three-processes"&gt;&lt;/span&gt;
+&lt;a href="#three-processes" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;fileshare serve&lt;/code&gt; must be &lt;strong&gt;started as root&lt;/strong&gt;. It stays root only to start
+each person&amp;rsquo;s worker. Everything that faces the network runs in a second
+process, as &lt;code&gt;service_user&lt;/code&gt;.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;process&lt;/th&gt;
+&lt;th&gt;runs as&lt;/th&gt;
+&lt;th&gt;does&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;the &lt;strong&gt;launcher&lt;/strong&gt; (&lt;code&gt;fileshare serve&lt;/code&gt;)&lt;/td&gt;
+&lt;td&gt;root&lt;/td&gt;
+&lt;td&gt;binds the listeners, starts the front, starts workers when the front asks. It speaks no protocol.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;the &lt;strong&gt;front&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;service_user&lt;/code&gt;, with that account&amp;rsquo;s groups&lt;/td&gt;
+&lt;td&gt;speaks the protocols and authenticates, as &lt;code&gt;serve&lt;/code&gt; always has. For such a share it asks the launcher for a &lt;strong&gt;person and a share&lt;/strong&gt;, never a uid or a path.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;a &lt;strong&gt;worker&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;the person&lt;/td&gt;
+&lt;td&gt;serves one share to the front, over a socket the launcher handed across&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;A worker first checks that it is running as exactly the expected uid, gid
+and groups, and that &lt;code&gt;setuid(0)&lt;/code&gt; fails. Only then does it open the tree,
+through an &lt;code&gt;os.Root&lt;/code&gt;. One worker serves all of that person&amp;rsquo;s connections to
+the share, over SFTP and WebDAV alike, and it stops once nothing has used it
+for &lt;code&gt;idle&lt;/code&gt;. When the server stops, the workers stop with it.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="who-a-person-is-on-this-system"&gt;Who a person is on this system&lt;span class="hx:absolute hx:-mt-20" id="who-a-person-is-on-this-system"&gt;&lt;/span&gt;
+&lt;a href="#who-a-person-is-on-this-system" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;The launcher resolves the person &lt;strong&gt;itself&lt;/strong&gt;, in this order:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;The directory&lt;/strong&gt;, if it carries &lt;code&gt;uidNumber&lt;/code&gt; and &lt;code&gt;gidNumber&lt;/code&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;a &lt;code&gt;user&lt;/code&gt; block&amp;rsquo;s &lt;code&gt;attributes = { uidNumber = &amp;quot;2001&amp;quot;, gidNumber = &amp;quot;2001&amp;quot; }&lt;/code&gt;;&lt;/li&gt;
+&lt;li&gt;an LDAP source with &lt;code&gt;attributes = [&amp;quot;uidNumber&amp;quot;, &amp;quot;gidNumber&amp;quot;]&lt;/code&gt;;&lt;/li&gt;
+&lt;li&gt;an SQL source&amp;rsquo;s &lt;code&gt;users_attributes&lt;/code&gt; query.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The supplementary groups are the groups that list the person (a &lt;code&gt;group&lt;/code&gt;
+block&amp;rsquo;s &lt;code&gt;members&lt;/code&gt;, &lt;code&gt;memberUid&lt;/code&gt;) and those the person names (&lt;code&gt;memberOf&lt;/code&gt;),
+each by its &lt;code&gt;gidNumber&lt;/code&gt;. A group without one is not a system group.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&lt;code&gt;/etc/passwd&lt;/code&gt; and &lt;code&gt;/etc/group&lt;/code&gt;&lt;/strong&gt;, by name.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;Refused&lt;/strong&gt;: uid 0, gid 0, &lt;code&gt;(uid_t)-1&lt;/code&gt;, a uid below &lt;code&gt;min_uid&lt;/code&gt;, a primary gid
+below &lt;code&gt;min_gid&lt;/code&gt;, and every uid in &lt;code&gt;deny_uids&lt;/code&gt;. A supplementary group below
+&lt;code&gt;min_gid&lt;/code&gt; is left out, and the log says so. A person found in neither place
+is refused too: there is no shared fallback account. A person the identity
+provider vouches for gets a worker only with
+&lt;a href="https://go-fileshare.github.io/docs/0.31/configuration/identity/"&gt;&lt;code&gt;local_names&lt;/code&gt;&lt;/a&gt;, which makes
+their name a local one.&lt;/p&gt;
+&lt;p&gt;So a front that has been taken over can ask only for a person who exists
+and is allowed, on a share that exists. It still decides &lt;strong&gt;who&lt;/strong&gt; has
+authenticated, and the launcher cannot check that for it.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-a-client-sees"&gt;What a client sees&lt;span class="hx:absolute hx:-mt-20" id="what-a-client-sees"&gt;&lt;/span&gt;
+&lt;a href="#what-a-client-sees" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;SFTP&lt;/th&gt;
+&lt;th&gt;WebDAV&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;a worker is taken&lt;/td&gt;
+&lt;td&gt;at login, for the whole connection&lt;/td&gt;
+&lt;td&gt;per request; locks live as long as the worker does&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;the launcher refuses the person&lt;/td&gt;
+&lt;td&gt;the share is not in their tree (a tree with nothing in it is a refused login)&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;403&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;no worker can be started&lt;/td&gt;
+&lt;td&gt;the same&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;503&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;The reason goes to the server&amp;rsquo;s log, never to the client.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Not over SMB, NFS or S3 yet&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;They refuse such a share, and &lt;a href="https://go-fileshare.github.io/docs/0.31/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt;
+says so. SMB and NFS need a filesystem per session in their libraries. NFS
+will only ever do it under Kerberos, because &lt;code&gt;AUTH_UNIX&lt;/code&gt; is the client&amp;rsquo;s own
+claim (RFC 5531 §14).&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="what-it-asks-of-the-system"&gt;What it asks of the system&lt;span class="hx:absolute hx:-mt-20" id="what-it-asks-of-the-system"&gt;&lt;/span&gt;
+&lt;a href="#what-it-asks-of-the-system" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Unix&lt;/strong&gt;: Linux, the BSDs and macOS. On Windows the share is refused.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Readable by &lt;code&gt;service_user&lt;/code&gt;&lt;/strong&gt;: the configuration and every file it names
+(password files, host key, certificates), since the front reads them.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Executable by the people&lt;/strong&gt;: the binary, since each worker runs it as
+its person.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;A restart&lt;/strong&gt; to add or change such a share. The launcher reads the
+configuration once, and refuses a share it does not know rather than let
+the front serve it.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--isolate&lt;/code&gt; does not go with it.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The design, and why each choice was made, is in
+&lt;a href="https://github.com/go-fileshare/fileshare/blob/main/docs/identity.md" target="_blank" rel="noopener"&gt;docs/identity.md&lt;/a&gt;.&lt;/p&gt;</description></item></channel></rss>

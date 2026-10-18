@@ -1,0 +1,151 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Recursos</title><link>https://go-fileshare.github.io/docs/0.31/es/tags/recursos/</link><description>Recent content in Recursos on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>es</language><atom:link href="https://go-fileshare.github.io/docs/0.31/es/tags/recursos/index.xml" rel="self" type="application/rss+xml"/><item><title>Directorios servidos con la identidad de cada persona</title><link>https://go-fileshare.github.io/docs/0.31/es/configuration/as-each-person/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/es/configuration/as-each-person/</guid><description>
+&lt;p&gt;Normalmente un único proceso fileshare sirve a todos con una sola cuenta:
+fileshare decide quién puede hacer qué, y cada archivo que crea pertenece a
+esa cuenta. Un recurso de directorio puede servirse en cambio &lt;strong&gt;con la
+identidad de cada persona&lt;/strong&gt;. Los archivos de quien se conectó los abre un
+proceso con su uid, su gid y sus grupos: el núcleo aplica los permisos del
+árbol, y lo que crea le pertenece.&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;identity&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; service_user&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;fileshare&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # la cuenta con la que se sirven los protocolos
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; min_uid&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;1000&lt;/span&gt;&lt;span class="c1"&gt; # el valor por defecto; el uid 0 se rechaza siempre
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; min_gid&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;1000&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; deny_uids&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="m"&gt;65534&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; idle&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;2m&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # cuánto tiempo se conserva un worker sin uso
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;home&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; directory&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/home&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; identity&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;system&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="three-processes"&gt;Tres procesos&lt;span class="hx:absolute hx:-mt-20" id="three-processes"&gt;&lt;/span&gt;
+&lt;a href="#three-processes" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;fileshare serve&lt;/code&gt; debe &lt;strong&gt;arrancarse como root&lt;/strong&gt;. Sigue siendo root solo para
+arrancar el worker de cada persona. Todo lo que da a la red se ejecuta en un
+segundo proceso, como &lt;code&gt;service_user&lt;/code&gt;.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;proceso&lt;/th&gt;
+&lt;th&gt;se ejecuta como&lt;/th&gt;
+&lt;th&gt;hace&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;el &lt;strong&gt;lanzador&lt;/strong&gt; (&lt;code&gt;fileshare serve&lt;/code&gt;)&lt;/td&gt;
+&lt;td&gt;root&lt;/td&gt;
+&lt;td&gt;abre los puertos, arranca el front, arranca workers cuando el front lo pide. No habla ningún protocolo.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;el &lt;strong&gt;front&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;service_user&lt;/code&gt;, con los grupos de esa cuenta&lt;/td&gt;
+&lt;td&gt;habla los protocolos y autentica, como &lt;code&gt;serve&lt;/code&gt; siempre ha hecho. Para un recurso así pide al lanzador una &lt;strong&gt;persona y un recurso&lt;/strong&gt;, nunca un uid ni una ruta.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;un &lt;strong&gt;worker&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;la persona&lt;/td&gt;
+&lt;td&gt;sirve un recurso al front, por un socket que el lanzador le entregó&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Un worker comprueba primero que se ejecuta exactamente con el uid, el gid y
+los grupos esperados, y que &lt;code&gt;setuid(0)&lt;/code&gt; falla. Solo entonces abre el árbol,
+mediante un &lt;code&gt;os.Root&lt;/code&gt;. Un mismo worker sirve todas las conexiones de esa
+persona a ese recurso, por SFTP y por WebDAV, y se detiene cuando nada lo ha
+usado durante &lt;code&gt;idle&lt;/code&gt;. Cuando el servidor se detiene, los workers se detienen
+con él.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="who-a-person-is-on-this-system"&gt;Quién es una persona en este sistema&lt;span class="hx:absolute hx:-mt-20" id="who-a-person-is-on-this-system"&gt;&lt;/span&gt;
+&lt;a href="#who-a-person-is-on-this-system" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;El lanzador resuelve a la persona &lt;strong&gt;por sí mismo&lt;/strong&gt;, en este orden:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;El directorio&lt;/strong&gt;, si lleva &lt;code&gt;uidNumber&lt;/code&gt; y &lt;code&gt;gidNumber&lt;/code&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;los &lt;code&gt;attributes = { uidNumber = &amp;quot;2001&amp;quot;, gidNumber = &amp;quot;2001&amp;quot; }&lt;/code&gt; de un bloque &lt;code&gt;user&lt;/code&gt;;&lt;/li&gt;
+&lt;li&gt;una fuente LDAP con &lt;code&gt;attributes = [&amp;quot;uidNumber&amp;quot;, &amp;quot;gidNumber&amp;quot;]&lt;/code&gt;;&lt;/li&gt;
+&lt;li&gt;la consulta &lt;code&gt;users_attributes&lt;/code&gt; de una fuente SQL.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Los grupos suplementarios son los grupos que listan a la persona (los
+&lt;code&gt;members&lt;/code&gt; de un bloque &lt;code&gt;group&lt;/code&gt;, &lt;code&gt;memberUid&lt;/code&gt;) y los que la persona nombra
+(&lt;code&gt;memberOf&lt;/code&gt;), cada uno por su &lt;code&gt;gidNumber&lt;/code&gt;. Un grupo sin él no es un grupo
+del sistema.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&lt;code&gt;/etc/passwd&lt;/code&gt; y &lt;code&gt;/etc/group&lt;/code&gt;&lt;/strong&gt;, por nombre.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;Rechazados&lt;/strong&gt;: el uid 0, el gid 0, &lt;code&gt;(uid_t)-1&lt;/code&gt;, un uid por debajo de
+&lt;code&gt;min_uid&lt;/code&gt;, un gid primario por debajo de &lt;code&gt;min_gid&lt;/code&gt;, y todo uid de
+&lt;code&gt;deny_uids&lt;/code&gt;. Un grupo suplementario por debajo de &lt;code&gt;min_gid&lt;/code&gt; se omite, y el
+registro lo dice. Una persona que no aparece en ninguno de los dos se rechaza
+también: no hay cuenta compartida de reserva. Una persona avalada por el
+proveedor de identidad obtiene un worker solo con
+&lt;a href="https://go-fileshare.github.io/docs/0.31/es/configuration/identity/"&gt;&lt;code&gt;local_names&lt;/code&gt;&lt;/a&gt;, que hace de su
+nombre un nombre local.&lt;/p&gt;
+&lt;p&gt;Así, un front comprometido solo puede pedir una persona que existe y está
+permitida, en un recurso que existe. Sigue siendo él quien decide &lt;strong&gt;quién&lt;/strong&gt;
+se ha autenticado, y el lanzador no puede comprobarlo por él.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-a-client-sees"&gt;Lo que ve un cliente&lt;span class="hx:absolute hx:-mt-20" id="what-a-client-sees"&gt;&lt;/span&gt;
+&lt;a href="#what-a-client-sees" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;SFTP&lt;/th&gt;
+&lt;th&gt;WebDAV&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;se toma un worker&lt;/td&gt;
+&lt;td&gt;al conectarse, para toda la conexión&lt;/td&gt;
+&lt;td&gt;por petición; los bloqueos viven lo que vive el worker&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;el lanzador rechaza a la persona&lt;/td&gt;
+&lt;td&gt;el recurso no está en su árbol (un árbol vacío es un inicio de sesión rechazado)&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;403&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;no puede arrancar ningún worker&lt;/td&gt;
+&lt;td&gt;igual&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;503&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;El motivo va al registro del servidor, nunca al cliente.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Todavía no por SMB, NFS ni S3&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Rechazan un recurso así, y &lt;a href="https://go-fileshare.github.io/docs/0.31/es/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt;
+lo dice. SMB y NFS necesitan en sus bibliotecas un sistema de archivos por
+sesión. NFS solo lo hará bajo Kerberos, porque &lt;code&gt;AUTH_UNIX&lt;/code&gt; es la mera
+afirmación del cliente (RFC 5531 §14).&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="what-it-asks-of-the-system"&gt;Lo que pide al sistema&lt;span class="hx:absolute hx:-mt-20" id="what-it-asks-of-the-system"&gt;&lt;/span&gt;
+&lt;a href="#what-it-asks-of-the-system" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Unix&lt;/strong&gt;: Linux, los BSD y macOS. En Windows el recurso se rechaza.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Legibles por &lt;code&gt;service_user&lt;/code&gt;&lt;/strong&gt;: la configuración y cada archivo que nombra
+(archivos de contraseñas, clave de host, certificados), porque los lee el
+front.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Ejecutable por las personas&lt;/strong&gt;: el binario, porque cada worker lo ejecuta
+como su persona.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Un reinicio&lt;/strong&gt; para añadir o cambiar un recurso así. El lanzador lee la
+configuración una vez, y rechaza un recurso que no conoce en lugar de dejar
+que el front lo sirva.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--isolate&lt;/code&gt; no va con ello.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;El diseño, y el porqué de cada decisión, están en
+&lt;a href="https://github.com/go-fileshare/fileshare/blob/main/docs/identity.md" target="_blank" rel="noopener"&gt;docs/identity.md&lt;/a&gt;.&lt;/p&gt;</description></item></channel></rss>
