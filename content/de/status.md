@@ -5,7 +5,7 @@ description: "Welches fileshare-Release diese Seiten beschreiben, was jedes Rele
 tags: [stand, releases]
 ---
 
-Diese Seiten beschreiben **fileshare v0.30.0**.
+Diese Seiten beschreiben **fileshare v0.31.0**.
 
 ## Was jedes Release hinzugefügt hat {#what-each-release-added}
 
@@ -52,6 +52,7 @@ Diese Seiten beschreiben **fileshare v0.30.0**.
 | v0.29.2 | **Binaries für NetBSD (amd64) und OpenBSD auf arm64**: fileshare ließ sich unter NetBSD nicht bauen, weil awnumar/memcall v0.1.2, das es über memguard und OpenPubkey erhält, `MADV_DONTDUMP` verwendet, ein Flag, das NetBSD nicht hat. memguard v0.23.0 und memcall v0.4.0 beheben es upstream. Jede Release-Plattform wird nun bei jedem Pull-Request gebaut. Seit v0.29.1 enthält jedes Release ein statisches Binary pro Plattform, mit `SHA256SUMS` und einer Herkunftsbestätigung, auf seiner [Release-Seite](https://github.com/go-fileshare/fileshare/releases) |
 | v0.29.0 | WebDAV: [ein `PROPFIND` auf die Wurzel listet die Freigaben]({{< relref "/protocols/webdav.md#the-root-and-uploads-in-pieces" >}}) (207; Tiefe infinity 403, Schreiben 405), sodass ein Dateimanager den ganzen Server einbinden kann; ein Upload kann in Stücken erfolgen, jedes `Content-Range` dort angehängt, wo das vorige endete (go-filesystems/webdav v0.6.0) — was der [Datei-Explorer]({{< relref "/administration/_index.md" >}}) braucht |
 | v0.30.0 | go-authn/directory v0.14.0: ein [`users "ldap"`-Block]({{< relref "/configuration/identity.md" >}}) liest standardmäßig, was go-authn/authnd v0.11.0 veröffentlicht – Personen `(\|(objectClass=posixAccount)(objectClass=account)(objectClass=uidObject))`, Gruppen `(\|(objectClass=posixGroup)(objectClass=groupOfNames))`, wobei ein `member`-DN nur zählt, wenn er der DN einer Person ist, die die Personensuche geliefert hat. ⛔ Gegenüber dem Verzeichnis einer Einrichtung werden standardmäßig mehr Einträge gelesen; ein ausdrücklicher `user_filter` oder `group_filter` ändert sich nicht |
+| v0.31.0 | [Verzeichnisse unter der Identität jeder Person]({{< relref "/configuration/as-each-person.md" >}}): `identity = "system"` und ein `identity`-Block; als root gestartet, startet `fileshare serve` einen Worker pro Person und Freigabe, mit ihrer uid, gid und ihren Gruppen, und bedient die Protokolle als `service_user`. Nur SFTP und WebDAV; uid 0, uids unter `min_uid` und `deny_uids` werden abgelehnt |
 
 {{< callout type="warning" >}}
 **Upgrade auf v0.21.0**
