@@ -36,11 +36,17 @@ mot de passe lui-même : il n'y a ici aucun réglage pour un mot de passe haché
 Côté LDAP, c'est ce qu'un annuaire compatible Samba publie déjà qui est lu —
 `sambaNTPassword`, `sshPublicKey`, `memberUid`. L'emplacement des personnes et des groupes,
 et les attributs qui les nomment, sont configurables : `user_filter`
-(par défaut `(objectClass=posixAccount)`), `user_attribute` (`uid`),
-`group_base_dn` (`base_dn`), `group_filter` (`(objectClass=posixGroup)`),
-`group_attribute` (`cn`), `group_member_attribute` (`memberUid`), et
-`totp_attribute`, qui n'a pas de valeur par défaut. `sambaNTPassword` et `sshPublicKey`
-sont lus sous ces noms.
+(par défaut `(|(objectClass=posixAccount)(objectClass=account)(objectClass=uidObject))`),
+`user_attribute` (`uid`), `group_base_dn` (`base_dn`), `group_filter`
+(`(|(objectClass=posixGroup)(objectClass=groupOfNames))`), `group_attribute`
+(`cn`), `group_member_attribute` (`memberUid` et `member` à la fois, par défaut),
+et `totp_attribute`, qui n'a pas de valeur par défaut. `sambaNTPassword` et
+`sshPublicKey` sont lus sous ces noms. Une valeur `member` est un DN, et elle ne
+compte que si c'est le DN d'une personne renvoyée par la recherche des personnes :
+un `uid=alice` ailleurs dans l'arbre n'est pas alice. Ces valeurs par défaut
+(depuis la v0.30.0) lisent ce que publie go-authn/authnd v0.11.0 ; avant, elles
+étaient `(objectClass=posixAccount)` et `(objectClass=posixGroup)` seuls, et face
+à l'annuaire d'un établissement elles lisent désormais davantage d'entrées.
 
 {{< callout type="error" >}}
 **Pas de liaison en clair vers une autre machine (depuis la v0.19.0)**

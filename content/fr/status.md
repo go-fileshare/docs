@@ -5,7 +5,7 @@ description: "La version de fileshare que décrivent ces pages, ce que chaque ve
 tags: [état, versions]
 ---
 
-Ces pages décrivent **fileshare v0.29.2**.
+Ces pages décrivent **fileshare v0.30.0**.
 
 ## Ce que chaque version a ajouté {#what-each-release-added}
 
@@ -51,6 +51,7 @@ Ces pages décrivent **fileshare v0.29.2**.
 | v0.29.1 | un [rechargement]({{< relref "/administration/reload.md" >}}) traite un groupe vidé dans l'annuaire comme un groupe supprimé : il n'accorde rien, et les remarques du rechargement disent `group @x has no members: it grants nothing` (go-authn/directory v0.12.0, qui distingue un groupe vide d'un groupe absent) |
 | v0.29.2 | **binaires pour NetBSD (amd64) et OpenBSD sur arm64** : fileshare ne se compilait pas sous NetBSD, parce qu'awnumar/memcall v0.1.2, qu'il reçoit par memguard et OpenPubkey, utilise `MADV_DONTDUMP`, un drapeau que NetBSD n'a pas. memguard v0.23.0 et memcall v0.4.0 le corrigent en amont. Chaque plateforme de publication est désormais compilée à chaque demande de fusion. Depuis la v0.29.1, chaque version porte un binaire statique par plateforme, avec `SHA256SUMS` et une attestation de provenance, sur sa [page de publication](https://github.com/go-fileshare/fileshare/releases) |
 | v0.29.0 | WebDAV : [un `PROPFIND` de la racine liste les partages]({{< relref "/protocols/webdav.md#the-root-and-uploads-in-pieces" >}}) (207 ; profondeur infinity 403, écritures 405), si bien qu'un gestionnaire de fichiers peut monter tout le serveur ; un envoi peut se faire par morceaux, chaque `Content-Range` ajouté là où finissait le précédent (go-filesystems/webdav v0.6.0) — ce dont l'[explorateur de fichiers]({{< relref "/administration/_index.md" >}}) a besoin |
+| v0.30.0 | go-authn/directory v0.14.0 : un [bloc `users "ldap"`]({{< relref "/configuration/identity.md" >}}) lit par défaut ce que publie go-authn/authnd v0.11.0 — les personnes `(\|(objectClass=posixAccount)(objectClass=account)(objectClass=uidObject))`, les groupes `(\|(objectClass=posixGroup)(objectClass=groupOfNames))`, un DN `member` ne comptant que s'il est le DN d'une personne renvoyée par la recherche des personnes. ⛔ Face à l'annuaire d'un établissement, davantage d'entrées sont lues par défaut ; un `user_filter` ou un `group_filter` explicite ne change pas |
 
 {{< callout type="warning" >}}
 **Passer à la v0.21.0**

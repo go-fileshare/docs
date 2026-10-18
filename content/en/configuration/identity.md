@@ -36,11 +36,17 @@ password itself: there is no setting here for a hashed one.
 The LDAP side reads what a Samba-aware directory already publishes —
 `sambaNTPassword`, `sshPublicKey`, `memberUid`. Where the people and groups
 are, and which attributes name them, is configurable: `user_filter`
-(default `(objectClass=posixAccount)`), `user_attribute` (`uid`),
-`group_base_dn` (`base_dn`), `group_filter` (`(objectClass=posixGroup)`),
-`group_attribute` (`cn`), `group_member_attribute` (`memberUid`), and
-`totp_attribute`, which has no default. `sambaNTPassword` and `sshPublicKey`
-are read under those names.
+(default `(|(objectClass=posixAccount)(objectClass=account)(objectClass=uidObject))`),
+`user_attribute` (`uid`), `group_base_dn` (`base_dn`), `group_filter`
+(`(|(objectClass=posixGroup)(objectClass=groupOfNames))`), `group_attribute`
+(`cn`), `group_member_attribute` (`memberUid` and `member` both, by default),
+and `totp_attribute`, which has no default. `sambaNTPassword` and
+`sshPublicKey` are read under those names. A `member` value is a DN, and it
+counts only when it is the DN of somebody the people search returned: a
+`uid=alice` somewhere else in the tree is not alice. These defaults (since
+v0.30.0) read what go-authn/authnd v0.11.0 publishes; before, they were
+`(objectClass=posixAccount)` and `(objectClass=posixGroup)` alone, and against
+an institution's own directory they now read more entries.
 
 {{< callout type="error" >}}
 **No cleartext bind to another machine (since v0.19.0)**
