@@ -1,0 +1,28 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – 锁</title><link>https://go-fileshare.github.io/docs/0.31/zh-cn/tags/%E9%94%81/</link><description>Recent content in 锁 on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><atom:link href="https://go-fileshare.github.io/docs/0.31/zh-cn/tags/%E9%94%81/index.xml" rel="self" type="application/rss+xml"/><item><title>一个映像，多个协议，一把锁</title><link>https://go-fileshare.github.io/docs/0.31/zh-cn/operations/locking/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/zh-cn/operations/locking/</guid><description>
+&lt;p&gt;这个系列中的每个服务器都会对驱动本身串行化，因为
+&lt;a href="https://github.com/go-filesystems/interface" target="_blank" rel="noopener"&gt;&lt;code&gt;go-filesystems/interface&lt;/code&gt;&lt;/a&gt;
+对并发的基于路径的调用不作任何保证，而它们各自持有
+&lt;strong&gt;自己的&lt;/strong&gt;锁，对其他锁一无所知。&lt;/p&gt;
+&lt;p&gt;因此，同时通过三个协议提供同一个映像，就会在任何地方都没有
+共同的锁。所以映像在这里被包裹&lt;strong&gt;一次&lt;/strong&gt;，同一层包装
+交给所有协议使用。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="stated-as-measured-so-as-not-to-overstate-it"&gt;如实陈述测量结果，以免夸大&lt;span class="hx:absolute hx:-mt-20" id="stated-as-measured-so-as-not-to-overstate-it"&gt;&lt;/span&gt;
+&lt;a href="#stated-as-measured-so-as-not-to-overstate-it" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;在 &lt;code&gt;-race&lt;/code&gt; 下，八个 goroutine 通过&lt;strong&gt;未包装&lt;/strong&gt;的 fat32 驱动写入，
+目前&lt;strong&gt;不会产生竞争&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;这是对契约的保险，而不是对缺陷的复现：ext4 和 ntfs
+不是 fat32，而且驱动更新不是本程序应当
+重新审计的事情。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="the-wrapper-carries-capabilities-through"&gt;这层包装会透传各项能力&lt;span class="hx:absolute hx:-mt-20" id="the-wrapper-carries-capabilities-through"&gt;&lt;/span&gt;
+&lt;a href="#the-wrapper-carries-capabilities-through" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;它不会隐藏这些能力：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;响应 &lt;code&gt;Opener&lt;/code&gt; 的驱动会得到一个&lt;strong&gt;带锁的 &lt;code&gt;File&lt;/code&gt;&lt;/strong&gt;；&lt;/li&gt;
+&lt;li&gt;其 &lt;code&gt;File&lt;/code&gt; 响应 &lt;code&gt;WritableFile&lt;/code&gt; 的驱动会保留其&lt;strong&gt;定位写入&lt;/strong&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;在这个系列的其他地方，这些能力与整文件回退方案之间的差异经测量约为
+&lt;strong&gt;~70×&lt;/strong&gt;，因此抹去这些能力的包装
+会是伪装成安全的性能缺陷。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="under-isolate-the-lock-cannot-help"&gt;在 &lt;code&gt;--isolate&lt;/code&gt; 下，这把锁无能为力&lt;span class="hx:absolute hx:-mt-20" id="under-isolate-the-lock-cannot-help"&gt;&lt;/span&gt;
+&lt;a href="#under-isolate-the-lock-cannot-help" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;子进程自行打开映像，因此子进程之间没有共享的包装。
+这就是通过两个协议以可写方式提供的映像会被
+&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/operations/isolation/#the-rule-that-makes-it-honest"&gt;拒绝&lt;/a&gt;，而不是悄悄地
+在没有锁的情况下提供服务的原因。&lt;/p&gt;</description></item></channel></rss>

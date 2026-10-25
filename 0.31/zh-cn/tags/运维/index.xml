@@ -1,0 +1,265 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – 运维</title><link>https://go-fileshare.github.io/docs/0.31/zh-cn/tags/%E8%BF%90%E7%BB%B4/</link><description>Recent content in 运维 on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><atom:link href="https://go-fileshare.github.io/docs/0.31/zh-cn/tags/%E8%BF%90%E7%BB%B4/index.xml" rel="self" type="application/rss+xml"/><item><title>只构建所需内容</title><link>https://go-fileshare.github.io/docs/0.31/zh-cn/operations/build-tags/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/zh-cn/operations/build-tags/</guid><description>
+&lt;p&gt;每个协议都位于一个构建标签之后，使用标签会将其&lt;strong&gt;完全&lt;/strong&gt;排除：没有
+监听器、没有解析器、没有依赖、没有代码。&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;go install -tags nonfs,nowebdav,nosftp,nos3 github.com/go-fileshare/fileshare@latest &lt;span class="c1"&gt;# 仅 SMB&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;go build -tags nosmb,nonfs,nosftp,nos3 . &lt;span class="c1"&gt;# 仅 WebDAV&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="复制代码"
+aria-label="复制代码"
+data-copied-label="已复制！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;人员&lt;/strong&gt;的来源也有各自的标签：&lt;code&gt;nosql&lt;/code&gt; 排除
+三个数据库驱动，&lt;code&gt;noldap&lt;/code&gt; 排除 LDAP 客户端。&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;构建&lt;/th&gt;
+&lt;th&gt;大小&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;全部&lt;/td&gt;
+&lt;td&gt;31.2 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags noldap&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;30.9 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags nosftp&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;30.6 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags noopenpubkey&lt;/code&gt;（SFTP 上没有 opkssh 登录）&lt;/td&gt;
+&lt;td&gt;约少 2 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags nos3&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;31.1 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags nonfs,nowebdav,nosftp,nos3&lt;/code&gt;（仅 SMB）&lt;/td&gt;
+&lt;td&gt;28.1 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags nopartitioned&lt;/code&gt;（没有 apfs、btrfs、xfs、zfs）&lt;/td&gt;
+&lt;td&gt;29.2 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags nosql&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;20.2 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags nosql,noldap&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;19.8 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags nosql,noldap,nonfs,nowebdav,nosftp,nos3&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;16.2 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;这些是 fileshare README 给出的数字，测量于管理
+API 出现之前；下面的表格是后来的测量结果。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="the-admin-api-and-nogrpc"&gt;管理 API 与 &lt;code&gt;nogrpc&lt;/code&gt;&lt;span class="hx:absolute hx:-mt-20" id="the-admin-api-and-nogrpc"&gt;&lt;/span&gt;
+&lt;a href="#the-admin-api-and-nogrpc" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/administration/"&gt;管理 API&lt;/a&gt;引入了 gRPC 和 protobuf，
+它们位于 &lt;code&gt;nogrpc&lt;/code&gt; 之后（linux/amd64，测量于 2026-09-29，当时上面各行
+的“全部”已增长到 34.1 MB）：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;构建&lt;/th&gt;
+&lt;th&gt;大小&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;全部，含管理 API&lt;/td&gt;
+&lt;td&gt;46.1 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags nogrpc&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;34.4 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags nosql,noldap,nogrpc&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;22.5 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;gRPC 的代价是 &lt;strong&gt;11.7 MB&lt;/strong&gt;，即下面的&lt;a href="#why-not-subprocess-plugins"&gt;插件测量&lt;/a&gt;
+在这里因其自身的理由而再次进行的结果。通过文件管理共享的站点
+不需要携带它。&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;在 &lt;code&gt;nogrpc&lt;/code&gt; 构建中，&lt;code&gt;admin&lt;/code&gt; 块会被拒绝&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;而不是在没有管理 API 的情况下提供服务：请求 API 却在没有它的情况下
+启动的配置，并没有按其所说的去做。&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;nogrpc&lt;/code&gt; 会排除管理 API，同时也排除
+&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/administration/volumes/"&gt;配给程序&lt;/a&gt;。&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/administration/health/"&gt;健康检查与指标&lt;/a&gt;
+是普通的 HTTP，予以保留。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;-tags noprovisioner&lt;/code&gt; 只排除配给程序，即特权的
+&lt;code&gt;fileshare provisioner&lt;/code&gt; 角色，以及随之而来的 go-fsctl 的 zfs、btrfs 和 projquota：
+从不提供卷服务的服务器无需携带创建卷的代码。
+这种构建中的 &lt;code&gt;fileshare provisioner&lt;/code&gt; 会说明原因，而不是显示“unknown command”。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;nosql&lt;/code&gt; 是迄今为止最大的杠杆：PostgreSQL、MySQL 和 SQLite
+合计重 &lt;strong&gt;11.7 MB&lt;/strong&gt;，超过本程序中所有协议加在一起的大小。
+用户都在文件中的站点需要它。这些驱动由命令导入，
+而不是由使用它们的库导入，这使得这一选择成为构建标签，
+而不是分叉。&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;此二进制文件构建时未包含的协议&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;指明它的配置会被告知&lt;em&gt;这一点&lt;/em&gt;，而不是“没有这样的
+协议”，这就是拼写错误与构建标签之间的区别。&lt;code&gt;noopenpubkey&lt;/code&gt; 下的
+&lt;code&gt;opkssh_client_id&lt;/code&gt; 和 &lt;code&gt;nogrpc&lt;/code&gt; 下的 &lt;code&gt;admin&lt;/code&gt; 块也是如此。&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="why-not-subprocess-plugins"&gt;为什么不使用子进程插件&lt;span class="hx:absolute hx:-mt-20" id="why-not-subprocess-plugins"&gt;&lt;/span&gt;
+&lt;a href="#why-not-subprocess-plugins" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;这是&lt;strong&gt;经过测量而不是争论出来的&lt;/strong&gt;：&lt;code&gt;hashicorp/go-plugin&lt;/code&gt; 会引入 gRPC 和
+protobuf，仅它们就占 &lt;strong&gt;13.2 MB&lt;/strong&gt;，比包含全部三个协议和所有驱动的整个
+二进制文件还大。插件宿主在加载任何东西之前就已是其两倍大小，
+而每个插件二进制文件又会再次携带 gRPC。&lt;/p&gt;
+&lt;p&gt;就攻击面而言，对于任何你不运行的内容，标签也是更强的工具：
+&lt;strong&gt;从未编译的代码无法被触及&lt;/strong&gt;，无论是否有沙箱。&lt;/p&gt;
+&lt;p&gt;标签&lt;em&gt;无法&lt;/em&gt;提供的是你&lt;strong&gt;确实&lt;/strong&gt;运行的各协议之间的隔离，也无法
+提供不重新编译就添加协议的方式。这两点都是真实存在的，而且它们都是
+支持采用进程边界、而不是更小二进制文件的理由，也就是
+&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/operations/isolation/"&gt;每个协议一个进程&lt;/a&gt;，使用的是同一个二进制文件，而不是插件
+框架。&lt;/p&gt;</description></item><item><title>每个协议一个进程</title><link>https://go-fileshare.github.io/docs/0.31/zh-cn/operations/isolation/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/zh-cn/operations/isolation/</guid><description>
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;fileshare --config /etc/fileshare.d --isolate&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="复制代码"
+aria-label="复制代码"
+data-copied-label="已复制！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;pre&gt;&lt;code&gt;smb on 0.0.0.0:445 — process 19810, serving public, photos and scratch
+webdav on 0.0.0.0:8080 — process 19811, serving public and photos
+nfs on 0.0.0.0:2049 — process 19812, serving public&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="复制代码"
+aria-label="复制代码"
+data-copied-label="已复制！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;父进程绑定监听器，然后为每个协议各 exec &lt;strong&gt;自身&lt;/strong&gt;一次，
+只交给每个子进程该协议可以提供的共享。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="checked-with-lsof-not-by-reading-the-code"&gt;用 &lt;code&gt;lsof&lt;/code&gt; 验证，而不是读代码&lt;span class="hx:absolute hx:-mt-20" id="checked-with-lsof-not-by-reading-the-code"&gt;&lt;/span&gt;
+&lt;a href="#checked-with-lsof-not-by-reading-the-code" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;pre&gt;&lt;code&gt;smb (pid 19810) has open: scratch.img photos.img
+webdav (pid 19811) has open: photos.img
+nfs (pid 19812) has open: photos.img&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="复制代码"
+aria-label="复制代码"
+data-copied-label="已复制！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;可写的映像只在&lt;strong&gt;恰好一个进程&lt;/strong&gt;中打开，而 WebDAV 子进程
+根本不会打开它。&lt;/p&gt;
+&lt;p&gt;这正是&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/operations/build-tags/"&gt;构建标签&lt;/a&gt;无法提供的：某个协议中的 panic 或堆耗尽
+只会使一个协议停止，每个子进程都可以通过操作系统
+提供的任何手段加以限制，而某个解析器中的缺陷也无法触及
+该进程从未打开过的映像。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="privileged-ports"&gt;特权端口&lt;span class="hx:absolute hx:-mt-20" id="privileged-ports"&gt;&lt;/span&gt;
+&lt;a href="#privileged-ports" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;在 Unix 上，父进程把已绑定的监听器传给子进程，因此&lt;strong&gt;特权
+端口可以配合无特权的子进程使用&lt;/strong&gt;：父进程绑定 445，子进程
+无需该特权。&lt;/p&gt;
+&lt;p&gt;Windows 没有 &lt;code&gt;ExtraFiles&lt;/code&gt;，因此在那里由子进程自行绑定地址；
+隔离效果相同，但特权端口这一半则不然。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="the-rule-that-makes-it-honest"&gt;使其名副其实的规则&lt;span class="hx:absolute hx:-mt-20" id="the-rule-that-makes-it-honest"&gt;&lt;/span&gt;
+&lt;a href="#the-rule-that-makes-it-honest" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;子进程自行打开映像，因此通过两个协议以&lt;em&gt;可写&lt;/em&gt;方式提供的映像
+就会是同一个文件上的两个驱动，且&lt;strong&gt;它们之间没有锁&lt;/strong&gt;，这恰恰是
+&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/operations/locking/"&gt;共享锁&lt;/a&gt;在单个进程内所防止的情形。&lt;/p&gt;
+&lt;p&gt;这种情况会被拒绝，拒绝信息会说明如何修复：&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;pre&gt;&lt;code&gt;scratch is writable over smb and webdav, and one process per protocol means
+that many drivers writing one file with no lock between them. Say
+`protocols = [&amp;#34;smb&amp;#34;]` on the share, or make it read_only, or do not isolate.&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="复制代码"
+aria-label="复制代码"
+data-copied-label="已复制！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;共享上的 &lt;code&gt;protocols = [...]&lt;/code&gt; 本身就有用，而不仅仅是在
+&lt;code&gt;--isolate&lt;/code&gt; 下：声明为仅限 SMB 的共享，WebDAV 进程永远不会
+得知它。最终不承载任何内容的 &lt;code&gt;serve&lt;/code&gt; 块同样会被拒绝，
+并且发生在打开任何映像之前，同时指明被它排除的共享及原因。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="not-with-an-admin-or-a-metrics-block-yet"&gt;目前不能与 &lt;code&gt;admin&lt;/code&gt; 或 &lt;code&gt;metrics&lt;/code&gt; 块同时使用&lt;span class="hx:absolute hx:-mt-20" id="not-with-an-admin-or-a-metrics-block-yet"&gt;&lt;/span&gt;
+&lt;a href="#not-with-an-admin-or-a-metrics-block-yet" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;--isolate&lt;/code&gt; 与 &lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/administration/"&gt;&lt;code&gt;admin&lt;/code&gt;&lt;/a&gt; 或
+&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/administration/health/"&gt;&lt;code&gt;metrics&lt;/code&gt;&lt;/a&gt; 块同时使用会被拒绝：由子进程打开
+映像，而父进程什么都不打开，因此没有任何单一进程可供 API
+变更应用，探针也无法询问哪一个进程是否就绪。&lt;/p&gt;</description></item><item><title>一个映像，多个协议，一把锁</title><link>https://go-fileshare.github.io/docs/0.31/zh-cn/operations/locking/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/zh-cn/operations/locking/</guid><description>
+&lt;p&gt;这个系列中的每个服务器都会对驱动本身串行化，因为
+&lt;a href="https://github.com/go-filesystems/interface" target="_blank" rel="noopener"&gt;&lt;code&gt;go-filesystems/interface&lt;/code&gt;&lt;/a&gt;
+对并发的基于路径的调用不作任何保证，而它们各自持有
+&lt;strong&gt;自己的&lt;/strong&gt;锁，对其他锁一无所知。&lt;/p&gt;
+&lt;p&gt;因此，同时通过三个协议提供同一个映像，就会在任何地方都没有
+共同的锁。所以映像在这里被包裹&lt;strong&gt;一次&lt;/strong&gt;，同一层包装
+交给所有协议使用。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="stated-as-measured-so-as-not-to-overstate-it"&gt;如实陈述测量结果，以免夸大&lt;span class="hx:absolute hx:-mt-20" id="stated-as-measured-so-as-not-to-overstate-it"&gt;&lt;/span&gt;
+&lt;a href="#stated-as-measured-so-as-not-to-overstate-it" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;在 &lt;code&gt;-race&lt;/code&gt; 下，八个 goroutine 通过&lt;strong&gt;未包装&lt;/strong&gt;的 fat32 驱动写入，
+目前&lt;strong&gt;不会产生竞争&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;这是对契约的保险，而不是对缺陷的复现：ext4 和 ntfs
+不是 fat32，而且驱动更新不是本程序应当
+重新审计的事情。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="the-wrapper-carries-capabilities-through"&gt;这层包装会透传各项能力&lt;span class="hx:absolute hx:-mt-20" id="the-wrapper-carries-capabilities-through"&gt;&lt;/span&gt;
+&lt;a href="#the-wrapper-carries-capabilities-through" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;它不会隐藏这些能力：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;响应 &lt;code&gt;Opener&lt;/code&gt; 的驱动会得到一个&lt;strong&gt;带锁的 &lt;code&gt;File&lt;/code&gt;&lt;/strong&gt;；&lt;/li&gt;
+&lt;li&gt;其 &lt;code&gt;File&lt;/code&gt; 响应 &lt;code&gt;WritableFile&lt;/code&gt; 的驱动会保留其&lt;strong&gt;定位写入&lt;/strong&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;在这个系列的其他地方，这些能力与整文件回退方案之间的差异经测量约为
+&lt;strong&gt;~70×&lt;/strong&gt;，因此抹去这些能力的包装
+会是伪装成安全的性能缺陷。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="under-isolate-the-lock-cannot-help"&gt;在 &lt;code&gt;--isolate&lt;/code&gt; 下，这把锁无能为力&lt;span class="hx:absolute hx:-mt-20" id="under-isolate-the-lock-cannot-help"&gt;&lt;/span&gt;
+&lt;a href="#under-isolate-the-lock-cannot-help" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;子进程自行打开映像，因此子进程之间没有共享的包装。
+这就是通过两个协议以可写方式提供的映像会被
+&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/operations/isolation/#the-rule-that-makes-it-honest"&gt;拒绝&lt;/a&gt;，而不是悄悄地
+在没有锁的情况下提供服务的原因。&lt;/p&gt;</description></item><item><title>运维</title><link>https://go-fileshare.github.io/docs/0.31/zh-cn/operations/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/zh-cn/operations/</guid><description>
+&lt;div class="hextra-cards hx:mt-4 hx:gap-4 hx:grid not-prose" style="--hextra-cards-grid-cols: 3;"&gt;
+&lt;a class="hextra-card hx:group hx:flex hx:flex-col hx:justify-start hx:overflow-hidden hx:rounded-lg hx:border hx:border-gray-200 hx:text-current hx:no-underline hx:dark:shadow-none hx:hover:shadow-gray-100 hx:dark:hover:shadow-none hx:shadow-gray-100 hx:active:shadow-sm hx:active:shadow-gray-200 hx:transition-all hx:duration-200 hx:hover:border-gray-300 hx:bg-transparent hx:shadow-xs hx:dark:border-neutral-800 hx:hover:bg-slate-50 hx:hover:shadow-md hx:dark:hover:border-neutral-700 hx:dark:hover:bg-neutral-900" href="build-tags/"&gt;&lt;div&gt;
+&lt;span class="hextra-card-icon hx:flex hx:font-semibold hx:items-start hx:gap-2 hx:pt-4 hx:px-4 hx:text-gray-700 hx:hover:text-gray-900 hx:dark:text-neutral-200 hx:dark:hover:text-neutral-50"&gt;&lt;svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/&gt;&lt;/svg&gt;只构建所需内容&lt;/span&gt;&lt;div class="hextra-card-subtitle hx:line-clamp-3 hx:text-sm hx:font-normal hx:text-gray-500 hx:dark:text-gray-400 hx:px-4 hx:mb-4 hx:mt-2"&gt;通过构建标签，可将某个协议或管理 API 完全排除在二进制文件之外。&lt;/div&gt;&lt;/div&gt;&lt;/a&gt;
+&lt;a class="hextra-card hx:group hx:flex hx:flex-col hx:justify-start hx:overflow-hidden hx:rounded-lg hx:border hx:border-gray-200 hx:text-current hx:no-underline hx:dark:shadow-none hx:hover:shadow-gray-100 hx:dark:hover:shadow-none hx:shadow-gray-100 hx:active:shadow-sm hx:active:shadow-gray-200 hx:transition-all hx:duration-200 hx:hover:border-gray-300 hx:bg-transparent hx:shadow-xs hx:dark:border-neutral-800 hx:hover:bg-slate-50 hx:hover:shadow-md hx:dark:hover:border-neutral-700 hx:dark:hover:bg-neutral-900" href="isolation/"&gt;&lt;div&gt;
+&lt;span class="hextra-card-icon hx:flex hx:font-semibold hx:items-start hx:gap-2 hx:pt-4 hx:px-4 hx:text-gray-700 hx:hover:text-gray-900 hx:dark:text-neutral-200 hx:dark:hover:text-neutral-50"&gt;&lt;svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/&gt;&lt;/svg&gt;每个协议一个进程&lt;/span&gt;&lt;div class="hextra-card-subtitle hx:line-clamp-3 hx:text-sm hx:font-normal hx:text-gray-500 hx:dark:text-gray-400 hx:px-4 hx:mb-4 hx:mt-2"&gt;&amp;ndash;isolate：每个协议运行在各自的进程中。&lt;/div&gt;&lt;/div&gt;&lt;/a&gt;
+&lt;a class="hextra-card hx:group hx:flex hx:flex-col hx:justify-start hx:overflow-hidden hx:rounded-lg hx:border hx:border-gray-200 hx:text-current hx:no-underline hx:dark:shadow-none hx:hover:shadow-gray-100 hx:dark:hover:shadow-none hx:shadow-gray-100 hx:active:shadow-sm hx:active:shadow-gray-200 hx:transition-all hx:duration-200 hx:hover:border-gray-300 hx:bg-transparent hx:shadow-xs hx:dark:border-neutral-800 hx:hover:bg-slate-50 hx:hover:shadow-md hx:dark:hover:border-neutral-700 hx:dark:hover:bg-neutral-900" href="locking/"&gt;&lt;div&gt;
+&lt;span class="hextra-card-icon hx:flex hx:font-semibold hx:items-start hx:gap-2 hx:pt-4 hx:px-4 hx:text-gray-700 hx:hover:text-gray-900 hx:dark:text-neutral-200 hx:dark:hover:text-neutral-50"&gt;&lt;svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/&gt;&lt;/svg&gt;一个映像，多个协议，一把锁&lt;/span&gt;&lt;div class="hextra-card-subtitle hx:line-clamp-3 hx:text-sm hx:font-normal hx:text-gray-500 hx:dark:text-gray-400 hx:px-4 hx:mb-4 hx:mt-2"&gt;多个协议对同一映像的写入都经过同一把共享锁。&lt;/div&gt;&lt;/div&gt;&lt;/a&gt;
+&lt;/div&gt;</description></item></channel></rss>

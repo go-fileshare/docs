@@ -1,0 +1,180 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – 공유 신호</title><link>https://go-fileshare.github.io/docs/0.31/ko/tags/%EA%B3%B5%EC%9C%A0-%EC%8B%A0%ED%98%B8/</link><description>Recent content in 공유 신호 on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>ko</language><atom:link href="https://go-fileshare.github.io/docs/0.31/ko/tags/%EA%B3%B5%EC%9C%A0-%EC%8B%A0%ED%98%B8/index.xml" rel="self" type="application/rss+xml"/><item><title>어떤 목록도 다루지 않는 것의 폐기: 공유 신호</title><link>https://go-fileshare.github.io/docs/0.31/ko/security/shared-signals/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/ko/security/shared-signals/</guid><description>
+&lt;p&gt;인증서에는 폐기 목록인 &lt;a href="https://go-fileshare.github.io/docs/0.31/ko/security/revocation-lists/"&gt;KRL&lt;/a&gt;과
+&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/security/nfs-certificates/#revocation-the-crl"&gt;CRL&lt;/a&gt;이 있습니다.
+fileshare가 자체적으로 검증하는 &lt;strong&gt;액세스 토큰&lt;/strong&gt;과 사용자 자신의 키가 서명한
+&lt;strong&gt;OpenPubkey 인증서&lt;/strong&gt;에는 없습니다. 이들은 그 사이에 사용자에게 무슨 일이 있었든
+만료될 때까지 유효합니다.&lt;/p&gt;
+&lt;p&gt;v0.13.0부터 &lt;a href="https://openid.net/specs/openid-sharedsignals-framework-1_0-final.html" target="_blank" rel="noopener"&gt;OpenID Shared Signals Framework&lt;/a&gt;가
+&lt;a href="https://openid.net/specs/openid-caep-1_0-final.html" target="_blank" rel="noopener"&gt;CAEP&lt;/a&gt; &lt;strong&gt;&lt;code&gt;session-revoked&lt;/code&gt;&lt;/strong&gt;
+이벤트로 이를 해결합니다.&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;ssf&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; transmitter&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://bridge.example.org&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # its issuer
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; audience&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://files.example.org&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # what this server is to it
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; client_id&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;fileshare&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # OAuth client credentials,
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; client_secret_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/ssf.secret&amp;#34; # scope &amp;#34;ssf&amp;#34;&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;or&lt;/span&gt; &lt;span class="k"&gt;token_file&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; state_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/var/lib/fileshare/revocations.json&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; max_age&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt; &amp;#34;10m&amp;#34; # default; retain&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;192h&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="코드 복사"
+aria-label="코드 복사"
+data-copied-label="복사됨!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;go-authn/bridge는 사용자나 IdP가 비활성화될 때 이 이벤트를 보내며, fileshare는
+이를 &lt;strong&gt;폴링&lt;/strong&gt;(RFC 8936, SSF의 기본값)하고 사용자별로 &lt;strong&gt;언제&lt;/strong&gt; 일어났는지를
+보관합니다.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="everything-issued-before-is-refused-on-every-protocol"&gt;그 이전에 발급된 모든 것은 모든 프로토콜에서 거부됩니다&lt;span class="hx:absolute hx:-mt-20" id="everything-issued-before-is-refused-on-every-protocol"&gt;&lt;/span&gt;
+&lt;a href="#everything-issued-before-is-refused-on-every-protocol" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;그 시점부터 그 &lt;strong&gt;이전에 발급된&lt;/strong&gt; 모든 연합 자격 증명은 거부되며, &lt;strong&gt;그것으로 연
+세션은 서비스가 중단됩니다&lt;/strong&gt;. KRL과 같은 관문을 거칩니다. &amp;ldquo;발급&amp;quot;이 무엇을
+뜻하는지는 자격 증명이 무엇에 실려 있었는지에 따라 다릅니다.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;프로토콜&lt;/th&gt;
+&lt;th&gt;자격 증명&lt;/th&gt;
+&lt;th&gt;발급 시각&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;WebDAV&lt;/td&gt;
+&lt;td&gt;액세스 토큰&lt;/td&gt;
+&lt;td&gt;해당 &lt;code&gt;iat&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;SFTP&lt;/td&gt;
+&lt;td&gt;공급자의 SSH CA가 서명한 인증서&lt;/td&gt;
+&lt;td&gt;유효 기간 시작(&lt;code&gt;ValidAfter&lt;/code&gt;)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;SFTP&lt;/td&gt;
+&lt;td&gt;OpenPubkey(opkssh) 인증서&lt;/td&gt;
+&lt;td&gt;ID 토큰의 &lt;code&gt;iat&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;NFS&lt;/td&gt;
+&lt;td&gt;클라이언트 인증서(&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/security/nfs-certificates/"&gt;identity = &amp;ldquo;certificate&amp;rdquo;&lt;/a&gt;)&lt;/td&gt;
+&lt;td&gt;해당 &lt;code&gt;NotBefore&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;공급자가 &lt;strong&gt;그 이후에&lt;/strong&gt; 발급하는 것은 사용자의 것입니다. 다시 활성화된 사용자는
+차단되지 않습니다.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;같은 초는 이전으로 간주합니다&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;CAEP의 &lt;code&gt;event_timestamp&lt;/code&gt;와 토큰의 &lt;code&gt;iat&lt;/code&gt;는 정수 초 단위이고, 폐기 &lt;strong&gt;시점 또는 그
+이전에&lt;/strong&gt; 발급된 자격 증명은 거부됩니다. 따라서 폐기와 같은 초에 발급된 것도
+거부되며, 비활성화 직후 다시 활성화된 사용자는 다음 초부터 유효한 자격 증명을
+받습니다. 의도적으로 보수적인 쪽입니다. 알 수 없는 발급 시각은 &amp;ldquo;아주 오래
+전&amp;quot;이 아니며, 그 사용자에 대한 폐기가 하나라도 있으면 거부됩니다.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="who-an-event-is-about"&gt;이벤트가 가리키는 대상&lt;span class="hx:absolute hx:-mt-20" id="who-an-event-is-about"&gt;&lt;/span&gt;
+&lt;a href="#who-an-event-is-about" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;주체는 RFC 9493의 &lt;strong&gt;&lt;code&gt;account&lt;/code&gt;&lt;/strong&gt;(&lt;code&gt;acct:user@domain&lt;/code&gt;, 공유가 사용하는 이름),
+&lt;strong&gt;&lt;code&gt;iss_sub&lt;/code&gt;&lt;/strong&gt;, &lt;strong&gt;&lt;code&gt;email&lt;/code&gt;&lt;/strong&gt;, 또는 이들의 **&lt;code&gt;aliases&lt;/code&gt;**입니다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;통째로 비활성화된 IdP&lt;/strong&gt;는 이벤트에 IdP의 스코프를 담은 CAEP &lt;em&gt;tenant&lt;/em&gt; 주체로
+도착합니다. 이름이 그중 하나의 &lt;code&gt;@&lt;/code&gt; 뒤에 오는 모든 사람(전체를 비교하므로
+&lt;code&gt;evil-univ-a.fr&lt;/code&gt;은 &lt;code&gt;univ-a.fr&lt;/code&gt;이 아닙니다)이며 그 자격 증명이 그 이전에 발급된
+경우 거부되고, &lt;strong&gt;공급자가 더 이상 기억하지 못하는 사용자도 포함됩니다&lt;/strong&gt;.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="how-the-receiver-authenticates"&gt;수신자가 인증하는 방법&lt;span class="hx:absolute hx:-mt-20" id="how-the-receiver-authenticates"&gt;&lt;/span&gt;
+&lt;a href="#how-the-receiver-authenticates" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;OAuth 클라이언트 자격 증명&lt;/strong&gt;(RFC 6749 §4.4, 스코프 &lt;code&gt;ssf&lt;/code&gt;)으로 합니다.
+&lt;code&gt;client_id&lt;/code&gt;와 &lt;code&gt;client_secret_file&lt;/code&gt;을 사용하고, 토큰은 전송자 자체의 토큰
+엔드포인트(OpenID 구성에서 찾거나 &lt;code&gt;token_url&lt;/code&gt;)에서 가져와 만료 전에 갱신합니다.
+&lt;code&gt;token_file&lt;/code&gt;은 장기 베어러 토큰을 발급하는 전송자를 위해 대신 쓸 수 있습니다.
+둘 중 하나여야 하며, 둘 다이거나 둘 다 없으면 거부됩니다.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;필드&lt;/th&gt;
+&lt;th&gt;기본값&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;transmitter&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;전송자의 발급자, &lt;strong&gt;HTTPS만 허용&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;audience&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;이 서버가 전송자에게 어떤 존재인지. 필수이며, 없으면 다른 수신자에게 보낸 SET가 여기서 신뢰될 수 있습니다&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;client_id&lt;/code&gt;, &lt;code&gt;client_secret_file&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;OAuth 클라이언트 자격 증명, 함께 지정&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;token_url&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;디스커버리&lt;/td&gt;
+&lt;td&gt;HTTPS만 허용. 아니면 비밀이 평문으로 네트워크를 건넙니다&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;token_file&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;클라이언트 자격 증명 대신 쓰는 장기 토큰&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;state_file&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;필수&lt;/strong&gt;: 폐기가 기록되는 위치&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ca_file&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;시스템의 것&lt;/td&gt;
+&lt;td&gt;전송자의 기관을 고정&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;max_age&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;10m&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;전송자로부터 소식이 없는 시간이 이를 넘으면 연합 자격 증명이 거부됨. 최소 1분&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;retain&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;192h&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;폐기를 보관하는 기간. 최소 169h(v0.14.0부터)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;폐기는 &lt;strong&gt;확인 응답을 보내기 전에 기록되므로&lt;/strong&gt;, 확인된 폐기는 재시작 후에도
+유지됩니다. 또한 &lt;code&gt;retain&lt;/code&gt; 동안 보관되며, 이는 그것이 무효화할 수 있는 어떤
+자격 증명보다 깁니다(192h는 공급자가 발급하는 가장 수명이 긴 자격 증명인 168h SSH
+인증서보다 깁니다).&lt;/p&gt;
+&lt;p&gt;폐기할 연합 대상이 없는 &lt;code&gt;ssf&lt;/code&gt; 블록, 곧 &lt;code&gt;oidc&lt;/code&gt; 블록도 NFS
+&lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt;도 없는 경우는 거부됩니다.&lt;/p&gt;
+&lt;p&gt;전송 계층은 &lt;a href="https://github.com/hstern/go-ssf" target="_blank" rel="noopener"&gt;github.com/hstern/go-ssf&lt;/a&gt;로,
+디스커버리, RFC 8936 폴러, SET의 JWS 계층입니다. 이벤트가 &lt;strong&gt;의미하는&lt;/strong&gt; 바는
+fileshare의 몫입니다.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="it-fails-closed"&gt;fail closed입니다&lt;span class="hx:absolute hx:-mt-20" id="it-fails-closed"&gt;&lt;/span&gt;
+&lt;a href="#it-fails-closed" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;전송자가 침묵하는 동안 연합 자격 증명은 거부됩니다&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;KRL과 마찬가지로, 전송자가 &lt;code&gt;max_age&lt;/code&gt; 안에 폴링에 응답하지 않으면 &lt;strong&gt;모든 연합 자격
+증명&lt;/strong&gt;이 거부됩니다. &amp;ldquo;폐기가 도착하지 않음&amp;quot;과 &amp;ldquo;도착할 수 없었음&amp;quot;은 똑같아 보이기
+때문입니다. 알림을 설정할 메트릭은 &lt;code&gt;fileshare_ssf_last_heard_seconds&lt;/code&gt;이고,
+&lt;code&gt;fileshare_ssf_revoked_subjects&lt;/code&gt;는 보관 중인 폐기의 수입니다.
+&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/administration/health/#what-to-alert-on"&gt;상태 점검과 메트릭&lt;/a&gt;을
+참고하십시오.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="checked-end-to-end"&gt;처음부터 끝까지 검증&lt;span class="hx:absolute hx:-mt-20" id="checked-end-to-end"&gt;&lt;/span&gt;
+&lt;a href="#checked-end-to-end" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;go-authn/bridge의 상호 운용 레인
+(&lt;a href="https://github.com/go-authn/bridge/pull/12" target="_blank" rel="noopener"&gt;#12&lt;/a&gt;,
+&lt;a href="https://github.com/go-authn/bridge/pull/17" target="_blank" rel="noopener"&gt;#17&lt;/a&gt;)이 fileshare v0.13.0을 실제
+bridge에 대해 판정합니다. KRL, NFS의 CRL, SSF로 폐기된 WebDAV 토큰, 스코프로
+비활성화된 IdP, 그리고 SSF를 통한 opkssh로, 어떤 폐기 목록도 닿지 않는
+경우입니다.&lt;/p&gt;</description></item></channel></rss>

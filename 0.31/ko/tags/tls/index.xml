@@ -1,0 +1,473 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Tls</title><link>https://go-fileshare.github.io/docs/0.31/ko/tags/tls/</link><description>Recent content in Tls on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>ko</language><atom:link href="https://go-fileshare.github.io/docs/0.31/ko/tags/tls/index.xml" rel="self" type="application/rss+xml"/><item><title>TLS와 ACME 인증서</title><link>https://go-fileshare.github.io/docs/0.31/ko/security/tls/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/ko/security/tls/</guid><description>
+&lt;p&gt;v0.9.0부터 &lt;strong&gt;WebDAV와 S3는 HTTPS로, NFS는 RPC-with-TLS&lt;/strong&gt;(RFC 9289)로 제공됩니다.
+&lt;code&gt;serve&lt;/code&gt; 블록의 &lt;code&gt;tls = true&lt;/code&gt;와 인증서의 출처를 지정하는 하나의 &lt;code&gt;tls&lt;/code&gt; 블록을
+사용합니다.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="from-files"&gt;파일에서&lt;span class="hx:absolute hx:-mt-20" id="from-files"&gt;&lt;/span&gt;
+&lt;a href="#from-files" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;tls&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; cert_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/tls/fullchain.pem&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; key_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/tls/key.pem&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;webdav&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:443&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; tls&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="코드 복사"
+aria-label="코드 복사"
+data-copied-label="복사됨!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;파일은 &lt;strong&gt;변경되면 다시 로드되므로&lt;/strong&gt;, 다른 도구가 기록한 갱신본이 재시작 없이
+반영됩니다. 인증서는 &lt;a href="https://github.com/go-authn/servercert" target="_blank" rel="noopener"&gt;go-authn/servercert&lt;/a&gt;의
+것입니다.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="from-an-acme-ca"&gt;ACME CA에서&lt;span class="hx:absolute hx:-mt-20" id="from-an-acme-ca"&gt;&lt;/span&gt;
+&lt;a href="#from-an-acme-ca" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;기본값은 Let&amp;rsquo;s Encrypt이며, 또는 HARICA를 통한 GÉANT TCS처럼 &lt;strong&gt;외부 계정
+바인딩&lt;/strong&gt;으로 여러분을 인식하는 CA를 쓸 수 있습니다.&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;tls&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;acme&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; directory_url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://acme-v02.harica.gr/acme/&amp;lt;uuid&amp;gt;/directory&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # the Server URL cm.harica.gr shows
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; domains&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;files.example.org&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; cache_dir&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/var/lib/fileshare/acme&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; eab_key_id&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;…&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; eab_hmac_key_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/tls/eab.key&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # a secret: a file, never the config
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="코드 복사"
+aria-label="코드 복사"
+data-copied-label="복사됨!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;필드&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;directory_url&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;CA의 ACME 디렉터리. 비어 있으면 Let&amp;rsquo;s Encrypt&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;domains&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;요청할 이름(필수)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;cache_dir&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;계정과 인증서를 보관하는 위치(필수)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;email&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;계정의 연락처, 선택 사항&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;eab_key_id&lt;/code&gt;, &lt;code&gt;eab_hmac_key_file&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;외부 계정 바인딩. HMAC 키는 비밀이므로 파일에서 읽으며, CA가 발급하는 그대로 base64url입니다(표준 base64도 읽습니다). 그 밖의 형식은 거부됩니다&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;http_challenge&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;http-01에 응답할 위치. 예: &lt;code&gt;&amp;quot;0.0.0.0:80&amp;quot;&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3 data-hextra-search-id="whether-acme-can-work-is-decided-by-how-the-ca-checks-the-name"&gt;ACME가 동작할 수 있는지는 CA가 이름을 확인하는 방식으로 결정됩니다&lt;span class="hx:absolute hx:-mt-20" id="whether-acme-can-work-is-decided-by-how-the-ca-checks-the-name"&gt;&lt;/span&gt;
+&lt;a href="#whether-acme-can-work-is-decided-by-how-the-ca-checks-the-name" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;챌린지&lt;/th&gt;
+&lt;th&gt;CA가 접속하는 곳&lt;/th&gt;
+&lt;th&gt;따라서&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;tls-alpn-01 (RFC 8737)&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;443&lt;/strong&gt; 포트&lt;/td&gt;
+&lt;td&gt;TLS 프로토콜이 443에서 제공되어야 합니다&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;http-01 (RFC 8555 §8.3)&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;80&lt;/strong&gt; 포트&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;http_challenge = &amp;quot;0.0.0.0:80&amp;quot;&lt;/code&gt;이 응답합니다. 또는 80 포트가 포워딩되는 주소&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;없음&lt;/td&gt;
+&lt;td&gt;없음&lt;/td&gt;
+&lt;td&gt;도메인이 &lt;strong&gt;사전 검증된&lt;/strong&gt; CA 계정은 챌린지를 요구하지 않습니다. GÉANT TCS(OV 인증서)의 HARICA Enterprise &lt;strong&gt;Admin&lt;/strong&gt; 계정이 그렇습니다. 그래서 &lt;strong&gt;외부에서 접근할 수 없는&lt;/strong&gt; 서버도 인증서를 받습니다&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;마지막 행이 캠퍼스 네트워크 안의 파일 서버에 중요한 경우입니다. 기관이 HARICA에서
+이미 도메인을 검증한 GÉANT TCS 계정이 있으면 인터넷에 포트를 전혀 열 필요가
+없습니다.&lt;/p&gt;
+&lt;h4 data-hextra-search-id="harica-gant-tcs-which-account-and-caa"&gt;HARICA (GÉANT TCS): 어느 계정인가, 그리고 CAA&lt;span class="hx:absolute hx:-mt-20" id="harica-gant-tcs-which-account-and-caa"&gt;&lt;/span&gt;
+&lt;a href="#harica-gant-tcs-which-account-and-caa" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h4&gt;&lt;p&gt;HARICA의 ACME 계정은 두 종류이며, 그중 하나만 챌린지를 건너뜁니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Enterprise Admin&lt;/strong&gt; 계정은 기관이 검증한 도메인에 대해 &lt;strong&gt;OV&lt;/strong&gt; 인증서를 발급합니다.
+&lt;strong&gt;챌린지가 없으며&lt;/strong&gt;, 외부에서 접근할 수 없는 서버를 위한 계정입니다.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Enterprise User&lt;/strong&gt; 계정은 &lt;strong&gt;DV&lt;/strong&gt; 인증서를 발급하며, DV는 CA가 주문할 때마다
+위의 tls-alpn-01 또는 http-01로 이름을 확인한다는 뜻입니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;어느 쪽이든 도메인에 &lt;strong&gt;CAA&lt;/strong&gt; 레코드가 있다면 &lt;code&gt;harica.gr&lt;/code&gt;을 허용해야 하며, 그렇지
+않으면 주문이 거부됩니다.&lt;/p&gt;
+&lt;h4 data-hextra-search-id="when-the-certificate-is-asked-for"&gt;인증서를 요청하는 시점&lt;span class="hx:absolute hx:-mt-20" id="when-the-certificate-is-asked-for"&gt;&lt;/span&gt;
+&lt;a href="#when-the-certificate-is-asked-for" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h4&gt;&lt;p&gt;&lt;strong&gt;시작할 때&lt;/strong&gt;(v0.27.0부터): 리스너가 올라오면 구성된 모든 도메인의 인증서를
+가져오거나 캐시 디렉터리에서 다시 읽습니다. 실패해도 서버는 멈추지 않고 계속
+제공하며 1분 후에 다시 시도하고, 최대 1시간까지 두 배씩 늘립니다. 호스트 이름을
+지정하는 첫 TLS 연결도 어쨌든 다시 요청합니다. 인증서는 만료 30일 전에, 또는 그것이
+더 짧다면 수명의 마지막 3분의 1 시점에 갱신됩니다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;SNI를 보내지 않는 클라이언트&lt;/strong&gt;, 곧 IP 주소로 접속하는 클라이언트에는
+&lt;strong&gt;첫 번째&lt;/strong&gt; 도메인의 인증서가 제공됩니다(v0.27.0부터). 이전에는 핸드셰이크가
+실패했습니다. 클라이언트는 여전히 그 인증서를 자신이 접속한 주소와 대조해 검사하므로,
+그 이름을 신뢰하라고 안내받은 클라이언트에게는 도움이 되고 아무도 속이지 않습니다.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;ALPN&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;ACME를 쓰면 서버의 ALPN 목록에 &lt;code&gt;acme-tls/1&lt;/code&gt;이 있고, Go 서버는 자신의 목록과
+공통점이 없는 클라이언트를 거부합니다. 그래서 WebDAV와 S3에는 &lt;code&gt;http/1.1&lt;/code&gt;을
+&lt;strong&gt;덧붙이고&lt;/strong&gt;(모든 브라우저와 WebDAV 클라이언트가 이를 제시합니다), NFS에는
+RFC 9289 §5.2가 RPC-with-TLS를 식별하는 &lt;code&gt;sunrpc&lt;/code&gt;을 덧붙입니다. &lt;code&gt;h2&lt;/code&gt;는 아닙니다.
+이 리스너에서는 HTTP/2를 제공하지 않으며 제공한다고 하면 거짓이 됩니다.
+&lt;code&gt;acme-tls/1&lt;/code&gt;은 모든 리스너에 남아 있으므로 CA가 도달하는 어디서든 tls-alpn-01에
+응답합니다.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="webdav-is-not-served-in-the-clear"&gt;WebDAV는 평문으로 제공되지 않습니다&lt;span class="hx:absolute hx:-mt-20" id="webdav-is-not-served-in-the-clear"&gt;&lt;/span&gt;
+&lt;a href="#webdav-is-not-served-in-the-clear" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;v0.9.0의 호환성 파괴: 접근 가능한 주소에서 비밀번호를 쓰는 WebDAV는 거부됩니다&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;HTTP Basic은 모든 요청에서 base64로 인코딩된 비밀번호 그 자체이며, 베어러 토큰도
+그와 같은 효력을 가집니다. 따라서 누군가 인증하는 상태에서 다른 머신이 접근할 수
+있는 주소에서 &lt;strong&gt;TLS 없이&lt;/strong&gt; WebDAV를 제공하는 구성은 경고가 아니라 &lt;strong&gt;거부됩니다&lt;/strong&gt;.
+경고는 스크롤되어 사라지지만 유출된 비밀번호는 돌아오지 않기 때문입니다.&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;pre&gt;&lt;code&gt;webdav on 0.0.0.0:8080 would carry passwords in the clear: serve it with
+tls = true, or -- when TLS is terminated in front of it, by a proxy -- say
+plaintext = true&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="코드 복사"
+aria-label="코드 복사"
+data-copied-label="복사됨!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;v0.9.0 이전에 &lt;code&gt;serve &amp;quot;webdav&amp;quot; { addr = &amp;quot;0.0.0.0:8080&amp;quot; }&lt;/code&gt;로 시작되던 구성은 그
+이후에는 시작되지 않습니다. 해결 방법은 두 가지입니다.&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;webdav&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:443&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; tls&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;&lt;span class="c1"&gt; # with a tls block
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="코드 복사"
+aria-label="코드 복사"
+data-copied-label="복사됨!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;또는 리버스 프록시가 앞단에서 TLS를 종료하고 평문으로 전달하는 경우입니다.&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;webdav&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;10.0.0.5:8080&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; plaintext&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;&lt;span class="c1"&gt; # TLS is terminated in front of this, on purpose
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="코드 복사"
+aria-label="코드 복사"
+data-copied-label="복사됨!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;루프백&lt;/strong&gt; 주소(&lt;code&gt;127.0.0.1&lt;/code&gt;, &lt;code&gt;::1&lt;/code&gt;, &lt;code&gt;localhost&lt;/code&gt;)와 &lt;strong&gt;인증할 사용자가 없는&lt;/strong&gt;
+서버(&lt;code&gt;user&lt;/code&gt;, &lt;code&gt;users&lt;/code&gt;, &lt;code&gt;oidc&lt;/code&gt; 블록이 모두 없음)는 영향을 받지 않습니다. &lt;code&gt;addr&lt;/code&gt;이 없는
+&lt;code&gt;serve&lt;/code&gt; 블록은 루프백에 위치하므로 역시 영향을 받지 않습니다.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;plaintext&lt;/code&gt;는 비밀번호를 보내는 프로토콜인 WebDAV 전용이며, &lt;code&gt;plaintext&lt;/code&gt;와 &lt;code&gt;tls&lt;/code&gt;를
+함께 쓰면 거부됩니다. 둘 중 하나여야 합니다.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-check-says"&gt;&lt;code&gt;check&lt;/code&gt;가 알려 주는 것&lt;span class="hx:absolute hx:-mt-20" id="what-check-says"&gt;&lt;/span&gt;
+&lt;a href="#what-check-says" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/configuration/check/"&gt;&lt;code&gt;fileshare check&lt;/code&gt;&lt;/a&gt;는 프로토콜별로 무엇이
+암호화되고 무엇이 &lt;strong&gt;의도적으로&lt;/strong&gt; 평문인지 출력합니다.&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;pre&gt;&lt;code&gt;webdav: TLS, certificate from the files /etc/fileshare/tls/fullchain.pem and /etc/fileshare/tls/key.pem
+nfs: TLS, certificate from the files /etc/fileshare/tls/fullchain.pem and /etc/fileshare/tls/key.pem; clients present one signed by /etc/fileshare/tls/clients.pem (the machine, not the person)&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="코드 복사"
+aria-label="코드 복사"
+data-copied-label="복사됨!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;그리고 프록시 뒤의 WebDAV에 대해서는 다음과 같이 출력합니다.&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;pre&gt;&lt;code&gt;webdav: in the clear on 10.0.0.5:8080, on purpose (plaintext = true): TLS must be terminated in front of it&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="코드 복사"
+aria-label="코드 복사"
+data-copied-label="복사됨!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="per-protocol"&gt;프로토콜별&lt;span class="hx:absolute hx:-mt-20" id="per-protocol"&gt;&lt;/span&gt;
+&lt;a href="#per-protocol" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;프로토콜&lt;/th&gt;
+&lt;th&gt;&lt;code&gt;tls = true&lt;/code&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;WebDAV&lt;/td&gt;
+&lt;td&gt;가능&lt;/td&gt;
+&lt;td&gt;HTTPS&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;S3&lt;/td&gt;
+&lt;td&gt;가능&lt;/td&gt;
+&lt;td&gt;HTTPS&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;NFS&lt;/td&gt;
+&lt;td&gt;가능&lt;/td&gt;
+&lt;td&gt;RFC 9289, 아래 참고&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;SMB&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;거부&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;SMB 3은 자체 키로 암호화합니다&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;SFTP&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;거부&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;SFTP는 SSH입니다&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2 data-hextra-search-id="nfs-over-tls-proves-the-machine-not-the-person"&gt;TLS 위의 NFS는 사용자가 아니라 머신을 증명합니다&lt;span class="hx:absolute hx:-mt-20" id="nfs-over-tls-proves-the-machine-not-the-person"&gt;&lt;/span&gt;
+&lt;a href="#nfs-over-tls-proves-the-machine-not-the-person" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;nfs&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; tls&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; client_ca_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/tls/clients.pem&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="코드 복사"
+aria-label="코드 복사"
+data-copied-label="복사됨!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;client_ca_file&lt;/code&gt;은 클라이언트가 그 기관의 인증서, 곧 &lt;strong&gt;어느 호스트가 마운트하는지&lt;/strong&gt;를
+제시하게 하며, RFC 9289는 사용자 인증을 이전 그대로 둡니다. 그 안의 uid는 여전히
+&lt;code&gt;AUTH_SYS&lt;/code&gt;가 주장하는 값입니다. 따라서 사용 가능한 사용자를 지정한 공유는
+&lt;code&gt;kerberos&lt;/code&gt; 블록이 없으면, 또는 같은 인증서의 다른 용도인
+&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/security/nfs-certificates/"&gt;인증서 기반 ID&lt;/a&gt;가 없으면 NFS에서
+&lt;strong&gt;여전히 거부됩니다&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;TLS는 &lt;strong&gt;제공될 뿐 필수가 아닙니다&lt;/strong&gt;. 이를 요청하지 않는 클라이언트에게도 열린
+공유는 계속 제공됩니다. &lt;code&gt;tls = true&lt;/code&gt; 없는 &lt;code&gt;client_ca_file&lt;/code&gt;은 아무것도 검사하지
+않으므로 거부되며, NFS 외의 프로토콜에 쓴 &lt;code&gt;client_ca_file&lt;/code&gt;도 거부됩니다.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-else-is-refused"&gt;그 밖에 거부되는 것&lt;span class="hx:absolute hx:-mt-20" id="what-else-is-refused"&gt;&lt;/span&gt;
+&lt;a href="#what-else-is-refused" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;tls&lt;/code&gt; 블록이 없는 &lt;code&gt;tls = true&lt;/code&gt;: 인증서의 출처를 알려 주는 것이 없습니다.&lt;/li&gt;
+&lt;li&gt;어떤 &lt;code&gt;serve&lt;/code&gt; 블록도 사용하지 않는 &lt;code&gt;tls&lt;/code&gt; 블록: 아무것도 사용하지 않게 됩니다.&lt;/li&gt;
+&lt;li&gt;수신할 주소가 아닌 &lt;code&gt;http_challenge&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>인증서 기반 ID를 쓰는 NFS</title><link>https://go-fileshare.github.io/docs/0.31/ko/security/nfs-certificates/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/ko/security/nfs-certificates/</guid><description>
+&lt;p&gt;NFSv3는 단독으로는 누구도 인증하지 않으며, 그래서 사용 가능한 사용자를 지정한
+공유는 사용자를 구별할 수 있는 무언가가 없는 한
+&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/protocols/nfs/"&gt;NFS로 내보내지 않습니다&lt;/a&gt;. &lt;code&gt;kerberos&lt;/code&gt; 블록이 그
+해법 중 하나입니다. v0.12.0부터는 &lt;strong&gt;사용자를 지정하는&lt;/strong&gt; 클라이언트 인증서가 또
+다른 해법입니다.&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;nfs&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; tls&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; client_ca_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/bridge-x509-ca.pem&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; identity&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;certificate&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; crl_url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://bridge.example.org/x509/crl&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # or crl_file; required
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; crl_state_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/var/lib/fileshare/nfs.crl.state&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # the order, across a restart
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="코드 복사"
+aria-label="코드 복사"
+data-copied-label="복사됨!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="what-the-certificate-carries"&gt;인증서가 담는 것&lt;span class="hx:absolute hx:-mt-20" id="what-the-certificate-carries"&gt;&lt;/span&gt;
+&lt;a href="#what-the-certificate-carries" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;ID 공급자 로그인 후 go-authn/bridge는 FreeBSD의 &lt;code&gt;rpc.tlsservd -u&lt;/code&gt;가 읽는 방식으로
+사용자를 지정하는 &lt;strong&gt;단기 X.509 클라이언트 인증서&lt;/strong&gt;를 발급합니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;사용자: SubjectAltName &lt;strong&gt;otherName &lt;code&gt;1.3.6.1.4.1.2238.1.1.1&lt;/code&gt;&lt;/strong&gt;, 곧 &lt;code&gt;user@domain&lt;/code&gt;
+형식의 UTF8String
+(&lt;a href="https://www.ietf.org/archive/id/draft-cel-nfsv4-rpc-tls-othername-04.html" target="_blank" rel="noopener"&gt;draft-cel-nfsv4-rpc-tls-othername&lt;/a&gt;이
+설명하며, 이 OID는 아직 할당되지 않았습니다)&lt;/li&gt;
+&lt;li&gt;그룹: 그룹마다 SubjectAltName URI 하나,
+&lt;code&gt;tag:go-authn.github.io,2026:group:&amp;lt;group&amp;gt;&lt;/code&gt; — 바로 이 용도로 만들어진
+&lt;strong&gt;tag URI&lt;/strong&gt;(RFC 4151: 등록 불필요)입니다. FreeBSD의 &lt;code&gt;rpc.tlsservd&lt;/code&gt;는 첫 번째 ID
+otherName을 읽고 다른 모든 SAN 항목은 건너뜁니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;자체 확장이 아니라 tag URI를 쓰는 이유&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;UUID에서 파생한 아크(&lt;code&gt;2.25.&amp;lt;128비트 숫자&amp;gt;&lt;/code&gt;) 아래에 자체 확장을 설계하고
+&lt;strong&gt;측정했습니다&lt;/strong&gt;. Go의 &lt;code&gt;x509.ParseCertificate&lt;/code&gt;는 인증서 전체를 거부합니다
+(&lt;em&gt;malformed extension OID field&lt;/em&gt;). 그곳에서 ASN.1 객체 식별자 아크는 &lt;code&gt;int&lt;/code&gt;이기
+때문입니다. 모든 Go TLS 서버가 이 인증서를 돌려보냈을 것입니다. URI SAN은 OID가
+필요 없으며 모든 파서가 읽습니다. &lt;code&gt;urn:x-…&lt;/code&gt;도 아닙니다. RFC 8141이 실험용 URN
+네임스페이스를 폐지했고, 엄격한 파서는 이를 거부하기 때문입니다.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="what-every-call-is-asked"&gt;모든 호출에서 확인하는 것&lt;span class="hx:absolute hx:-mt-20" id="what-every-call-is-asked"&gt;&lt;/span&gt;
+&lt;a href="#what-every-call-is-asked" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt;이면, 사용자를 지정하는 공유는 &lt;strong&gt;kerberos 없이&lt;/strong&gt; NFS로
+제공됩니다. 그 공유에 대한 모든 호출은 TLS로 도착해야 하며, 인증서는 다음을
+만족해야 합니다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;CRL에 없음&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;정확히 한 명&lt;/strong&gt;의 사용자를 지정함&lt;/li&gt;
+&lt;li&gt;이 서버가 &lt;strong&gt;토큰을 허가하는 방식으로&lt;/strong&gt; 허가하는 사용자를 지정함 — 규칙,
+&lt;code&gt;trust_all&lt;/code&gt;, &lt;code&gt;domains&lt;/code&gt;.
+&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;ID 공급자가 지정하는 사용자&lt;/a&gt;를
+참고하십시오.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;공유가 허용하는&lt;/strong&gt; 사용자를 지정함&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;그리고 &lt;a href="https://go-fileshare.github.io/docs/0.31/ko/security/shared-signals/"&gt;&lt;code&gt;ssf&lt;/code&gt; 블록&lt;/a&gt;이 있으면, 인증서는
+해당 사용자에 대한 모든 폐기 &lt;strong&gt;이후에&lt;/strong&gt; 발급(&lt;code&gt;NotBefore&lt;/code&gt;)되어야 합니다.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="revocation-the-crl"&gt;폐기: CRL&lt;span class="hx:absolute hx:-mt-20" id="revocation-the-crl"&gt;&lt;/span&gt;
+&lt;a href="#revocation-the-crl" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;CRL은 필수입니다&lt;/strong&gt; — &lt;code&gt;crl_url&lt;/code&gt; 또는 &lt;code&gt;crl_file&lt;/code&gt;. 아무것도 폐기할 수 없는 사용자의
+인증서는 사용자가 제거된 뒤에도 그 수명 전체만큼 살아남습니다.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;필드&lt;/th&gt;
+&lt;th&gt;기본값&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;crl_url&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;HTTPS만 허용&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;crl_file&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;또는 절대 경로 — 둘 중 하나&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;crl_ca_file&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;시스템의 것&lt;/td&gt;
+&lt;td&gt;CRL의 HTTPS 서버를 확인할 기관을 고정&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;crl_refresh&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;1m&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;가져오는 주기&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;crl_max_age&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;1h&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;마지막 정상 사본이 얼마나 오래되어도 되는지&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;crl_state_file&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;검증된 마지막 CRL을 보관하는 위치. 재시작 후에도 어느 쪽이 더 새로운지 기억하게 합니다&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/security/revocation-lists/"&gt;KRL&lt;/a&gt;과 같은 방식으로 가져와 보관하며
+같은 방식으로 &lt;strong&gt;fail closed&lt;/strong&gt;입니다. 자체 **&lt;code&gt;NextUpdate&lt;/code&gt;**가 지난 CRL은
+&lt;code&gt;crl_max_age&lt;/code&gt;가 허용하는 값과 관계없이 알 수 없는 것으로 간주합니다. CRL은 클라이언트
+CA가 서명해야 합니다. 누구나 쓸 수 있는 CRL은 원하는 것을 마음대로 폐기할 수 있고,
+더 나쁘게는 폐기를 취소할 수도 있습니다. CRL에 접근할 수 있으면 &lt;strong&gt;변경 후 다음
+호출이 거부됩니다&lt;/strong&gt;. 인증서의 수명이 폐기의 한계가 되는 것은 CRL에 접근할 수 없을
+때뿐입니다.&lt;/p&gt;
+&lt;p&gt;v0.16.2부터 서명은 CRL을 파싱하기 &lt;strong&gt;전에&lt;/strong&gt; 원시 바이트에 대해
+&lt;a href="https://github.com/go-authn/revocation" target="_blank" rel="noopener"&gt;go-authn/revocation&lt;/a&gt;을 통해 검사합니다.
+먼저 파싱하면 아무나 서명한 큰 CRL이 거부되기 전에 메모리와 시간을 소모했습니다.
+이 서버가 완전한 목록으로 읽을 수 없는 것도 거부됩니다. 델타 CRL, 알 수 없는 크리티컬
+확장 또는 항목 확장, CRL 번호 없음, &lt;code&gt;NextUpdate&lt;/code&gt; 없음입니다. 보유한 것보다 번호가
+낮은 CRL, 또는 번호가 같지만 더 일찍 발급된 CRL은 오래된
+&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/security/revocation-lists/#never-backwards-across-a-restart-too"&gt;KRL&lt;/a&gt;과
+마찬가지로 거부됩니다.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt; 없이 CRL 필드를 쓰면 거부되며,
+&lt;code&gt;tls = true&lt;/code&gt;와 &lt;code&gt;client_ca_file&lt;/code&gt; 없이 &lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt;를 쓰는 경우도
+마찬가지입니다. ID는 클라이언트가 제시하는 인증서 안에 있기 때문입니다.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-it-cannot-promise"&gt;보장할 수 없는 것&lt;span class="hx:absolute hx:-mt-20" id="what-it-cannot-promise"&gt;&lt;/span&gt;
+&lt;a href="#what-it-cannot-promise" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Linux 클라이언트의 인증서는 사용자가 아니라 마운트에 속합니다&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;서버는 &lt;strong&gt;연결의&lt;/strong&gt; 인증서를 보며, Linux 클라이언트는 이를 마운트에 연결합니다
+(&lt;code&gt;tlshd&lt;/code&gt;, &lt;code&gt;mount -o xprtsec=mtls,...&lt;/code&gt;의 키링 일련번호). &lt;strong&gt;해당 마운트의 모든
+사용자는 인증서가 지정하는 사용자로 동작합니다.&lt;/strong&gt; 한 사람이 사용하는
+워크스테이션에서는 정확히 그 사람이지만, 여러 사람이 로그인하는 머신에서는
+마운트한 사람입니다. 그런 곳에서는 &lt;code&gt;sec=krb5&lt;/code&gt;를 사용하십시오.&lt;/p&gt;
+&lt;p&gt;RFC 9289만으로는 사용자 인증을 보장한다고 하지 않는 이유가 이것이며, 단순한
+&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/security/tls/#nfs-over-tls-proves-the-machine-not-the-person"&gt;TLS 위의 NFS&lt;/a&gt;가
+여전히 머신만 증명하는 이유이기도 합니다.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="measured-with-a-real-linux-client"&gt;실제 Linux 클라이언트로 측정&lt;span class="hx:absolute hx:-mt-20" id="measured-with-a-real-linux-client"&gt;&lt;/span&gt;
+&lt;a href="#measured-with-a-real-linux-client" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;go-filesystems/nfs의 CI에서 커널 6.17, ktls-utils 0.9로 측정했습니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;MOUNT의 &lt;code&gt;MNT&lt;/code&gt;는 &lt;code&gt;xprtsec=&lt;/code&gt;이 무엇이든 평문으로 도착합니다&lt;/strong&gt;. 커널의 마운트
+클라이언트에는 TLS가 없습니다. 응답은 하되, TLS 없이 이루어진 모든 NFS 호출은
+이후 거부되므로, 공유가 허용하지 않는 사용자는 &lt;code&gt;mount&lt;/code&gt;가 아니라 첫 접근에서
+&lt;em&gt;access denied&lt;/em&gt;를 봅니다. &lt;strong&gt;공유의 어떤 것도 평문으로 건너지 않습니다.&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;tlshd&lt;/code&gt;는 이 서버의 인증서를 &lt;strong&gt;시스템&lt;/strong&gt; 신뢰 저장소로만 검사하고(&lt;code&gt;x509.truststore&lt;/code&gt;는
+무시함), 클라이언트의 인증서와 키가 &lt;strong&gt;root 소유이고 키의 모드가 600&lt;/strong&gt;이기를
+요구합니다. 그렇지 않으면 어느 쪽도 지목하지 않고 *gnutls: Error in the
+certificate (-43)*으로 실패합니다.&lt;/li&gt;
+&lt;/ul&gt;</description></item></channel></rss>

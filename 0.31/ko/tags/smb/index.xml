@@ -1,0 +1,43 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Smb</title><link>https://go-fileshare.github.io/docs/0.31/ko/tags/smb/</link><description>Recent content in Smb on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>ko</language><atom:link href="https://go-fileshare.github.io/docs/0.31/ko/tags/smb/index.xml" rel="self" type="application/rss+xml"/><item><title>SMB — NTLMv2</title><link>https://go-fileshare.github.io/docs/0.31/ko/protocols/smb/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/ko/protocols/smb/</guid><description>
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;serve &amp;#34;smb&amp;#34; { addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:445&amp;#34;&lt;/span&gt; }&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="코드 복사"
+aria-label="코드 복사"
+data-copied-label="복사됨!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;비밀번호는 &lt;strong&gt;네트워크를 건너지 않습니다&lt;/strong&gt;. 클라이언트는 비밀번호로 계산한 증명을
+보냅니다. 공유는 읽는 사람에게 나중에 쓰기가 실패하는 방식이 아니라, 시도하기
+전에 접근 마스크로 읽기 전용임을 알려 줍니다.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-a-directory-must-hold"&gt;디렉터리가 보유해야 하는 것&lt;span class="hx:absolute hx:-mt-20" id="what-a-directory-must-hold"&gt;&lt;/span&gt;
+&lt;a href="#what-a-directory-must-hold" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;NTLMv2에는 비밀번호 자체 또는 그 MD4(&lt;code&gt;sambaNTPassword&lt;/code&gt;, &lt;code&gt;nt_hash&lt;/code&gt; 열)가
+필요합니다. &lt;strong&gt;다른 것으로는 안 됩니다.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;비밀번호를 &lt;em&gt;확인&lt;/em&gt;하기만 하는 디렉터리(LDAP 바인드, bcrypt 열)는 확인이 아무리
+훌륭해도 SMB에 응답할 수 없습니다. 서버가 클라이언트가 계산한 것과 같은 증명을
+계산해야 하기 때문입니다. 이는 이 프로그램의 한계가 아니라 프로토콜의 속성입니다.&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt;는 이런 사용자에 대해 구성 시점에
+SMB 열에 &lt;code&gt;-&lt;/code&gt;를 출력하며, 마운트할 때 비로소 알게 되도록 두지 않습니다.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="a-privileged-port-without-a-privileged-server"&gt;권한 있는 서버 없이 권한이 필요한 포트&lt;span class="hx:absolute hx:-mt-20" id="a-privileged-port-without-a-privileged-server"&gt;&lt;/span&gt;
+&lt;a href="#a-privileged-port-without-a-privileged-server" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Unix에서 &lt;a href="https://go-fileshare.github.io/docs/0.31/ko/operations/isolation/"&gt;&lt;code&gt;--isolate&lt;/code&gt;&lt;/a&gt; 아래에서는 부모가
+445를 바인딩하고 리스너를 자식에게 넘기므로, 실제로 SMB를 처리하는 프로세스는
+권한이 전혀 필요 없습니다. Windows에는 &lt;code&gt;ExtraFiles&lt;/code&gt;가 없으므로 자식이 직접 주소를
+바인딩합니다. 격리는 같지만, 권한이 필요한 포트에 관한 절반은 해당하지 않습니다.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="verified-against-a-client-this-project-did-not-write"&gt;이 프로젝트가 작성하지 않은 클라이언트로 검증&lt;span class="hx:absolute hx:-mt-20" id="verified-against-a-client-this-project-did-not-write"&gt;&lt;/span&gt;
+&lt;a href="#verified-against-a-client-this-project-did-not-write" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;a href="https://github.com/cloudsoda/go-smb2" target="_blank" rel="noopener"&gt;go-smb2&lt;/a&gt;가 CI에서 &lt;code&gt;-race&lt;/code&gt;로 SMB를 통한
+동시 읽기 스무 건과 WebDAV를 통한 스무 건을 함께 구동합니다. macOS는 공유를
+SMB로 마운트하고 &lt;code&gt;curl&lt;/code&gt;은 같은 이미지에 WebDAV로 쓴 다음, WebDAV가 쓴 내용을
+다시 읽어 옵니다.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="when-the-people-change"&gt;사용자가 바뀔 때&lt;span class="hx:absolute hx:-mt-20" id="when-the-people-change"&gt;&lt;/span&gt;
+&lt;a href="#when-the-people-change" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;SMB는 &lt;strong&gt;공유가 추가될 때&lt;/strong&gt; 누가 그 공유에 연결할 수 있는지를 확정하고, 트리
+연결마다 한 번 검사합니다. 따라서 &lt;a href="https://go-fileshare.github.io/docs/0.31/ko/administration/reload/"&gt;디렉터리 다시 불러오기&lt;/a&gt;가
+찾아낸 새 사용자는 SMB의 실행 중인 서버를 포함해 제자리에서 추가되며 어떤 연결도
+건드리지 않습니다. 그러나 사용자, 자격 증명, 공유의 확장된 목록 등 무엇이든
+제거되는 것은 새 세대이며 SMB의 열린 연결은 닫히므로, 폐기가 이미 열린 세션에도
+미칩니다. &lt;code&gt;allow&lt;/code&gt; 그룹이 비어 버린 공유는 &lt;strong&gt;SMB로 아예 제공되지 않습니다&lt;/strong&gt;. 빈
+&lt;code&gt;AllowUsers&lt;/code&gt;는 모든 사람으로 해석되기 때문입니다.&lt;/p&gt;</description></item></channel></rss>

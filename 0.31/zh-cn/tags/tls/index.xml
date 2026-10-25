@@ -1,0 +1,476 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Tls</title><link>https://go-fileshare.github.io/docs/0.31/zh-cn/tags/tls/</link><description>Recent content in Tls on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><atom:link href="https://go-fileshare.github.io/docs/0.31/zh-cn/tags/tls/index.xml" rel="self" type="application/rss+xml"/><item><title>TLS 与来自 ACME 的证书</title><link>https://go-fileshare.github.io/docs/0.31/zh-cn/security/tls/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/zh-cn/security/tls/</guid><description>
+&lt;p&gt;自 v0.9.0 起，&lt;strong&gt;WebDAV 和 S3 通过 HTTPS 提供，NFS 通过
+RPC-with-TLS 提供&lt;/strong&gt;（RFC 9289），方法是在它们的 &lt;code&gt;serve&lt;/code&gt; 块上设置 &lt;code&gt;tls = true&lt;/code&gt;，
+并用一个 &lt;code&gt;tls&lt;/code&gt; 块说明证书的来源。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="from-files"&gt;来自文件&lt;span class="hx:absolute hx:-mt-20" id="from-files"&gt;&lt;/span&gt;
+&lt;a href="#from-files" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;tls&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; cert_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/tls/fullchain.pem&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; key_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/tls/key.pem&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;webdav&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:443&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; tls&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="复制代码"
+aria-label="复制代码"
+data-copied-label="已复制！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;文件&lt;strong&gt;在发生变化时会重新加载&lt;/strong&gt;，因此其他
+工具写入的续期证书无需重启即可生效。证书由
+&lt;a href="https://github.com/go-authn/servercert" target="_blank" rel="noopener"&gt;go-authn/servercert&lt;/a&gt; 提供。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="from-an-acme-ca"&gt;来自 ACME CA&lt;span class="hx:absolute hx:-mt-20" id="from-an-acme-ca"&gt;&lt;/span&gt;
+&lt;a href="#from-an-acme-ca" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;默认为 Let&amp;rsquo;s Encrypt；也可以是通过&lt;strong&gt;外部账户
+绑定&lt;/strong&gt;认识你的 CA，例如通过 HARICA 提供的 GÉANT TCS：&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;tls&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;acme&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; directory_url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://acme-v02.harica.gr/acme/&amp;lt;uuid&amp;gt;/directory&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # cm.harica.gr 显示的 Server URL
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; domains&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;files.example.org&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; cache_dir&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/var/lib/fileshare/acme&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; eab_key_id&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;…&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; eab_hmac_key_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/tls/eab.key&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # 机密：放在文件中，绝不放进配置
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="复制代码"
+aria-label="复制代码"
+data-copied-label="已复制！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;字段&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;directory_url&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;CA 的 ACME 目录；留空表示 Let&amp;rsquo;s Encrypt&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;domains&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;要申请的名称（必填）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;cache_dir&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;保存账户和证书的位置（必填）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;email&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;账户的联系方式，可选&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;eab_key_id&lt;/code&gt;、&lt;code&gt;eab_hmac_key_file&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;外部账户绑定；HMAC 密钥是机密，因此从文件中读取，格式为 CA 发放时的 base64url（标准 base64 也可读取）；其他格式会被拒绝&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;http_challenge&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;应答 http-01 的位置，例如 &lt;code&gt;&amp;quot;0.0.0.0:80&amp;quot;&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3 data-hextra-search-id="whether-acme-can-work-is-decided-by-how-the-ca-checks-the-name"&gt;ACME 能否工作，取决于 CA 如何检查名称&lt;span class="hx:absolute hx:-mt-20" id="whether-acme-can-work-is-decided-by-how-the-ca-checks-the-name"&gt;&lt;/span&gt;
+&lt;a href="#whether-acme-can-work-is-decided-by-how-the-ca-checks-the-name" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;质询&lt;/th&gt;
+&lt;th&gt;CA 连接到&lt;/th&gt;
+&lt;th&gt;因此&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;tls-alpn-01 (RFC 8737)&lt;/td&gt;
+&lt;td&gt;端口 &lt;strong&gt;443&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;必须在 443 上提供某个 TLS 协议&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;http-01 (RFC 8555 §8.3)&lt;/td&gt;
+&lt;td&gt;端口 &lt;strong&gt;80&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;http_challenge = &amp;quot;0.0.0.0:80&amp;quot;&lt;/code&gt; 来应答它，或使用端口 80 所转发到的地址&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;无&lt;/td&gt;
+&lt;td&gt;无&lt;/td&gt;
+&lt;td&gt;域名已&lt;strong&gt;预先验证&lt;/strong&gt;的 CA 账户不需要任何质询：对 GÉANT TCS（OV 证书）而言是 HARICA Enterprise &lt;strong&gt;Admin&lt;/strong&gt; 账户，因此&lt;strong&gt;外部无法访问&lt;/strong&gt;的服务器仍可获得其证书&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;最后一行对校园网内部的文件服务器最为重要：
+如果使用的 GÉANT TCS 账户的域名已由机构在 HARICA 验证，
+则完全不必向互联网开放任何端口。&lt;/p&gt;
+&lt;h4 data-hextra-search-id="harica-gant-tcs-which-account-and-caa"&gt;HARICA（GÉANT TCS）：使用哪种账户，以及 CAA&lt;span class="hx:absolute hx:-mt-20" id="harica-gant-tcs-which-account-and-caa"&gt;&lt;/span&gt;
+&lt;a href="#harica-gant-tcs-which-account-and-caa" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h4&gt;&lt;p&gt;HARICA 的 ACME 账户有两种，只有其中一种可以跳过
+质询：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Enterprise Admin&lt;/strong&gt; 账户为机构已验证的域名签发 &lt;strong&gt;OV&lt;/strong&gt; 证书：
+&lt;strong&gt;无需质询&lt;/strong&gt;，这是用于外部无法访问的服务器的账户；&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Enterprise User&lt;/strong&gt; 账户签发 &lt;strong&gt;DV&lt;/strong&gt; 证书，而 DV 意味着
+CA 在每次订单中都要检查名称，如上所述使用 tls-alpn-01 或 http-01。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;无论哪种情况，域名的 &lt;strong&gt;CAA&lt;/strong&gt; 记录（如果有）都必须允许
+&lt;code&gt;harica.gr&lt;/code&gt;，否则订单会被拒绝。&lt;/p&gt;
+&lt;h4 data-hextra-search-id="when-the-certificate-is-asked-for"&gt;何时申请证书&lt;span class="hx:absolute hx:-mt-20" id="when-the-certificate-is-asked-for"&gt;&lt;/span&gt;
+&lt;a href="#when-the-certificate-is-asked-for" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h4&gt;&lt;p&gt;&lt;strong&gt;在启动时&lt;/strong&gt;（自 v0.27.0 起）：监听器就绪后，每个已配置域名的证书
+都会被获取，或从缓存目录读回。失败
+不会使服务器停止：它继续提供服务，并在 1 分钟后重试，
+间隔加倍直至 1 小时，而第一个指明该主机的 TLS 连接无论如何都会再次申请。
+证书在到期前 30 天续期，如果其有效期更短，则在
+有效期的最后三分之一时续期。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;不发送 SNI 的客户端&lt;/strong&gt;，即通过 IP 地址连接的客户端，会得到
+&lt;strong&gt;第一个&lt;/strong&gt;域名的证书（自 v0.27.0 起）；此前握手会失败。
+客户端仍会对照其所拨打的地址检查该证书，因此它
+对被告知信任该名称的客户端有帮助，而不会欺骗任何人。&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;ALPN&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;使用 ACME 时，服务器的 ALPN 列表包含 &lt;code&gt;acme-tls/1&lt;/code&gt;，而 Go 服务器
+会拒绝其列表与自身没有任何交集的客户端。因此对于 WebDAV 和 S3，会&lt;strong&gt;追加&lt;/strong&gt; &lt;code&gt;http/1.1&lt;/code&gt;
+（每个浏览器和 WebDAV 客户端都提供它），
+对于 NFS 追加 &lt;code&gt;sunrpc&lt;/code&gt;，即 RFC 9289 §5.2 用于标识 RPC-with-TLS 的值。不使用 &lt;code&gt;h2&lt;/code&gt;：
+这些监听器不提供 HTTP/2，提供它就是撒谎。
+&lt;code&gt;acme-tls/1&lt;/code&gt; 保留在每个监听器上，因此 CA 无论从哪里访问，
+tls-alpn-01 都能得到应答。&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="webdav-is-not-served-in-the-clear"&gt;WebDAV 不以明文提供&lt;span class="hx:absolute hx:-mt-20" id="webdav-is-not-served-in-the-clear"&gt;&lt;/span&gt;
+&lt;a href="#webdav-is-not-served-in-the-clear" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;v0.9.0 中的破坏性变更：可访问地址上带密码的 WebDAV 会被拒绝&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;HTTP Basic 在每个请求中就是经过 base64 编码的密码，而持有者令牌
+与密码等效。因此，在其他机器可以访问的地址上提供&lt;strong&gt;没有 TLS&lt;/strong&gt; 的
+WebDAV，而又有人需要身份验证的配置会被
+&lt;strong&gt;拒绝，而不是仅仅警告&lt;/strong&gt;：警告一闪而过，而泄露的密码
+无法收回：&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;pre&gt;&lt;code&gt;webdav on 0.0.0.0:8080 would carry passwords in the clear: serve it with
+tls = true, or -- when TLS is terminated in front of it, by a proxy -- say
+plaintext = true&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="复制代码"
+aria-label="复制代码"
+data-copied-label="已复制！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;在 v0.9.0 之前以
+&lt;code&gt;serve &amp;quot;webdav&amp;quot; { addr = &amp;quot;0.0.0.0:8080&amp;quot; }&lt;/code&gt; 启动的配置，在此之后无法启动。有两种
+解决办法：&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;webdav&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:443&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; tls&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;&lt;span class="c1"&gt; # 配合 tls 块
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="复制代码"
+aria-label="复制代码"
+data-copied-label="已复制！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;或者，当反向代理在前端终结 TLS 并以明文转发时：&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;webdav&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;10.0.0.5:8080&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; plaintext&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;&lt;span class="c1"&gt; # 有意在其前端终结 TLS
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="复制代码"
+aria-label="复制代码"
+data-copied-label="已复制！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;回环&lt;/strong&gt;地址（&lt;code&gt;127.0.0.1&lt;/code&gt;、&lt;code&gt;::1&lt;/code&gt;、&lt;code&gt;localhost&lt;/code&gt;），以及&lt;strong&gt;没有任何人需要
+身份验证&lt;/strong&gt;的服务器（没有 &lt;code&gt;user&lt;/code&gt;、没有 &lt;code&gt;users&lt;/code&gt;、没有 &lt;code&gt;oidc&lt;/code&gt; 块）
+不受影响。没有 &lt;code&gt;addr&lt;/code&gt; 的 &lt;code&gt;serve&lt;/code&gt; 块落在回环地址上，同样不受影响。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;plaintext&lt;/code&gt; 仅适用于 WebDAV，即会发送密码的协议，
+而 &lt;code&gt;plaintext&lt;/code&gt; 与 &lt;code&gt;tls&lt;/code&gt; 同时出现会被拒绝：二者取其一。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-check-says"&gt;&lt;code&gt;check&lt;/code&gt; 会说明什么&lt;span class="hx:absolute hx:-mt-20" id="what-check-says"&gt;&lt;/span&gt;
+&lt;a href="#what-check-says" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/configuration/check/"&gt;&lt;code&gt;fileshare check&lt;/code&gt;&lt;/a&gt;会按协议打印哪些是
+加密的，哪些是&lt;strong&gt;有意&lt;/strong&gt;明文的：&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;pre&gt;&lt;code&gt;webdav: TLS, certificate from the files /etc/fileshare/tls/fullchain.pem and /etc/fileshare/tls/key.pem
+nfs: TLS, certificate from the files /etc/fileshare/tls/fullchain.pem and /etc/fileshare/tls/key.pem; clients present one signed by /etc/fileshare/tls/clients.pem (the machine, not the person)&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="复制代码"
+aria-label="复制代码"
+data-copied-label="已复制！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;对于代理之后的 WebDAV，则为&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;pre&gt;&lt;code&gt;webdav: in the clear on 10.0.0.5:8080, on purpose (plaintext = true): TLS must be terminated in front of it&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="复制代码"
+aria-label="复制代码"
+data-copied-label="已复制！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="per-protocol"&gt;按协议&lt;span class="hx:absolute hx:-mt-20" id="per-protocol"&gt;&lt;/span&gt;
+&lt;a href="#per-protocol" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;协议&lt;/th&gt;
+&lt;th&gt;&lt;code&gt;tls = true&lt;/code&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;WebDAV&lt;/td&gt;
+&lt;td&gt;是&lt;/td&gt;
+&lt;td&gt;HTTPS&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;S3&lt;/td&gt;
+&lt;td&gt;是&lt;/td&gt;
+&lt;td&gt;HTTPS&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;NFS&lt;/td&gt;
+&lt;td&gt;是&lt;/td&gt;
+&lt;td&gt;RFC 9289；见下文&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;SMB&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;拒绝&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;SMB 3 使用自己的密钥加密&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;SFTP&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;拒绝&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;SFTP 就是 SSH&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2 data-hextra-search-id="nfs-over-tls-proves-the-machine-not-the-person"&gt;基于 TLS 的 NFS 证明的是机器，而不是个人&lt;span class="hx:absolute hx:-mt-20" id="nfs-over-tls-proves-the-machine-not-the-person"&gt;&lt;/span&gt;
+&lt;a href="#nfs-over-tls-proves-the-machine-not-the-person" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;nfs&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; tls&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; client_ca_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/tls/clients.pem&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="复制代码"
+aria-label="复制代码"
+data-copied-label="已复制！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;client_ca_file&lt;/code&gt; 会要求客户端出示由该颁发机构签发的证书，由此得知
+&lt;strong&gt;是哪台主机在挂载&lt;/strong&gt;，而 RFC 9289 对用户身份验证保持原样：
+其中的 uid 仍然是 &lt;code&gt;AUTH_SYS&lt;/code&gt; 所声明的那个。因此，指明了谁可以使用的共享，
+在没有 &lt;code&gt;kerberos&lt;/code&gt; 块时&lt;strong&gt;通过 NFS 仍然会被拒绝&lt;/strong&gt;，在没有
+&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/nfs-certificates/"&gt;基于证书的身份&lt;/a&gt;时也一样，后者是对
+同一证书的另一种用法。&lt;/p&gt;
+&lt;p&gt;TLS 是&lt;strong&gt;可选提供，而非强制&lt;/strong&gt;的：从不请求它的客户端仍然可以使用
+开放的共享。没有 &lt;code&gt;tls = true&lt;/code&gt; 的 &lt;code&gt;client_ca_file&lt;/code&gt; 会被拒绝，因为它
+什么都不会检查，而在 NFS 以外的任何协议上使用 &lt;code&gt;client_ca_file&lt;/code&gt;
+同样会被拒绝。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-else-is-refused"&gt;还有哪些会被拒绝&lt;span class="hx:absolute hx:-mt-20" id="what-else-is-refused"&gt;&lt;/span&gt;
+&lt;a href="#what-else-is-refused" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;没有 &lt;code&gt;tls&lt;/code&gt; 块的 &lt;code&gt;tls = true&lt;/code&gt;：没有任何内容说明证书来自哪里。&lt;/li&gt;
+&lt;li&gt;没有任何 &lt;code&gt;serve&lt;/code&gt; 块使用的 &lt;code&gt;tls&lt;/code&gt; 块：没有任何东西会用到它。&lt;/li&gt;
+&lt;li&gt;不是可监听地址的 &lt;code&gt;http_challenge&lt;/code&gt;。&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>NFS 与基于证书的身份</title><link>https://go-fileshare.github.io/docs/0.31/zh-cn/security/nfs-certificates/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/zh-cn/security/nfs-certificates/</guid><description>
+&lt;p&gt;NFSv3 自身不对任何人进行身份验证，这就是指明了谁可以使用的共享
+&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/protocols/nfs/"&gt;不会通过 NFS 导出&lt;/a&gt;的原因，除非有东西能够
+区分不同的人。&lt;code&gt;kerberos&lt;/code&gt; 块是一种答案。自 v0.12.0 起，
+&lt;strong&gt;指明某个人&lt;/strong&gt;的客户端证书是另一种：&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;nfs&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; tls&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; client_ca_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/bridge-x509-ca.pem&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; identity&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;certificate&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; crl_url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://bridge.example.org/x509/crl&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # 或 crl_file；必须给出其一
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; crl_state_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/var/lib/fileshare/nfs.crl.state&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # 跨重启保持先后顺序
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="复制代码"
+aria-label="复制代码"
+data-copied-label="已复制！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="what-the-certificate-carries"&gt;证书携带什么&lt;span class="hx:absolute hx:-mt-20" id="what-the-certificate-carries"&gt;&lt;/span&gt;
+&lt;a href="#what-the-certificate-carries" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;在身份提供方登录之后，go-authn/bridge 会签发一份&lt;strong&gt;短期有效的 X.509
+客户端证书&lt;/strong&gt;，以 FreeBSD 的 &lt;code&gt;rpc.tlsservd -u&lt;/code&gt; 读取的方式指明
+此人：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;此人：SubjectAltName &lt;strong&gt;otherName &lt;code&gt;1.3.6.1.4.1.2238.1.1.1&lt;/code&gt;&lt;/strong&gt;，一个
+UTF8String &lt;code&gt;user@domain&lt;/code&gt;
+（&lt;a href="https://www.ietf.org/archive/id/draft-cel-nfsv4-rpc-tls-othername-04.html" target="_blank" rel="noopener"&gt;draft-cel-nfsv4-rpc-tls-othername&lt;/a&gt;
+对它作了描述；其 OID 尚未分配）；&lt;/li&gt;
+&lt;li&gt;此人所属的组：每个组一个 SubjectAltName URI，
+&lt;code&gt;tag:go-authn.github.io,2026:group:&amp;lt;group&amp;gt;&lt;/code&gt;，即 &lt;strong&gt;tag URI&lt;/strong&gt;（RFC 4151：无需
+注册，正是为此而设计）。FreeBSD 的 &lt;code&gt;rpc.tlsservd&lt;/code&gt; 读取第一个
+身份 otherName，并跳过其他所有 SAN 条目。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;为什么用 tag URI，而不是自己的扩展&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;曾经设计过一个，使用由 UUID 派生的弧（&lt;code&gt;2.25.&amp;lt;128 位数字&amp;gt;&lt;/code&gt;），并经过&lt;strong&gt;实测&lt;/strong&gt;：
+Go 的 &lt;code&gt;x509.ParseCertificate&lt;/code&gt; 会拒绝整个证书，提示
+&lt;em&gt;malformed extension OID field&lt;/em&gt;，因为 ASN.1 对象标识符的弧在那里是
+&lt;code&gt;int&lt;/code&gt;。每个 Go TLS 服务器都会拒绝这份证书。
+URI SAN 不需要 OID，每个解析器都能读取它。也不使用 &lt;code&gt;urn:x-…&lt;/code&gt;：
+RFC 8141 取消了实验性的 URN 命名空间，严格的解析器
+会拒绝它。&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="what-every-call-is-asked"&gt;每次调用都会被检查什么&lt;span class="hx:absolute hx:-mt-20" id="what-every-call-is-asked"&gt;&lt;/span&gt;
+&lt;a href="#what-every-call-is-asked" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;设置 &lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt; 后，指明了人员的共享可以通过 NFS 提供服务，
+&lt;strong&gt;无需 kerberos&lt;/strong&gt;。针对它的每次调用都必须通过 TLS 到达，并且其证书必须：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;不在 CRL 中&lt;/strong&gt;；&lt;/li&gt;
+&lt;li&gt;恰好指明&lt;strong&gt;一个&lt;/strong&gt;人；&lt;/li&gt;
+&lt;li&gt;指明的人是本服务器以&lt;strong&gt;对待令牌的方式&lt;/strong&gt;准入的：规则、
+&lt;code&gt;trust_all&lt;/code&gt;、&lt;code&gt;domains&lt;/code&gt;，参见
+&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;由身份提供方指明的人员&lt;/a&gt;；&lt;/li&gt;
+&lt;li&gt;指明的人是&lt;strong&gt;共享所允许的&lt;/strong&gt;。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;并且，如果有 &lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/shared-signals/"&gt;&lt;code&gt;ssf&lt;/code&gt; 块&lt;/a&gt;，证书必须是在对此人的任何撤销&lt;strong&gt;之后&lt;/strong&gt;
+签发的（以其 &lt;code&gt;NotBefore&lt;/code&gt; 为准）。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="revocation-the-crl"&gt;撤销：CRL&lt;span class="hx:absolute hx:-mt-20" id="revocation-the-crl"&gt;&lt;/span&gt;
+&lt;a href="#revocation-the-crl" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;CRL 是必需的&lt;/strong&gt;，即 &lt;code&gt;crl_url&lt;/code&gt; 或 &lt;code&gt;crl_file&lt;/code&gt;。无法被任何东西撤销的
+个人证书，会在此人被移除之后继续存在整个有效期。&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;字段&lt;/th&gt;
+&lt;th&gt;默认值&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;crl_url&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;仅限 HTTPS&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;crl_file&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;或绝对路径，二者取其一&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;crl_ca_file&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;系统的&lt;/td&gt;
+&lt;td&gt;固定 CRL 的 HTTPS 服务器的颁发机构&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;crl_refresh&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;1m&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;获取的频率&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;crl_max_age&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;1h&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;最近一份有效副本最多可以有多旧&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;crl_state_file&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;保存最近一份通过验证的 CRL 的位置，以便重启后记得哪一份更新&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;它的获取和保存方式与 &lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/revocation-lists/"&gt;KRL&lt;/a&gt;相同，并同样&lt;strong&gt;以拒绝为默认&lt;/strong&gt;；
+超过自身 &lt;strong&gt;&lt;code&gt;NextUpdate&lt;/code&gt;&lt;/strong&gt; 的 CRL 无论 &lt;code&gt;crl_max_age&lt;/code&gt; 允许与否都视为未知。CRL 必须由客户端 CA 签名：任何人
+都可以编写的 CRL 可以随意撤销，更糟的是，也可以撤销后又恢复。只要
+CRL 可访问，&lt;strong&gt;它变化之后的下一次调用就会被拒绝&lt;/strong&gt;；只有在 CRL 无法访问时，
+撤销才受证书有效期的限制。&lt;/p&gt;
+&lt;p&gt;自 v0.16.2 起，会通过 &lt;a href="https://github.com/go-authn/revocation" target="_blank" rel="noopener"&gt;go-authn/revocation&lt;/a&gt;
+在解析 CRL &lt;strong&gt;之前&lt;/strong&gt;对原始字节检查签名：
+如果先解析，由任何人签名的大型 CRL 在被拒绝之前就会消耗内存和数秒时间。
+本服务器无法读作完整列表的内容同样会被拒绝：
+增量 CRL、未知的关键扩展或条目扩展、没有 CRL
+编号、没有 &lt;code&gt;NextUpdate&lt;/code&gt;。编号低于已持有 CRL 的 CRL，或编号相同但签发更早的 CRL，
+会像更旧的
+&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/revocation-lists/#never-backwards-across-a-restart-too"&gt;KRL&lt;/a&gt;一样被拒绝。&lt;/p&gt;
+&lt;p&gt;没有 &lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt; 的 CRL 字段会被拒绝，没有 &lt;code&gt;tls = true&lt;/code&gt; 和
+&lt;code&gt;client_ca_file&lt;/code&gt; 的 &lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt; 同样如此：
+身份就在客户端出示的证书中。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-it-cannot-promise"&gt;它无法承诺什么&lt;span class="hx:absolute hx:-mt-20" id="what-it-cannot-promise"&gt;&lt;/span&gt;
+&lt;a href="#what-it-cannot-promise" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Linux 客户端的证书属于一次挂载，而不是一个人&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;服务器看到的是&lt;strong&gt;连接&lt;/strong&gt;的证书，而 Linux 客户端把证书
+附加到挂载上（&lt;code&gt;tlshd&lt;/code&gt;，&lt;code&gt;mount -o xprtsec=mtls,...&lt;/code&gt; 上的
+密钥环序列号）。&lt;strong&gt;该挂载的每个用户都以证书所指明的那个人的身份行事。&lt;/strong&gt;
+对于一个人使用的工作站，这恰好就是
+此人；对于多人登录的机器，则是挂载者，请在那里使用
+&lt;code&gt;sec=krb5&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;这就是 RFC 9289 本身拒绝承诺用户身份验证的原因，也是普通的
+&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/tls/#nfs-over-tls-proves-the-machine-not-the-person"&gt;基于 TLS 的 NFS&lt;/a&gt;
+仍然只能证明机器的原因。&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="measured-with-a-real-linux-client"&gt;用真实 Linux 客户端实测&lt;span class="hx:absolute hx:-mt-20" id="measured-with-a-real-linux-client"&gt;&lt;/span&gt;
+&lt;a href="#measured-with-a-real-linux-client" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;内核 6.17，ktls-utils 0.9，在 go-filesystems/nfs 的 CI 中：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;MOUNT 的 &lt;code&gt;MNT&lt;/code&gt; 以明文到达&lt;/strong&gt;，无论 &lt;code&gt;xprtsec=&lt;/code&gt; 如何设置：内核的
+挂载客户端不支持 TLS。它会得到应答，而随后每个未使用 TLS 的 NFS 调用
+都会被拒绝，因此共享不允许的人在第一次访问时就会看到
+&lt;em&gt;access denied&lt;/em&gt;，而不是在 &lt;code&gt;mount&lt;/code&gt; 时。&lt;strong&gt;共享的任何内容都不会以明文传输。&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;tlshd&lt;/code&gt; 只对照&lt;strong&gt;系统&lt;/strong&gt;信任库检查本服务器的证书，
+它会忽略 &lt;code&gt;x509.truststore&lt;/code&gt;，并且要求客户端的证书和
+密钥&lt;strong&gt;归 root 所有，密钥模式为 600&lt;/strong&gt;。否则它会以
+&lt;em&gt;gnutls: Error in the certificate (-43)&lt;/em&gt; 失败，两者都不会指明。&lt;/li&gt;
+&lt;/ul&gt;</description></item></channel></rss>

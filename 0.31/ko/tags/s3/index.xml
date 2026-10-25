@@ -1,0 +1,149 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – S3</title><link>https://go-fileshare.github.io/docs/0.31/ko/tags/s3/</link><description>Recent content in S3 on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>ko</language><atom:link href="https://go-fileshare.github.io/docs/0.31/ko/tags/s3/index.xml" rel="self" type="application/rss+xml"/><item><title>S3 — 공유는 버킷</title><link>https://go-fileshare.github.io/docs/0.31/ko/protocols/s3/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/ko/protocols/s3/</guid><description>
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;serve &amp;#34;s3&amp;#34; { addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:9000&amp;#34;&lt;/span&gt; }&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="코드 복사"
+aria-label="코드 복사"
+data-copied-label="복사됨!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;또는 v0.9.0부터 &lt;code&gt;tls = true&lt;/code&gt;와 &lt;a href="https://go-fileshare.github.io/docs/0.31/ko/security/tls/"&gt;&lt;code&gt;tls&lt;/code&gt; 블록&lt;/a&gt;으로
+HTTPS 위에서도 제공할 수 있습니다.&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;s3&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:9000&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; tls&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="코드 복사"
+aria-label="코드 복사"
+data-copied-label="복사됨!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;다섯 번째 프로토콜이며, 백업 도구, 데이터 파이프라인, &lt;code&gt;rclone&lt;/code&gt;, 브라우저의
+&lt;code&gt;fetch()&lt;/code&gt; 등 오브젝트 스토리지를 사용하는 무엇에서든 이미지에 접근할 수 있게
+합니다. &lt;strong&gt;마운트는 없습니다.&lt;/strong&gt;&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;pre&gt;&lt;code&gt;GET / the shares this person may use, as buckets
+GET /photos?list-type=2 the files in that share, as keys
+GET /photos/holiday.jpg the file itself, Range and all&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="코드 복사"
+aria-label="코드 복사"
+data-copied-label="복사됨!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="a-share-is-a-bucket"&gt;공유는 버킷입니다&lt;span class="hx:absolute hx:-mt-20" id="a-share-is-a-bucket"&gt;&lt;/span&gt;
+&lt;a href="#a-share-is-a-bucket" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;SFTP가 사용하는 것과 같은 사용자별 트리&lt;/strong&gt;를 통해 제공됩니다. 최상위가 해당
+사용자가 이용할 수 있는 공유인 파일 시스템입니다. 따라서 alice가 이용할 수 없는
+공유는 alice가 볼 수 있는 버킷이 아니며, 접근 규칙은 두 번째 프로토콜에 복사되지
+않고 한곳에서 적용됩니다.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;공유 안의 디렉터리는 오브젝트가 아니라 프리픽스입니다&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;S3 클라이언트가 이미 그렇게 알고 있는 방식입니다. 구분자로 끝나는 프리픽스를
+폴더로 표시합니다. 디렉터리에 대한 &lt;code&gt;GET&lt;/code&gt;은 &lt;code&gt;NoSuchKey&lt;/code&gt;로 응답합니다. 200으로
+응답하면 클라이언트가 폴더의 바이트를 가져올 수 있다고 생각하게 되기 때문입니다.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="an-access-key-is-a-user-the-secret-key-is-their-password"&gt;액세스 키는 사용자이고, 시크릿 키는 그 사용자의 비밀번호입니다&lt;span class="hx:absolute hx:-mt-20" id="an-access-key-is-a-user-the-secret-key-is-their-password"&gt;&lt;/span&gt;
+&lt;a href="#an-access-key-is-a-user-the-secret-key-is-their-password" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;export&lt;/span&gt; &lt;span class="nv"&gt;AWS_ACCESS_KEY_ID&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;alice
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;export&lt;/span&gt; &lt;span class="nv"&gt;AWS_SECRET_ACCESS_KEY&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;cat alice.pw&lt;span class="k"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;aws --endpoint-url http://attic.example.org:9000 s3 ls&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="코드 복사"
+aria-label="코드 복사"
+data-copied-label="복사됨!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;SigV4는 비밀로부터 HMAC을 계산하여 비밀을 가지고 있음을 증명합니다. NTLMv2와
+똑같이 비밀번호는 네트워크를 건너지 않습니다.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;그래서 디렉터리는 비밀번호를 확인하는 데 그치지 않고 보유해야 합니다&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;비밀번호를 &lt;em&gt;검증&lt;/em&gt;만 할 수 있는 소스(LDAP 바인드, bcrypt 열)는 WebDAV에는
+응답할 수 있지만 S3에는 &lt;strong&gt;응답할 수 없습니다&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;NT 해시도 안 됩니다. 그것은 SMB가 사용할 수 있는 MD4이고, 거기서 HMAC을 계산할
+수는 없습니다. &lt;strong&gt;NT 해시만 가진 ID는 SMB로는 제공되지만 S3로는 제공되지
+않습니다.&lt;/strong&gt; 서로 가까운 이웃일 뿐 같은 답이 아닙니다.
+&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt;가 해당 열을 출력합니다.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;⛔ 프로그램 어디에도 &lt;code&gt;Password()&lt;/code&gt; 접근자는 없습니다. 비밀번호는 오직
+&lt;code&gt;Identity.Derive&lt;/code&gt;를 통해서만 접근되며, 이는 파생 함수를 받아 그 결과를 돌려줍니다.
+S3의 경우 SigV4의 키 스케줄이 go-filesystems/s3에 있으므로 파생 함수는 항등
+함수입니다. 비밀은 그 한 사용자에 대한 서명 검사에만 전달되고 다른 어디에도
+가지 않습니다.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-is-served"&gt;제공되는 것&lt;span class="hx:absolute hx:-mt-20" id="what-is-served"&gt;&lt;/span&gt;
+&lt;a href="#what-is-served" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;ListBuckets&lt;/code&gt;, &lt;code&gt;HeadBucket&lt;/code&gt;, 프리픽스, 구분자, max-keys, 연속 토큰을 지원하는
+&lt;code&gt;ListObjectsV2&lt;/code&gt;, &lt;code&gt;HeadObject&lt;/code&gt;, 그리고 &lt;code&gt;Range&lt;/code&gt;를 지원하는 &lt;code&gt;GetObject&lt;/code&gt;입니다.
+SigV4는 헤더 방식과 사전 서명 방식 두 가지를 모두 지원합니다.&lt;/p&gt;
+&lt;p&gt;오브젝트 API 자체는
+&lt;a href="https://github.com/go-filesystems/s3" target="_blank" rel="noopener"&gt;&lt;code&gt;go-filesystems/s3&lt;/code&gt;&lt;/a&gt;입니다.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-is-refused-and-why"&gt;거부되는 것과 그 이유&lt;span class="hx:absolute hx:-mt-20" id="what-is-refused-and-why"&gt;&lt;/span&gt;
+&lt;a href="#what-is-refused-and-why" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;쓰기는 403으로 응답합니다&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;PUT&lt;/code&gt;, &lt;code&gt;POST&lt;/code&gt;, &lt;code&gt;DELETE&lt;/code&gt;는 &lt;code&gt;AccessDenied&lt;/code&gt;(&amp;ldquo;this export is read-only&amp;rdquo;)로 거부됩니다.
+fileshare가 S3 서버를 읽기 전용으로 유지하는 이유는, 사용자가 읽기만 할 수 있는
+공유는 SFTP와 같은 지점에서 거부해야 하는데 아직 연결되지 않았기 때문입니다. 이
+릴리스가 기반으로 하는 go-filesystems/s3 v0.3.0은 어차피 모든 쓰기를 거부합니다.
+거부하는 편이 반쯤 쓰인 오브젝트보다 낫습니다.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;여기서는 베어러 토큰을 수락하지 않습니다&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/protocols/webdav/"&gt;OIDC&lt;/a&gt;는 WebDAV에서만 동작하고 다른 곳에서는
+동작하지 않습니다. S3는 요청에 대한 HMAC인 SigV4 서명으로 인증하며, 베어러 토큰이
+들어갈 필드가 없습니다.&lt;/p&gt;
+&lt;p&gt;일반적인 경로는 STS &lt;code&gt;AssumeRoleWithWebIdentity&lt;/code&gt;로, OIDC 토큰을 클라이언트가 이후
+서명에 쓰는 임시 자격 증명으로 교환합니다. 이는 다른 메커니즘이며 &lt;strong&gt;구현되어 있지
+않습니다&lt;/strong&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;멀티파트 업로드, 버전 관리, ACL, 정책, 수명 주기 규칙, 복제, 태깅은 구현되어 있지
+않습니다. 이들을 설정하는 것과 멀티파트 업로드를 시작하는 것은 쓰기이며, 다른
+쓰기와 마찬가지로 &lt;code&gt;AccessDenied&lt;/code&gt;로 응답합니다. 이들 중 하나를 요청하는
+&lt;code&gt;GET&lt;/code&gt;(&lt;code&gt;?versioning&lt;/code&gt;, &lt;code&gt;?acl&lt;/code&gt;, &lt;code&gt;?tagging&lt;/code&gt;&amp;hellip;)은 구별되지 않습니다. 쿼리는 무시되고
+버킷의 목록이나 오브젝트가 반환됩니다. &lt;code&gt;list-type=2&lt;/code&gt;가 아닌 목록, &lt;code&gt;/&lt;/code&gt;에 대한
+&lt;code&gt;GET&lt;/code&gt; 이외의 모든 메서드, 여기서 어떤 작업도 사용하지 않는 메서드에는
+&lt;code&gt;NotImplemented&lt;/code&gt;로 응답합니다.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="two-limits-worth-knowing-before-pointing-it-at-something-large"&gt;큰 대상에 연결하기 전에 알아 둘 두 가지 한계&lt;span class="hx:absolute hx:-mt-20" id="two-limits-worth-knowing-before-pointing-it-at-something-large"&gt;&lt;/span&gt;
+&lt;a href="#two-limits-worth-knowing-before-pointing-it-at-something-large" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;GetObject&lt;/code&gt;는 오브젝트 전체를 메모리로 읽습니다.&lt;/strong&gt; 드라이버 인터페이스는
+&lt;code&gt;ReadFile&lt;/code&gt;만 제공하고, 오프너나 리더는 없으므로 사용할 스트리밍 읽기가 없습니다.
+256 MiB라는 상한이 프로세스를 중단시키는 대신 &lt;code&gt;EntityTooLarge&lt;/code&gt;로 응답합니다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;&lt;code&gt;LastModified&lt;/code&gt;는 에포크입니다.&lt;/strong&gt; &lt;code&gt;filesystem.Stat&lt;/code&gt;은 &lt;code&gt;Mode&lt;/code&gt;, &lt;code&gt;Size&lt;/code&gt;, &lt;code&gt;Inode&lt;/code&gt;를
+담고 있으며 수정 시각은 전혀 없습니다. S3 스키마에서 이 필드는 선택 사항이 아니어서
+무언가를 보내야 합니다. 에포크는 분명히 실제 시각이 아닌 반면, &lt;code&gt;time.Now()&lt;/code&gt;는 방금
+바뀐 파일처럼 보여서 모든 동기화 도구가 실행할 때마다 모든 것을 복사하게
+만들 것입니다.&lt;/p&gt;</description></item></channel></rss>

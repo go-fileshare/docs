@@ -1,0 +1,150 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Webdav</title><link>https://go-fileshare.github.io/docs/0.31/ja/tags/webdav/</link><description>Recent content in Webdav on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>ja</language><atom:link href="https://go-fileshare.github.io/docs/0.31/ja/tags/webdav/index.xml" rel="self" type="application/rss+xml"/><item><title>WebDAV — Basic、またはベアラートークン</title><link>https://go-fileshare.github.io/docs/0.31/ja/protocols/webdav/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/ja/protocols/webdav/</guid><description>
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;tls&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; cert_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/tls/fullchain.pem&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; key_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/tls/key.pem&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;webdav&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:443&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; tls&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="コードをコピー"
+aria-label="コードをコピー"
+data-copied-label="コピーしました！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;HTTP Basic またはベアラートークンを、ファイルまたは ACME による&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/security/tls/"&gt;TLS&lt;/a&gt;上で使います。&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;v0.9.0 以降、平文では提供されません&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;HTTP Basic ではすべてのリクエストがパスワードそのものであり、ベアラートークンもそれと同等の価値を持ちます。
+他のマシンから到達できるアドレスで、誰かが認証する状況において、&lt;strong&gt;TLS なし&lt;/strong&gt;の WebDAV は
+&lt;strong&gt;起動時に拒否されます&lt;/strong&gt;。このページがかつて示していた例
+&lt;code&gt;serve &amp;quot;webdav&amp;quot; { addr = &amp;quot;0.0.0.0:8080&amp;quot; }&lt;/code&gt; は、もう起動しません。前段のプロキシが TLS を終端する場合は、
+そのことを明示してください。&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;webdav&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;10.0.0.5:8080&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; plaintext&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="コードをコピー"
+aria-label="コードをコピー"
+data-copied-label="コピーしました！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;ループバックと、認証する相手のいないサーバーは影響を受けません。
+&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/security/tls/#webdav-is-not-served-in-the-clear"&gt;TLS&lt;/a&gt;を参照してください。&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;403 ではなく 404&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;人が利用できない共有は &lt;strong&gt;404&lt;/strong&gt; で応答します。存在を確認させません。&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="a-token-over-the-one-protocol-that-can-carry-one"&gt;トークンを運べる唯一のプロトコルでの、トークン&lt;span class="hx:absolute hx:-mt-20" id="a-token-over-the-one-protocol-that-can-carry-one"&gt;&lt;/span&gt;
+&lt;a href="#a-token-over-the-one-protocol-that-can-carry-one" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;oidc&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; issuer&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://login.example.org&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; audience&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;fileshare&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="コードをコピー"
+aria-label="コードをコピー"
+data-copied-label="コピーしました！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;ブラウザーはトークンを持っていますが、パスワードを持っていません。そのため WebDAV は
+&lt;code&gt;Authorization: Bearer&lt;/code&gt; を受け付けます。ローカルの人もいる場合、送信するチャレンジは&lt;strong&gt;両方&lt;/strong&gt;を提示し、
+クライアントは応答できるほうを選びます。トークンは
+&lt;a href="https://github.com/go-authn/oidc" target="_blank" rel="noopener"&gt;go-authn/oidc&lt;/a&gt; が検証します。署名、発行者、オーディエンス、有効期限です。&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;ベアラートークンは WebDAV だけ&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;SMB は NTLMv2、SFTP は鍵または証明書、NFS は何もなし、S3 は SigV4 署名で認証し、どれにも
+&lt;code&gt;Authorization&lt;/code&gt; ヘッダーを載せる場所がありません。これはプロトコルについての事実であり、
+このプログラムの制約ではありません。&lt;/p&gt;
+&lt;p&gt;プロバイダーの言葉は、代わりに証明書で &lt;strong&gt;SFTP&lt;/strong&gt; に届きます。&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/protocols/sftp/#people-the-identity-provider-vouches-for"&gt;SFTP&lt;/a&gt;を参照してください。
+プロバイダーを指定しているのに、WebDAV もそのような SFTP も提供しない設定は、
+&lt;strong&gt;起動せずに拒否されます&lt;/strong&gt;。&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;トークンが示すのは、プロバイダーが誰だと考えているかです。このサーバーにその人の共有があるとは限りません。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;ここのどのソースも知らない名前の有効なトークンは拒否されます。「あなたを知らない」を安全に読むと、
+「あなたは許可されている」にはなりません。ローカルアカウントにも同じ名前がある場合でも、
+&lt;code&gt;local_names = true&lt;/code&gt; でプロバイダーの名前がこのサーバーの名前と同じだと明示していない限り、
+そのアカウントにはなりません(v0.20.0 以降は既定でオフ)。それがなければ、&lt;code&gt;oidc:&lt;/code&gt; ルールがその人を
+名指ししていない限り、そのようなトークンも拒否されます。&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;プロバイダーが&lt;strong&gt;そのままディレクトリである&lt;/strong&gt;サイトは、そう明示します。&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;oidc&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; issuer&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://login.example.org&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; audience&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;fileshare&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; trust_all&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;&lt;span class="c1"&gt; # everybody that provider vouches for, not just these people
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="コードをコピー"
+aria-label="コードをコピー"
+data-copied-label="コピーしました！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;ここには&lt;strong&gt;ログインフローはありません&lt;/strong&gt;。リダイレクトも、クライアントシークレットも、クッキーもありません。
+これはリソースサーバーです。&lt;/p&gt;
+&lt;p&gt;トークンが与える&lt;strong&gt;名前&lt;/strong&gt;は &lt;code&gt;preferred_username&lt;/code&gt;、または &lt;code&gt;username_claim&lt;/code&gt; が指すクレームです。
+&lt;code&gt;preferred_username&lt;/code&gt; がない場合は、プロバイダーが &lt;code&gt;email_verified: true&lt;/code&gt; と言っているときに限ってメール、
+そうでなければ &lt;code&gt;sub&lt;/code&gt; になります。&lt;code&gt;username_claim = &amp;quot;email&amp;quot;&lt;/code&gt; の場合、メールが検証されていないトークンは
+拒否されます。これは WebDAV でも、SFTP での opkssh ログインでも同じです。検証されるまで、
+メールは本人が入力したものにすぎず、それを載せた署名付きトークンは、誰も確認していないアドレスとして
+結びついてしまいます(OpenID Connect Core 5.1、go-authn/oidc v0.2.0、fileshare v0.16.3)。&lt;/p&gt;
+&lt;p&gt;プロバイダーの人のうち誰が共有を得るか(グループ、名指しした人、機関全体)は、&lt;code&gt;oidc:&lt;/code&gt; ルールと
+&lt;code&gt;domains&lt;/code&gt; で記述します。&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;ID プロバイダーが名指しする人&lt;/a&gt;を参照してください。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="a-token-outlives-the-person-unless-something-says-otherwise"&gt;トークンは、何かが変えない限り、その人より長く生きる&lt;span class="hx:absolute hx:-mt-20" id="a-token-outlives-the-person-unless-something-says-otherwise"&gt;&lt;/span&gt;
+&lt;a href="#a-token-outlives-the-person-unless-something-says-otherwise" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;トークンはここで単独で検証され、期限が切れるまで、その人にその後何があっても有効です。
+どの失効リストもそれを名指しできません。&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/security/shared-signals/"&gt;&lt;code&gt;ssf&lt;/code&gt; ブロック&lt;/a&gt;を使うと、
+プロバイダーからの CAEP &lt;code&gt;session-revoked&lt;/code&gt; によって、それ以前に発行された(&lt;code&gt;iat&lt;/code&gt;)すべてのトークンが無効になります。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="the-root-and-uploads-in-pieces"&gt;ルートと、分割アップロード&lt;span class="hx:absolute hx:-mt-20" id="the-root-and-uploads-in-pieces"&gt;&lt;/span&gt;
+&lt;a href="#the-root-and-uploads-in-pieces" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;ルートは共有を一覧します&lt;/strong&gt;(v0.29.0 以降)。&lt;code&gt;/&lt;/code&gt; にいるブラウザーは、開ける共有のページを受け取ります。
+&lt;code&gt;/&lt;/code&gt; への &lt;code&gt;PROPFIND&lt;/code&gt; は、共有をコレクションとして受け取る(&lt;code&gt;207&lt;/code&gt;)ため、ファイルマネージャーは
+1 つの共有ではなくサーバー全体をマウントできます。Depth &lt;code&gt;infinity&lt;/code&gt; は拒否され
+(RFC 4918 が許すとおり &lt;code&gt;403&lt;/code&gt;、&lt;code&gt;propfind-finite-depth&lt;/code&gt;)、ルートに書き込むものも拒否されます(&lt;code&gt;405&lt;/code&gt;)。
+v0.28 までは、&lt;code&gt;/&lt;/code&gt; へのすべてのメソッドがそのページを受け取っていました。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;大きなアップロードは分割できます&lt;/strong&gt;(v0.29.0 以降)。1 つの &lt;code&gt;PUT&lt;/code&gt; は最大 1 GiB まで丸ごとメモリに保持されるため、
+ストリーミングできないクライアント(ブラウザー、&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/administration/"&gt;ファイルエクスプローラー&lt;/a&gt;)は、
+空の &lt;code&gt;PUT&lt;/code&gt; を送り、続いて前の分が終わった位置からちょうど始まる &lt;code&gt;Content-Range&lt;/code&gt; 付きで各部分を送り、
+最後に本来の名前への &lt;code&gt;MOVE&lt;/code&gt; を行います。終端を越えて始まる範囲は、依然として &lt;code&gt;416&lt;/code&gt; です。
+誰も送っていないバイトが残ってしまうためです。&lt;/p&gt;</description></item></channel></rss>

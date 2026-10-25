@@ -1,0 +1,97 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Check</title><link>https://go-fileshare.github.io/docs/0.31/ko/tags/check/</link><description>Recent content in Check on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>ko</language><atom:link href="https://go-fileshare.github.io/docs/0.31/ko/tags/check/index.xml" rel="self" type="application/rss+xml"/><item><title>check, 사람들이 사용 중인 것을 재시작하기 전에</title><link>https://go-fileshare.github.io/docs/0.31/ko/configuration/check/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/ko/configuration/check/</guid><description>
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;pre&gt;&lt;code&gt;$ fileshare check /etc/fileshare.d
+ATTIC
+SHARE IMAGE FILESYSTEM WHO MAY CONNECT WHO MAY WRITE SMB WEBDAV NFS SFTP
+photos /srv/photos.img fat32 alice and bob alice yes yes NO yes
+scratch /srv/scratch.img ext4 anyone who authenticates anyone who authenticates yes yes yes yes
+photos is not served over nfs: it is restricted to alice and bob, and NFSv3 on its own has no authentication: AUTH_UNIX is a claim the client makes about itself and the wire cannot disagree with it. A kerberos block lifts this: sec=krb5 carries a principal a ticket proves; so does identity = &amp;#34;certificate&amp;#34; on the nfs serve block: RPC-over-TLS with a client certificate naming the person
+USER FROM AUTHENTICATES WITH SMB WEBDAV SFTP
+alice the configuration file a password and 1 key from /etc/…/alice.pw yes yes yes
+bob the configuration file a password from /etc/…/bob.pw yes yes -
+dora ldaps://ldap.example.org a password check and an NT hash yes yes -
+eli ldaps://ldap.example.org a password check - yes -
+this configuration can be served&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="코드 복사"
+aria-label="코드 복사"
+data-copied-label="복사됨!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;모든 이미지는 서버가 여는 방식 그대로 열렸다가 다시 닫히며, 아무것도 제공되지
+않습니다. &lt;code&gt;read_only = true&lt;/code&gt;를 지정하지 않은 공유는 &lt;strong&gt;읽기-쓰기&lt;/strong&gt;로 열립니다.
+항상 읽기 전용으로, 그리고 배타적으로 열리는 것은 장치뿐이므로, 실행 중인 서버가
+잡고 있는 장치는 여기서 사용 중이라는 이유로 거부될 수 있습니다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;자격 증명이 어디에서 오는지는 출력하지만, 그 내용은 결코 출력하지 않습니다.&lt;/strong&gt;
+사용자별 열이 있는 것은
+&lt;a href="https://github.com/go-authn/directory" target="_blank" rel="noopener"&gt;&lt;code&gt;Identity.Can&lt;/code&gt;&lt;/a&gt;이 존재하기 때문입니다.
+eli는 dora와 같은 그룹이지만 SMB로는 여전히 제공할 수 없습니다. LDAP이 그의
+비밀번호를 보유하고 있으면서 누구에게도 내주지 않기 때문입니다.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="reading-the-columns"&gt;열 읽기&lt;span class="hx:absolute hx:-mt-20" id="reading-the-columns"&gt;&lt;/span&gt;
+&lt;a href="#reading-the-columns" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;별표가 붙은 파일 시스템&lt;/td&gt;
+&lt;td&gt;드라이버가 인식된 것이 아니라 공유에 의해 &lt;strong&gt;지정된&lt;/strong&gt; 것입니다 — &lt;a href="https://go-fileshare.github.io/docs/0.31/ko/configuration/shares/"&gt;공유&lt;/a&gt; 참고&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;프로토콜 아래의 &lt;code&gt;NO&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;그 공유는 해당 프로토콜로 내보내지 않으며, 이유는 표 아래에 출력됩니다&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;공유별 프로토콜 아래의 &lt;code&gt;-&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;공유의 &lt;code&gt;protocols&lt;/code&gt;가 해당 프로토콜을 제외합니다&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;사용자별 프로토콜 아래의 &lt;code&gt;-&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;그 사용자의 소스가 해당 프로토콜에 필요한 것을 증명할 수 없습니다 — &lt;a href="https://go-fileshare.github.io/docs/0.31/ko/configuration/identity/"&gt;ID&lt;/a&gt; 참고&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2 data-hextra-search-id="what-else-it-says"&gt;그 밖에 알려 주는 것&lt;span class="hx:absolute hx:-mt-20" id="what-else-it-says"&gt;&lt;/span&gt;
+&lt;a href="#what-else-it-says" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;표 다음에, 해당되는 경우 &lt;code&gt;check&lt;/code&gt;는 구성을 신뢰하기 전에 알아야 할 것을
+알려 줍니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;oidc&lt;/code&gt; 블록이 있으면, 그 토큰이 WebDAV에서만 수락된다는 점과 공급자의 이름이
+로컬 이름(&lt;code&gt;local_names&lt;/code&gt;)인지 여부 —
+&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;ID&lt;/a&gt; 참고&lt;/li&gt;
+&lt;li&gt;프로토콜별로 무엇이 &lt;strong&gt;암호화&lt;/strong&gt;되고 무엇이 &lt;strong&gt;의도적으로 평문&lt;/strong&gt;인지 —
+&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/security/tls/#what-check-says"&gt;TLS&lt;/a&gt; 참고&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;폐기 목록&lt;/strong&gt;이 어디에서 오는지, 그리고 가져올 수 없는 동안 어떤 일이
+일어나는지 — &lt;a href="https://go-fileshare.github.io/docs/0.31/ko/security/"&gt;무엇이 무엇을 폐기하는가&lt;/a&gt; 참고&lt;/li&gt;
+&lt;li&gt;관리 API의 &lt;code&gt;DisableShare&lt;/code&gt;로 &lt;strong&gt;오프라인 처리되어&lt;/strong&gt; 제공되지 않는 공유 —
+&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/administration/#disabling-a-share"&gt;관리 API&lt;/a&gt; 참고&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;KRL, 인증서 기반 NFS ID, 공유 신호가 있는 서버에서는 해당 부분이 다음과 같이
+표시됩니다.&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;pre&gt;&lt;code&gt;sftp: the provider&amp;#39;s SSH certificates are checked against the KRL at https://bridge.example.org/ssh/krl, at login and on every operation; while it is unknown or older than 1h0m0s they are refused
+federated people: revocations come from the shared signals transmitter https://bridge.example.org (CAEP session-revoked, polled); whatever the provider issued them before a revocation is refused -- tokens, SSH and OpenPubkey certificates, NFS certificates -- and open sessions stop. Refused while it is not heard from within 10m0s; revocations kept 192h0m0s in /var/lib/fileshare/revocations.json
+nfs: identities come from client certificates signed by /etc/fileshare/bridge-x509-ca.pem, revoked by the CRL at https://bridge.example.org/x509/crl (refused while it is unknown or older than 1h0m0s).
+⛔ a Linux client&amp;#39;s certificate belongs to a MOUNT: every user of that mount is the person it names&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="코드 복사"
+aria-label="코드 복사"
+data-copied-label="복사됨!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;check&lt;/code&gt;는 목록을 가져오지 않습니다. 목록이 어디에서 오는지와 목록이 없을 때
+어떤 일이 일어나는지를 알려 줄 뿐입니다. 반면 ID 공급자의 디스커버리 문서와
+키는 &lt;strong&gt;읽습니다&lt;/strong&gt;. 발급자에 접근할 수 없는 &lt;code&gt;oidc&lt;/code&gt; 블록은 &lt;code&gt;check&lt;/code&gt;가
+거부합니다.&lt;/p&gt;</description></item></channel></rss>

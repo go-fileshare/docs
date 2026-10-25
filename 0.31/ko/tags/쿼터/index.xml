@@ -1,0 +1,466 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – 쿼터</title><link>https://go-fileshare.github.io/docs/0.31/ko/tags/%EC%BF%BC%ED%84%B0/</link><description>Recent content in 쿼터 on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>ko</language><atom:link href="https://go-fileshare.github.io/docs/0.31/ko/tags/%EC%BF%BC%ED%84%B0/index.xml" rel="self" type="application/rss+xml"/><item><title>볼륨: fileshare가 생성하는 스토리지</title><link>https://go-fileshare.github.io/docs/0.31/ko/administration/volumes/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/ko/administration/volumes/</guid><description>
+&lt;p&gt;v0.21.0부터 &lt;a href="https://go-fileshare.github.io/docs/0.31/ko/administration/"&gt;관리 API&lt;/a&gt;는 &lt;strong&gt;공유가
+제공하는 스토리지를 생성&lt;/strong&gt;할 수 있습니다. &lt;strong&gt;ZFS 데이터셋&lt;/strong&gt;, &lt;strong&gt;btrfs 서브볼륨&lt;/strong&gt;,
+또는 &lt;strong&gt;프로젝트 쿼터가 적용된 XFS 또는 ext4 디렉터리&lt;/strong&gt;를 크기와 소유자를 지정하고
+추적하며 만들고, 그로부터 공유를 제공합니다. Linux 전용입니다. Ceph는 아직
+지원하지 않습니다.&lt;/p&gt;
+&lt;p&gt;이 스토리지를 생성하려면 &lt;code&gt;CAP_SYS_ADMIN&lt;/code&gt;(quotactl, btrfs 쿼터 ioctl,
+&lt;code&gt;/dev/zfs&lt;/code&gt;, mount(2))이 필요합니다. &lt;code&gt;fileshare serve&lt;/code&gt;는 낯선 상대를 위해 다섯
+가지 네트워크 프로토콜을 파싱하며 어떤 권한도 갖지 않으므로, 권한이 필요한
+부분은 같은 바이너리의 두 번째 역할인 &lt;code&gt;fileshare provisioner&lt;/code&gt;가 맡습니다. 이
+역할은 유닉스 소켓 뒤에서 작고 닫힌 프로토콜로 동작합니다.&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;pre&gt;&lt;code&gt; admin gRPC (unix socket 0600 &amp;#43; peer uid, or mTLS)
+operator ─────────────────────────────────────────────▶ fileshare serve
+(unprivileged)
+│
+provision gRPC (unix socket, SO_PEERCRED = fileshare&amp;#39;s uid)
+▼
+fileshare provisioner
+(CAP_SYS_ADMIN, CAP_CHOWN, CAP_FOWNER)
+│
+go-fsctl: zfs · btrfs · projquota (ioctls, no CLI)&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="코드 복사"
+aria-label="코드 복사"
+data-copied-label="복사됨!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;데몬 두 개가 아니라 바이너리 하나입니다. 배포할 버전도 하나, 프로토콜 정의도
+하나입니다. 스토리지 작업 자체는 &lt;a href="https://go-fsctl.github.io/" target="_blank" rel="noopener"&gt;go-fsctl&lt;/a&gt;이
+수행합니다(순수 Go이며 &lt;code&gt;zfs&lt;/code&gt;나 &lt;code&gt;btrfs&lt;/code&gt; 명령을 쓰지 않음). 설계와 구축 과정에서
+바뀐 점은 fileshare 저장소의
+&lt;a href="https://github.com/go-fileshare/fileshare/blob/v0.28.0/docs/volumes.md" target="_blank" rel="noopener"&gt;&lt;code&gt;docs/volumes.md&lt;/code&gt;&lt;/a&gt;에
+있습니다.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="both-processes-configured"&gt;두 프로세스의 구성&lt;span class="hx:absolute hx:-mt-20" id="both-processes-configured"&gt;&lt;/span&gt;
+&lt;a href="#both-processes-configured" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;fileshare serve&lt;/code&gt;는 &lt;code&gt;fileshare&lt;/code&gt; 사용자(uid 990)로 실행합니다.&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# /etc/fileshare/fileshare.hcl
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;admin&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; listen&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;unix:///run/fileshare/admin.sock&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; state_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/var/lib/fileshare/shares.json&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; source_roots&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;/srv/fileshare/volumes&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; provisioner&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;unix:///run/fileshare-provisioner/provisioner.sock&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; provisioner_uid&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;0&lt;/span&gt;&lt;span class="c1"&gt; # who must answer on that socket; 0 is the default
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; allowed_uids&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="m"&gt;990&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="c1"&gt; # who may call this API
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="코드 복사"
+aria-label="코드 복사"
+data-copied-label="복사됨!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;키&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;provisioner&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;프로비저너의 소켓, &lt;code&gt;unix:///path&lt;/code&gt;. 없으면 모든 볼륨 호출이 &lt;code&gt;FAILED_PRECONDITION&lt;/code&gt;으로 응답하며 볼륨으로 만든 공유도 없습니다&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;provisioner_uid&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;해당 소켓에서 응답하는 프로세스가 실행되어야 하는 uid. 연결할 때마다 커널(&lt;code&gt;SO_PEERCRED&lt;/code&gt;)에서 읽으며, 다른 누군가가 바인딩한 소켓은 아무것도 얻지 못합니다. 지정하지 않으면 0입니다&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;allowed_uids&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;선택 사항이며 유닉스 소켓 전용입니다. 호출에 응답하는 유일한 uid이며, 그 밖의 uid는 &lt;code&gt;PERMISSION_DENIED&lt;/code&gt;가 되고 감사 기록에 남습니다. 소켓의 0600 모드가 허용하는 대상(소유자와 root)을 &lt;strong&gt;좁히기만&lt;/strong&gt; 할 수 있으므로, 예를 들어 root가 호출하지 못하게 될 수 있습니다. 클라이언트 인증서가 검사 수단인 TCP에서는 거부됩니다&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;볼륨의 경로는 다른 소스와 마찬가지로 &lt;code&gt;source_roots&lt;/code&gt; 아래에 있어야 합니다.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;fileshare provisioner&lt;/code&gt;는 root로 실행합니다.&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# /etc/fileshare-provisioner.hcl
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;provisioner&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; listen&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;unix:///run/fileshare-provisioner/provisioner.sock&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; client_uid&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;990&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; group&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;fileshare&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; max_volume&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;10T&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; state_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/var/lib/fileshare-provisioner/volumes.json&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;parent&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;tank&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; zfs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;tank/fileshare&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; root&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/fileshare/volumes/tank&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; parent &amp;#34;fast&amp;#34; { btrfs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/fileshare/volumes/fast&amp;#34;&lt;/span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;parent&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;plain&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; xfs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/fileshare/volumes/plain&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; project_ids&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;100000-199999&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="코드 복사"
+aria-label="코드 복사"
+data-copied-label="복사됨!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;키&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;listen&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;unix://&amp;lt;절대 경로&amp;gt;&lt;/code&gt;만 허용됩니다. 소켓은 0660으로 만들어지고 소유자는 프로비저너의 사용자(root)와 &lt;code&gt;&amp;lt;group&amp;gt;&lt;/code&gt;이며, 프로비저너 외에는 아무도 쓸 수 없는 디렉터리에 있어야 합니다. fileshare의 디렉터리가 아니라 프로비저너 &lt;strong&gt;자신의&lt;/strong&gt; 디렉터리(&lt;code&gt;/run/fileshare-provisioner&lt;/code&gt;)여야 합니다&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;client_uid&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;응답하는 유일한 uid, 즉 fileshare의 uid. &lt;strong&gt;0은 거부됩니다&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;group&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;모든 볼륨 루트를 소유합니다(&lt;code&gt;root:&amp;lt;group&amp;gt;&lt;/code&gt;, 모드 2770). fileshare가 이 그룹에 속해야 합니다. fileshare는 소유자로서가 아니라 그룹을 통해 볼륨에 씁니다. 디렉터리의 소유자는 권한 없이 프로젝트 id를 지울 수 있고, 그러면 XFS/ext4 쿼터를 벗어날 수 있기 때문입니다&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;max_volume&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;볼륨 하나가 가질 수 있는 최대 쿼터(&lt;code&gt;&amp;quot;10T&amp;quot;&lt;/code&gt;, &lt;code&gt;&amp;quot;500G&amp;quot;&lt;/code&gt;, &lt;code&gt;&amp;quot;1048576&amp;quot;&lt;/code&gt;). 이를 넘으면 &lt;code&gt;OUT_OF_RANGE&lt;/code&gt;입니다&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;state_file&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;이 프로세스가 생성한 것(btrfs 서브볼륨 id, XFS/ext4 프로젝트 id)을 기록하여, 재시작 후에도 무엇이 자신의 것인지 알 수 있게 합니다&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;parent &amp;quot;&amp;lt;id&amp;gt;&amp;quot;&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;볼륨을 만들 수 있는 위치이며, 요청이 지정하는 id로 식별됩니다. &lt;code&gt;zfs&lt;/code&gt;(볼륨이 그 자식이 되는 데이터셋이며, 마운트되는 위치는 &lt;code&gt;root&lt;/code&gt;), &lt;code&gt;btrfs&lt;/code&gt;, &lt;code&gt;xfs&lt;/code&gt;, &lt;code&gt;ext4&lt;/code&gt;(볼륨이 생성되는 디렉터리) 중 정확히 하나&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;project_ids&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;XFS/ext4: 이 부모가 부여할 수 있는 프로젝트 id의 범위&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;enable_quota&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;btrfs: 쿼터가 꺼져 있을 때 프로비저너가 켜도록 허용합니다. 이 옵션이 없으면 쿼터가 꺼진 btrfs 부모는 시작을 중단시킵니다. 스냅샷이 늘어날수록 qgroup이 모든 커밋을 느리게 하므로 이는 운영자가 선택할 일입니다&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;프로비저너의 파일에는 &lt;code&gt;provisioner&lt;/code&gt; 블록만 있습니다. fileshare 자체의 파일을
+실수로 넘기면 일부만 읽지 않고 거부됩니다.&lt;/p&gt;
+&lt;p&gt;볼륨은 항상 &lt;code&gt;&amp;lt;부모 루트&amp;gt;/&amp;lt;이름&amp;gt;&lt;/code&gt;입니다. 데이터셋 &lt;code&gt;tank/fileshare/&amp;lt;name&amp;gt;&lt;/code&gt;은
+&lt;code&gt;/srv/fileshare/volumes/tank/&amp;lt;name&amp;gt;&lt;/code&gt;에 (&lt;code&gt;refquota&lt;/code&gt;와 함께) 마운트되고, btrfs
+서브볼륨은 qgroup으로 제한되며, XFS 또는 ext4 디렉터리는 범위에서 받은 프로젝트
+id와 하드 블록 제한을 가집니다. XFS와 ext4에는 &lt;code&gt;prjquota&lt;/code&gt; 마운트 옵션이
+필요합니다(ext4는 &lt;code&gt;project,quota&lt;/code&gt; 기능도 필요).&lt;/p&gt;
+&lt;h2 data-hextra-search-id="the-systemd-pair"&gt;systemd 쌍&lt;span class="hx:absolute hx:-mt-20" id="the-systemd-pair"&gt;&lt;/span&gt;
+&lt;a href="#the-systemd-pair" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;프로비저너:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-ini" data-lang="ini"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# fileshare-provisioner.service&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;[Service]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;ExecStart&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;/usr/local/bin/fileshare provisioner -c /etc/fileshare-provisioner.hcl&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;RuntimeDirectory&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;fileshare-provisioner&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;RuntimeDirectoryMode&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;0755&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;StateDirectory&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;fileshare-provisioner&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;StateDirectoryMode&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;0700&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;CapabilityBoundingSet&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;CAP_SYS_ADMIN CAP_CHOWN CAP_FOWNER&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# Run as root, or as a dedicated user with:&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# AmbientCapabilities=CAP_SYS_ADMIN CAP_CHOWN CAP_FOWNER&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;NoNewPrivileges&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;yes&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;SystemCallFilter&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;@system-service @mount quotactl quotactl_fd&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;SystemCallArchitectures&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;native&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;LockPersonality&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;yes&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;RestrictRealtime&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;yes&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# NOT ProtectSystem= nor ReadWritePaths=: they give the service its own&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# mount namespace, and the ZFS volumes it mounts would be seen by nobody&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# else. And no Landlock: a Landlock-restricted thread cannot mount(2).&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="코드 복사"
+aria-label="코드 복사"
+data-copied-label="복사됨!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;권한을 전혀 갖지 않는 서버:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-ini" data-lang="ini"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# fileshare.service&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;[Unit]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;Requires&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;fileshare-provisioner.service&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;After&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;fileshare-provisioner.service&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;[Service]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;User&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;fileshare&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;Group&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;fileshare&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;ExecStart&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;/usr/local/bin/fileshare serve -c /etc/fileshare/fileshare.hcl&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;RuntimeDirectory&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;fileshare&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;StateDirectory&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;fileshare&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# No capability at all: CAP_SYS_RESOURCE would let it past an ext4 quota,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# and fileshare refuses to serve volumes with it.&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;CapabilityBoundingSet&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;AmbientCapabilities&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;NoNewPrivileges&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;yes&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;ProtectSystem&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;strict&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;ReadWritePaths&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;/srv/fileshare/volumes /var/lib/fileshare&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="코드 복사"
+aria-label="코드 복사"
+data-copied-label="복사됨!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;서버에는 &lt;code&gt;ProtectSystem=&lt;/code&gt;을 써도 됩니다. 마운트를 수행하는 것은 프로비저너이며,
+마운트는 서버의 네임스페이스 안으로 전파될 뿐 밖으로는 전파되지 않으므로, 서버가
+시작된 뒤에 마운트된 ZFS 볼륨도 서버에서 보입니다.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;예시이며, 테스트된 유닛이 아닙니다&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;두 유닛 모두 CI에서 실행되지 않습니다. 엔드투엔드 작업은 두 프로세스를
+&lt;code&gt;sudo&lt;/code&gt;로 실행합니다.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;프로비저너를 먼저 업그레이드하십시오&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;프로비저너는 자신의 버전이 정의하지 않은 필드를 담은 메시지를 거부하고
+연결을 닫습니다. 그러므로 &lt;code&gt;fileshare serve&lt;/code&gt;와 &lt;code&gt;fileshare provisioner&lt;/code&gt;는 같은
+버전으로 실행해야 합니다.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="the-admin-apis-volume-calls"&gt;관리 API의 볼륨 호출&lt;span class="hx:absolute hx:-mt-20" id="the-admin-apis-volume-calls"&gt;&lt;/span&gt;
+&lt;a href="#the-admin-apis-volume-calls" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;fileshare serve&lt;/code&gt;는 다음 호출을 프로비저너에 중계합니다
+(&lt;a href="https://github.com/go-fileshare/fileshare/blob/v0.28.0/proto/fileshare/admin/v1/admin.proto" target="_blank" rel="noopener"&gt;&lt;code&gt;admin.proto&lt;/code&gt;&lt;/a&gt;).&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ListParents&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;볼륨을 만들 수 있는 위치: 각 부모의 id, 종류, 루트, 여유 공간과 전체 공간, 스냅샷 지원 여부, 그리고 &lt;code&gt;max_volume_bytes&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;CreateVolume&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;quota_bytes&lt;/code&gt; 크기의 볼륨(0은 거부됨). 이름 기준으로 멱등합니다. 같은 쿼터면 이미 있는 볼륨으로 응답하고(&lt;code&gt;created&lt;/code&gt;가 false), 다른 쿼터면 &lt;code&gt;ALREADY_EXISTS&lt;/code&gt;입니다&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ResizeVolume&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;쿼터를 늘리거나 줄입니다. 사용 중인 양보다 작게는 안 됩니다(&lt;code&gt;FAILED_PRECONDITION&lt;/code&gt;)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;SnapshotVolume&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;이름이 있는 읽기 전용 스냅샷. ZFS와 btrfs에서 지원하며 XFS와 ext4에서는 &lt;code&gt;UNIMPLEMENTED&lt;/code&gt;입니다&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;GetVolume&lt;/code&gt;, &lt;code&gt;ListVolumes&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;각 볼륨과 그 쿼터, 사용량, 스냅샷, 그리고 &lt;strong&gt;이를 사용하는 공유&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;DeleteVolume&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;공유가 사용하는 동안에는 거부됩니다. 먼저 공유를 삭제하십시오. 데이터나 스냅샷이 있는 볼륨에는 &lt;code&gt;destroy_data&lt;/code&gt;가 필요합니다&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;volume { parent, name }&lt;/code&gt;을 지정한 &lt;code&gt;CreateShare&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;볼륨을 디렉터리로 제공하는 공유&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;code&gt;DeleteShare&lt;/code&gt;는 볼륨을 삭제하지 않습니다. &amp;ldquo;이를 사용하는 공유&amp;quot;는 볼륨으로 만든
+공유 &lt;strong&gt;그리고&lt;/strong&gt; 이미지나 디렉터리가 볼륨 안에 있는 모든 공유(구성 파일의 공유,
+제공 중이든 비활성화되었든 사용할 수 없든 포함)입니다.&lt;/p&gt;
+&lt;p&gt;이름은 &lt;code&gt;^[a-z0-9][a-z0-9_-]{0,62}$&lt;/code&gt;에 일치해야 하며, 요청은 경로를 담지
+않습니다. 프로비저너 자체 구성에 있는 &lt;code&gt;parent&lt;/code&gt;를 이름으로 지정합니다.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;admin&lt;/code&gt; 블록에 &lt;code&gt;reflection = true&lt;/code&gt;가 있으면 &lt;code&gt;grpcurl&lt;/code&gt;로 호출할 수 있습니다.
+소켓은 0600이고 위의 &lt;code&gt;allowed_uids&lt;/code&gt;는 fileshare의 uid만 지정하므로, 그
+사용자로 실행하십시오.&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nv"&gt;S&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/run/fileshare/admin.sock
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nv"&gt;A&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;fileshare.admin.v1.AdminService
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo -u fileshare grpcurl -plaintext -unix &lt;span class="nv"&gt;$S&lt;/span&gt; &lt;span class="nv"&gt;$A&lt;/span&gt;/ListParents
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# a 32 GiB volume on the XFS parent&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo -u fileshare grpcurl -plaintext -unix &lt;span class="nv"&gt;$S&lt;/span&gt; &lt;span class="se"&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; -d &lt;span class="s1"&gt;&amp;#39;{&amp;#34;parent&amp;#34;: &amp;#34;plain&amp;#34;, &amp;#34;name&amp;#34;: &amp;#34;projects&amp;#34;, &amp;#34;quota_bytes&amp;#34;: &amp;#34;34359738368&amp;#34;}&amp;#39;&lt;/span&gt; &lt;span class="se"&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nv"&gt;$A&lt;/span&gt;/CreateVolume
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# a share served from it&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo -u fileshare grpcurl -plaintext -unix &lt;span class="nv"&gt;$S&lt;/span&gt; &lt;span class="se"&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; -d &lt;span class="s1"&gt;&amp;#39;{&amp;#34;name&amp;#34;: &amp;#34;projects&amp;#34;,
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="s1"&gt; &amp;#34;volume&amp;#34;: {&amp;#34;parent&amp;#34;: &amp;#34;plain&amp;#34;, &amp;#34;name&amp;#34;: &amp;#34;projects&amp;#34;},
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="s1"&gt; &amp;#34;grants&amp;#34;: [{&amp;#34;subject&amp;#34;: {&amp;#34;group&amp;#34;: &amp;#34;staff&amp;#34;}, &amp;#34;access&amp;#34;: &amp;#34;ACCESS_WRITE&amp;#34;}]}&amp;#39;&lt;/span&gt; &lt;span class="se"&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nv"&gt;$A&lt;/span&gt;/CreateShare
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# grow it to 64 GiB&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo -u fileshare grpcurl -plaintext -unix &lt;span class="nv"&gt;$S&lt;/span&gt; &lt;span class="se"&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; -d &lt;span class="s1"&gt;&amp;#39;{&amp;#34;parent&amp;#34;: &amp;#34;plain&amp;#34;, &amp;#34;name&amp;#34;: &amp;#34;projects&amp;#34;, &amp;#34;quota_bytes&amp;#34;: &amp;#34;68719476736&amp;#34;}&amp;#39;&lt;/span&gt; &lt;span class="se"&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nv"&gt;$A&lt;/span&gt;/ResizeVolume&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="코드 복사"
+aria-label="코드 복사"
+data-copied-label="복사됨!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h3 data-hextra-search-id="status-codes"&gt;상태 코드&lt;span class="hx:absolute hx:-mt-20" id="status-codes"&gt;&lt;/span&gt;
+&lt;a href="#status-codes" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;프로비저너의 코드는 받은 그대로 돌아옵니다. &lt;code&gt;INVALID_ARGUMENT&lt;/code&gt;(문법에 맞지 않는
+이름, 알 수 없는 부모, 0인 쿼터), &lt;code&gt;OUT_OF_RANGE&lt;/code&gt;(&lt;code&gt;max_volume&lt;/code&gt; 초과),
+&lt;code&gt;RESOURCE_EXHAUSTED&lt;/code&gt;(쿼터 또는 크기 조정으로 늘어나는 양이 부모의 현재 여유
+공간보다 많거나 프로젝트 id 범위를 모두 사용함), &lt;code&gt;ALREADY_EXISTS&lt;/code&gt;, &lt;code&gt;NOT_FOUND&lt;/code&gt;,
+&lt;code&gt;FAILED_PRECONDITION&lt;/code&gt;, &lt;code&gt;UNIMPLEMENTED&lt;/code&gt;입니다.&lt;/p&gt;
+&lt;p&gt;다음 세 가지는 fileshare 자체의 코드입니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;provisioner&lt;/code&gt;가 구성되지 않음: &lt;code&gt;FAILED_PRECONDITION&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;프로비저너가 이 서버의 uid를 거부함: 역시 &lt;code&gt;FAILED_PRECONDITION&lt;/code&gt;. 관리 호출자가
+할 수 없는 일이 아니라 배포 실수(&lt;code&gt;client_uid&lt;/code&gt;가 잘못됨)이기 때문입니다.&lt;/li&gt;
+&lt;li&gt;프로비저너가 응답하지 않음: &lt;code&gt;UNAVAILABLE&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 data-hextra-search-id="what-is-checked-before-a-volume-is-served"&gt;볼륨을 제공하기 전에 확인하는 것&lt;span class="hx:absolute hx:-mt-20" id="what-is-checked-before-a-volume-is-served"&gt;&lt;/span&gt;
+&lt;a href="#what-is-checked-before-a-volume-is-served" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;fileshare는 프로비저너에게 볼륨의 위치를 묻고, 그런 다음 직접 확인합니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;경로가 정리되어 있고 절대 경로이며, 해석한 결과가 &lt;code&gt;source_roots&lt;/code&gt; 아래에 있음&lt;/li&gt;
+&lt;li&gt;디렉터리임&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;statfs&lt;/code&gt;가 해당 종류의 파일 시스템을 보고함(&lt;code&gt;ZFS_SUPER_MAGIC&lt;/code&gt;,
+&lt;code&gt;BTRFS_SUPER_MAGIC&lt;/code&gt;, &lt;code&gt;XFS_SUPER_MAGIC&lt;/code&gt;, &lt;code&gt;EXT4_SUPER_MAGIC&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;ZFS&lt;/strong&gt;: 마운트 지점임 — 그 장치가 부모의 장치와 다릅니다. 마운트되지 않은
+데이터셋의 디렉터리는 쿼터 없이 쓰기를 받게 됩니다. (그 위치에 어떤 데이터셋이
+마운트되어 있는지는 확인하지 않습니다. 프로비저너의 응답에 그 정보가 없습니다.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;btrfs&lt;/strong&gt;: 서브볼륨의 루트임 — 부모 아래의 일반 디렉터리에는 qgroup이 없습니다.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;XFS와 ext4&lt;/strong&gt;: 새 파일이 상속하는 0이 아닌 프로젝트 id를 가짐 — 어떤
+프로젝트에도 속하지 않은 디렉터리는 제한 없이 제공됩니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;상태 파일에는 볼륨의 경로가 아니라 &lt;strong&gt;이름&lt;/strong&gt;이 보관되며, 시작할 때마다 다시 묻고
+확인합니다. 볼륨이 사라졌거나 확인에 실패했거나 프로비저너가 10초 안에 응답하지
+않으면 그 공유는 &lt;strong&gt;정의된 채 제공되지 않으며&lt;/strong&gt;, 이는 시작할 때,
+&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/configuration/check/"&gt;&lt;code&gt;fileshare check&lt;/code&gt;&lt;/a&gt;에서, 그리고 공유의
+&lt;code&gt;unavailable&lt;/code&gt; 필드에서 알려집니다. 나머지 서버는 정상적으로 시작합니다.
+&lt;code&gt;EnableShare&lt;/code&gt;가 다시 시도합니다.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;fileshare serve&lt;/code&gt;는 root 또는 &lt;code&gt;CAP_SYS_RESOURCE&lt;/code&gt;로는 볼륨 제공을 거부합니다&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;ext4는 둘 중 어느 쪽이든 프로젝트 쿼터를 넘어 쓰는 것을 허용합니다
+(fs/quota/dquot.c, &lt;code&gt;ignore_hardlimit&lt;/code&gt;). go-fsctl/projquota의 CI에서 root가 8 MiB
+프로젝트에 16 MiB를 썼습니다. XFS에는 이런 예외가 없지만, 이 규칙은 모든 종류에
+적용되는 프로세스 단위의 규칙 하나입니다. fileshare는 유효 uid와
+&lt;code&gt;/proc/self/status&lt;/code&gt;의 &lt;code&gt;CapEff&lt;/code&gt;/&lt;code&gt;CapPrm&lt;/code&gt;을 읽으며(허용된 권한은 &lt;code&gt;capset(2)&lt;/code&gt; 한 번이면
+유효 권한이 됩니다), 읽을 수 없는 status는 해당 권한을 가진 것으로 간주합니다.
+거부하는 것은 볼륨 호출이 아니라 &lt;strong&gt;제공&lt;/strong&gt;입니다. root로 스토리지를 생성하는 것은
+해롭지 않지만, root로 그 안에 쓰는 것은 그렇지 않습니다. 어느 쪽인지는
+&lt;code&gt;fileshare check&lt;/code&gt;가 알려 줍니다. 프로비저너가 &lt;code&gt;client_uid = 0&lt;/code&gt;을 거부하고, 위의
+서버 유닛이 비어 있는 &lt;code&gt;CapabilityBoundingSet=&lt;/code&gt;을 갖는 이유가 이것입니다.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="a-full-share"&gt;가득 찬 공유&lt;span class="hx:absolute hx:-mt-20" id="a-full-share"&gt;&lt;/span&gt;
+&lt;a href="#a-full-share" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;XFS는 가득 찬 프로젝트를 &lt;code&gt;ENOSPC&lt;/code&gt;로, ext4, btrfs, ZFS는 &lt;code&gt;EDQUOT&lt;/code&gt;로 알립니다.
+v0.21.1부터 모든 프로토콜이 &amp;ldquo;가득 참&amp;quot;으로 응답합니다.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;프로토콜&lt;/th&gt;
+&lt;th&gt;공간 없음(&lt;code&gt;ENOSPC&lt;/code&gt;)&lt;/th&gt;
+&lt;th&gt;쿼터(&lt;code&gt;EDQUOT&lt;/code&gt;)&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;WebDAV&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;507 Insufficient Storage&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;507 Insufficient Storage&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;NFS&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;NFS3ERR_NOSPC&lt;/code&gt; (28)&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;NFS3ERR_DQUOT&lt;/code&gt; (69), RFC 1813과 Linux의 nfsd를 따름&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;SFTP&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;SSH_FX_FAILURE&lt;/code&gt;, &amp;ldquo;no space left on device (the share is full)&amp;rdquo; — 버전 3에는 이를 위한 코드가 없습니다&lt;/td&gt;
+&lt;td&gt;동일&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;SMB&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;STATUS_DISK_FULL&lt;/code&gt; (0xC000007F)&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;STATUS_DISK_FULL&lt;/code&gt;, Samba와 동일(&amp;ldquo;Windows apps need this, not NT_STATUS_QUOTA_EXCEEDED&amp;rdquo;)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;S3&lt;/td&gt;
+&lt;td&gt;읽기 전용으로 제공&lt;/td&gt;
+&lt;td&gt;읽기 전용으로 제공&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;v0.21.0에서는 SMB가 &lt;code&gt;STATUS_ACCESS_DENIED&lt;/code&gt;로, NFS가 쿼터를 &lt;code&gt;NFS3ERR_NOSPC&lt;/code&gt;로
+응답했습니다.&lt;/p&gt;
+&lt;p&gt;이는 볼륨뿐 아니라 모든 &lt;a href="https://go-fileshare.github.io/docs/0.31/ko/configuration/shares/"&gt;디렉터리 공유&lt;/a&gt;에
+적용됩니다. &lt;a href="https://go-fileshare.github.io/docs/0.31/ko/status/"&gt;업그레이드 안내&lt;/a&gt;를 참고하십시오.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="the-size-a-client-sees"&gt;클라이언트에 보이는 크기&lt;span class="hx:absolute hx:-mt-20" id="the-size-a-client-sees"&gt;&lt;/span&gt;
+&lt;a href="#the-size-a-client-sees" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;모든 프로토콜은 질의할 때마다 서버에 공유의 크기를 묻습니다. NFS의 &lt;code&gt;FSSTAT&lt;/code&gt;,
+SMB의 &lt;code&gt;FileFsFullSizeInformation&lt;/code&gt;, WebDAV의 RFC 4331 쿼터 속성입니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;ZFS, XFS, ext4&lt;/strong&gt;: 크기는 볼륨 안에서 &lt;code&gt;statfs&lt;/code&gt;가 알려 주는 값이며, 커널이
+쿼터(ZFS는 &lt;code&gt;refquota&lt;/code&gt;, XFS와 ext4는 프로젝트 쿼터)로 응답합니다.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;btrfs&lt;/strong&gt; (fileshare v0.23.0부터): btrfs의 &lt;code&gt;statfs&lt;/code&gt;는 qgroup을 무시하고
+파일 시스템 전체를 보고하므로, 서버는 대신 프로비저너의 값을 사용합니다. 크기는
+볼륨의 쿼터이고, 여유 공간은 쿼터에서 qgroup이 참조하는 바이트를 뺀 값이거나,
+그보다 작다면 파일 시스템 자체의 여유 공간입니다. 서버는 클라이언트가 요청하는
+동안 최대 5초에 한 번 백그라운드에서 프로비저너에 묻고, 그사이에는 마지막
+값으로 응답합니다. btrfs는 트랜잭션을 커밋할 때(기본 30초마다) qgroup의 계수를
+갱신하므로, 클라이언트에 보이는 여유 공간은 쓰기보다 그만큼 늦을 수 있습니다.
+v0.23.0 이전에는 btrfs 볼륨이 파일 시스템 전체를 보여 주었지만, 쿼터는 그대로
+적용되었습니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;사용량은 프로비저너(&lt;code&gt;used_bytes&lt;/code&gt;)에서 가져옵니다. XFS나 ext4 프로젝트의 사용량을
+읽으려면 fileshare에 없는 &lt;code&gt;CAP_SYS_ADMIN&lt;/code&gt;이 필요하기 때문입니다.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-the-provisioner-promises"&gt;프로비저너가 보장하는 것&lt;span class="hx:absolute hx:-mt-20" id="what-the-provisioner-promises"&gt;&lt;/span&gt;
+&lt;a href="#what-the-provisioner-promises" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;커널에서 읽은 단 하나의 uid.&lt;/strong&gt; 상대는 연결할 때 &lt;code&gt;SO_PEERCRED&lt;/code&gt;로 식별되며,
+&lt;code&gt;client_uid&lt;/code&gt; 외에는 root를 포함해 누구든 요청의 한 바이트도 디코딩되기 전에
+&lt;code&gt;PERMISSION_DENIED&lt;/code&gt;가 됩니다.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;닫힌 동사 집합.&lt;/strong&gt; 서비스에 없는 메서드, 디코딩되지 않거나 정의되지 않은
+필드를 담은 메시지에는 응답이 없고 연결이 닫힙니다.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;자신이 만들지 않은 것은 절대 건드리지 않습니다.&lt;/strong&gt; ZFS: 데이터셋 자체의
+&lt;code&gt;fileshare:volume&lt;/code&gt; 속성 — 사용자 속성은 상속되고 상속된 표시는 자신의 것이
+아니므로 데이터셋에 직접 설정합니다. btrfs: &lt;code&gt;state_file&lt;/code&gt;에 기록된 서브볼륨 id와
+uuid. XFS/ext4: 부모의 범위 안에 있고 &lt;em&gt;또한&lt;/em&gt; 기록된 프로젝트 id. 크기 조정,
+스냅샷, 삭제 전에 매번 확인합니다.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;삭제는 데이터와 스냅샷이 있으면 거부합니다.&lt;/strong&gt; &lt;code&gt;destroy_data&lt;/code&gt;가 설정된
+경우는 예외이며, 실행되기 전에 기록됩니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 data-hextra-search-id="measured"&gt;측정 결과&lt;span class="hx:absolute hx:-mt-20" id="measured"&gt;&lt;/span&gt;
+&lt;a href="#measured" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;fileshare의 CI에서 실제 풀과 루프백 기반 파일 시스템 위에서 root로, &lt;code&gt;fileshare serve&lt;/code&gt;를 &lt;code&gt;nobody&lt;/code&gt;로 실행하고 관리 API로 구동하여 측정했습니다.
+WebDAV와 SFTP를 통한 쓰기는 네 종류 모두에서 32 MiB 볼륨의 쿼터에서
+멈춥니다.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="not-yet"&gt;아직 지원하지 않는 것&lt;span class="hx:absolute hx:-mt-20" id="not-yet"&gt;&lt;/span&gt;
+&lt;a href="#not-yet" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Ceph.&lt;/strong&gt; CephFS 쿼터와 RBD는 이후 단계입니다.&lt;/li&gt;
+&lt;/ul&gt;</description></item></channel></rss>

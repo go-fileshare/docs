@@ -1,0 +1,296 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – リリース</title><link>https://go-fileshare.github.io/docs/0.31/ja/tags/%E3%83%AA%E3%83%AA%E3%83%BC%E3%82%B9/</link><description>Recent content in リリース on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>ja</language><atom:link href="https://go-fileshare.github.io/docs/0.31/ja/tags/%E3%83%AA%E3%83%AA%E3%83%BC%E3%82%B9/index.xml" rel="self" type="application/rss+xml"/><item><title>ステータス</title><link>https://go-fileshare.github.io/docs/0.31/ja/status/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/ja/status/</guid><description>
+&lt;p&gt;このページは &lt;strong&gt;fileshare v0.31.0&lt;/strong&gt; について説明しています。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-each-release-added"&gt;各リリースで追加された内容&lt;span class="hx:absolute hx:-mt-20" id="what-each-release-added"&gt;&lt;/span&gt;
+&lt;a href="#what-each-release-added" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.7.0&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/protocols/nfs/#the-refusal-that-used-to-be-permanent"&gt;&lt;code&gt;kerberos&lt;/code&gt; ブロック&lt;/a&gt;による、NFS 経由の制限付き共有&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.8.0&lt;/td&gt;
+&lt;td&gt;gRPC による&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/administration/"&gt;管理 API&lt;/a&gt;、&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/configuration/shares/#a-directory-not-only-an-image"&gt;ディレクトリ共有&lt;/a&gt;、&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/administration/health/"&gt;&lt;code&gt;/healthz&lt;/code&gt;、&lt;code&gt;/readyz&lt;/code&gt;、&lt;code&gt;/metrics&lt;/code&gt;&lt;/a&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.9.0&lt;/td&gt;
+&lt;td&gt;WebDAV、S3、NFS 向けの&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/security/tls/"&gt;TLS&lt;/a&gt;(ファイルまたは ACME)、&lt;strong&gt;パスワードを使う WebDAV の平文提供を拒否&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.10.0&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/administration/reload/"&gt;ディレクトリの再読み込み&lt;/a&gt;: &lt;code&gt;reload = &amp;quot;5m&amp;quot;&lt;/code&gt;、&lt;code&gt;SIGHUP&lt;/code&gt;、&lt;code&gt;ReloadDirectory&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.11.0&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/protocols/sftp/#people-the-identity-provider-vouches-for"&gt;IdP が身元を保証する人向けの SFTP&lt;/a&gt;: その SSH CA と opkssh&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.12.0&lt;/td&gt;
+&lt;td&gt;失効: プロバイダーの SSH 証明書向けの &lt;a href="https://go-fileshare.github.io/docs/0.31/ja/security/revocation-lists/"&gt;KRL&lt;/a&gt;、&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/security/nfs-certificates/"&gt;証明書による NFS の ID&lt;/a&gt;向けの CRL&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.13.0&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/security/shared-signals/"&gt;共有シグナル&lt;/a&gt;: CAEP の &lt;code&gt;session-revoked&lt;/code&gt; により、プロバイダーがそれ以前に発行したすべてのものが、全プロトコルで無効になる&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.14.0&lt;/td&gt;
+&lt;td&gt;セキュリティレビューによる修正: &lt;a href="https://go-fileshare.github.io/docs/0.31/ja/administration/#what-it-will-and-will-not-touch"&gt;プロトコルが扱える共有名&lt;/a&gt;、設定ファイルやそのシークレットを含む共有の禁止、起動時の &lt;code&gt;source_roots&lt;/code&gt; の再検査、SSF の &lt;code&gt;max_age&lt;/code&gt; ≥ 1m と &lt;code&gt;retain&lt;/code&gt; ≥ 169h&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.15.0&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/security/revocation-lists/#signed-and-dated-from-ssh_krl_url"&gt;&lt;code&gt;ssh_krl_url&lt;/code&gt; から取得する KRL は署名と日付が必須&lt;/a&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.16.0&lt;/td&gt;
+&lt;td&gt;失効リストは&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/security/revocation-lists/#never-backwards-across-a-restart-too"&gt;決して巻き戻らない&lt;/a&gt;。&lt;code&gt;ssh_krl_state_file&lt;/code&gt; / &lt;code&gt;crl_state_file&lt;/code&gt; により再起動をまたいでも保たれる。トラストアンカーとリストファイルを共有の内側に置くことは不可&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.16.1&lt;/td&gt;
+&lt;td&gt;Go 1.26.6 が必須に: 1.26.4 には到達可能な標準ライブラリのアドバイザリが 9 件あった&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.16.2&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/security/nfs-certificates/#revocation-the-crl"&gt;NFS の CRL は、解析する前に署名が検証される&lt;/a&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.16.3&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/protocols/webdav/#a-token-over-the-one-protocol-that-can-carry-one"&gt;未検証のメールアドレスで人を特定することはなくなった&lt;/a&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.16.4&lt;/td&gt;
+&lt;td&gt;テストのみ&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.16.5&lt;/td&gt;
+&lt;td&gt;テストのみ(&lt;a href="https://github.com/go-fileshare/fileshare/issues/36" target="_blank" rel="noopener"&gt;#36&lt;/a&gt;: テストがトランスポートエラーを成功と読み違えていた)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.16.6&lt;/td&gt;
+&lt;td&gt;NFS の拒否メッセージが 2 つの解決策を示すように: &lt;code&gt;kerberos&lt;/code&gt; ブロック、または &lt;a href="https://go-fileshare.github.io/docs/0.31/ja/security/nfs-certificates/"&gt;&lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt;&lt;/a&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.16.7&lt;/td&gt;
+&lt;td&gt;go-authn/oidc v0.2.2: RSA 鍵のサイズをビット単位で数えるようになった。以前は、ゼロのオクテットで埋めた 1024 ビットの鍵でも、WebDAV トークンや opkssh PK Token が検証を通っていた&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.17.0&lt;/td&gt;
+&lt;td&gt;セキュリティ監査による修正: 1 つの共有が別の共有を含むことの禁止、アクセスファイル(&lt;code&gt;authorized_keys_file&lt;/code&gt;、&lt;code&gt;dsn_file&lt;/code&gt; など)を共有の内側に置くことの禁止、ディレクトリの読み取りが空だったために WebDAV が匿名になることの防止、S3 が &lt;code&gt;protocols&lt;/code&gt; に従うように、30 秒以内に認証しない接続のクローズ、opkssh セッションの &lt;code&gt;opkssh_max_age&lt;/code&gt; での終了、失効したセッションは失効したままとなりクローズされる&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.17.1&lt;/td&gt;
+&lt;td&gt;go-authn/oidc v0.2.4(http へのリダイレクト先から鍵セットを取得しない)、servercert v0.3.0(ACME キャッシュのパスを sshd の StrictModes と同様に検査)、krl v0.5.0、revocation v0.3.0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.17.2&lt;/td&gt;
+&lt;td&gt;go-filesystems/s3 v0.3.0: S3 は、認証されていない呼び出し元にどのアクセスキーが存在するかを教えなくなった。署名付き URL が機能し、有効期間は最長 1 週間、自身の日付より前のものは拒否される&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.18.0&lt;/td&gt;
+&lt;td&gt;CI が &lt;code&gt;stable&lt;/code&gt; ではなく Go 1.27.1 に固定された&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.18.1&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;oidc&lt;/code&gt; ブロックに &lt;code&gt;domains&lt;/code&gt; がない場合、&lt;code&gt;fileshare check&lt;/code&gt; が警告する: &lt;a href="https://go-fileshare.github.io/docs/0.31/ja/configuration/identity/"&gt;プロバイダー側の素の名前が、同名のローカルアカウントに届いてしまう&lt;/a&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.19.0&lt;/td&gt;
+&lt;td&gt;go-authn/directory v0.11.0: &lt;code&gt;users &amp;quot;ldap&amp;quot;&lt;/code&gt; ブロックは&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/configuration/identity/"&gt;別のマシンへの平文バインド&lt;/a&gt;を拒否する。パスワードはダイジェストとして、定数時間で比較される&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.20.0&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/configuration/identity/"&gt;&lt;code&gt;local_names&lt;/code&gt;&lt;/a&gt;: プロバイダーの名前がローカル名として扱われるのは、&lt;code&gt;oidc&lt;/code&gt; ブロックがそう指定したときだけ(セキュリティ監査 F4)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.21.0&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/administration/volumes/"&gt;ボリューム&lt;/a&gt;: 特権を持つ &lt;code&gt;fileshare provisioner&lt;/code&gt; が ZFS データセット、btrfs サブボリューム、XFS/ext4 プロジェクトクォータのディレクトリを作成し、管理 API がそれらから共有を提供する。満杯のディレクトリ共有は全プロトコルで 1 つの応答になる。管理ソケットの &lt;code&gt;allowed_uids&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.21.1&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/administration/volumes/#a-full-share"&gt;満杯の共有&lt;/a&gt;は、SMB(&lt;code&gt;STATUS_DISK_FULL&lt;/code&gt;)と NFS(&lt;code&gt;NFS3ERR_NOSPC&lt;/code&gt; / &lt;code&gt;NFS3ERR_DQUOT&lt;/code&gt;)でそのことを伝える&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.22.0&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/protocols/sftp/#certificates-meant-for-this-host-the-domain-grant"&gt;&lt;code&gt;ssh_domains&lt;/code&gt;&lt;/a&gt;: SSH 証明書は、そのドメイン付与(&lt;code&gt;ssh-domain-grant@core.aai.geant.org&lt;/code&gt;、EuroHPC SSH CA プロファイル)がこのホストを指名している場合にのみ受け入れられる(フェイルクローズ)。&lt;code&gt;ssh_accept_ungranted&lt;/code&gt; で付与のない証明書も受け入れる&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.22.1&lt;/td&gt;
+&lt;td&gt;go-filesystems/sftp v0.5.1: &lt;a href="https://go-fileshare.github.io/docs/0.31/ja/protocols/sftp/#a-certificate-pinned-to-an-address"&gt;アドレスに固定された&lt;/a&gt;証明書(&lt;code&gt;source-address&lt;/code&gt;)は、&lt;code&gt;ssh_domains&lt;/code&gt; の下、およびプロバイダーと OpenPubkey の証明書で、そのアドレスからの接続が受け入れられる。以前はすべてのアドレスから拒否されていた&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.22.2&lt;/td&gt;
+&lt;td&gt;テストとドキュメントのみ: &lt;code&gt;source-address&lt;/code&gt; を &lt;code&gt;::1&lt;/code&gt; と 2 つ目の IPv4 アドレス(&lt;code&gt;127.0.0.2&lt;/code&gt;)から、&lt;code&gt;ssh_domains&lt;/code&gt; の下で、また OpenPubkey 証明書でテスト。Linux では &lt;code&gt;FILESHARE_REQUIRE_JUDGE&lt;/code&gt; の下で、judge がないとスキップではなく失敗する&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.23.0&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/administration/volumes/#the-size-a-client-sees"&gt;btrfs ボリューム&lt;/a&gt;は、NFS、SMB、WebDAV でクォータのサイズとして見える(go-filesystems/nfs v0.7.0、smb v0.5.0、webdav v0.3.0 が問い合わせのたびにサイズを報告)。以前の btrfs はファイルシステム全体を表示していた。共有を管理 API から受け取るサーバーが、NFS を提供していてまだ共有がない場合でも、起動時に停止しなくなった&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.24.0&lt;/td&gt;
+&lt;td&gt;読み取りの高速化: ディレクトリまたはボリューム共有の WebDAV GET は、TLS を使わない平文 HTTP では &lt;code&gt;sendfile(2)&lt;/code&gt; で送出される。NFS は 1 MiB 単位(rtmax/wtmax)で読み書きし、SMB クライアントは 1 リクエストで 64 KiB を超えて読めるようになった(&lt;code&gt;CAP_LARGE_MTU&lt;/code&gt;)。CI ランナー上の 256 MiB ファイルでは、WebDAV 6.6 GB/s、SMB 0.84、NFS 1.47(クライアント 1 台)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.24.1&lt;/td&gt;
+&lt;td&gt;セキュリティ: アイドル状態の NFS 接続が、最大の呼び出しに必要だった 3 MiB を保持し続けなくなった(アイドル接続 24 本で 59 MiB を保持していた)。SMB のフレームヘッダーが、バイト列が届く前に通知された 8 MiB をサーバーに確保させなくなった。SMB リクエストが 1 クレジットで 4 GiB を支払えなくなった(go-filesystems/nfs v0.8.1、smb v0.6.1 と v0.6.2)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.25.0&lt;/td&gt;
+&lt;td&gt;SFTP が &lt;code&gt;limits@openssh.com&lt;/code&gt; に応答するようになり、OpenSSH の &lt;code&gt;sftp&lt;/code&gt; が最大 255 KiB(+25%)単位で読めるようになった。1 セッションが開けるハンドルは最大 1024(go-filesystems/sftp v0.6.0)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.26.0&lt;/td&gt;
+&lt;td&gt;サーバーサイドコピーに対応するすべてのプロトコルで実現: WebDAV の &lt;code&gt;COPY&lt;/code&gt;、SFTP の &lt;code&gt;copy-data&lt;/code&gt;(OpenSSH の &lt;code&gt;sftp cp&lt;/code&gt;)、SMB の COPYCHUNK(エクスプローラー、Linux の &lt;code&gt;copy_file_range&lt;/code&gt;)は、ホストのファイル間で &lt;code&gt;copy_file_range(2)&lt;/code&gt; により、サーバー側で行われる。btrfs と XFS ではリフリンクとなり、CI の計測では 8 MiB のコピーで使用量 0 バイト。セキュリティ: WebDAV の &lt;code&gt;COPY&lt;/code&gt; とすべての S3 &lt;code&gt;GET&lt;/code&gt;/&lt;code&gt;HEAD&lt;/code&gt; がファイル全体をメモリに読み込まなくなった。S3 は任意のサイズのオブジェクトをストリーミングする。訂正: v0.24.0 の WebDAV &lt;code&gt;GET&lt;/code&gt; の sendfile は読み取り専用の共有でしか動作していなかった(ラッパーが書き込み可能な共有では覆い隠していた)。v0.26.0 以降は両方で動作する&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.27.0&lt;/td&gt;
+&lt;td&gt;ACME: 証明書は最初の接続時ではなく&lt;strong&gt;起動時&lt;/strong&gt;に要求される。1 分後に再試行し、最大 1 時間まで倍々にしつつ、サーバーは提供を続ける。&lt;strong&gt;SNI を送らない&lt;/strong&gt;クライアント(IP アドレスでの接続)には、ハンドシェイクの失敗ではなく最初のドメインの証明書が渡される(go-authn/servercert v0.5.0)。&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/security/tls/#harica-gant-tcs-which-account-and-caa"&gt;HARICA&lt;/a&gt;: チャレンジなしで発行できるのは Enterprise &lt;strong&gt;Admin&lt;/strong&gt;(OV)アカウントだけで、CAA が &lt;code&gt;harica.gr&lt;/code&gt; を許可している必要がある&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.28.0&lt;/td&gt;
+&lt;td&gt;管理 API が&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/administration/#over-https-for-oidc-tokens"&gt;OIDC トークン向けの HTTPS&lt;/a&gt;でも提供されるようになった。Connect、gRPC-Web、gRPC を 1 つのリスナーで、サーバーごとに 1 つのオーディエンス、発行者ごとにサブジェクトまたはグループで呼び出し元を指定する。Web UI とネイティブ UI への第一歩&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.28.1&lt;/td&gt;
+&lt;td&gt;セキュリティ: Go 1.27.2 と golang.org/x/net v0.60.0 でビルド。GO-2026-6617(サーバーをクラッシュさせうる HTTP/2 HPACK のレース)、GO-2026-6613、-6612、-6611、-6610、-6603 を修正。HTTPS 上の管理 API は HTTP/2 を話す。&lt;code&gt;go install&lt;/code&gt; には Go 1.27.2 が必要になり、自動的に切り替わる&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.29.1&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/administration/reload/"&gt;リロード&lt;/a&gt;は、ディレクトリ上で空になったグループを、削除されたグループと同様に扱う。何も許可せず、リロードの注記に &lt;code&gt;group @x has no members: it grants nothing&lt;/code&gt; と出力される(空のグループと存在しないグループを区別する go-authn/directory v0.12.0)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.29.2&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;NetBSD(amd64)と OpenBSD(arm64)向けバイナリ&lt;/strong&gt;: fileshare は NetBSD でビルドできなかった。memguard と OpenPubkey 経由で取り込む awnumar/memcall v0.1.2 が、NetBSD にないフラグ &lt;code&gt;MADV_DONTDUMP&lt;/code&gt; を使っていたためである。memguard v0.23.0 と memcall v0.4.0 が上流で修正した。すべてのリリース対象プラットフォームが、プルリクエストのたびにクロスビルドされるようになった。v0.29.1 以降のすべてのリリースには、プラットフォームごとの静的バイナリが &lt;code&gt;SHA256SUMS&lt;/code&gt; と出所証明とともに&lt;a href="https://github.com/go-fileshare/fileshare/releases" target="_blank" rel="noopener"&gt;リリースページ&lt;/a&gt;に添付されている&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.29.0&lt;/td&gt;
+&lt;td&gt;WebDAV: &lt;a href="https://go-fileshare.github.io/docs/0.31/ja/protocols/webdav/#the-root-and-uploads-in-pieces"&gt;ルートへの &lt;code&gt;PROPFIND&lt;/code&gt; が共有を一覧する&lt;/a&gt;(207。Depth infinity は 403、書き込みは 405)ため、ファイルマネージャーでサーバー全体をマウントできる。アップロードは分割でき、各 &lt;code&gt;Content-Range&lt;/code&gt; は前のものが終わった位置に追記される(go-filesystems/webdav v0.6.0)。&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/administration/"&gt;ファイルエクスプローラー&lt;/a&gt;に必要なもの&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.30.0&lt;/td&gt;
+&lt;td&gt;go-authn/directory v0.14.0: &lt;a href="https://go-fileshare.github.io/docs/0.31/ja/configuration/identity/"&gt;&lt;code&gt;users &amp;quot;ldap&amp;quot;&lt;/code&gt; ブロック&lt;/a&gt;は、go-authn/authnd v0.11.0 が公開するものを既定で読み取る。人は &lt;code&gt;(|(objectClass=posixAccount)(objectClass=account)(objectClass=uidObject))&lt;/code&gt;、グループは &lt;code&gt;(|(objectClass=posixGroup)(objectClass=groupOfNames))&lt;/code&gt;、&lt;code&gt;member&lt;/code&gt; の DN は、人の検索が返した誰かの DN である場合にのみ数えられる。⛔ 組織自身のディレクトリに対しては、既定でより多くのエントリが読み取られる。明示的な &lt;code&gt;user_filter&lt;/code&gt; または &lt;code&gt;group_filter&lt;/code&gt; は変わらない&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.31.0&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/configuration/as-each-person/"&gt;各人として提供されるディレクトリ&lt;/a&gt;: &lt;code&gt;identity = &amp;quot;system&amp;quot;&lt;/code&gt; と &lt;code&gt;identity&lt;/code&gt; ブロック。root で起動した &lt;code&gt;fileshare serve&lt;/code&gt; は、人と共有ごとに、その uid、gid、グループで動作するワーカーを起動し、プロトコルは &lt;code&gt;service_user&lt;/code&gt; として提供する。SFTP と WebDAV のみ。uid 0、&lt;code&gt;min_uid&lt;/code&gt; 未満の uid、&lt;code&gt;deny_uids&lt;/code&gt; は拒否される&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;v0.21.0 へのアップグレード&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;満杯のディレクトリ共有&lt;/strong&gt;の応答が変わります。&lt;code&gt;EDQUOT&lt;/code&gt;(クォータ)と
+&lt;code&gt;ENOSPC&lt;/code&gt; は、ボリュームだけでなくすべてのディレクトリ共有で、1 つのエラー
+「no space left on device (the share is full)」にまとめられました。以前は WebDAV の
+&lt;code&gt;500&lt;/code&gt;、NFS の &lt;code&gt;NFS3ERR_IO&lt;/code&gt; だった &lt;code&gt;EDQUOT&lt;/code&gt; が、&lt;code&gt;507&lt;/code&gt; と &lt;code&gt;NFS3ERR_NOSPC&lt;/code&gt; になり、
+SFTP のテキストはパスを含まないその文になります。SMB は引き続きアクセス拒否を返します。
+&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/administration/volumes/#a-full-share"&gt;満杯の共有&lt;/a&gt;を参照してください。&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;v0.20.0 へのアップグレード&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;プロバイダー側の &lt;code&gt;alice&lt;/code&gt; は、ローカルの &lt;code&gt;alice&lt;/code&gt; の共有を取得できなくなりました。
+プロバイダーの名前がそのままローカル名であるサイトは、&lt;code&gt;oidc&lt;/code&gt; ブロックに
+&lt;code&gt;local_names = true&lt;/code&gt; を追加します(あわせて &lt;code&gt;domains&lt;/code&gt; も設定します)。これがないために
+拒否された名前ごとに、サーバーはその旨のログ行を出力します。&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;v0.19.0 へのアップグレード&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;別のマシンの &lt;code&gt;ldap://&lt;/code&gt; を指し、&lt;code&gt;start_tls = true&lt;/code&gt; のない &lt;code&gt;users &amp;quot;ldap&amp;quot;&lt;/code&gt; ブロックは
+&lt;strong&gt;起動しなくなりました&lt;/strong&gt;。&lt;code&gt;ldaps://&lt;/code&gt; または StartTLS を使用してください。&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;v0.17.0 へのアップグレード&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;ある共有の内側に別の共有がある設定、1 つのソースに 2 つの共有がある設定、
+共有の内側にアクセスファイル(&lt;code&gt;authorized_keys_file&lt;/code&gt;、&lt;code&gt;dsn_file&lt;/code&gt;、&lt;code&gt;bind_password_file&lt;/code&gt;、
+&lt;code&gt;ssf&lt;/code&gt; の &lt;code&gt;ca_file&lt;/code&gt;)がある設定は、&lt;strong&gt;起動しなくなりました&lt;/strong&gt;。エラーには
+共有とパスが示されます。&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;v0.9.0 より前からのアップグレード&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;他のマシンから到達できるアドレスで、誰かが認証する状況において、TLS なしで WebDAV を
+提供する設定は&lt;strong&gt;起動しなくなりました&lt;/strong&gt;。&lt;code&gt;tls = true&lt;/code&gt; と &lt;code&gt;tls&lt;/code&gt; ブロックを追加するか、
+TLS を終端するプロキシの背後であれば &lt;code&gt;plaintext = true&lt;/code&gt; を指定してください。
+&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/security/tls/#webdav-is-not-served-in-the-clear"&gt;TLS&lt;/a&gt;を参照してください。&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="verified"&gt;検証済み&lt;span class="hx:absolute hx:-mt-20" id="verified"&gt;&lt;/span&gt;
+&lt;a href="#verified" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;以下は、このプロジェクトが作っていないクライアントに実際に行わせたことであり、
+コードに関する主張ではありません。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;macOS&lt;/strong&gt; は、&lt;code&gt;curl&lt;/code&gt; が WebDAV 経由で同じイメージに書き込んでいる間に SMB で共有を
+マウントし、WebDAV が書いた内容を読み戻します。読み取りしか許されていない共有への
+Bob の WebDAV 書き込みは &lt;code&gt;403&lt;/code&gt;、誤ったパスワードは &lt;code&gt;401&lt;/code&gt; です。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;go-smb2&lt;/strong&gt;(このプロジェクトが作っていないクライアント)は、CI の &lt;code&gt;-race&lt;/code&gt; の下で、
+SMB 経由の 20 の並行読み取りを、WebDAV 経由の 20 と同時に実行します。&lt;/li&gt;
+&lt;li&gt;アクセスルールは、設定だけでなく&lt;strong&gt;すべてのプロトコルを通して&lt;/strong&gt;検査されます。
+alice は書き込め、bob は書き込めません。これは SMB でも WebDAV でも同じで、
+NFS にはそもそも共有が提供されません。&lt;/li&gt;
+&lt;li&gt;SFTP 証明書は &lt;strong&gt;OpenSSH 自身のクライアント&lt;/strong&gt;で検証されます。証明書を脇に移すと、
+同じ鍵も拒否されることも確認されています。&lt;/li&gt;
+&lt;li&gt;証明書による NFS の ID は、go-filesystems/nfs の CI で&lt;strong&gt;実際の Linux クライアント&lt;/strong&gt;
+(カーネル 6.17、ktls-utils 0.9)を使って計測されました。
+&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/security/nfs-certificates/#measured-with-a-real-linux-client"&gt;平文の &lt;code&gt;MNT&lt;/code&gt; と &lt;code&gt;tlshd&lt;/code&gt; の落とし穴&lt;/a&gt;
+はこれで見つかりました。&lt;/li&gt;
+&lt;li&gt;KRL の署名なし形式は計測結果です。OpenSSH 9.6 と 10.3 は署名付き KRL を読み、
+署名をスキップします(go-authn/krl、両方に対して)。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;go-authn/bridge の相互運用レーン&lt;/strong&gt;(&lt;a href="https://github.com/go-authn/bridge/pull/12" target="_blank" rel="noopener"&gt;#12&lt;/a&gt;、
+&lt;a href="https://github.com/go-authn/bridge/pull/17" target="_blank" rel="noopener"&gt;#17&lt;/a&gt;)は、fileshare v0.13.0 を本物の
+bridge に対して判定します。KRL、NFS 上の CRL、共有シグナルで失効した WebDAV トークン、
+スコープで無効化された IdP、共有シグナル上の opkssh です。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 data-hextra-search-id="not-yet"&gt;まだ実装されていないもの&lt;span class="hx:absolute hx:-mt-20" id="not-yet"&gt;&lt;/span&gt;
+&lt;a href="#not-yet" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;S3 での書き込み。&lt;/strong&gt; &lt;code&gt;PUT&lt;/code&gt; と &lt;code&gt;DELETE&lt;/code&gt; は 403 を返します。ライブラリは書き込めますが、
+読み取りしか許されていない人の共有は、SFTP と同じ場所で拒否しなければならず、
+それがまだ組み込まれていません。中途半端に書かれたオブジェクトよりも、拒否するほうが安全です。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;S3 での OIDC トークン。&lt;/strong&gt; トークンが使えるのは &lt;a href="https://go-fileshare.github.io/docs/0.31/ja/protocols/webdav/"&gt;WebDAV&lt;/a&gt;
+だけです。S3 の通常の方法は STS の &lt;code&gt;AssumeRoleWithWebIdentity&lt;/code&gt; で、
+トークンを一時的な認証情報と交換し、クライアントがそれで署名します。
+これはベアラートークンを受け入れるのとは別の仕組みであり、実装されていません。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;&lt;code&gt;admin&lt;/code&gt; ブロックまたは &lt;code&gt;metrics&lt;/code&gt; ブロックがある場合の &lt;code&gt;--isolate&lt;/code&gt;。&lt;/strong&gt; 拒否されます。
+API の変更を適用できる単一のプロセスが存在しないためです。
+&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/operations/isolation/#not-with-an-admin-or-a-metrics-block-yet"&gt;プロトコルごとに 1 プロセス&lt;/a&gt;を参照してください。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;共有 Linux NFS クライアントでの、証明書によるユーザーごとの人の特定。&lt;/strong&gt; Linux
+クライアントは証明書をマウントに紐づけるため、そのマウントのすべてのユーザーが、
+証明書が指名する人として扱われます。これはクライアントの性質であり、
+その場合の答えは &lt;code&gt;sec=krb5&lt;/code&gt; です。
+&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/security/nfs-certificates/#what-it-cannot-promise"&gt;保証できないこと&lt;/a&gt;を参照してください。&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/protocols/s3/"&gt;S3 自体&lt;/a&gt;は提供済みです。共有はバケットであり、
+SFTP が使うのと同じユーザーごとのツリー上で提供されます。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="measured-and-stated-as-measured"&gt;計測済みであり、計測結果として記載しているもの&lt;span class="hx:absolute hx:-mt-20" id="measured-and-stated-as-measured"&gt;&lt;/span&gt;
+&lt;a href="#measured-and-stated-as-measured" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;このページの主張のうち、不具合の再現ではなく保険や計測にあたるもので、
+ソースにもそのように書かれているものです。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;ラップされていない fat32 ドライバーに対して 8 つの goroutine が &lt;code&gt;-race&lt;/code&gt; の下で書き込んでも、
+現時点ではレースは発生しません。&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/operations/locking/"&gt;共有ロック&lt;/a&gt;は
+契約に対する保険であり(&lt;code&gt;go-filesystems/interface&lt;/code&gt; は、パスベースの並行呼び出しについて
+何も保証していません)、観測された障害の修正ではありません。&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/operations/build-tags/"&gt;ビルドタグごとのサイズ&lt;/a&gt;は計測されました。
+&lt;code&gt;hashicorp/go-plugin&lt;/code&gt; だけで 13.2 MB かかり、これがプラグインフレームワークを採用しない
+決め手になりました。また、管理 API が持ち込む gRPC は 11.7 MB で、これが &lt;code&gt;nogrpc&lt;/code&gt; が
+存在する理由です。&lt;/li&gt;
+&lt;li&gt;独自のグループタグ証明書拡張を設計して Go の X.509 パーサーで&lt;strong&gt;計測&lt;/strong&gt;したところ、
+証明書全体が拒否されました。そのため、グループは代わりに
+&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/security/nfs-certificates/#what-the-certificate-carries"&gt;タグ URI&lt;/a&gt;
+として運ばれます。&lt;/li&gt;
+&lt;/ul&gt;</description></item></channel></rss>

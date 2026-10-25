@@ -1,0 +1,378 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – 공유</title><link>https://go-fileshare.github.io/docs/0.31/ko/tags/%EA%B3%B5%EC%9C%A0/</link><description>Recent content in 공유 on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>ko</language><atom:link href="https://go-fileshare.github.io/docs/0.31/ko/tags/%EA%B3%B5%EC%9C%A0/index.xml" rel="self" type="application/rss+xml"/><item><title>공유: 이미지, 장치, 디렉터리</title><link>https://go-fileshare.github.io/docs/0.31/ko/configuration/shares/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/ko/configuration/shares/</guid><description>
+&lt;p&gt;공유는 세 가지 중 하나를 제공합니다. &lt;strong&gt;디스크 이미지&lt;/strong&gt;, &lt;strong&gt;장치&lt;/strong&gt; 노드, 또는
+&lt;strong&gt;호스트의 디렉터리&lt;/strong&gt;입니다. 이미지와 장치는 이 프로그램이 직접 읽는 파일
+시스템을 담고 있으며, 디렉터리는 호스트 자체의 것입니다.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="an-image-and-the-filesystem-inside-it"&gt;이미지와 그 안의 파일 시스템&lt;span class="hx:absolute hx:-mt-20" id="an-image-and-the-filesystem-inside-it"&gt;&lt;/span&gt;
+&lt;a href="#an-image-and-the-filesystem-inside-it" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;이미지 안의 파일 시스템은 &lt;strong&gt;선언하는 것이 아니라 알아냅니다&lt;/strong&gt;.
+&lt;a href="https://github.com/go-filesystems/detect" target="_blank" rel="noopener"&gt;&lt;code&gt;go-filesystems/detect&lt;/code&gt;&lt;/a&gt;가 매직
+바이트를 읽고 그것을 소유한 드라이버를 돌려줍니다. &lt;strong&gt;fat32, exfat, ext4, ntfs,
+ufs, iso9660, squashfs, hfsplus&lt;/strong&gt; 중 하나이며, 모든 드라이버는 같은 형태인
+&lt;code&gt;OpenReader(io.ReaderAt, int64)&lt;/code&gt;, 즉 오프셋 0의 파일 시스템입니다.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="the-four-that-cannot-be-sniffed"&gt;탐지할 수 없는 네 가지&lt;span class="hx:absolute hx:-mt-20" id="the-four-that-cannot-be-sniffed"&gt;&lt;/span&gt;
+&lt;a href="#the-four-that-cannot-be-sniffed" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;apfs, btrfs, xfs, zfs&lt;/strong&gt;는 각각 &lt;em&gt;디스크&lt;/em&gt; 이미지를 열고 &lt;strong&gt;파티션&lt;/strong&gt;을 선택하므로,
+오프셋 0에서 찾을 매직 바이트가 없습니다. 공유가 어느 것인지 지정합니다.&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;photos&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/disk.img&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; filesystem&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;xfs&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; partition&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;2&lt;/span&gt;&lt;span class="c1"&gt; # or leave it out: the driver takes the first data partition
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="코드 복사"
+aria-label="코드 복사"
+data-copied-label="복사됨!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="a-partition-for-any-filesystem"&gt;어떤 파일 시스템이든 가능한 파티션&lt;span class="hx:absolute hx:-mt-20" id="a-partition-for-any-filesystem"&gt;&lt;/span&gt;
+&lt;a href="#a-partition-for-any-filesystem" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;FAT32, ext4, exFAT를 담은 디스크 이미지도 XFS를 담은 이미지만큼 자주 앞에
+파티션 테이블이 있으며, 탐지는 오프셋 0을 읽는데 파티션된 이미지는 그곳에
+&lt;em&gt;테이블&lt;/em&gt;이 있습니다. 그래서 파티션을 먼저 선택하고, 드라이버에는 그 파티션의
+뷰를 넘깁니다.&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;photos&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/disk.img&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; partition_label&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;photos&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # what lsblk calls PARTLABEL
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="코드 복사"
+aria-label="코드 복사"
+data-copied-label="복사됨!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;파티션을 지정하는 방법은 세 가지이며 &lt;strong&gt;하나만 지정할 수 있습니다&lt;/strong&gt;. 서로 어긋나는
+둘을 지정하면 코드가 먼저 시도한 쪽이 제공될 것이기 때문입니다.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;partition = 2&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;파티셔닝 도구가 출력하는 방식대로 1부터 센 번호&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;partition_label = &amp;quot;photos&amp;quot;&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;GPT 파티션 이름&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;partition_uuid = &amp;quot;…&amp;quot;&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;GPT 고유 GUID — Linux의 &lt;code&gt;PARTUUID&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;인덱스는 움직입니다&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;디스크를 다시 파티셔닝하거나, 항목을 다른 순서로 쓰는 도구를 사용하거나,
+파티션이 하나 적은 상태로 이미지를 복원하면 &lt;code&gt;partition = 2&lt;/code&gt;가 &lt;strong&gt;조용히&lt;/strong&gt; 다른
+것을 가리키게 됩니다. 그곳에서도 여전히 파일 시스템이 발견되기 때문입니다. 레이블이나
+UUID는 파티션 자체를 가리키며, fstab이 수년 전에 인덱스 사용을 그만둔 이유가
+이것입니다. 인덱스는 둘 다 없는 MBR 이미지를 위해 있습니다.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;파티션을 선택한 공유는 &lt;strong&gt;읽기 전용&lt;/strong&gt;이며 시작할 때 그렇게 알립니다. 드라이버의
+오프셋은 파티션 기준인데 아래의 파일은 디스크 전체이므로, 쓰기는 &lt;em&gt;이미지&lt;/em&gt;의
+시작부터 그 오프셋에 도달하게 되고, 이는 대개 파티션 테이블 위입니다.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="naming-a-filesystem-turns-detection-off"&gt;파일 시스템을 지정하면 탐지가 꺼집니다&lt;span class="hx:absolute hx:-mt-20" id="naming-a-filesystem-turns-detection-off"&gt;&lt;/span&gt;
+&lt;a href="#naming-a-filesystem-turns-detection-off" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;그것이 요점이자 위험입니다&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;이미지는 &lt;em&gt;그것으로&lt;/em&gt; 열리거나 거부됩니다. XFS라고 지정된 FAT32 이미지는 XFS
+공유가 되지 않으며, 시작에 실패하고 무엇으로 열라는 요청을 받았는지를 알려 줍니다.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;filesystem&lt;/code&gt;은 탐지할 수 있는 종류에도 허용되며, 이 경우 둘을 비교합니다.
+FAT32 이미지에 &lt;code&gt;ext4&lt;/code&gt;를 지정한 공유는 &lt;em&gt;the share says ext4 and the image holds
+fat32&lt;/em&gt;와 함께 거부됩니다. 사이트는 이렇게 오탐지를 나중에 발견하는 대신
+거부합니다. &lt;a href="https://go-fileshare.github.io/docs/0.31/ko/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt;는 이름이 지정된
+드라이버에 별표를 붙입니다. 그 행은 인식된 것이 아니라 지정된 것이기 때문입니다.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="a-device-not-only-an-image"&gt;이미지뿐 아니라 장치도&lt;span class="hx:absolute hx:-mt-20" id="a-device-not-only-an-image"&gt;&lt;/span&gt;
+&lt;a href="#a-device-not-only-an-image" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;photos&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/dev/sda&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # a device node, not a file
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="코드 복사"
+aria-label="코드 복사"
+data-copied-label="복사됨!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;권한이 필요하지 않습니다.&lt;/strong&gt; 여기서는 아무것도 마운트하지 않습니다.
+&lt;a href="https://github.com/go-filesystems" target="_blank" rel="noopener"&gt;&lt;code&gt;go-filesystems&lt;/code&gt;&lt;/a&gt; 드라이버가 ext4, xfs 등을
+사용자 공간에서 읽으므로 &lt;code&gt;mount(2)&lt;/code&gt;가 없고, 따라서 &lt;code&gt;CAP_SYS_ADMIN&lt;/code&gt;도 필요
+없습니다. 장치를 여는 것은 노드의 권한이 좌우하는 평범한 &lt;code&gt;open(2)&lt;/code&gt;입니다.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;소유자&lt;/th&gt;
+&lt;th&gt;모드&lt;/th&gt;
+&lt;th&gt;충분한 조건&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Linux &lt;code&gt;/dev/sda&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;root:disk&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;0660&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;disk&lt;/code&gt; 그룹의 구성원&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;macOS &lt;code&gt;/dev/disk0&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;root:operator&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;0640&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;operator&lt;/code&gt; 그룹의 구성원 및 전체 디스크 접근 권한&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;거부될 때는 &lt;code&gt;permission denied&lt;/code&gt; 대신 어느 그룹인지를 알려 줍니다. 답은 결코
+&lt;code&gt;sudo&lt;/code&gt;가 아닙니다.&lt;/p&gt;
+&lt;p&gt;⛔ &lt;strong&gt;장치 공유는 읽기 전용입니다.&lt;/strong&gt; 파티션을 선택한 공유와 같은 이유입니다.
+동작 중인 디스크에 쓰는 것은 사용자를 대신해 내릴 결정이 아닙니다.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;장치는 배타적으로 열리며, 이는 신중함이 아니라 정확성의 문제입니다&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;커널이 그 장치의 파일 시스템을 마운트하고 있다면 파일 시스템의 페이지 캐시가
+장치보다 새로운 메타데이터를 가지고 있습니다. 그러면 raw 리더는 갱신 이전의
+디렉터리 블록과 갱신 이후의 inode 블록을 나란히 보게 되며, 이는 디스크에
+어느 한순간에도 존재한 적 없는 상태입니다. 블록 장치에 대한 &lt;code&gt;O_EXCL&lt;/code&gt;은 &amp;ldquo;마운트를
+포함해 나 외에는 아무도 없음&amp;quot;을 뜻하는 커널 자체의 원시 기능이며, &lt;code&gt;mkfs&lt;/code&gt;와
+&lt;code&gt;fsck&lt;/code&gt;가 사용하는 것입니다. 사용 중인 장치는 이름과 이유와 함께 거부됩니다.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;가정하지 않고 측정한 두 가지가 있습니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;장치의 &lt;code&gt;Stat().Size()&lt;/code&gt;는 &lt;strong&gt;0&lt;/strong&gt;이므로 길이는 장치 자체에 묻습니다. 끝으로
+이동(seek)하면 Linux에서는 답하지만 macOS에서는 &lt;strong&gt;오류 없이 0&lt;/strong&gt;을 반환하므로,
+Darwin은 대신 &lt;code&gt;DKIOCGETBLOCKCOUNT&lt;/code&gt;를 사용합니다.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;raw&lt;/strong&gt; 노드(&lt;code&gt;/dev/rdiskN&lt;/code&gt;, 또는 Linux의 &lt;code&gt;O_DIRECT&lt;/code&gt;)는 정렬되지 않은 읽기를
+거부하는데, FAT BPB를 파싱한다는 것은 곧 오프셋 11의 2바이트 필드를 읽는 것을
+&lt;em&gt;뜻합니다&lt;/em&gt;. 장치 읽기는 전체 블록 단위로 확장됩니다. 이것이 없으면
+&lt;code&gt;/dev/rdisk4&lt;/code&gt;는 &lt;code&gt;unknown filesystem&lt;/code&gt;을 보고했습니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 data-hextra-search-id="a-directory-not-only-an-image"&gt;이미지뿐 아니라 디렉터리도&lt;span class="hx:absolute hx:-mt-20" id="a-directory-not-only-an-image"&gt;&lt;/span&gt;
+&lt;a href="#a-directory-not-only-an-image" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;v0.8.0부터 공유는 이미지 대신 호스트의 디렉터리(예: 컨테이너의 볼륨)를 제공할 수
+있습니다.&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;photos&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; directory&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/data/photos&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; allow&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;@family&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="코드 복사"
+aria-label="코드 복사"
+data-copied-label="복사됨!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;이는 &lt;a href="https://github.com/go-filesystems/osfs" target="_blank" rel="noopener"&gt;go-filesystems/osfs&lt;/a&gt;이며, 트리에
+**&lt;code&gt;os.Root&lt;/code&gt;**를 통해 접근합니다. 밖으로 올라가는 &lt;code&gt;..&lt;/code&gt;, 절대 경로, 밖으로 향하는
+심볼릭 링크는 문자열 검사가 아니라 커널이 뒷받침하는 루트가 거부합니다. 클라이언트가
+&lt;code&gt;/etc&lt;/code&gt;로의 링크를 &lt;em&gt;만들&lt;/em&gt; 수는 있지만 아무것도 그것을 따라가지 않습니다. 트리에
+심어 둔 FIFO는 서버를 멈추게 두지 않고 거부됩니다.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;한 공유가 다른 공유를 포함할 수 없습니다 (v0.17.0부터)&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;트리에 다른 공유의 이미지나 디렉터리가 들어 있는 디렉터리 공유는 &lt;strong&gt;시작할 때
+거부되며&lt;/strong&gt; 관리 API에서도 거부됩니다. 바깥 공유를 사용할 수 있는 사람이 허용되지
+않은 안쪽 공유를 읽고 쓰게 되기 때문이며, 익명 NFS도 마찬가지입니다. 같은
+소스에 대한 두 공유도 거부됩니다. 하나의 디스크 이미지의 서로 다른 두 파티션은
+예외입니다.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;이미지 잠금 뒤에 있지 않습니다&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;이미지 드라이버는 파일 하나를 소유하며 동시에 두 번 호출했을 때의 동작을
+보장하지 않습니다. 그래서 &lt;a href="https://go-fileshare.github.io/docs/0.31/ko/operations/locking/"&gt;모든 이미지는 하나의 잠금으로 감싸집니다&lt;/a&gt;.
+호스트의 트리는 커널의 것이며, 커널은 호출마다 직렬화가 필요한 것만 직렬화하고
+그 이상은 하지 않습니다. 모든 클라이언트의 모든 파일 앞에 뮤텍스 하나를 두는 것은
+파일 서버가 할 수 있는 가장 느린 일이 될 것입니다.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;⛔ 공유는 &lt;code&gt;image&lt;/code&gt; &lt;strong&gt;또는&lt;/strong&gt; &lt;code&gt;directory&lt;/code&gt;를 가지며, 둘 다 있거나 둘 다 없을 수
+없습니다. &lt;code&gt;filesystem&lt;/code&gt;과 &lt;code&gt;partition&lt;/code&gt;은 이미지를 위한 것입니다. 이 중 하나를
+지정한 디렉터리 공유는 거부되는데, 지정했다는 것은 공유가 이미지로 의도되었다는
+뜻이기 때문입니다. &lt;code&gt;read_only = true&lt;/code&gt;는 이미지와 마찬가지로 디렉터리에서도
+동작합니다. 이를 지정하면서 &lt;code&gt;writers&lt;/code&gt;도 나열한 공유는 &lt;code&gt;read_only&lt;/code&gt;가 우선하게
+되므로 거부됩니다.&lt;/p&gt;
+&lt;p&gt;클라이언트에 알려 주는 용량은 트리가 있는 파일 시스템의 용량입니다. 이를 알 수
+없는 플랫폼은 0으로 두며, 프로토콜은 이를 &amp;ldquo;가득 참&amp;quot;이 아니라 &amp;ldquo;알 수 없음&amp;quot;으로
+해석합니다.&lt;/p&gt;</description></item><item><title>각 사용자의 권한으로 제공되는 디렉터리</title><link>https://go-fileshare.github.io/docs/0.31/ko/configuration/as-each-person/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/ko/configuration/as-each-person/</guid><description>
+&lt;p&gt;보통은 하나의 fileshare 프로세스가 모든 사람에게 하나의 계정으로 서비스합니다.
+누가 무엇을 할 수 있는지는 fileshare가 결정하고, 생성하는 모든 파일은 그
+계정의 소유가 됩니다. 디렉터리 공유는 대신 &lt;strong&gt;각 사용자의 권한으로&lt;/strong&gt; 제공될 수
+있습니다. 로그인한 사용자의 파일은 그 사용자의 uid, gid, 그룹으로 실행되는
+프로세스가 열므로, 커널이 트리의 권한을 적용하고 사용자가 만든 것은 그 사용자의
+소유가 됩니다.&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;identity&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; service_user&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;fileshare&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # the account the protocols are served as
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; min_uid&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;1000&lt;/span&gt;&lt;span class="c1"&gt; # the default; uid 0 is refused whatever this says
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; min_gid&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;1000&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; deny_uids&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="m"&gt;65534&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; idle&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;2m&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # how long an unused worker is kept
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;home&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; directory&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/home&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; identity&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;system&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="코드 복사"
+aria-label="코드 복사"
+data-copied-label="복사됨!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="three-processes"&gt;세 개의 프로세스&lt;span class="hx:absolute hx:-mt-20" id="three-processes"&gt;&lt;/span&gt;
+&lt;a href="#three-processes" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;fileshare serve&lt;/code&gt;는 반드시 &lt;strong&gt;root로 시작&lt;/strong&gt;해야 합니다. 각 사용자의 워커를
+시작하기 위해서만 root로 남아 있습니다. 네트워크와 맞닿는 모든 것은 두 번째
+프로세스에서 &lt;code&gt;service_user&lt;/code&gt;로 실행됩니다.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;프로세스&lt;/th&gt;
+&lt;th&gt;실행 계정&lt;/th&gt;
+&lt;th&gt;역할&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;런처&lt;/strong&gt;(&lt;code&gt;fileshare serve&lt;/code&gt;)&lt;/td&gt;
+&lt;td&gt;root&lt;/td&gt;
+&lt;td&gt;리스너를 바인딩하고, 프런트를 시작하며, 프런트가 요청하면 워커를 시작합니다. 어떤 프로토콜도 사용하지 않습니다.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;프런트&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;service_user&lt;/code&gt;와 그 계정의 그룹&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;serve&lt;/code&gt;가 항상 해 왔듯이 프로토콜을 사용하고 인증합니다. 이런 공유에 대해서는 uid나 경로가 아니라 &lt;strong&gt;사용자와 공유&lt;/strong&gt;를 런처에 요청합니다.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;워커&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;해당 사용자&lt;/td&gt;
+&lt;td&gt;런처가 넘겨준 소켓을 통해 프런트에 공유 하나를 제공합니다&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;워커는 먼저 자신이 정확히 기대된 uid, gid, 그룹으로 실행 중인지, 그리고
+&lt;code&gt;setuid(0)&lt;/code&gt;이 실패하는지 확인합니다. 그런 다음에야 &lt;code&gt;os.Root&lt;/code&gt;를 통해 트리를
+엽니다. 워커 하나가 SFTP와 WebDAV를 가리지 않고 그 사용자의 해당 공유에 대한
+모든 연결을 처리하며, &lt;code&gt;idle&lt;/code&gt; 동안 아무도 사용하지 않으면 종료됩니다. 서버가
+중지되면 워커도 함께 중지됩니다.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="who-a-person-is-on-this-system"&gt;이 시스템에서 사용자가 누구인가&lt;span class="hx:absolute hx:-mt-20" id="who-a-person-is-on-this-system"&gt;&lt;/span&gt;
+&lt;a href="#who-a-person-is-on-this-system" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;런처는 사용자를 &lt;strong&gt;직접&lt;/strong&gt; 다음 순서로 확인합니다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;디렉터리&lt;/strong&gt;에 &lt;code&gt;uidNumber&lt;/code&gt;와 &lt;code&gt;gidNumber&lt;/code&gt;가 있는 경우:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;user&lt;/code&gt; 블록의 &lt;code&gt;attributes = { uidNumber = &amp;quot;2001&amp;quot;, gidNumber = &amp;quot;2001&amp;quot; }&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;attributes = [&amp;quot;uidNumber&amp;quot;, &amp;quot;gidNumber&amp;quot;]&lt;/code&gt;가 있는 LDAP 소스&lt;/li&gt;
+&lt;li&gt;SQL 소스의 &lt;code&gt;users_attributes&lt;/code&gt; 쿼리&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;보조 그룹은 해당 사용자를 나열하는 그룹(&lt;code&gt;group&lt;/code&gt; 블록의 &lt;code&gt;members&lt;/code&gt;,
+&lt;code&gt;memberUid&lt;/code&gt;)과 해당 사용자가 이름으로 지정한 그룹(&lt;code&gt;memberOf&lt;/code&gt;)이며, 각각
+&lt;code&gt;gidNumber&lt;/code&gt;로 식별합니다. &lt;code&gt;gidNumber&lt;/code&gt;가 없는 그룹은 시스템 그룹이 아닙니다.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;이름으로 찾는 &lt;strong&gt;&lt;code&gt;/etc/passwd&lt;/code&gt;와 &lt;code&gt;/etc/group&lt;/code&gt;&lt;/strong&gt;.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;거부되는 경우&lt;/strong&gt;: uid 0, gid 0, &lt;code&gt;(uid_t)-1&lt;/code&gt;, &lt;code&gt;min_uid&lt;/code&gt; 미만의 uid, &lt;code&gt;min_gid&lt;/code&gt;
+미만의 기본 gid, &lt;code&gt;deny_uids&lt;/code&gt;에 있는 모든 uid. &lt;code&gt;min_gid&lt;/code&gt; 미만의 보조 그룹은
+제외되며 로그에 그렇게 기록됩니다. 두 곳 어디에서도 찾을 수 없는 사용자도
+거부됩니다. 공유 대체 계정은 없습니다. ID 공급자가 보증하는 사용자는
+&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/configuration/identity/"&gt;&lt;code&gt;local_names&lt;/code&gt;&lt;/a&gt;가 있어야만 워커를 받으며,
+이 옵션이 그들의 이름을 로컬 이름으로 만듭니다.&lt;/p&gt;
+&lt;p&gt;따라서 탈취된 프런트가 요청할 수 있는 것은 존재하고 허용된 사용자와 존재하는
+공유뿐입니다. &lt;strong&gt;누가&lt;/strong&gt; 인증했는지는 여전히 프런트가 결정하며, 런처는 이를
+대신 확인할 수 없습니다.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-a-client-sees"&gt;클라이언트에 보이는 것&lt;span class="hx:absolute hx:-mt-20" id="what-a-client-sees"&gt;&lt;/span&gt;
+&lt;a href="#what-a-client-sees" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;SFTP&lt;/th&gt;
+&lt;th&gt;WebDAV&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;워커를 받는 시점&lt;/td&gt;
+&lt;td&gt;로그인할 때, 연결 전체에 대해&lt;/td&gt;
+&lt;td&gt;요청마다. 잠금은 워커가 살아 있는 동안 유지됩니다&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;런처가 사용자를 거부함&lt;/td&gt;
+&lt;td&gt;공유가 그 사용자의 트리에 없음(아무것도 없는 트리는 거부된 로그인)&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;403&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;워커를 시작할 수 없음&lt;/td&gt;
+&lt;td&gt;동일&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;503&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;이유는 서버의 로그에 기록되며 클라이언트에는 전달되지 않습니다.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;SMB, NFS, S3에서는 아직 지원하지 않습니다&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;이들은 이런 공유를 거부하며, &lt;a href="https://go-fileshare.github.io/docs/0.31/ko/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt;가 이를
+알려 줍니다. SMB와 NFS는 라이브러리에서 세션마다 파일 시스템이 필요합니다. NFS는
+&lt;code&gt;AUTH_UNIX&lt;/code&gt;가 클라이언트 스스로의 주장이므로(RFC 5531 §14) Kerberos 아래에서만
+이를 지원하게 될 것입니다.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="what-it-asks-of-the-system"&gt;시스템에 요구하는 것&lt;span class="hx:absolute hx:-mt-20" id="what-it-asks-of-the-system"&gt;&lt;/span&gt;
+&lt;a href="#what-it-asks-of-the-system" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Unix&lt;/strong&gt;: Linux, BSD 계열, macOS. Windows에서는 공유가 거부됩니다.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;service_user&lt;/code&gt;가 읽을 수 있어야 함&lt;/strong&gt;: 프런트가 읽으므로 구성과 구성이
+지정하는 모든 파일(비밀번호 파일, 호스트 키, 인증서).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;사용자가 실행할 수 있어야 함&lt;/strong&gt;: 각 워커가 해당 사용자로 바이너리를
+실행하므로 바이너리.&lt;/li&gt;
+&lt;li&gt;이런 공유를 추가하거나 변경하려면 &lt;strong&gt;재시작&lt;/strong&gt;이 필요합니다. 런처는 구성을 한 번만
+읽으며, 알지 못하는 공유는 프런트가 제공하게 두지 않고 거부합니다.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--isolate&lt;/code&gt;와는 함께 쓸 수 없습니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;설계와 각 선택의 이유는
+&lt;a href="https://github.com/go-fileshare/fileshare/blob/main/docs/identity.md" target="_blank" rel="noopener"&gt;docs/identity.md&lt;/a&gt;에
+있습니다.&lt;/p&gt;</description></item></channel></rss>

@@ -1,0 +1,254 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Sql</title><link>https://go-fileshare.github.io/docs/0.31/zh-cn/tags/sql/</link><description>Recent content in Sql on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><atom:link href="https://go-fileshare.github.io/docs/0.31/zh-cn/tags/sql/index.xml" rel="self" type="application/rss+xml"/><item><title>用户、组和目录服务</title><link>https://go-fileshare.github.io/docs/0.31/zh-cn/configuration/identity/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/zh-cn/configuration/identity/</guid><description>
+&lt;p&gt;&lt;code&gt;user&lt;/code&gt; 块就是一个家庭的全部目录服务。如果一个站点的人员
+已经存在于数据库或 LDAP 中，就不应把这些人员复制到另一个
+会过时的地方，因此 &lt;code&gt;users&lt;/code&gt; 块会就地读取这些人员。&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;users&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;sql&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; driver&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;postgres&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # 或 sqlite，或 mysql
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; dsn_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/dsn&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # DSN 含有密码：所以放在文件中
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; users&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;select login, null, nt_hash, ssh_keys from staff&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; groups&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;select team, member from team_members&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;users&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;ldap&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;ldaps://ldap.example.org&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; base_dn&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt; &amp;#34;ou&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;people,dc&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;example,dc&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;org&lt;/span&gt;&lt;span class="err"&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; bind_dn&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt; &amp;#34;cn&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;reader,dc&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;example,dc&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;org&lt;/span&gt;&lt;span class="err"&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; bind_password_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/bind.pw&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="复制代码"
+aria-label="复制代码"
+data-copied-label="已复制！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;查询由你自己编写&lt;/strong&gt;，因为一个站点的人员已经有了该站点自己的
+结构；在这里另行设计一套模式，就意味着要把这些人员复制到第二套中。
+人员查询的各列是&lt;strong&gt;按位置&lt;/strong&gt;读取的，而不是按名称：先是名称，然后依次是
+密码、NT 哈希、SSH 密钥（每行一个）和 TOTP 密钥中的任意几项，
+顺序如此。NULL 表示此人没有该凭据，这就是
+示例中密码一列选择 &lt;code&gt;null&lt;/code&gt; 的原因。密码列被视为
+密码本身：这里没有用于哈希密码的设置。&lt;/p&gt;
+&lt;p&gt;LDAP 一侧读取支持 Samba 的目录服务已经发布的内容，
+即 &lt;code&gt;sambaNTPassword&lt;/code&gt;、&lt;code&gt;sshPublicKey&lt;/code&gt;、&lt;code&gt;memberUid&lt;/code&gt;。人员和组
+位于何处，以及用哪些属性命名它们，都是可配置的：&lt;code&gt;user_filter&lt;/code&gt;
+（默认 &lt;code&gt;(|(objectClass=posixAccount)(objectClass=account)(objectClass=uidObject))&lt;/code&gt;）、
+&lt;code&gt;user_attribute&lt;/code&gt;（&lt;code&gt;uid&lt;/code&gt;）、&lt;code&gt;group_base_dn&lt;/code&gt;（&lt;code&gt;base_dn&lt;/code&gt;）、&lt;code&gt;group_filter&lt;/code&gt;
+（&lt;code&gt;(|(objectClass=posixGroup)(objectClass=groupOfNames))&lt;/code&gt;）、&lt;code&gt;group_attribute&lt;/code&gt;
+（&lt;code&gt;cn&lt;/code&gt;）、&lt;code&gt;group_member_attribute&lt;/code&gt;（默认同时为 &lt;code&gt;memberUid&lt;/code&gt; 和 &lt;code&gt;member&lt;/code&gt;），
+以及没有默认值的 &lt;code&gt;totp_attribute&lt;/code&gt;。&lt;code&gt;sambaNTPassword&lt;/code&gt; 和
+&lt;code&gt;sshPublicKey&lt;/code&gt; 就按这些名称读取。&lt;code&gt;member&lt;/code&gt; 的值是一个 DN，只有当它是
+人员搜索所返回的某人的 DN 时才会计入：位于目录树其他位置的
+&lt;code&gt;uid=alice&lt;/code&gt; 并不是 alice。这些默认值（自
+v0.30.0 起）读取 go-authn/authnd v0.11.0 所发布的内容；此前它们仅为
+&lt;code&gt;(objectClass=posixAccount)&lt;/code&gt; 和 &lt;code&gt;(objectClass=posixGroup)&lt;/code&gt;，而面对
+机构自己的目录服务，它们现在会读取更多条目。&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;不向另一台机器发起明文绑定（自 v0.19.0 起）&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;users &amp;quot;ldap&amp;quot;&lt;/code&gt; 块会拒绝指向另一台机器的 &lt;code&gt;ldap://&lt;/code&gt;，除非
+设置 &lt;code&gt;start_tls = true&lt;/code&gt;：绑定所检查的每个密码都会以明文
+穿过网络。&lt;code&gt;ldaps://&lt;/code&gt; 会被接受，指向回环
+地址的 &lt;code&gt;ldap://&lt;/code&gt; 和 &lt;code&gt;ldapi://&lt;/code&gt; 也会被接受，因为途中没有任何人。
+没有任何开关可以关闭这一点（go-authn/directory v0.10.0）。&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="order-and-the-one-exception"&gt;顺序，以及唯一的例外&lt;span class="hx:absolute hx:-mt-20" id="order-and-the-one-exception"&gt;&lt;/span&gt;
+&lt;a href="#order-and-the-one-exception" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;各来源&lt;strong&gt;按书写的顺序&lt;/strong&gt;被询问，第一个认识某个名称的来源就拥有它。
+&lt;code&gt;user&lt;/code&gt; 和 &lt;code&gt;group&lt;/code&gt; 块排在最前，因此在本地写明的服务
+账户不会被 LDAP 中的同名人员覆盖。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;组是例外&lt;/strong&gt;：组的成员是所有来源的&lt;strong&gt;并集&lt;/strong&gt;，
+因为一个团队可能既有文件中的人员，也有数据库中的人员。&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;photos&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; allow&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;@engineers&amp;#34;, &amp;#34;alice&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; writers&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;@owners&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="复制代码"
+aria-label="复制代码"
+data-copied-label="已复制！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;在启动时展开，并在每次重新加载时再次展开&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;自 v0.10.0 起，&lt;code&gt;users&lt;/code&gt; 块（SQL、LDAP）会在每个
+&lt;code&gt;reload = &amp;quot;5m&amp;quot;&lt;/code&gt; 间隔、收到 &lt;code&gt;SIGHUP&lt;/code&gt; 时以及调用管理 API 的 &lt;code&gt;ReloadDirectory&lt;/code&gt; 时重新读取；
+LDAP 中变化的成员关系不再需要等待重启。重新加载
+哪些内容原地应用、哪些内容需要重启，以及为什么清空的组&lt;strong&gt;不会&lt;/strong&gt;把它的
+共享开放给所有人，请参见
+&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/administration/reload/"&gt;重新读取目录服务&lt;/a&gt;。目录服务
+仍然不会在每次连接时被询问：那是另一种设计，而这里
+不是。&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="what-a-source-can-prove-and-what-each-protocol-needs"&gt;来源能够证明什么，以及每个协议需要什么&lt;span class="hx:absolute hx:-mt-20" id="what-a-source-can-prove-and-what-each-protocol-needs"&gt;&lt;/span&gt;
+&lt;a href="#what-a-source-can-prove-and-what-each-protocol-needs" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;否则站点只能在挂载时才发现这部分内容，所以 &lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt;
+会首先说明：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;来源具有&lt;/th&gt;
+&lt;th&gt;SMB&lt;/th&gt;
+&lt;th&gt;S3&lt;/th&gt;
+&lt;th&gt;WebDAV&lt;/th&gt;
+&lt;th&gt;SFTP&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;密码（文件，或明文列）&lt;/td&gt;
+&lt;td&gt;是&lt;/td&gt;
+&lt;td&gt;是&lt;/td&gt;
+&lt;td&gt;是&lt;/td&gt;
+&lt;td&gt;—&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;NT 哈希（&lt;code&gt;sambaNTPassword&lt;/code&gt;、&lt;code&gt;nt_hash&lt;/code&gt;）&lt;/td&gt;
+&lt;td&gt;是&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;否&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;—&lt;/td&gt;
+&lt;td&gt;—&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;仅有绑定（LDAP）&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;否&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;否&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;是&lt;/td&gt;
+&lt;td&gt;—&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;公钥，或受信任的 CA&lt;/td&gt;
+&lt;td&gt;—&lt;/td&gt;
+&lt;td&gt;—&lt;/td&gt;
+&lt;td&gt;—&lt;/td&gt;
+&lt;td&gt;是&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;NTLMv2 需要密码或其 MD4，其他任何东西都不行&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;客户端从不向 SMB 服务器发送密码，它发送的是由密码
+计算出的证明，因此只能&lt;em&gt;检查&lt;/em&gt;密码的目录服务无法
+应答 SMB，无论这种检查有多好。这是协议的属性，
+而不是本程序的限制，再多的配置也无法
+改变它。WebDAV 只问“这个密码对不对”，绑定可以回答这个问题。&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;目录服务指明了某人却无法为其证明任何内容，这是合理的，
+就像机密存放在别处的列表一样，而 &lt;code&gt;check&lt;/code&gt; 会用一行说明这一点，
+而不是让人自己去发现。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="people-the-identity-provider-names-not-this-file"&gt;由身份提供方而非本文件指明的人员&lt;span class="hx:absolute hx:-mt-20" id="people-the-identity-provider-names-not-this-file"&gt;&lt;/span&gt;
+&lt;a href="#people-the-identity-provider-names-not-this-file" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;联盟（比如通过
+&lt;a href="https://github.com/go-authn/bridge" target="_blank" rel="noopener"&gt;go-authn/bridge&lt;/a&gt; 接入的 RENATER）知道谁属于某个
+项目，共享可以向&lt;strong&gt;它&lt;/strong&gt;询问，而不必复制名单。使用
+&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/protocols/webdav/#a-token-over-the-one-protocol-that-can-carry-one"&gt;&lt;code&gt;oidc&lt;/code&gt; 块&lt;/a&gt;：&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;photos&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/photos.img&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; allow&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;oidc:groups:urn:mace:univ-example.fr:photos&amp;#34;, &amp;#34;oidc:user:bob@univ-example.fr&amp;#34;, &amp;#34;alice&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; writers&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;oidc:groups:urn:mace:univ-example.fr:photos&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="复制代码"
+aria-label="复制代码"
+data-copied-label="已复制！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;oidc:groups:&amp;lt;value&amp;gt;&lt;/code&gt; 指其令牌的组声明中包含该值的人；
+&lt;code&gt;oidc:user:&amp;lt;name&amp;gt;&lt;/code&gt; 指令牌所指明的人。这种写法沿用 opkssh 的，
+这样同一套词汇既说明谁能进入 shell，也说明谁能访问共享。
+规则所指明的人，就提供方而言是本服务器所认识的（开放的
+共享也是如此），而没有任何规则指明的人仍然是陌生人。同样的规则
+适用于 &lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/protocols/sftp/#people-the-identity-provider-vouches-for"&gt;SFTP&lt;/a&gt;，
+只是组随证书而不是令牌传递。&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;规则只针对提供方的人员&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;oidc:user:bob&lt;/code&gt; 是提供方所担保的那位 bob；一个名为
+bob、带有密码的本地账户是另一个人，不匹配任何规则。没有
+&lt;code&gt;oidc&lt;/code&gt; 块的规则、格式错误的规则，或者可以写入却不被允许
+连接的规则，会在&lt;strong&gt;启动时被拒绝&lt;/strong&gt;。&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;除非明确说明，提供方的 &lt;code&gt;alice&lt;/code&gt; 不是本地的 &lt;code&gt;alice&lt;/code&gt;（自 v0.20.0 起）&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;allow&lt;/code&gt; 或 &lt;code&gt;writers&lt;/code&gt; 中的普通名称是本地账户；令牌或
+提供方证书只能通过共享的 &lt;code&gt;oidc:&lt;/code&gt; 规则访问。提供方的名称
+就是其本地名称的站点，需要在 &lt;code&gt;oidc&lt;/code&gt; 块中写 &lt;code&gt;local_names = true&lt;/code&gt;，
+并且应同时设置 &lt;code&gt;domains&lt;/code&gt;，或者从提供方所控制的
+声明中取得名称：否则，在允许人员自行选择
+&lt;code&gt;preferred_username&lt;/code&gt; 的提供方，任何注册的人都会获得
+某个本地账户的共享，包括写入权限。这在 v0.20.0 之前是默认行为
+（安全审计 F4）。因缺少 &lt;code&gt;local_names&lt;/code&gt; 而被拒绝的联盟名称
+会连同应添加的那一行一起记入日志，而 &lt;code&gt;fileshare check&lt;/code&gt; 会说明
+生效的是哪条规则。&lt;/p&gt;
+&lt;p&gt;NFS 客户端证书（&lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt;）是例外：
+它们的 CA 正是 &lt;code&gt;client_ca_file&lt;/code&gt; 为此而固定的那个，而普通
+名称是 NFS 共享指明某人的唯一方式，因此无论 &lt;code&gt;local_names&lt;/code&gt; 如何设置，
+它们的名称都是本地名称。&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h3 data-hextra-search-id="which-institutions"&gt;哪些机构&lt;span class="hx:absolute hx:-mt-20" id="which-institutions"&gt;&lt;/span&gt;
+&lt;a href="#which-institutions" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;oidc&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; issuer&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://login.example.org&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; audience&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;fileshare&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; domains&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;univ-a.fr&amp;#34;, &amp;#34;univ-b.fr&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="c1"&gt; # 联盟中的其他人一律不得进入
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;projet-x&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/projet-x.img&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; allow&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;oidc:groups:urn:mace:univ-a.fr:projet-x&amp;#34;, &amp;#34;oidc:domain:univ-b.fr&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; writers&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;oidc:groups:urn:mace:univ-a.fr:projet-x&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="复制代码"
+aria-label="复制代码"
+data-copied-label="已复制！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;domains&lt;/code&gt; 在身份验证时检查，SFTP 和 WebDAV 都一样，也适用于
+NFS 客户端证书：名称必须
+是 &lt;code&gt;&amp;lt;something&amp;gt;@&amp;lt;其中之一&amp;gt;&lt;/code&gt;，并且整体比较（&lt;code&gt;evilunivb.fr&lt;/code&gt; 不是
+&lt;code&gt;univb.fr&lt;/code&gt;）。&lt;code&gt;oidc:domain:&lt;/code&gt; 是针对单个共享的同一项测试。该域名
+的可信程度取决于提供方：go-authn/bridge 会丢弃其 IdP 的联盟
+元数据未授予相应作用域的 eppn 或 subject-id。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;组&lt;/strong&gt;是机构的 IdP 所释放的内容，由 go-authn/bridge 的
+&lt;code&gt;claims { groups = [...] }&lt;/code&gt; 转换为 &lt;code&gt;groups&lt;/code&gt;
+声明：默认是 &lt;code&gt;eduPersonEntitlement&lt;/code&gt;
+（实验室或虚拟组织的组），或者是 &lt;code&gt;eduPersonScopedAffiliation&lt;/code&gt;
+（&lt;code&gt;staff@univ-a.fr&lt;/code&gt;、&lt;code&gt;student@univ-b.fr&lt;/code&gt;）。&lt;/p&gt;</description></item></channel></rss>

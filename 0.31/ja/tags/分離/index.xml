@@ -1,0 +1,86 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – 分離</title><link>https://go-fileshare.github.io/docs/0.31/ja/tags/%E5%88%86%E9%9B%A2/</link><description>Recent content in 分離 on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>ja</language><atom:link href="https://go-fileshare.github.io/docs/0.31/ja/tags/%E5%88%86%E9%9B%A2/index.xml" rel="self" type="application/rss+xml"/><item><title>プロトコルごとに 1 プロセス</title><link>https://go-fileshare.github.io/docs/0.31/ja/operations/isolation/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/ja/operations/isolation/</guid><description>
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;fileshare --config /etc/fileshare.d --isolate&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="コードをコピー"
+aria-label="コードをコピー"
+data-copied-label="コピーしました！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;pre&gt;&lt;code&gt;smb on 0.0.0.0:445 — process 19810, serving public, photos and scratch
+webdav on 0.0.0.0:8080 — process 19811, serving public and photos
+nfs on 0.0.0.0:2049 — process 19812, serving public&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="コードをコピー"
+aria-label="コードをコピー"
+data-copied-label="コピーしました！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;親プロセスがリスナーをバインドし、その後プロトコルごとに&lt;strong&gt;自分自身&lt;/strong&gt;を exec して、
+各子プロセスにはそのプロトコルが提供してよい共有だけを渡します。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="checked-with-lsof-not-by-reading-the-code"&gt;コードを読むのではなく、&lt;code&gt;lsof&lt;/code&gt; で確認する&lt;span class="hx:absolute hx:-mt-20" id="checked-with-lsof-not-by-reading-the-code"&gt;&lt;/span&gt;
+&lt;a href="#checked-with-lsof-not-by-reading-the-code" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;pre&gt;&lt;code&gt;smb (pid 19810) has open: scratch.img photos.img
+webdav (pid 19811) has open: photos.img
+nfs (pid 19812) has open: photos.img&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="コードをコピー"
+aria-label="コードをコピー"
+data-copied-label="コピーしました！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;書き込み可能なイメージが開かれているのは&lt;strong&gt;ちょうど 1 つのプロセス&lt;/strong&gt;だけで、WebDAV の子プロセスは
+それをまったく開きません。&lt;/p&gt;
+&lt;p&gt;これは&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/operations/build-tags/"&gt;ビルドタグ&lt;/a&gt;では得られないものです。あるプロトコルでの
+パニックやヒープの枯渇が影響するのは、そのプロトコルだけです。各子プロセスはオペレーティングシステムが
+提供するあらゆる手段で隔離でき、あるパーサーのバグが、そのプロセスが一度も開いていない
+イメージに到達することはありません。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="privileged-ports"&gt;特権ポート&lt;span class="hx:absolute hx:-mt-20" id="privileged-ports"&gt;&lt;/span&gt;
+&lt;a href="#privileged-ports" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Unix では、親プロセスがバインド済みのリスナーを子プロセスに渡すので、&lt;strong&gt;特権ポートも特権のない
+子プロセスで使えます&lt;/strong&gt;。親プロセスが 445 をバインドし、子プロセスは特権を必要としません。&lt;/p&gt;
+&lt;p&gt;Windows には &lt;code&gt;ExtraFiles&lt;/code&gt; がないため、子プロセスが自分でアドレスをバインドします。分離は同じですが、
+特権ポートに関する利点は得られません。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="the-rule-that-makes-it-honest"&gt;誠実さを保つルール&lt;span class="hx:absolute hx:-mt-20" id="the-rule-that-makes-it-honest"&gt;&lt;/span&gt;
+&lt;a href="#the-rule-that-makes-it-honest" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;子プロセスは自分でイメージを開くため、2 つのプロトコルで&lt;em&gt;書き込み可能&lt;/em&gt;として提供されるイメージは、
+1 つのファイルに対する 2 つのドライバーとなり、その間に&lt;strong&gt;ロックがありません&lt;/strong&gt;。これはまさに、
+1 つのプロセスの内側で&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/operations/locking/"&gt;共有ロック&lt;/a&gt;が防いでいるものです。&lt;/p&gt;
+&lt;p&gt;これは拒否され、拒否メッセージには修正方法が示されます。&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;pre&gt;&lt;code&gt;scratch is writable over smb and webdav, and one process per protocol means
+that many drivers writing one file with no lock between them. Say
+`protocols = [&amp;#34;smb&amp;#34;]` on the share, or make it read_only, or do not isolate.&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="コードをコピー"
+aria-label="コードをコピー"
+data-copied-label="コピーしました！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;共有の &lt;code&gt;protocols = [...]&lt;/code&gt; は、&lt;code&gt;--isolate&lt;/code&gt; のときだけでなく単独でも有用です。SMB 専用と宣言した
+共有は、WebDAV プロセスには一切通知されません。結果として何も提供しなくなる &lt;code&gt;serve&lt;/code&gt; ブロックも、
+イメージを開く前に拒否され、そこから除外された共有とその理由が示されます。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="not-with-an-admin-or-a-metrics-block-yet"&gt;&lt;code&gt;admin&lt;/code&gt; ブロックや &lt;code&gt;metrics&lt;/code&gt; ブロックとは、まだ併用できません&lt;span class="hx:absolute hx:-mt-20" id="not-with-an-admin-or-a-metrics-block-yet"&gt;&lt;/span&gt;
+&lt;a href="#not-with-an-admin-or-a-metrics-block-yet" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;--isolate&lt;/code&gt; を &lt;a href="https://go-fileshare.github.io/docs/0.31/ja/administration/"&gt;&lt;code&gt;admin&lt;/code&gt;&lt;/a&gt; ブロックや
+&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/administration/health/"&gt;&lt;code&gt;metrics&lt;/code&gt;&lt;/a&gt; ブロックと併用することは拒否されます。
+イメージを開くのは子プロセスで、親プロセスは何も開かないため、API の変更を適用できる単一のプロセスも、
+プローブが準備状態を尋ねる単一のプロセスも存在しないからです。&lt;/p&gt;</description></item></channel></rss>

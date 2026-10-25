@@ -1,0 +1,93 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Check</title><link>https://go-fileshare.github.io/docs/0.31/ja/tags/check/</link><description>Recent content in Check on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>ja</language><atom:link href="https://go-fileshare.github.io/docs/0.31/ja/tags/check/index.xml" rel="self" type="application/rss+xml"/><item><title>check: 人が使っているものを再起動する前に</title><link>https://go-fileshare.github.io/docs/0.31/ja/configuration/check/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/ja/configuration/check/</guid><description>
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;pre&gt;&lt;code&gt;$ fileshare check /etc/fileshare.d
+ATTIC
+SHARE IMAGE FILESYSTEM WHO MAY CONNECT WHO MAY WRITE SMB WEBDAV NFS SFTP
+photos /srv/photos.img fat32 alice and bob alice yes yes NO yes
+scratch /srv/scratch.img ext4 anyone who authenticates anyone who authenticates yes yes yes yes
+photos is not served over nfs: it is restricted to alice and bob, and NFSv3 on its own has no authentication: AUTH_UNIX is a claim the client makes about itself and the wire cannot disagree with it. A kerberos block lifts this: sec=krb5 carries a principal a ticket proves; so does identity = &amp;#34;certificate&amp;#34; on the nfs serve block: RPC-over-TLS with a client certificate naming the person
+USER FROM AUTHENTICATES WITH SMB WEBDAV SFTP
+alice the configuration file a password and 1 key from /etc/…/alice.pw yes yes yes
+bob the configuration file a password from /etc/…/bob.pw yes yes -
+dora ldaps://ldap.example.org a password check and an NT hash yes yes -
+eli ldaps://ldap.example.org a password check - yes -
+this configuration can be served&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="コードをコピー"
+aria-label="コードをコピー"
+data-copied-label="コピーしました！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;すべてのイメージは、サーバーが開くのと同じ方法で開かれ、また閉じられます。何も
+提供されません。&lt;code&gt;read_only = true&lt;/code&gt; を指定していない共有では、これは&lt;strong&gt;読み書き&lt;/strong&gt;で開くことを意味します。
+常に読み取り専用かつ排他的に開かれるのはデバイスだけで、そのため実行中のサーバーが
+保持しているデバイスは、ここでビジー状態として拒否されることがあります。&lt;/p&gt;
+&lt;p&gt;出力されるのは&lt;strong&gt;認証情報の出所であり、その中身ではありません&lt;/strong&gt;。人ごとの列があるのは、
+&lt;a href="https://github.com/go-authn/directory" target="_blank" rel="noopener"&gt;&lt;code&gt;Identity.Can&lt;/code&gt;&lt;/a&gt; が存在する理由そのものです。
+eli は dora と同じグループにいますが、LDAP が彼のパスワードを保持していて誰にも渡さないため、
+SMB では依然として彼にサービスを提供できません。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="reading-the-columns"&gt;列の読み方&lt;span class="hx:absolute hx:-mt-20" id="reading-the-columns"&gt;&lt;/span&gt;
+&lt;a href="#reading-the-columns" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;アスタリスク付きのファイルシステム&lt;/td&gt;
+&lt;td&gt;ドライバーは共有によって&lt;strong&gt;主張された&lt;/strong&gt;ものであり、認識されたものではない。&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/configuration/shares/"&gt;共有&lt;/a&gt;を参照&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;プロトコルの下の &lt;code&gt;NO&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;その共有はそこではエクスポートされず、理由が表の下に出力される&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;共有ごとの、プロトコルの下の &lt;code&gt;-&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;共有の &lt;code&gt;protocols&lt;/code&gt; がそのプロトコルを除外している&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;ユーザーごとの、プロトコルの下の &lt;code&gt;-&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;その人のソースでは、そのプロトコルが必要とするものを証明できない。&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/configuration/identity/"&gt;ID&lt;/a&gt;を参照&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2 data-hextra-search-id="what-else-it-says"&gt;ほかに表示される内容&lt;span class="hx:absolute hx:-mt-20" id="what-else-it-says"&gt;&lt;/span&gt;
+&lt;a href="#what-else-it-says" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;表の後に、該当する場合、設定を信頼する前に知っておくべきことを &lt;code&gt;check&lt;/code&gt; が伝えます。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;oidc&lt;/code&gt; ブロックがある場合は、そのトークンが WebDAV でのみ受け入れられること、および
+プロバイダーの名前がローカル名として扱われるかどうか(&lt;code&gt;local_names&lt;/code&gt;)。
+&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;ID&lt;/a&gt;を参照。&lt;/li&gt;
+&lt;li&gt;プロトコルごとに、何が&lt;strong&gt;暗号化&lt;/strong&gt;されていて、何が&lt;strong&gt;意図的に平文&lt;/strong&gt;であるか。
+&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/security/tls/#what-check-says"&gt;TLS&lt;/a&gt;を参照。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;失効リスト&lt;/strong&gt;の取得元と、取得できない間に何が起こるか。
+&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/security/"&gt;何が何を失効させるか&lt;/a&gt;を参照。&lt;/li&gt;
+&lt;li&gt;管理 API の &lt;code&gt;DisableShare&lt;/code&gt; で&lt;strong&gt;オフライン化&lt;/strong&gt;され、提供されていない共有。
+&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/administration/#disabling-a-share"&gt;管理 API&lt;/a&gt;を参照。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;KRL、証明書による NFS の ID、共有シグナルを使うサーバーでは、この部分は次のようになります。&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;pre&gt;&lt;code&gt;sftp: the provider&amp;#39;s SSH certificates are checked against the KRL at https://bridge.example.org/ssh/krl, at login and on every operation; while it is unknown or older than 1h0m0s they are refused
+federated people: revocations come from the shared signals transmitter https://bridge.example.org (CAEP session-revoked, polled); whatever the provider issued them before a revocation is refused -- tokens, SSH and OpenPubkey certificates, NFS certificates -- and open sessions stop. Refused while it is not heard from within 10m0s; revocations kept 192h0m0s in /var/lib/fileshare/revocations.json
+nfs: identities come from client certificates signed by /etc/fileshare/bridge-x509-ca.pem, revoked by the CRL at https://bridge.example.org/x509/crl (refused while it is unknown or older than 1h0m0s).
+⛔ a Linux client&amp;#39;s certificate belongs to a MOUNT: every user of that mount is the person it names&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="コードをコピー"
+aria-label="コードをコピー"
+data-copied-label="コピーしました！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;check&lt;/code&gt; はリストを取得しません。取得元と、それが得られない場合に何が起こるかを伝えるだけです。
+一方、ID プロバイダーのディスカバリードキュメントと鍵は&lt;strong&gt;読み取られます&lt;/strong&gt;。
+発行者に到達できない &lt;code&gt;oidc&lt;/code&gt; ブロックは、&lt;code&gt;check&lt;/code&gt; によって拒否されます。&lt;/p&gt;</description></item></channel></rss>

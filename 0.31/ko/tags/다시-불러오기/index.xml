@@ -1,0 +1,90 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – 다시 불러오기</title><link>https://go-fileshare.github.io/docs/0.31/ko/tags/%EB%8B%A4%EC%8B%9C-%EB%B6%88%EB%9F%AC%EC%98%A4%EA%B8%B0/</link><description>Recent content in 다시 불러오기 on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>ko</language><atom:link href="https://go-fileshare.github.io/docs/0.31/ko/tags/%EB%8B%A4%EC%8B%9C-%EB%B6%88%EB%9F%AC%EC%98%A4%EA%B8%B0/index.xml" rel="self" type="application/rss+xml"/><item><title>디렉터리 다시 읽기</title><link>https://go-fileshare.github.io/docs/0.31/ko/administration/reload/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/ko/administration/reload/</guid><description>
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;reload&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;5m&amp;#34;&lt;/span&gt; &lt;span class="err"&gt;#&lt;/span&gt; &lt;span class="k"&gt;and&lt;/span&gt; &lt;span class="k"&gt;on&lt;/span&gt; &lt;span class="k"&gt;SIGHUP&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;and&lt;/span&gt; &lt;span class="k"&gt;on&lt;/span&gt; &lt;span class="k"&gt;the&lt;/span&gt; &lt;span class="k"&gt;admin&lt;/span&gt; &lt;span class="k"&gt;API&lt;/span&gt;&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="k"&gt;s&lt;/span&gt; &lt;span class="k"&gt;ReloadDirectory&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="코드 복사"
+aria-label="코드 복사"
+data-copied-label="복사됨!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;사용자 정보는 다른 시스템이 변경하는 디렉터리에서 가져옵니다. go-authn/bridge는
+애플리케이션 비밀번호를 테이블에 기록하고, 사용자가 비활성화되면 그 행을
+삭제합니다. 다시 불러오기가 없으면 서버는 시작 시점에 있던 사용자만 계속
+제공합니다. v0.10.0부터는 다음 시점에 다시 읽습니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;reload&lt;/code&gt; 간격마다, 즉 &lt;strong&gt;최소 1초&lt;/strong&gt; 이상의 Go duration. 디렉터리를 초당 여러 번
+읽는 것은 서버를 더 최신으로 만드는 것이 아니라 누군가의 데이터베이스에
+부하를 주는 일입니다.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;SIGHUP&lt;/code&gt;&lt;/strong&gt;(Unix) 수신 시&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/administration/"&gt;관리 API&lt;/a&gt;의 &lt;strong&gt;&lt;code&gt;ReloadDirectory&lt;/code&gt;&lt;/strong&gt;
+호출 시. 이 호출은 추가, 제거, 변경된 사용자, 새 세대가 시작되었는지 여부,
+그리고 사람이 읽어 보아야 할 참고 사항(더 이상 존재하지 않거나 구성원이 없는
+그룹, 공유가 지정하지만 디렉터리에 더 이상 없는 사용자)으로 응답합니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;code&gt;reload&lt;/code&gt;가 없으면 디렉터리는 시작할 때, &lt;code&gt;SIGHUP&lt;/code&gt; 수신 시, &lt;code&gt;ReloadDirectory&lt;/code&gt;
+호출 시에만 읽습니다.&lt;/p&gt;
+&lt;p&gt;다시 읽는 대상은 &lt;code&gt;users&lt;/code&gt; 블록(SQL, LDAP)입니다. 구성 파일의 &lt;code&gt;user&lt;/code&gt; 및 &lt;code&gt;group&lt;/code&gt;
+블록은 &lt;strong&gt;그 자체가&lt;/strong&gt; 구성이며 시작할 때 읽습니다.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-a-reload-does-depends-on-what-changed"&gt;다시 불러오기의 동작은 무엇이 바뀌었는지에 따라 다릅니다&lt;span class="hx:absolute hx:-mt-20" id="what-a-reload-does-depends-on-what-changed"&gt;&lt;/span&gt;
+&lt;a href="#what-a-reload-does-depends-on-what-changed" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;기준선은 &lt;strong&gt;폐기&lt;/strong&gt;에 그어져 있습니다.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;변경된 것&lt;/th&gt;
+&lt;th&gt;일어나는 일&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;추가만&lt;/strong&gt; — 새로 온 사용자가 어떤 공유의 확장된 목록도 바꾸지 않는 경우(새 애플리케이션 비밀번호, 공유가 &lt;code&gt;oidc:&lt;/code&gt; 규칙으로 도달하거나 전혀 도달하지 않는 사용자)&lt;/td&gt;
+&lt;td&gt;SMB의 실행 중인 서버를 포함해 &lt;strong&gt;제자리에서&lt;/strong&gt; 추가되며, &lt;strong&gt;어떤 연결도 건드리지 않습니다&lt;/strong&gt;. 브릿지가 하루 종일 애플리케이션 비밀번호를 만들어도 아무에게도 지장을 주지 않습니다.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;무언가가 제거됨&lt;/strong&gt; — 사용자가 사라짐, 자격 증명이 바뀜, 확장된 목록이 바뀐 공유&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;새 세대&lt;/strong&gt;가 시작되고 이전 세대의 연결은 &lt;strong&gt;닫힙니다&lt;/strong&gt;. &lt;a href="https://go-fileshare.github.io/docs/0.31/ko/administration/#a-change-is-a-new-generation"&gt;관리 변경&lt;/a&gt;과 정확히 같습니다. 사용자가 제거된 뒤에도 살아남은 세션이야말로 다시 불러오기가 끝내기 위해 존재하는 대상입니다.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;읽을 수 없는 디렉터리&lt;/strong&gt; — 데이터베이스에 접근할 수 없음, 쿼리 실패&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;아무것도 바뀌지 않습니다&lt;/strong&gt;. 장애로 파일 서버가 비어서는 안 되며, 읽기 실패는 &amp;ldquo;아무도 없음&amp;quot;처럼 보이기 때문입니다.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;공유가 지정한 그룹에 새로 들어온 사용자는 그 공유를 &lt;em&gt;바꾸며&lt;/em&gt;, 그 공유에 대한 다른
+변경과 마찬가지로 새 세대를 거칩니다. SMB는 시작할 때 공유의 목록을 확정하기
+때문입니다.&lt;/p&gt;
+&lt;p&gt;사라진 사용자, 또는 더 이상 존재하지 않거나 구성원이 없는 그룹(v0.29.1부터
+구분됨)을 지정한 공유는 시작할 때처럼 거부되지 않고 &lt;strong&gt;그들을 제외한 채&lt;/strong&gt;
+제공되며(안전한 방향), 그 사실이 알려집니다. 거부하면 이전 목록이 유지되는데,
+이전 목록이 바로 방금 회수된 접근 권한이기 때문입니다.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="an-empty-group-is-not-everyone"&gt;빈 그룹은 모든 사람이 아닙니다&lt;span class="hx:absolute hx:-mt-20" id="an-empty-group-is-not-everyone"&gt;&lt;/span&gt;
+&lt;a href="#an-empty-group-is-not-everyone" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;@engineers&lt;/code&gt;를 위해 작성된 공유에서 마지막 엔지니어가 떠나면 아무에게도 제공되지 않습니다&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;빈 &lt;code&gt;allow&lt;/code&gt;는 &amp;ldquo;인증하는 모든 사람&amp;quot;을 뜻합니다. 따라서 공유가 열려 있는지는
+지금 확장된 결과가 아니라 &lt;strong&gt;작성된 내용&lt;/strong&gt;으로 결정됩니다. 그룹을 위해 작성된
+공유는 그 그룹이 비어도 닫힌 채로 유지됩니다. 이런 공유는 SMB로는 아예
+제공되지 않습니다. 빈 &lt;code&gt;AllowUsers&lt;/code&gt;는 모든 사람으로 해석되기 때문입니다.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="watching-it"&gt;지켜보기&lt;span class="hx:absolute hx:-mt-20" id="watching-it"&gt;&lt;/span&gt;
+&lt;a href="#watching-it" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;fileshare_directory_reloads_total{result}&lt;/code&gt;는 아무것도 찾지 못한 다시 불러오기
+(&lt;code&gt;unchanged&lt;/code&gt;), 제자리에서 추가한 경우(&lt;code&gt;added&lt;/code&gt;), 세대를 시작한 경우(&lt;code&gt;swapped&lt;/code&gt;),
+디렉터리를 읽지 못한 경우(&lt;code&gt;failed&lt;/code&gt;)를 집계합니다. &lt;code&gt;fileshare_directory_people&lt;/code&gt;은
+마지막으로 읽었을 때의 사용자 수입니다. &lt;a href="https://go-fileshare.github.io/docs/0.31/ko/administration/health/"&gt;상태 점검과 메트릭&lt;/a&gt;을 참고하십시오.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;다시 불러오기가 미치지 않는 것&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;ID 공급자가 토큰이나 인증서로 보증하는 사용자는 디렉터리에 없으므로 다시
+불러오기와 무관합니다. &lt;strong&gt;이들&lt;/strong&gt;을 회수하는 것은
+&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/security/"&gt;폐기 목록과 공유 신호&lt;/a&gt;의 역할입니다.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;</description></item></channel></rss>

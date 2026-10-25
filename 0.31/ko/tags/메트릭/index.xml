@@ -1,0 +1,148 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – 메트릭</title><link>https://go-fileshare.github.io/docs/0.31/ko/tags/%EB%A9%94%ED%8A%B8%EB%A6%AD/</link><description>Recent content in 메트릭 on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>ko</language><atom:link href="https://go-fileshare.github.io/docs/0.31/ko/tags/%EB%A9%94%ED%8A%B8%EB%A6%AD/index.xml" rel="self" type="application/rss+xml"/><item><title>상태 점검과 메트릭</title><link>https://go-fileshare.github.io/docs/0.31/ko/administration/health/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/ko/administration/health/</guid><description>
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;metrics { listen&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;127.0.0.1:9100&amp;#34;&lt;/span&gt; } &lt;span class="err"&gt;#&lt;/span&gt; &lt;span class="k"&gt;or&lt;/span&gt; &lt;span class="k"&gt;unix&lt;/span&gt;&lt;span class="err"&gt;:///&lt;/span&gt;&lt;span class="k"&gt;run&lt;/span&gt;&lt;span class="err"&gt;/&lt;/span&gt;&lt;span class="k"&gt;fileshare&lt;/span&gt;&lt;span class="err"&gt;/&lt;/span&gt;&lt;span class="k"&gt;metrics&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="k"&gt;sock&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="코드 복사"
+aria-label="코드 복사"
+data-copied-label="복사됨!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;a href="https://github.com/go-net-health/endpoint" target="_blank" rel="noopener"&gt;go-net-health/endpoint&lt;/a&gt;가 전용
+리스너에서 제공하는 세 개의 엔드포인트입니다. &lt;strong&gt;프로토콜이 사용하는 포트는
+결코 쓰지 않으므로&lt;/strong&gt;, WebDAV에 접근할 수 있는 외부에서는 이 엔드포인트에
+닿지 않습니다.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;/healthz&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;프로세스가 응답합니다&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;/readyz&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;모든 프로토콜이 바인딩되어 있고 &lt;strong&gt;또한&lt;/strong&gt; 한 세대가 제공 중입니다. 시작 중, &lt;a href="https://go-fileshare.github.io/docs/0.31/ko/administration/#a-change-is-a-new-generation"&gt;변경 적용 중&lt;/a&gt; 또는 중지 중에는 &lt;code&gt;503&lt;/code&gt;과 함께 본문에 그 이유가 표시됩니다&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;/metrics&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Prometheus 텍스트 형식&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;유닉스 소켓은 &lt;code&gt;unix:///like/this&lt;/code&gt;처럼 절대 경로로 지정합니다. 그 외에는 모두
+&lt;code&gt;host:port&lt;/code&gt;여야 하며, 그렇지 않으면 블록이 거부됩니다.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-is-measured"&gt;측정 항목&lt;span class="hx:absolute hx:-mt-20" id="what-is-measured"&gt;&lt;/span&gt;
+&lt;a href="#what-is-measured" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;메트릭&lt;/th&gt;
+&lt;th&gt;집계 대상&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;fileshare_shares{origin}&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;제공 중인 공유. &lt;code&gt;origin&lt;/code&gt; = &lt;code&gt;config&lt;/code&gt; 또는 &lt;code&gt;api&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;fileshare_shares_disabled&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;관리 API로 오프라인 처리된 공유&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;fileshare_generation&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;시작 이후 제공된 공유 목록의 수&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;fileshare_connections_accepted_total{protocol}&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;수락된 연결&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;fileshare_connections_open{protocol}&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;현재 열려 있는 연결&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;fileshare_admin_changes_total{result}&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;관리 변경. &lt;code&gt;applied&lt;/code&gt; 또는 &lt;code&gt;refused&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;fileshare_admin_requests_total{method,code}&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;메서드와 gRPC 상태별 관리 API 호출&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;fileshare_directory_people&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;마지막으로 읽었을 때 디렉터리가 보유한 사용자&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;fileshare_directory_reloads_total{result}&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/administration/reload/"&gt;다시 불러오기&lt;/a&gt;: &lt;code&gt;unchanged&lt;/code&gt;, &lt;code&gt;added&lt;/code&gt;, &lt;code&gt;swapped&lt;/code&gt;, &lt;code&gt;failed&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;fileshare_revocation_list_age_seconds{list}&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/security/revocation-lists/"&gt;폐기 목록&lt;/a&gt;의 마지막 정상 사본의 경과 시간. 한 번도 가져오지 못했으면 &lt;code&gt;-1&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;fileshare_revocation_list_fetch_failures_total{list}&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;해당 목록의 가져오기 실패 횟수&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;fileshare_ssf_last_heard_seconds&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/security/shared-signals/"&gt;공유 신호&lt;/a&gt; 전송자가 마지막으로 응답한 이후의 초. 한 번도 없으면 &lt;code&gt;-1&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;fileshare_ssf_revoked_subjects&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;공급자가 이전 자격 증명을 폐기한 사용자(현재 보관 중인 기준)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;fileshare_sftp_domain_grant_total{result}&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/protocols/sftp/#certificates-meant-for-this-host-the-domain-grant"&gt;&lt;code&gt;ssh_domains&lt;/code&gt;&lt;/a&gt;에 조회된 SFTP 인증서: &lt;code&gt;granted&lt;/code&gt;, &lt;code&gt;accepted_ungranted&lt;/code&gt;, &lt;code&gt;refused_not_granted&lt;/code&gt;, &lt;code&gt;refused_absent&lt;/code&gt;, &lt;code&gt;refused_malformed&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;fileshare_start_time_seconds&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;이 프로세스가 시작된 시각&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;여기에 Go 런타임과 빌드 정보가 더해집니다. 폐기 및 공유 신호 계열은 구성에
+목록이나 &lt;code&gt;ssf&lt;/code&gt; 블록이 있을 때만, 도메인 부여 계열은 &lt;code&gt;ssh_domains&lt;/code&gt;를 설정했을
+때만, 관리 요청 계열은 &lt;code&gt;admin&lt;/code&gt; 블록이 있을 때만 나타납니다.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;어떤 메트릭도 공유나 사용자의 이름을 담지 않습니다&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;WebDAV는 누군가 사용할 수 없는 공유에 &lt;strong&gt;404&lt;/strong&gt;로 응답하여 그 공유의 존재가
+확인되지 않도록 하며, 메트릭 수집(scrape)도 이를 확인해 주어서는 안 됩니다.
+레이블은 프로토콜, 출처, 결과, 메서드 이름이며 공유나 사용자는 절대 쓰이지
+않습니다.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="what-to-alert-on"&gt;알림을 설정할 대상&lt;span class="hx:absolute hx:-mt-20" id="what-to-alert-on"&gt;&lt;/span&gt;
+&lt;a href="#what-to-alert-on" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;폐기 검사는 &lt;a href="https://go-fileshare.github.io/docs/0.31/ko/security/#every-one-of-them-fails-closed"&gt;안전하게 차단됩니다(fail closed)&lt;/a&gt;.
+너무 오래된 목록이나 응답이 없는 전송자가 있으면 서버는 그 목록이 관할하는
+자격 증명을 &lt;strong&gt;거부합니다&lt;/strong&gt;. 그 일이 일어난 뒤가 아니라 일어나기 전에 알림을
+받으십시오.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;fileshare_revocation_list_age_seconds&lt;/code&gt;가 &lt;code&gt;ssh_krl_max_age&lt;/code&gt; 또는
+&lt;code&gt;crl_max_age&lt;/code&gt;(기본값 1h)에 근접할 때&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;fileshare_ssf_last_heard_seconds&lt;/code&gt;가 &lt;code&gt;ssf&lt;/code&gt; 블록의 &lt;code&gt;max_age&lt;/code&gt;(기본값 10m)에
+근접할 때&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;fileshare_directory_reloads_total{result=&amp;quot;failed&amp;quot;}&lt;/code&gt;가 증가할 때: 디렉터리를
+읽을 수 없으므로 제거를 포함해 &lt;a href="https://go-fileshare.github.io/docs/0.31/ko/administration/reload/"&gt;아무것도 바뀌지 않습니다&lt;/a&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;--isolate&lt;/code&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;metrics&lt;/code&gt; 블록은 아직 &lt;code&gt;--isolate&lt;/code&gt;와 함께 쓸 수 없으며, 이 조합은 거부됩니다.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;</description></item></channel></rss>
