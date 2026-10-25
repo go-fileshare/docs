@@ -1,0 +1,70 @@
+---
+title: "每个协议一个进程"
+weight: 20
+description: "使用 --isolate 让每个协议运行在各自的进程中，以及保证其安全的规则。"
+tags: [运维, 隔离]
+---
+
+```sh
+fileshare --config /etc/fileshare.d --isolate
+```
+
+```
+smb    on 0.0.0.0:445  — process 19810, serving public, photos and scratch
+webdav on 0.0.0.0:8080 — process 19811, serving public and photos
+nfs    on 0.0.0.0:2049 — process 19812, serving public
+```
+
+父进程绑定监听器，然后为每个协议各 exec **自身**一次，
+只交给每个子进程该协议可以提供的共享。
+
+## 用 `lsof` 验证，而不是读代码 {#checked-with-lsof-not-by-reading-the-code}
+
+```
+smb     (pid 19810) has open: scratch.img photos.img
+webdav  (pid 19811) has open: photos.img
+nfs     (pid 19812) has open: photos.img
+```
+
+可写的映像只在**恰好一个进程**中打开，而 WebDAV 子进程
+根本不会打开它。
+
+这正是[构建标签]({{< relref "/operations/build-tags.md" >}})无法提供的：某个协议中的 panic 或堆耗尽
+只会使一个协议停止，每个子进程都可以通过操作系统
+提供的任何手段加以限制，而某个解析器中的缺陷也无法触及
+该进程从未打开过的映像。
+
+## 特权端口 {#privileged-ports}
+
+在 Unix 上，父进程把已绑定的监听器传给子进程，因此**特权
+端口可以配合无特权的子进程使用**：父进程绑定 445，子进程
+无需该特权。
+
+Windows 没有 `ExtraFiles`，因此在那里由子进程自行绑定地址；
+隔离效果相同，但特权端口这一半则不然。
+
+## 使其名副其实的规则 {#the-rule-that-makes-it-honest}
+
+子进程自行打开映像，因此通过两个协议以*可写*方式提供的映像
+就会是同一个文件上的两个驱动，且**它们之间没有锁**，这恰恰是
+[共享锁]({{< relref "/operations/locking.md" >}})在单个进程内所防止的情形。
+
+这种情况会被拒绝，拒绝信息会说明如何修复：
+
+```
+scratch is writable over smb and webdav, and one process per protocol means
+that many drivers writing one file with no lock between them. Say
+`protocols = ["smb"]` on the share, or make it read_only, or do not isolate.
+```
+
+共享上的 `protocols = [...]` 本身就有用，而不仅仅是在
+`--isolate` 下：声明为仅限 SMB 的共享，WebDAV 进程永远不会
+得知它。最终不承载任何内容的 `serve` 块同样会被拒绝，
+并且发生在打开任何映像之前，同时指明被它排除的共享及原因。
+
+## 目前不能与 `admin` 或 `metrics` 块同时使用 {#not-with-an-admin-or-a-metrics-block-yet}
+
+`--isolate` 与 [`admin`]({{< relref "/administration/_index.md" >}}) 或
+[`metrics`]({{< relref "/administration/health.md" >}}) 块同时使用会被拒绝：由子进程打开
+映像，而父进程什么都不打开，因此没有任何单一进程可供 API
+变更应用，探针也无法询问哪一个进程是否就绪。
