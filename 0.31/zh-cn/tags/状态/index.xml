@@ -1,5 +1,13 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – 状态</title><link>https://go-fileshare.github.io/docs/0.31/zh-cn/tags/%E7%8A%B6%E6%80%81/</link><description>Recent content in 状态 on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><atom:link href="https://go-fileshare.github.io/docs/0.31/zh-cn/tags/%E7%8A%B6%E6%80%81/index.xml" rel="self" type="application/rss+xml"/><item><title>状态</title><link>https://go-fileshare.github.io/docs/0.31/zh-cn/status/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/zh-cn/status/</guid><description>
-&lt;p&gt;本文档描述的是 &lt;strong&gt;fileshare v0.31.0&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;本文档描述的是 &lt;strong&gt;fileshare v0.31.1&lt;/strong&gt;。&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;安全：请使用 v0.31.1，而不是 v0.31.0&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;在 Go 1.27.2 下，&lt;code&gt;govulncheck&lt;/code&gt; 报告 GO-2026-6809 在 fileshare 中可被触及：&lt;code&gt;crypto/x509&lt;/code&gt; 的 &lt;code&gt;Certificate.Verify&lt;/code&gt; 未拒绝已知被攻破的中间证书。该问题已在 Go 1.26.10 和 1.27.3 中修复。&lt;strong&gt;v0.31.0 的发布二进制文件用较旧版本的 Go 构建，受到影响。&lt;/strong&gt; v0.31.1 使用 Go 1.27.3 构建，其 &lt;code&gt;go&lt;/code&gt; 指令为 1.27.3，因此 &lt;code&gt;go install&lt;/code&gt; 会自行切换到已修复的工具链；它的发布二进制文件在 &lt;code&gt;go version -m&lt;/code&gt; 中显示 &lt;code&gt;go1.27.3&lt;/code&gt;。三个界面以同样方式重新构建（portal v0.3.2、console v0.3.5、explorer v0.3.2）：只有工具链改变，行为没有变化。&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
 &lt;h2 data-hextra-search-id="what-each-release-added"&gt;每个版本新增了什么&lt;span class="hx:absolute hx:-mt-20" id="what-each-release-added"&gt;&lt;/span&gt;
 &lt;a href="#what-each-release-added" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
 &lt;thead&gt;
@@ -176,6 +184,10 @@
 &lt;tr&gt;
 &lt;td&gt;v0.31.0&lt;/td&gt;
 &lt;td&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/configuration/as-each-person/"&gt;以每个人的身份提供目录服务&lt;/a&gt;：&lt;code&gt;identity = &amp;quot;system&amp;quot;&lt;/code&gt; 和 &lt;code&gt;identity&lt;/code&gt; 块；以 root 启动的 &lt;code&gt;fileshare serve&lt;/code&gt; 为每个人和每个共享启动一个工作进程，以其 uid、gid 和组运行，并以 &lt;code&gt;service_user&lt;/code&gt; 提供各协议服务。仅限 SFTP 和 WebDAV；uid 0、低于 &lt;code&gt;min_uid&lt;/code&gt; 的 uid 以及 &lt;code&gt;deny_uids&lt;/code&gt; 会被拒绝&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.31.1&lt;/td&gt;
+&lt;td&gt;安全：使用 Go 1.27.3 构建，修复了 GO-2026-6809（&lt;code&gt;crypto/x509&lt;/code&gt;：&lt;code&gt;Certificate.Verify&lt;/code&gt; 未拒绝已知被攻破的中间证书），&lt;code&gt;govulncheck&lt;/code&gt; 报告其可被触及。&lt;code&gt;go install&lt;/code&gt; 现在要求 Go 1.27.3，并会自行切换。依赖更新&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;

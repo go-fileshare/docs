@@ -1,5 +1,13 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – État</title><link>https://go-fileshare.github.io/docs/0.31/fr/tags/%C3%A9tat/</link><description>Recent content in État on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>fr</language><atom:link href="https://go-fileshare.github.io/docs/0.31/fr/tags/%C3%A9tat/index.xml" rel="self" type="application/rss+xml"/><item><title>État</title><link>https://go-fileshare.github.io/docs/0.31/fr/status/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/fr/status/</guid><description>
-&lt;p&gt;Ces pages décrivent &lt;strong&gt;fileshare v0.31.0&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;Ces pages décrivent &lt;strong&gt;fileshare v0.31.1&lt;/strong&gt;.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Sécurité : prenez la v0.31.1, pas la v0.31.0&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Sous Go 1.27.2, &lt;code&gt;govulncheck&lt;/code&gt; signale GO-2026-6809 comme atteignable dans fileshare : &lt;code&gt;Certificate.Verify&lt;/code&gt; de &lt;code&gt;crypto/x509&lt;/code&gt; ne rejetait pas des certificats intermédiaires compromis connus. Le correctif est dans Go 1.26.10 et 1.27.3. &lt;strong&gt;Les binaires de version de la v0.31.0, construits avec un Go plus ancien, sont concernés.&lt;/strong&gt; La v0.31.1 est construite avec Go 1.27.3 et sa directive &lt;code&gt;go&lt;/code&gt; vaut 1.27.3 ; &lt;code&gt;go install&lt;/code&gt; bascule donc de lui-même vers la chaîne d&amp;rsquo;outils corrigée, et ses binaires de version affichent &lt;code&gt;go1.27.3&lt;/code&gt; dans &lt;code&gt;go version -m&lt;/code&gt;. Les trois interfaces sont reconstruites de la même façon (portal v0.3.2, console v0.3.5, explorer v0.3.2) : seule la chaîne d&amp;rsquo;outils change, pas leur comportement.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
 &lt;h2 data-hextra-search-id="what-each-release-added"&gt;Ce que chaque version a ajouté&lt;span class="hx:absolute hx:-mt-20" id="what-each-release-added"&gt;&lt;/span&gt;
 &lt;a href="#what-each-release-added" class="subheading-anchor" aria-label="Lien permanent vers cette section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
 &lt;thead&gt;
@@ -176,6 +184,10 @@
 &lt;tr&gt;
 &lt;td&gt;v0.31.0&lt;/td&gt;
 &lt;td&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/fr/configuration/as-each-person/"&gt;des répertoires servis sous l&amp;rsquo;identité de chacun&lt;/a&gt; : &lt;code&gt;identity = &amp;quot;system&amp;quot;&lt;/code&gt; et un bloc &lt;code&gt;identity&lt;/code&gt; ; &lt;code&gt;fileshare serve&lt;/code&gt; lancé en root démarre un worker par personne et par partage, avec son uid, son gid et ses groupes, et sert les protocoles sous &lt;code&gt;service_user&lt;/code&gt;. SFTP et WebDAV seulement ; l&amp;rsquo;uid 0, les uid sous &lt;code&gt;min_uid&lt;/code&gt; et ceux de &lt;code&gt;deny_uids&lt;/code&gt; sont refusés&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.31.1&lt;/td&gt;
+&lt;td&gt;sécurité : construit avec Go 1.27.3, qui corrige GO-2026-6809 (&lt;code&gt;crypto/x509&lt;/code&gt; : &lt;code&gt;Certificate.Verify&lt;/code&gt; ne rejetait pas des certificats intermédiaires compromis connus), signalé atteignable par &lt;code&gt;govulncheck&lt;/code&gt;. &lt;code&gt;go install&lt;/code&gt; exige désormais Go 1.27.3 et bascule vers lui tout seul. Mises à jour de dépendances&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;

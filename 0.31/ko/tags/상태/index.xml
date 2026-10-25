@@ -1,5 +1,13 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – 상태</title><link>https://go-fileshare.github.io/docs/0.31/ko/tags/%EC%83%81%ED%83%9C/</link><description>Recent content in 상태 on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>ko</language><atom:link href="https://go-fileshare.github.io/docs/0.31/ko/tags/%EC%83%81%ED%83%9C/index.xml" rel="self" type="application/rss+xml"/><item><title>현황</title><link>https://go-fileshare.github.io/docs/0.31/ko/status/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/ko/status/</guid><description>
-&lt;p&gt;이 페이지들은 &lt;strong&gt;fileshare v0.31.0&lt;/strong&gt;을 설명합니다.&lt;/p&gt;
+&lt;p&gt;이 페이지들은 &lt;strong&gt;fileshare v0.31.1&lt;/strong&gt;을 설명합니다.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;보안: v0.31.0이 아니라 v0.31.1을 사용하세요&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Go 1.27.2에서 &lt;code&gt;govulncheck&lt;/code&gt;는 fileshare에서 GO-2026-6809에 도달할 수 있다고 보고합니다. &lt;code&gt;crypto/x509&lt;/code&gt;의 &lt;code&gt;Certificate.Verify&lt;/code&gt;가 알려진 침해된 중간 인증서를 거부하지 않았습니다. Go 1.26.10과 1.27.3에서 수정되었습니다. &lt;strong&gt;더 오래된 Go로 빌드한 v0.31.0의 릴리스 바이너리는 영향을 받습니다.&lt;/strong&gt; v0.31.1은 Go 1.27.3으로 빌드되고 &lt;code&gt;go&lt;/code&gt; 지시어도 1.27.3이므로, &lt;code&gt;go install&lt;/code&gt;이 스스로 수정된 툴체인으로 전환합니다. 릴리스 바이너리는 &lt;code&gt;go version -m&lt;/code&gt;에서 &lt;code&gt;go1.27.3&lt;/code&gt;을 보고합니다. 세 UI도 같은 방식으로 다시 빌드되었습니다(portal v0.3.2, console v0.3.5, explorer v0.3.2). 툴체인만 바뀌었고 동작은 바뀌지 않았습니다.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
 &lt;h2 data-hextra-search-id="what-each-release-added"&gt;각 릴리스가 추가한 것&lt;span class="hx:absolute hx:-mt-20" id="what-each-release-added"&gt;&lt;/span&gt;
 &lt;a href="#what-each-release-added" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
 &lt;thead&gt;
@@ -176,6 +184,10 @@
 &lt;tr&gt;
 &lt;td&gt;v0.31.0&lt;/td&gt;
 &lt;td&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/configuration/as-each-person/"&gt;각 사용자의 권한으로 제공되는 디렉터리&lt;/a&gt;: &lt;code&gt;identity = &amp;quot;system&amp;quot;&lt;/code&gt;과 &lt;code&gt;identity&lt;/code&gt; 블록. root로 시작한 &lt;code&gt;fileshare serve&lt;/code&gt;가 사용자와 공유마다 워커를 시작하여 해당 uid, gid, 그룹으로 실행하고, 프로토콜은 &lt;code&gt;service_user&lt;/code&gt;로 제공. SFTP와 WebDAV만 해당. uid 0, &lt;code&gt;min_uid&lt;/code&gt; 미만의 uid, &lt;code&gt;deny_uids&lt;/code&gt;는 거부됨&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.31.1&lt;/td&gt;
+&lt;td&gt;보안: GO-2026-6809(&lt;code&gt;crypto/x509&lt;/code&gt;: &lt;code&gt;Certificate.Verify&lt;/code&gt;가 알려진 침해된 중간 인증서를 거부하지 않았음)를 수정한 Go 1.27.3으로 빌드. &lt;code&gt;govulncheck&lt;/code&gt;가 도달 가능하다고 보고했음. &lt;code&gt;go install&lt;/code&gt;은 이제 Go 1.27.3을 요구하며 스스로 전환함. 의존성 업데이트&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
