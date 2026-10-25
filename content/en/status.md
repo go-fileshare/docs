@@ -5,7 +5,13 @@ description: "Which fileshare release these pages describe, what each release ad
 tags: [status, releases]
 ---
 
-These pages describe **fileshare v0.31.0**.
+These pages describe **fileshare v0.31.1**.
+
+{{< callout type="warning" >}}
+**Security: take v0.31.1, not v0.31.0**
+
+Under Go 1.27.2, `govulncheck` reports GO-2026-6809 as reachable in fileshare: `crypto/x509`'s `Certificate.Verify` did not reject known compromised intermediate certificates. It is fixed in Go 1.26.10 and 1.27.3. **v0.31.0's release binaries, built with an older Go, are affected.** v0.31.1 is built with Go 1.27.3 and its `go` directive is 1.27.3, so `go install` switches to the fixed toolchain by itself; its release binaries report `go1.27.3` in `go version -m`. The three UIs are rebuilt the same way (portal v0.3.2, console v0.3.5, explorer v0.3.2): only the toolchain changed, not their behaviour.
+{{< /callout >}}
 
 ## What each release added
 
@@ -53,6 +59,7 @@ These pages describe **fileshare v0.31.0**.
 | v0.29.0 | WebDAV: [a `PROPFIND` of the root lists the shares]({{< relref "/protocols/webdav.md#the-root-and-uploads-in-pieces" >}}) (207; Depth infinity 403, writes 405), so a file manager can mount the whole server; an upload can go in pieces, each `Content-Range` appended where the last ended (go-filesystems/webdav v0.6.0) — what the [file explorer]({{< relref "/administration/_index.md" >}}) needs |
 | v0.30.0 | go-authn/directory v0.14.0: a [`users "ldap"` block]({{< relref "/configuration/identity.md" >}}) reads by default what go-authn/authnd v0.11.0 publishes — people `(\|(objectClass=posixAccount)(objectClass=account)(objectClass=uidObject))`, groups `(\|(objectClass=posixGroup)(objectClass=groupOfNames))`, a `member` DN counting only when it is the DN of somebody the people search returned. ⛔ Against an institution's own directory, more entries are read by default; an explicit `user_filter` or `group_filter` is unchanged |
 | v0.31.0 | [directories served as each person]({{< relref "/configuration/as-each-person.md" >}}): `identity = "system"` and an `identity` block; `fileshare serve` started as root starts a worker per person and share, running with their uid, gid and groups, and serves the protocols as `service_user`. SFTP and WebDAV only; uid 0, uids below `min_uid` and `deny_uids` are refused |
+| v0.31.1 | security: built with Go 1.27.3, which fixes GO-2026-6809 (`crypto/x509`: `Certificate.Verify` did not reject known compromised intermediate certificates), reported reachable by `govulncheck`. `go install` now requires Go 1.27.3, and switches to it by itself. Dependency updates |
 
 {{< callout type="warning" >}}
 **Upgrading to v0.21.0**
