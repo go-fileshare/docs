@@ -10,10 +10,10 @@ description: "go-fileshare は、ディスクイメージとディレクトリ�
 **ディスクイメージ(またはディレクトリ)を SMB、NFS、WebDAV、SFTP、S3 で提供します。
 同じユーザー、同じ共有ごとのアクセス権を、1 つの設定ファイルから管理できます。** 純粋な
 Go 製で、`CGO_ENABLED=0`、バイナリは 1 つです。このページは
-[v0.31.0]({{< relref "/status.md" >}}) について説明しています。
+[v0.31.1]({{< relref "/status.md" >}}) について説明しています。
 
 ```sh
-go install github.com/go-fileshare/fileshare@latest
+go install github.com/go-fileshare/fileshare@latest          # with Go 1.27.3 or later
 
 fileshare --image disk.img --user alice --password-file pw   # one image, now
 fileshare --config /etc/fileshare.d                          # several, with users

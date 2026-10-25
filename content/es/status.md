@@ -5,7 +5,13 @@ description: "Qué versión de fileshare describen estas páginas, qué añadió
 tags: [estado, versiones]
 ---
 
-Estas páginas describen **fileshare v0.31.0**.
+Estas páginas describen **fileshare v0.31.1**.
+
+{{< callout type="warning" >}}
+**Seguridad: use la v0.31.1, no la v0.31.0**
+
+Con Go 1.27.2, `govulncheck` señala GO-2026-6809 como alcanzable en fileshare: `Certificate.Verify` de `crypto/x509` no rechazaba certificados intermedios comprometidos conocidos. Se corrige en Go 1.26.10 y 1.27.3. **Los binarios de la v0.31.0, compilados con un Go anterior, están afectados.** La v0.31.1 se compila con Go 1.27.3 y su directiva `go` es 1.27.3, de modo que `go install` cambia por sí solo a la cadena de herramientas corregida; sus binarios indican `go1.27.3` en `go version -m`. Las tres interfaces se recompilan igual (portal v0.3.2, console v0.3.5, explorer v0.3.2): solo cambia la cadena de herramientas, no su comportamiento.
+{{< /callout >}}
 
 ## Lo que añadió cada versión {#what-each-release-added}
 
@@ -53,6 +59,7 @@ Estas páginas describen **fileshare v0.31.0**.
 | v0.29.0 | WebDAV: [un `PROPFIND` de la raíz lista los recursos compartidos]({{< relref "/protocols/webdav.md#the-root-and-uploads-in-pieces" >}}) (207; profundidad infinity 403, escrituras 405), así que un gestor de archivos puede montar todo el servidor; una subida puede hacerse por partes, cada `Content-Range` añadido donde terminó el anterior (go-filesystems/webdav v0.6.0) — lo que necesita el [explorador de archivos]({{< relref "/administration/_index.md" >}}) |
 | v0.30.0 | go-authn/directory v0.14.0: un [bloque `users "ldap"`]({{< relref "/configuration/identity.md" >}}) lee por defecto lo que publica go-authn/authnd v0.11.0 — las personas `(\|(objectClass=posixAccount)(objectClass=account)(objectClass=uidObject))`, los grupos `(\|(objectClass=posixGroup)(objectClass=groupOfNames))`, y un DN `member` solo cuenta si es el DN de alguien que devolvió la búsqueda de personas. ⛔ Frente al directorio de una institución se leen más entradas por defecto; un `user_filter` o un `group_filter` explícito no cambia |
 | v0.31.0 | [directorios servidos con la identidad de cada persona]({{< relref "/configuration/as-each-person.md" >}}): `identity = "system"` y un bloque `identity`; `fileshare serve` arrancado como root arranca un worker por persona y recurso, con su uid, su gid y sus grupos, y sirve los protocolos como `service_user`. Solo SFTP y WebDAV; se rechazan el uid 0, los uid por debajo de `min_uid` y los de `deny_uids` |
+| v0.31.1 | seguridad: compilado con Go 1.27.3, que corrige GO-2026-6809 (`crypto/x509`: `Certificate.Verify` no rechazaba certificados intermedios comprometidos conocidos), que `govulncheck` señala como alcanzable. `go install` ahora exige Go 1.27.3 y cambia a él por sí solo. Actualizaciones de dependencias |
 
 {{< callout type="warning" >}}
 **Actualizar a la v0.21.0**

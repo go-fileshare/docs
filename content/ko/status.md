@@ -5,7 +5,13 @@ description: "이 페이지들이 설명하는 fileshare 릴리스, 각 릴리�
 tags: [상태, 릴리스]
 ---
 
-이 페이지들은 **fileshare v0.31.0**을 설명합니다.
+이 페이지들은 **fileshare v0.31.1**을 설명합니다.
+
+{{< callout type="warning" >}}
+**보안: v0.31.0이 아니라 v0.31.1을 사용하세요**
+
+Go 1.27.2에서 `govulncheck`는 fileshare에서 GO-2026-6809에 도달할 수 있다고 보고합니다. `crypto/x509`의 `Certificate.Verify`가 알려진 침해된 중간 인증서를 거부하지 않았습니다. Go 1.26.10과 1.27.3에서 수정되었습니다. **더 오래된 Go로 빌드한 v0.31.0의 릴리스 바이너리는 영향을 받습니다.** v0.31.1은 Go 1.27.3으로 빌드되고 `go` 지시어도 1.27.3이므로, `go install`이 스스로 수정된 툴체인으로 전환합니다. 릴리스 바이너리는 `go version -m`에서 `go1.27.3`을 보고합니다. 세 UI도 같은 방식으로 다시 빌드되었습니다(portal v0.3.2, console v0.3.5, explorer v0.3.2). 툴체인만 바뀌었고 동작은 바뀌지 않았습니다.
+{{< /callout >}}
 
 ## 각 릴리스가 추가한 것 {#what-each-release-added}
 
@@ -53,6 +59,7 @@ tags: [상태, 릴리스]
 | v0.29.0 | WebDAV: [루트의 `PROPFIND`가 공유를 나열]({{< relref "/protocols/webdav.md#the-root-and-uploads-in-pieces" >}})하여(207, Depth infinity는 403, 쓰기는 405) 파일 관리자가 서버 전체를 마운트할 수 있음. 업로드를 조각으로 보낼 수 있으며 각 `Content-Range`는 직전 조각이 끝난 곳에 이어짐(go-filesystems/webdav v0.6.0) — [파일 탐색기]({{< relref "/administration/_index.md" >}})가 필요로 하는 것 |
 | v0.30.0 | go-authn/directory v0.14.0: [`users "ldap"` 블록]({{< relref "/configuration/identity.md" >}})이 기본적으로 go-authn/authnd v0.11.0이 게시하는 것을 읽음 — 사용자 `(\|(objectClass=posixAccount)(objectClass=account)(objectClass=uidObject))`, 그룹 `(\|(objectClass=posixGroup)(objectClass=groupOfNames))`, `member` DN은 사용자 검색이 반환한 사용자의 DN일 때만 인정. ⛔ 기관 자체의 디렉터리에서는 기본적으로 더 많은 항목을 읽음. 명시적인 `user_filter` 또는 `group_filter`는 변하지 않음 |
 | v0.31.0 | [각 사용자의 권한으로 제공되는 디렉터리]({{< relref "/configuration/as-each-person.md" >}}): `identity = "system"`과 `identity` 블록. root로 시작한 `fileshare serve`가 사용자와 공유마다 워커를 시작하여 해당 uid, gid, 그룹으로 실행하고, 프로토콜은 `service_user`로 제공. SFTP와 WebDAV만 해당. uid 0, `min_uid` 미만의 uid, `deny_uids`는 거부됨 |
+| v0.31.1 | 보안: GO-2026-6809(`crypto/x509`: `Certificate.Verify`가 알려진 침해된 중간 인증서를 거부하지 않았음)를 수정한 Go 1.27.3으로 빌드. `govulncheck`가 도달 가능하다고 보고했음. `go install`은 이제 Go 1.27.3을 요구하며 스스로 전환함. 의존성 업데이트 |
 
 {{< callout type="warning" >}}
 **v0.21.0으로 업그레이드할 때**

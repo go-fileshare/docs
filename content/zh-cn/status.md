@@ -5,7 +5,13 @@ description: "本文档描述的是哪个 fileshare 版本，每个版本新增�
 tags: [状态, 发布]
 ---
 
-本文档描述的是 **fileshare v0.31.0**。
+本文档描述的是 **fileshare v0.31.1**。
+
+{{< callout type="warning" >}}
+**安全：请使用 v0.31.1，而不是 v0.31.0**
+
+在 Go 1.27.2 下，`govulncheck` 报告 GO-2026-6809 在 fileshare 中可被触及：`crypto/x509` 的 `Certificate.Verify` 未拒绝已知被攻破的中间证书。该问题已在 Go 1.26.10 和 1.27.3 中修复。**v0.31.0 的发布二进制文件用较旧版本的 Go 构建，受到影响。** v0.31.1 使用 Go 1.27.3 构建，其 `go` 指令为 1.27.3，因此 `go install` 会自行切换到已修复的工具链；它的发布二进制文件在 `go version -m` 中显示 `go1.27.3`。三个界面以同样方式重新构建（portal v0.3.2、console v0.3.5、explorer v0.3.2）：只有工具链改变，行为没有变化。
+{{< /callout >}}
 
 ## 每个版本新增了什么 {#what-each-release-added}
 
@@ -53,6 +59,7 @@ tags: [状态, 发布]
 | v0.29.0 | WebDAV：[对根目录的 `PROPFIND` 会列出各共享]({{< relref "/protocols/webdav.md#the-root-and-uploads-in-pieces" >}})（207；Depth infinity 为 403，写入为 405），因此文件管理器可以挂载整个服务器；上传可以分块进行，每个 `Content-Range` 追加到上一块结束的位置（go-filesystems/webdav v0.6.0），这正是[文件资源管理器]({{< relref "/administration/_index.md" >}})所需要的 |
 | v0.30.0 | go-authn/directory v0.14.0：[`users "ldap"` 块]({{< relref "/configuration/identity.md" >}})默认读取 go-authn/authnd v0.11.0 所发布的内容：人员 `(\|(objectClass=posixAccount)(objectClass=account)(objectClass=uidObject))`，组 `(\|(objectClass=posixGroup)(objectClass=groupOfNames))`，`member` 的 DN 仅当它是人员搜索所返回的某人的 DN 时才计入。⛔ 面对机构自己的目录服务，默认会读取更多条目；显式设置的 `user_filter` 或 `group_filter` 不变 |
 | v0.31.0 | [以每个人的身份提供目录服务]({{< relref "/configuration/as-each-person.md" >}})：`identity = "system"` 和 `identity` 块；以 root 启动的 `fileshare serve` 为每个人和每个共享启动一个工作进程，以其 uid、gid 和组运行，并以 `service_user` 提供各协议服务。仅限 SFTP 和 WebDAV；uid 0、低于 `min_uid` 的 uid 以及 `deny_uids` 会被拒绝 |
+| v0.31.1 | 安全：使用 Go 1.27.3 构建，修复了 GO-2026-6809（`crypto/x509`：`Certificate.Verify` 未拒绝已知被攻破的中间证书），`govulncheck` 报告其可被触及。`go install` 现在要求 Go 1.27.3，并会自行切换。依赖更新 |
 
 {{< callout type="warning" >}}
 **升级到 v0.21.0**
