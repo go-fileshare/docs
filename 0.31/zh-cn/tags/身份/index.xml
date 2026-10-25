@@ -1,10 +1,5 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – 身份</title><link>https://go-fileshare.github.io/docs/0.31/zh-cn/tags/%E8%BA%AB%E4%BB%BD/</link><description>Recent content in 身份 on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><atom:link href="https://go-fileshare.github.io/docs/0.31/zh-cn/tags/%E8%BA%AB%E4%BB%BD/index.xml" rel="self" type="application/rss+xml"/><item><title>以每个人的身份提供目录服务</title><link>https://go-fileshare.github.io/docs/0.31/zh-cn/configuration/as-each-person/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/zh-cn/configuration/as-each-person/</guid><description>
-&lt;p&gt;通常，一个 fileshare 进程以同一个账户为所有人提供服务：fileshare
-决定谁可以做什么，它创建的每个文件都属于该账户。
-目录共享也可以改为&lt;strong&gt;以每个人的身份&lt;/strong&gt;提供服务。每位登录者
-的文件都由以其 uid、gid 和
-组运行的进程打开，因此内核会应用目录树的权限，而该用户创建的内容
-归该用户所有。&lt;/p&gt;
+&lt;p&gt;通常，一个 fileshare 进程以同一个账户为所有人提供服务：fileshare决定谁可以做什么，它创建的每个文件都属于该账户。目录共享也可以改为&lt;strong&gt;以每个人的身份&lt;/strong&gt;提供服务。每位登录者的文件都由以其 uid、gid 和组运行的进程打开，因此内核会应用目录树的权限，而该用户创建的内容归该用户所有。&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;identity&lt;/span&gt; {
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; service_user&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;fileshare&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # 以其身份提供各协议服务的账户
@@ -30,9 +25,7 @@ data-copied-label="已复制！"
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="three-processes"&gt;三个进程&lt;span class="hx:absolute hx:-mt-20" id="three-processes"&gt;&lt;/span&gt;
-&lt;a href="#three-processes" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;fileshare serve&lt;/code&gt; 必须&lt;strong&gt;以 root 启动&lt;/strong&gt;。它保持 root 身份只是为了启动
-每个人的工作进程。所有面向网络的部分都运行在第二个
-进程中，以 &lt;code&gt;service_user&lt;/code&gt; 身份运行。&lt;/p&gt;
+&lt;a href="#three-processes" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;fileshare serve&lt;/code&gt; 必须&lt;strong&gt;以 root 启动&lt;/strong&gt;。它保持 root 身份只是为了启动每个人的工作进程。所有面向网络的部分都运行在第二个进程中，以 &lt;code&gt;service_user&lt;/code&gt; 身份运行。&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
@@ -59,11 +52,7 @@ data-copied-label="已复制！"
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;工作进程首先检查自己是否恰好以预期的 uid、gid 和组运行，
-以及 &lt;code&gt;setuid(0)&lt;/code&gt; 是否失败。只有这样，它才会通过 &lt;code&gt;os.Root&lt;/code&gt; 打开
-目录树。一个工作进程为该人对该共享的所有连接提供服务，
-SFTP 和 WebDAV 都一样，并且在 &lt;code&gt;idle&lt;/code&gt; 时间内无人使用后就会停止。
-服务器停止时，工作进程也随之停止。&lt;/p&gt;
+&lt;p&gt;工作进程首先检查自己是否恰好以预期的 uid、gid 和组运行，以及 &lt;code&gt;setuid(0)&lt;/code&gt; 是否失败。只有这样，它才会通过 &lt;code&gt;os.Root&lt;/code&gt; 打开目录树。一个工作进程为该人对该共享的所有连接提供服务，SFTP 和 WebDAV 都一样，并且在 &lt;code&gt;idle&lt;/code&gt; 时间内无人使用后就会停止。服务器停止时，工作进程也随之停止。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="who-a-person-is-on-this-system"&gt;一个人在本系统中是谁&lt;span class="hx:absolute hx:-mt-20" id="who-a-person-is-on-this-system"&gt;&lt;/span&gt;
 &lt;a href="#who-a-person-is-on-this-system" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;启动器&lt;strong&gt;自行&lt;/strong&gt;解析此人，顺序如下：&lt;/p&gt;
 &lt;ol&gt;
@@ -75,23 +64,14 @@ SFTP 和 WebDAV 都一样，并且在 &lt;code&gt;idle&lt;/code&gt; 时间内无
 &lt;li&gt;SQL 来源的 &lt;code&gt;users_attributes&lt;/code&gt; 查询。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;附加组是列出此人的组（&lt;code&gt;group&lt;/code&gt;
-块的 &lt;code&gt;members&lt;/code&gt;、&lt;code&gt;memberUid&lt;/code&gt;）以及此人所指明的组（&lt;code&gt;memberOf&lt;/code&gt;），
-各自以其 &lt;code&gt;gidNumber&lt;/code&gt; 标识。没有 &lt;code&gt;gidNumber&lt;/code&gt; 的组不是系统组。&lt;/p&gt;
+块的 &lt;code&gt;members&lt;/code&gt;、&lt;code&gt;memberUid&lt;/code&gt;）以及此人所指明的组（&lt;code&gt;memberOf&lt;/code&gt;），各自以其 &lt;code&gt;gidNumber&lt;/code&gt; 标识。没有 &lt;code&gt;gidNumber&lt;/code&gt; 的组不是系统组。&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;&lt;strong&gt;&lt;code&gt;/etc/passwd&lt;/code&gt; 和 &lt;code&gt;/etc/group&lt;/code&gt;&lt;/strong&gt;，按名称查找。&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;&lt;strong&gt;被拒绝的情况&lt;/strong&gt;：uid 0、gid 0、&lt;code&gt;(uid_t)-1&lt;/code&gt;、低于 &lt;code&gt;min_uid&lt;/code&gt; 的 uid、低于
-&lt;code&gt;min_gid&lt;/code&gt; 的主 gid，以及 &lt;code&gt;deny_uids&lt;/code&gt; 中的每个 uid。低于
-&lt;code&gt;min_gid&lt;/code&gt; 的附加组会被忽略，日志中会说明。在这两处都找不到的人
-同样会被拒绝：不存在共享的后备账户。由身份
-提供方担保的人，只有配合
-&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/configuration/identity/"&gt;&lt;code&gt;local_names&lt;/code&gt;&lt;/a&gt;（它使
-其名称成为本地名称）才会获得工作进程。&lt;/p&gt;
-&lt;p&gt;因此，被接管的前端只能为存在且被允许的人，
-在存在的共享上提出请求。它仍然负责判定&lt;strong&gt;谁&lt;/strong&gt;已通过
-身份验证，而启动器无法替它检查这一点。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;被拒绝的情况&lt;/strong&gt;：uid 0、gid 0、&lt;code&gt;(uid_t)-1&lt;/code&gt;、低于 &lt;code&gt;min_uid&lt;/code&gt; 的 uid、低于&lt;code&gt;min_gid&lt;/code&gt; 的主 gid，以及 &lt;code&gt;deny_uids&lt;/code&gt; 中的每个 uid。低于&lt;code&gt;min_gid&lt;/code&gt; 的附加组会被忽略，日志中会说明。在这两处都找不到的人同样会被拒绝：不存在共享的后备账户。由身份提供方担保的人，只有配合&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/configuration/identity/"&gt;&lt;code&gt;local_names&lt;/code&gt;&lt;/a&gt;（它使其名称成为本地名称）才会获得工作进程。&lt;/p&gt;
+&lt;p&gt;因此，被接管的前端只能为存在且被允许的人，在存在的共享上提出请求。它仍然负责判定&lt;strong&gt;谁&lt;/strong&gt;已通过身份验证，而启动器无法替它检查这一点。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="what-a-client-sees"&gt;客户端看到什么&lt;span class="hx:absolute hx:-mt-20" id="what-a-client-sees"&gt;&lt;/span&gt;
 &lt;a href="#what-a-client-sees" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
 &lt;thead&gt;
@@ -125,29 +105,20 @@ SFTP 和 WebDAV 都一样，并且在 &lt;code&gt;idle&lt;/code&gt; 时间内无
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;目前不支持 SMB、NFS 或 S3&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;它们会拒绝这样的共享，&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt;
-会指出这一点。SMB 和 NFS 需要其库中为每个会话提供一个文件系统。NFS
-只会在 Kerberos 下才支持，因为 &lt;code&gt;AUTH_UNIX&lt;/code&gt; 是客户端自己的
-声明（RFC 5531 §14）。&lt;/p&gt;
+会指出这一点。SMB 和 NFS 需要其库中为每个会话提供一个文件系统。NFS只会在 Kerberos 下才支持，因为 &lt;code&gt;AUTH_UNIX&lt;/code&gt; 是客户端自己的声明（RFC 5531 §14）。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="what-it-asks-of-the-system"&gt;它对系统有什么要求&lt;span class="hx:absolute hx:-mt-20" id="what-it-asks-of-the-system"&gt;&lt;/span&gt;
 &lt;a href="#what-it-asks-of-the-system" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;Unix&lt;/strong&gt;：Linux、BSD 和 macOS。在 Windows 上该共享会被拒绝。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;&lt;code&gt;service_user&lt;/code&gt; 可读&lt;/strong&gt;：配置以及它所指明的每个文件
-（密码文件、主机密钥、证书），因为前端要读取它们。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;用户可执行&lt;/strong&gt;：二进制文件，因为每个工作进程都以
-各自用户的身份运行它。&lt;/li&gt;
-&lt;li&gt;添加或更改这样的共享需要&lt;strong&gt;重启&lt;/strong&gt;。启动器只读取一次
-配置，并拒绝它不认识的共享，而不是让
-前端去提供它。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;service_user&lt;/code&gt; 可读&lt;/strong&gt;：配置以及它所指明的每个文件（密码文件、主机密钥、证书），因为前端要读取它们。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;用户可执行&lt;/strong&gt;：二进制文件，因为每个工作进程都以各自用户的身份运行它。&lt;/li&gt;
+&lt;li&gt;添加或更改这样的共享需要&lt;strong&gt;重启&lt;/strong&gt;。启动器只读取一次配置，并拒绝它不认识的共享，而不是让前端去提供它。&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;--isolate&lt;/code&gt; 不能与之同时使用。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;设计以及每项选择的理由，见
-&lt;a href="https://github.com/go-fileshare/fileshare/blob/main/docs/identity.md" target="_blank" rel="noopener"&gt;docs/identity.md&lt;/a&gt;。&lt;/p&gt;</description></item><item><title>用户、组和目录服务</title><link>https://go-fileshare.github.io/docs/0.31/zh-cn/configuration/identity/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/zh-cn/configuration/identity/</guid><description>
-&lt;p&gt;&lt;code&gt;user&lt;/code&gt; 块就是一个家庭的全部目录服务。如果一个站点的人员
-已经存在于数据库或 LDAP 中，就不应把这些人员复制到另一个
-会过时的地方，因此 &lt;code&gt;users&lt;/code&gt; 块会就地读取这些人员。&lt;/p&gt;
+&lt;p&gt;设计以及每项选择的理由，见&lt;a href="https://github.com/go-fileshare/fileshare/blob/main/docs/identity.md" target="_blank" rel="noopener"&gt;docs/identity.md&lt;/a&gt;。&lt;/p&gt;</description></item><item><title>用户、组和目录服务</title><link>https://go-fileshare.github.io/docs/0.31/zh-cn/configuration/identity/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/zh-cn/configuration/identity/</guid><description>
+&lt;p&gt;&lt;code&gt;user&lt;/code&gt; 块就是一个家庭的全部目录服务。如果一个站点的人员已经存在于数据库或 LDAP 中，就不应把这些人员复制到另一个会过时的地方，因此 &lt;code&gt;users&lt;/code&gt; 块会就地读取这些人员。&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;users&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;sql&amp;#34;&lt;/span&gt; {
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; driver&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;postgres&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # 或 sqlite，或 mysql
@@ -173,45 +144,22 @@ data-copied-label="已复制！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;&lt;strong&gt;查询由你自己编写&lt;/strong&gt;，因为一个站点的人员已经有了该站点自己的
-结构；在这里另行设计一套模式，就意味着要把这些人员复制到第二套中。
-人员查询的各列是&lt;strong&gt;按位置&lt;/strong&gt;读取的，而不是按名称：先是名称，然后依次是
-密码、NT 哈希、SSH 密钥（每行一个）和 TOTP 密钥中的任意几项，
-顺序如此。NULL 表示此人没有该凭据，这就是
-示例中密码一列选择 &lt;code&gt;null&lt;/code&gt; 的原因。密码列被视为
-密码本身：这里没有用于哈希密码的设置。&lt;/p&gt;
-&lt;p&gt;LDAP 一侧读取支持 Samba 的目录服务已经发布的内容，
-即 &lt;code&gt;sambaNTPassword&lt;/code&gt;、&lt;code&gt;sshPublicKey&lt;/code&gt;、&lt;code&gt;memberUid&lt;/code&gt;。人员和组
-位于何处，以及用哪些属性命名它们，都是可配置的：&lt;code&gt;user_filter&lt;/code&gt;
-（默认 &lt;code&gt;(|(objectClass=posixAccount)(objectClass=account)(objectClass=uidObject))&lt;/code&gt;）、
-&lt;code&gt;user_attribute&lt;/code&gt;（&lt;code&gt;uid&lt;/code&gt;）、&lt;code&gt;group_base_dn&lt;/code&gt;（&lt;code&gt;base_dn&lt;/code&gt;）、&lt;code&gt;group_filter&lt;/code&gt;
+&lt;p&gt;&lt;strong&gt;查询由你自己编写&lt;/strong&gt;，因为一个站点的人员已经有了该站点自己的结构；在这里另行设计一套模式，就意味着要把这些人员复制到第二套中。人员查询的各列是&lt;strong&gt;按位置&lt;/strong&gt;读取的，而不是按名称：先是名称，然后依次是密码、NT 哈希、SSH 密钥（每行一个）和 TOTP 密钥中的任意几项，顺序如此。NULL 表示此人没有该凭据，这就是示例中密码一列选择 &lt;code&gt;null&lt;/code&gt; 的原因。密码列被视为密码本身：这里没有用于哈希密码的设置。&lt;/p&gt;
+&lt;p&gt;LDAP 一侧读取支持 Samba 的目录服务已经发布的内容，即 &lt;code&gt;sambaNTPassword&lt;/code&gt;、&lt;code&gt;sshPublicKey&lt;/code&gt;、&lt;code&gt;memberUid&lt;/code&gt;。人员和组位于何处，以及用哪些属性命名它们，都是可配置的：&lt;code&gt;user_filter&lt;/code&gt;
+（默认 &lt;code&gt;(|(objectClass=posixAccount)(objectClass=account)(objectClass=uidObject))&lt;/code&gt;）、&lt;code&gt;user_attribute&lt;/code&gt;（&lt;code&gt;uid&lt;/code&gt;）、&lt;code&gt;group_base_dn&lt;/code&gt;（&lt;code&gt;base_dn&lt;/code&gt;）、&lt;code&gt;group_filter&lt;/code&gt;
 （&lt;code&gt;(|(objectClass=posixGroup)(objectClass=groupOfNames))&lt;/code&gt;）、&lt;code&gt;group_attribute&lt;/code&gt;
-（&lt;code&gt;cn&lt;/code&gt;）、&lt;code&gt;group_member_attribute&lt;/code&gt;（默认同时为 &lt;code&gt;memberUid&lt;/code&gt; 和 &lt;code&gt;member&lt;/code&gt;），
-以及没有默认值的 &lt;code&gt;totp_attribute&lt;/code&gt;。&lt;code&gt;sambaNTPassword&lt;/code&gt; 和
-&lt;code&gt;sshPublicKey&lt;/code&gt; 就按这些名称读取。&lt;code&gt;member&lt;/code&gt; 的值是一个 DN，只有当它是
-人员搜索所返回的某人的 DN 时才会计入：位于目录树其他位置的
-&lt;code&gt;uid=alice&lt;/code&gt; 并不是 alice。这些默认值（自
-v0.30.0 起）读取 go-authn/authnd v0.11.0 所发布的内容；此前它们仅为
-&lt;code&gt;(objectClass=posixAccount)&lt;/code&gt; 和 &lt;code&gt;(objectClass=posixGroup)&lt;/code&gt;，而面对
-机构自己的目录服务，它们现在会读取更多条目。&lt;/p&gt;
+（&lt;code&gt;cn&lt;/code&gt;）、&lt;code&gt;group_member_attribute&lt;/code&gt;（默认同时为 &lt;code&gt;memberUid&lt;/code&gt; 和 &lt;code&gt;member&lt;/code&gt;），以及没有默认值的 &lt;code&gt;totp_attribute&lt;/code&gt;。&lt;code&gt;sambaNTPassword&lt;/code&gt; 和&lt;code&gt;sshPublicKey&lt;/code&gt; 就按这些名称读取。&lt;code&gt;member&lt;/code&gt; 的值是一个 DN，只有当它是人员搜索所返回的某人的 DN 时才会计入：位于目录树其他位置的&lt;code&gt;uid=alice&lt;/code&gt; 并不是 alice。这些默认值（自v0.30.0 起）读取 go-authn/authnd v0.11.0 所发布的内容；此前它们仅为&lt;code&gt;(objectClass=posixAccount)&lt;/code&gt; 和 &lt;code&gt;(objectClass=posixGroup)&lt;/code&gt;，而面对机构自己的目录服务，它们现在会读取更多条目。&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;不向另一台机器发起明文绑定（自 v0.19.0 起）&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;users &amp;quot;ldap&amp;quot;&lt;/code&gt; 块会拒绝指向另一台机器的 &lt;code&gt;ldap://&lt;/code&gt;，除非
-设置 &lt;code&gt;start_tls = true&lt;/code&gt;：绑定所检查的每个密码都会以明文
-穿过网络。&lt;code&gt;ldaps://&lt;/code&gt; 会被接受，指向回环
-地址的 &lt;code&gt;ldap://&lt;/code&gt; 和 &lt;code&gt;ldapi://&lt;/code&gt; 也会被接受，因为途中没有任何人。
-没有任何开关可以关闭这一点（go-authn/directory v0.10.0）。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;users &amp;quot;ldap&amp;quot;&lt;/code&gt; 块会拒绝指向另一台机器的 &lt;code&gt;ldap://&lt;/code&gt;，除非设置 &lt;code&gt;start_tls = true&lt;/code&gt;：绑定所检查的每个密码都会以明文穿过网络。&lt;code&gt;ldaps://&lt;/code&gt; 会被接受，指向回环地址的 &lt;code&gt;ldap://&lt;/code&gt; 和 &lt;code&gt;ldapi://&lt;/code&gt; 也会被接受，因为途中没有任何人。没有任何开关可以关闭这一点（go-authn/directory v0.10.0）。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="order-and-the-one-exception"&gt;顺序，以及唯一的例外&lt;span class="hx:absolute hx:-mt-20" id="order-and-the-one-exception"&gt;&lt;/span&gt;
-&lt;a href="#order-and-the-one-exception" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;各来源&lt;strong&gt;按书写的顺序&lt;/strong&gt;被询问，第一个认识某个名称的来源就拥有它。
-&lt;code&gt;user&lt;/code&gt; 和 &lt;code&gt;group&lt;/code&gt; 块排在最前，因此在本地写明的服务
-账户不会被 LDAP 中的同名人员覆盖。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;组是例外&lt;/strong&gt;：组的成员是所有来源的&lt;strong&gt;并集&lt;/strong&gt;，
-因为一个团队可能既有文件中的人员，也有数据库中的人员。&lt;/p&gt;
+&lt;a href="#order-and-the-one-exception" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;各来源&lt;strong&gt;按书写的顺序&lt;/strong&gt;被询问，第一个认识某个名称的来源就拥有它。&lt;code&gt;user&lt;/code&gt; 和 &lt;code&gt;group&lt;/code&gt; 块排在最前，因此在本地写明的服务账户不会被 LDAP 中的同名人员覆盖。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;组是例外&lt;/strong&gt;：组的成员是所有来源的&lt;strong&gt;并集&lt;/strong&gt;，因为一个团队可能既有文件中的人员，也有数据库中的人员。&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;photos&amp;#34;&lt;/span&gt; {
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; allow&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;@engineers&amp;#34;, &amp;#34;alice&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
@@ -232,14 +180,7 @@ data-copied-label="已复制！"
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;在启动时展开，并在每次重新加载时再次展开&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;自 v0.10.0 起，&lt;code&gt;users&lt;/code&gt; 块（SQL、LDAP）会在每个
-&lt;code&gt;reload = &amp;quot;5m&amp;quot;&lt;/code&gt; 间隔、收到 &lt;code&gt;SIGHUP&lt;/code&gt; 时以及调用管理 API 的 &lt;code&gt;ReloadDirectory&lt;/code&gt; 时重新读取；
-LDAP 中变化的成员关系不再需要等待重启。重新加载
-哪些内容原地应用、哪些内容需要重启，以及为什么清空的组&lt;strong&gt;不会&lt;/strong&gt;把它的
-共享开放给所有人，请参见
-&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/administration/reload/"&gt;重新读取目录服务&lt;/a&gt;。目录服务
-仍然不会在每次连接时被询问：那是另一种设计，而这里
-不是。&lt;/p&gt;
+&lt;p&gt;自 v0.10.0 起，&lt;code&gt;users&lt;/code&gt; 块（SQL、LDAP）会在每个&lt;code&gt;reload = &amp;quot;5m&amp;quot;&lt;/code&gt; 间隔、收到 &lt;code&gt;SIGHUP&lt;/code&gt; 时以及调用管理 API 的 &lt;code&gt;ReloadDirectory&lt;/code&gt; 时重新读取；LDAP 中变化的成员关系不再需要等待重启。重新加载哪些内容原地应用、哪些内容需要重启，以及为什么清空的组&lt;strong&gt;不会&lt;/strong&gt;把它的共享开放给所有人，请参见&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/administration/reload/"&gt;重新读取目录服务&lt;/a&gt;。目录服务仍然不会在每次连接时被询问：那是另一种设计，而这里不是。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -291,22 +232,13 @@ LDAP 中变化的成员关系不再需要等待重启。重新加载
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;NTLMv2 需要密码或其 MD4，其他任何东西都不行&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;客户端从不向 SMB 服务器发送密码，它发送的是由密码
-计算出的证明，因此只能&lt;em&gt;检查&lt;/em&gt;密码的目录服务无法
-应答 SMB，无论这种检查有多好。这是协议的属性，
-而不是本程序的限制，再多的配置也无法
-改变它。WebDAV 只问“这个密码对不对”，绑定可以回答这个问题。&lt;/p&gt;
+&lt;p&gt;客户端从不向 SMB 服务器发送密码，它发送的是由密码计算出的证明，因此只能&lt;em&gt;检查&lt;/em&gt;密码的目录服务无法应答 SMB，无论这种检查有多好。这是协议的属性，而不是本程序的限制，再多的配置也无法改变它。WebDAV 只问“这个密码对不对”，绑定可以回答这个问题。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;目录服务指明了某人却无法为其证明任何内容，这是合理的，
-就像机密存放在别处的列表一样，而 &lt;code&gt;check&lt;/code&gt; 会用一行说明这一点，
-而不是让人自己去发现。&lt;/p&gt;
+&lt;p&gt;目录服务指明了某人却无法为其证明任何内容，这是合理的，就像机密存放在别处的列表一样，而 &lt;code&gt;check&lt;/code&gt; 会用一行说明这一点，而不是让人自己去发现。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="people-the-identity-provider-names-not-this-file"&gt;由身份提供方而非本文件指明的人员&lt;span class="hx:absolute hx:-mt-20" id="people-the-identity-provider-names-not-this-file"&gt;&lt;/span&gt;
-&lt;a href="#people-the-identity-provider-names-not-this-file" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;联盟（比如通过
-&lt;a href="https://github.com/go-authn/bridge" target="_blank" rel="noopener"&gt;go-authn/bridge&lt;/a&gt; 接入的 RENATER）知道谁属于某个
-项目，共享可以向&lt;strong&gt;它&lt;/strong&gt;询问，而不必复制名单。使用
-&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/protocols/webdav/#a-token-over-the-one-protocol-that-can-carry-one"&gt;&lt;code&gt;oidc&lt;/code&gt; 块&lt;/a&gt;：&lt;/p&gt;
+&lt;a href="#people-the-identity-provider-names-not-this-file" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;联盟（比如通过&lt;a href="https://github.com/go-authn/bridge" target="_blank" rel="noopener"&gt;go-authn/bridge&lt;/a&gt; 接入的 RENATER）知道谁属于某个项目，共享可以向&lt;strong&gt;它&lt;/strong&gt;询问，而不必复制名单。使用&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/protocols/webdav/#a-token-over-the-one-protocol-that-can-carry-one"&gt;&lt;code&gt;oidc&lt;/code&gt; 块&lt;/a&gt;：&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;photos&amp;#34;&lt;/span&gt; {
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/photos.img&amp;#34;&lt;/span&gt;
@@ -324,21 +256,12 @@ data-copied-label="已复制！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;&lt;code&gt;oidc:groups:&amp;lt;value&amp;gt;&lt;/code&gt; 指其令牌的组声明中包含该值的人；
-&lt;code&gt;oidc:user:&amp;lt;name&amp;gt;&lt;/code&gt; 指令牌所指明的人。这种写法沿用 opkssh 的，
-这样同一套词汇既说明谁能进入 shell，也说明谁能访问共享。
-规则所指明的人，就提供方而言是本服务器所认识的（开放的
-共享也是如此），而没有任何规则指明的人仍然是陌生人。同样的规则
-适用于 &lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/protocols/sftp/#people-the-identity-provider-vouches-for"&gt;SFTP&lt;/a&gt;，
-只是组随证书而不是令牌传递。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;oidc:groups:&amp;lt;value&amp;gt;&lt;/code&gt; 指其令牌的组声明中包含该值的人；&lt;code&gt;oidc:user:&amp;lt;name&amp;gt;&lt;/code&gt; 指令牌所指明的人。这种写法沿用 opkssh 的，这样同一套词汇既说明谁能进入 shell，也说明谁能访问共享。规则所指明的人，就提供方而言是本服务器所认识的（开放的共享也是如此），而没有任何规则指明的人仍然是陌生人。同样的规则适用于 &lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/protocols/sftp/#people-the-identity-provider-vouches-for"&gt;SFTP&lt;/a&gt;，只是组随证书而不是令牌传递。&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;规则只针对提供方的人员&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;oidc:user:bob&lt;/code&gt; 是提供方所担保的那位 bob；一个名为
-bob、带有密码的本地账户是另一个人，不匹配任何规则。没有
-&lt;code&gt;oidc&lt;/code&gt; 块的规则、格式错误的规则，或者可以写入却不被允许
-连接的规则，会在&lt;strong&gt;启动时被拒绝&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;oidc:user:bob&lt;/code&gt; 是提供方所担保的那位 bob；一个名为bob、带有密码的本地账户是另一个人，不匹配任何规则。没有&lt;code&gt;oidc&lt;/code&gt; 块的规则、格式错误的规则，或者可以写入却不被允许连接的规则，会在&lt;strong&gt;启动时被拒绝&lt;/strong&gt;。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -346,20 +269,8 @@ bob、带有密码的本地账户是另一个人，不匹配任何规则。没�
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;除非明确说明，提供方的 &lt;code&gt;alice&lt;/code&gt; 不是本地的 &lt;code&gt;alice&lt;/code&gt;（自 v0.20.0 起）&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;allow&lt;/code&gt; 或 &lt;code&gt;writers&lt;/code&gt; 中的普通名称是本地账户；令牌或
-提供方证书只能通过共享的 &lt;code&gt;oidc:&lt;/code&gt; 规则访问。提供方的名称
-就是其本地名称的站点，需要在 &lt;code&gt;oidc&lt;/code&gt; 块中写 &lt;code&gt;local_names = true&lt;/code&gt;，
-并且应同时设置 &lt;code&gt;domains&lt;/code&gt;，或者从提供方所控制的
-声明中取得名称：否则，在允许人员自行选择
-&lt;code&gt;preferred_username&lt;/code&gt; 的提供方，任何注册的人都会获得
-某个本地账户的共享，包括写入权限。这在 v0.20.0 之前是默认行为
-（安全审计 F4）。因缺少 &lt;code&gt;local_names&lt;/code&gt; 而被拒绝的联盟名称
-会连同应添加的那一行一起记入日志，而 &lt;code&gt;fileshare check&lt;/code&gt; 会说明
-生效的是哪条规则。&lt;/p&gt;
-&lt;p&gt;NFS 客户端证书（&lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt;）是例外：
-它们的 CA 正是 &lt;code&gt;client_ca_file&lt;/code&gt; 为此而固定的那个，而普通
-名称是 NFS 共享指明某人的唯一方式，因此无论 &lt;code&gt;local_names&lt;/code&gt; 如何设置，
-它们的名称都是本地名称。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;allow&lt;/code&gt; 或 &lt;code&gt;writers&lt;/code&gt; 中的普通名称是本地账户；令牌或提供方证书只能通过共享的 &lt;code&gt;oidc:&lt;/code&gt; 规则访问。提供方的名称就是其本地名称的站点，需要在 &lt;code&gt;oidc&lt;/code&gt; 块中写 &lt;code&gt;local_names = true&lt;/code&gt;，并且应同时设置 &lt;code&gt;domains&lt;/code&gt;，或者从提供方所控制的声明中取得名称：否则，在允许人员自行选择&lt;code&gt;preferred_username&lt;/code&gt; 的提供方，任何注册的人都会获得某个本地账户的共享，包括写入权限。这在 v0.20.0 之前是默认行为（安全审计 F4）。因缺少 &lt;code&gt;local_names&lt;/code&gt; 而被拒绝的联盟名称会连同应添加的那一行一起记入日志，而 &lt;code&gt;fileshare check&lt;/code&gt; 会说明生效的是哪条规则。&lt;/p&gt;
+&lt;p&gt;NFS 客户端证书（&lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt;）是例外：它们的 CA 正是 &lt;code&gt;client_ca_file&lt;/code&gt; 为此而固定的那个，而普通名称是 NFS 共享指明某人的唯一方式，因此无论 &lt;code&gt;local_names&lt;/code&gt; 如何设置，它们的名称都是本地名称。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -387,14 +298,8 @@ data-copied-label="已复制！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;&lt;code&gt;domains&lt;/code&gt; 在身份验证时检查，SFTP 和 WebDAV 都一样，也适用于
-NFS 客户端证书：名称必须
-是 &lt;code&gt;&amp;lt;something&amp;gt;@&amp;lt;其中之一&amp;gt;&lt;/code&gt;，并且整体比较（&lt;code&gt;evilunivb.fr&lt;/code&gt; 不是
-&lt;code&gt;univb.fr&lt;/code&gt;）。&lt;code&gt;oidc:domain:&lt;/code&gt; 是针对单个共享的同一项测试。该域名
-的可信程度取决于提供方：go-authn/bridge 会丢弃其 IdP 的联盟
-元数据未授予相应作用域的 eppn 或 subject-id。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;组&lt;/strong&gt;是机构的 IdP 所释放的内容，由 go-authn/bridge 的
-&lt;code&gt;claims { groups = [...] }&lt;/code&gt; 转换为 &lt;code&gt;groups&lt;/code&gt;
+&lt;p&gt;&lt;code&gt;domains&lt;/code&gt; 在身份验证时检查，SFTP 和 WebDAV 都一样，也适用于NFS 客户端证书：名称必须是 &lt;code&gt;&amp;lt;something&amp;gt;@&amp;lt;其中之一&amp;gt;&lt;/code&gt;，并且整体比较（&lt;code&gt;evilunivb.fr&lt;/code&gt; 不是&lt;code&gt;univb.fr&lt;/code&gt;）。&lt;code&gt;oidc:domain:&lt;/code&gt; 是针对单个共享的同一项测试。该域名的可信程度取决于提供方：go-authn/bridge 会丢弃其 IdP 的联盟元数据未授予相应作用域的 eppn 或 subject-id。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;组&lt;/strong&gt;是机构的 IdP 所释放的内容，由 go-authn/bridge 的&lt;code&gt;claims { groups = [...] }&lt;/code&gt; 转换为 &lt;code&gt;groups&lt;/code&gt;
 声明：默认是 &lt;code&gt;eduPersonEntitlement&lt;/code&gt;
 （实验室或虚拟组织的组），或者是 &lt;code&gt;eduPersonScopedAffiliation&lt;/code&gt;
 （&lt;code&gt;staff@univ-a.fr&lt;/code&gt;、&lt;code&gt;student@univ-b.fr&lt;/code&gt;）。&lt;/p&gt;</description></item><item><title>重新读取目录服务</title><link>https://go-fileshare.github.io/docs/0.31/zh-cn/administration/reload/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/zh-cn/administration/reload/</guid><description>
@@ -411,22 +316,14 @@ data-copied-label="已复制！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;人员来自目录服务，而其他系统会修改这些目录服务：go-authn/bridge 会把
-应用密码写入某张表，并在人员被停用时删除该行。如果不重新加载，服务器只会为
-启动时存在的人员提供服务。自 v0.10.0 起，服务器会重新读取它们：&lt;/p&gt;
+&lt;p&gt;人员来自目录服务，而其他系统会修改这些目录服务：go-authn/bridge 会把应用密码写入某张表，并在人员被停用时删除该行。如果不重新加载，服务器只会为启动时存在的人员提供服务。自 v0.10.0 起，服务器会重新读取它们：&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;每隔一个 &lt;code&gt;reload&lt;/code&gt; 间隔，该间隔是&lt;strong&gt;至少一秒&lt;/strong&gt;的 Go 持续时间，因为一个
-每秒被读取许多次的目录服务只会给别人的数据库增加负载，并不会让服务器更新；&lt;/li&gt;
+&lt;li&gt;每隔一个 &lt;code&gt;reload&lt;/code&gt; 间隔，该间隔是&lt;strong&gt;至少一秒&lt;/strong&gt;的 Go 持续时间，因为一个每秒被读取许多次的目录服务只会给别人的数据库增加负载，并不会让服务器更新；&lt;/li&gt;
 &lt;li&gt;收到 &lt;strong&gt;&lt;code&gt;SIGHUP&lt;/code&gt;&lt;/strong&gt; 时（Unix）；&lt;/li&gt;
-&lt;li&gt;调用&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/administration/"&gt;管理 API&lt;/a&gt; 的 &lt;strong&gt;&lt;code&gt;ReloadDirectory&lt;/code&gt;&lt;/strong&gt; 时，它会应答
-哪些人被添加、移除和更改，是否启动了新的世代，并附上
-值得阅读的提示：不再存在或没有成员的组，以及共享所指明但
-已不在目录服务中的人员。&lt;/li&gt;
+&lt;li&gt;调用&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/administration/"&gt;管理 API&lt;/a&gt; 的 &lt;strong&gt;&lt;code&gt;ReloadDirectory&lt;/code&gt;&lt;/strong&gt; 时，它会应答哪些人被添加、移除和更改，是否启动了新的世代，并附上值得阅读的提示：不再存在或没有成员的组，以及共享所指明但已不在目录服务中的人员。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;未设置 &lt;code&gt;reload&lt;/code&gt; 时，仅在启动时、收到 &lt;code&gt;SIGHUP&lt;/code&gt; 时以及调用
-&lt;code&gt;ReloadDirectory&lt;/code&gt; 时读取目录服务。&lt;/p&gt;
-&lt;p&gt;被重新读取的是 &lt;code&gt;users&lt;/code&gt; 块（SQL、LDAP）。配置文件中的 &lt;code&gt;user&lt;/code&gt; 和
-&lt;code&gt;group&lt;/code&gt; 块&lt;strong&gt;本身就是&lt;/strong&gt;配置，在启动时读取。&lt;/p&gt;
+&lt;p&gt;未设置 &lt;code&gt;reload&lt;/code&gt; 时，仅在启动时、收到 &lt;code&gt;SIGHUP&lt;/code&gt; 时以及调用&lt;code&gt;ReloadDirectory&lt;/code&gt; 时读取目录服务。&lt;/p&gt;
+&lt;p&gt;被重新读取的是 &lt;code&gt;users&lt;/code&gt; 块（SQL、LDAP）。配置文件中的 &lt;code&gt;user&lt;/code&gt; 和&lt;code&gt;group&lt;/code&gt; 块&lt;strong&gt;本身就是&lt;/strong&gt;配置，在启动时读取。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="what-a-reload-does-depends-on-what-changed"&gt;重新加载会做什么，取决于什么发生了变化&lt;span class="hx:absolute hx:-mt-20" id="what-a-reload-does-depends-on-what-changed"&gt;&lt;/span&gt;
 &lt;a href="#what-a-reload-does-depends-on-what-changed" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;界线划在&lt;strong&gt;撤销&lt;/strong&gt;上：&lt;/p&gt;
 &lt;table&gt;
@@ -451,37 +348,24 @@ data-copied-label="已复制！"
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;加入某个共享所指明的组的新人&lt;em&gt;确实&lt;/em&gt;会改变该共享，并像对它的任何其他变更一样
-经历一个新世代：SMB 在启动时就固定了共享的列表。&lt;/p&gt;
-&lt;p&gt;如果共享指明了已经离开的人，或不再存在或不再有任何成员的组（自 v0.29.1 起可区分这两种情况），
-则会&lt;strong&gt;不含这些人员或这些组&lt;/strong&gt;地提供服务（这是安全的方向）并予以说明，而不是像
-启动时那样被拒绝：拒绝会保留旧列表，而旧列表正是
-刚刚被收回的访问权限。&lt;/p&gt;
+&lt;p&gt;加入某个共享所指明的组的新人&lt;em&gt;确实&lt;/em&gt;会改变该共享，并像对它的任何其他变更一样经历一个新世代：SMB 在启动时就固定了共享的列表。&lt;/p&gt;
+&lt;p&gt;如果共享指明了已经离开的人，或不再存在或不再有任何成员的组（自 v0.29.1 起可区分这两种情况），则会&lt;strong&gt;不含这些人员或这些组&lt;/strong&gt;地提供服务（这是安全的方向）并予以说明，而不是像启动时那样被拒绝：拒绝会保留旧列表，而旧列表正是刚刚被收回的访问权限。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="an-empty-group-is-not-everyone"&gt;空组不等于所有人&lt;span class="hx:absolute hx:-mt-20" id="an-empty-group-is-not-everyone"&gt;&lt;/span&gt;
 &lt;a href="#an-empty-group-is-not-everyone" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;为 &lt;code&gt;@engineers&lt;/code&gt; 编写的共享，在最后一位工程师离开后，不会向任何人提供服务&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;空的 &lt;code&gt;allow&lt;/code&gt; 表示“任何通过身份验证的人”。因此决定
-共享是否开放的是&lt;strong&gt;所写的内容&lt;/strong&gt;，而不是它现在展开成什么：为某个组
-编写的共享，在该组清空后仍然保持关闭。这样的共享
-根本不会通过 SMB 提供，因为其空的 &lt;code&gt;AllowUsers&lt;/code&gt; 会被理解为
-所有人。&lt;/p&gt;
+&lt;p&gt;空的 &lt;code&gt;allow&lt;/code&gt; 表示“任何通过身份验证的人”。因此决定共享是否开放的是&lt;strong&gt;所写的内容&lt;/strong&gt;，而不是它现在展开成什么：为某个组编写的共享，在该组清空后仍然保持关闭。这样的共享根本不会通过 SMB 提供，因为其空的 &lt;code&gt;AllowUsers&lt;/code&gt; 会被理解为所有人。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="watching-it"&gt;观察它&lt;span class="hx:absolute hx:-mt-20" id="watching-it"&gt;&lt;/span&gt;
-&lt;a href="#watching-it" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;fileshare_directory_reloads_total{result}&lt;/code&gt; 统计这样的重新加载：未发现任何变化
-（&lt;code&gt;unchanged&lt;/code&gt;）、原地添加（&lt;code&gt;added&lt;/code&gt;）、启动了一个世代（&lt;code&gt;swapped&lt;/code&gt;）或
-无法读取目录服务（&lt;code&gt;failed&lt;/code&gt;）；&lt;code&gt;fileshare_directory_people&lt;/code&gt; 是最近一次读取时
-所含的人数。参见&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/administration/health/"&gt;健康检查与指标&lt;/a&gt;。&lt;/p&gt;
+&lt;a href="#watching-it" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;fileshare_directory_reloads_total{result}&lt;/code&gt; 统计这样的重新加载：未发现任何变化（&lt;code&gt;unchanged&lt;/code&gt;）、原地添加（&lt;code&gt;added&lt;/code&gt;）、启动了一个世代（&lt;code&gt;swapped&lt;/code&gt;）或无法读取目录服务（&lt;code&gt;failed&lt;/code&gt;）；&lt;code&gt;fileshare_directory_people&lt;/code&gt; 是最近一次读取时所含的人数。参见&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/administration/health/"&gt;健康检查与指标&lt;/a&gt;。&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;重新加载触及不到的对象&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;由身份提供方通过令牌或证书担保的人员
-不在目录服务中，因此重新加载与这些人员无关。收回&lt;strong&gt;这些人员&lt;/strong&gt;的访问权限
-是&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/"&gt;撤销列表和共享信号&lt;/a&gt;的工作。&lt;/p&gt;
+&lt;p&gt;由身份提供方通过令牌或证书担保的人员不在目录服务中，因此重新加载与这些人员无关。收回&lt;strong&gt;这些人员&lt;/strong&gt;的访问权限是&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/"&gt;撤销列表和共享信号&lt;/a&gt;的工作。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;</description></item></channel></rss>

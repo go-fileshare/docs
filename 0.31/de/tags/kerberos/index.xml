@@ -92,16 +92,12 @@ data-copied-label="Kopiert!"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;Seit v0.9.0 wird NFS mit &lt;code&gt;tls = true&lt;/code&gt; und einem
-&lt;a href="https://go-fileshare.github.io/docs/0.31/de/security/tls/"&gt;&lt;code&gt;tls&lt;/code&gt;-Block&lt;/a&gt; über RPC-with-TLS (RFC 9289) bereitgestellt. Es verschlüsselt; mit &lt;code&gt;client_ca_file&lt;/code&gt; verlangt es von einem
-Client ein Zertifikat dieser Stelle – das belegt, welcher &lt;strong&gt;Host&lt;/strong&gt; einhängt.
-Die uid darin ist weiterhin die, die &lt;code&gt;AUTH_SYS&lt;/code&gt; behauptet, daher wird eine eingeschränkte Freigabe darüber
-&lt;strong&gt;weiterhin abgelehnt&lt;/strong&gt;. TLS wird angeboten, nicht verlangt: Ein Client, der nie
+&lt;p&gt;Seit v0.9.0 wird NFS mit &lt;code&gt;tls = true&lt;/code&gt; und einem&lt;a href="https://go-fileshare.github.io/docs/0.31/de/security/tls/"&gt;&lt;code&gt;tls&lt;/code&gt;-Block&lt;/a&gt; über RPC-with-TLS (RFC 9289) bereitgestellt. Es verschlüsselt; mit &lt;code&gt;client_ca_file&lt;/code&gt; verlangt es von einem
+Client ein Zertifikat dieser Stelle – das belegt, welcher &lt;strong&gt;Host&lt;/strong&gt; einhängt.Die uid darin ist weiterhin die, die &lt;code&gt;AUTH_SYS&lt;/code&gt; behauptet, daher wird eine eingeschränkte Freigabe darüber&lt;strong&gt;weiterhin abgelehnt&lt;/strong&gt;. TLS wird angeboten, nicht verlangt: Ein Client, der nie
 danach fragt, erhält weiterhin die offenen Freigaben.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="a-person-from-their-certificate"&gt;Eine Person, aus ihrem Zertifikat&lt;span class="hx:absolute hx:-mt-20" id="a-person-from-their-certificate"&gt;&lt;/span&gt;
 &lt;a href="#a-person-from-their-certificate" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Seit v0.12.0 kann ein Zertifikat eine &lt;strong&gt;Person&lt;/strong&gt; benennen – so wie go-authn/bridge eines
-nach einer Anmeldung beim Identitätsanbieter ausstellt –, und dann wird eine Freigabe, die Personen benennt,
-ohne Kerberos über NFS bereitgestellt:&lt;/p&gt;
+nach einer Anmeldung beim Identitätsanbieter ausstellt –, und dann wird eine Freigabe, die Personen benennt,ohne Kerberos über NFS bereitgestellt:&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;nfs&amp;#34;&lt;/span&gt; {
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; tls&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;
@@ -125,11 +121,9 @@ data-copied-label="Kopiert!"
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Das Zertifikat eines Linux-Clients gehört zu einem Mount&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;Jeder Benutzer dieses Mounts handelt als die Person, die das Zertifikat benennt. Richtig auf
-einem Arbeitsplatzrechner, den eine Person nutzt; falsch auf einer Maschine, an der sich mehrere Personen anmelden –
-verwenden Sie dort &lt;code&gt;sec=krb5&lt;/code&gt;.&lt;/p&gt;
+einem Arbeitsplatzrechner, den eine Person nutzt; falsch auf einer Maschine, an der sich mehrere Personen anmelden –verwenden Sie dort &lt;code&gt;sec=krb5&lt;/code&gt;.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;p&gt;Was das Zertifikat enthält, die erforderliche Sperrliste (CRL) und was mit einem
-echten Linux-Client gemessen wurde (&lt;code&gt;MNT&lt;/code&gt; unverschlüsselt, die Fallstricke von &lt;code&gt;tlshd&lt;/code&gt;), steht in
-&lt;a href="https://go-fileshare.github.io/docs/0.31/de/security/nfs-certificates/"&gt;NFS, mit Identitäten aus Zertifikaten&lt;/a&gt;.&lt;/p&gt;</description></item></channel></rss>
+echten Linux-Client gemessen wurde (&lt;code&gt;MNT&lt;/code&gt; unverschlüsselt, die Fallstricke von &lt;code&gt;tlshd&lt;/code&gt;), steht in&lt;a href="https://go-fileshare.github.io/docs/0.31/de/security/nfs-certificates/"&gt;NFS, mit Identitäten aus Zertifikaten&lt;/a&gt;.&lt;/p&gt;</description></item></channel></rss>

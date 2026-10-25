@@ -23,14 +23,11 @@ data-copied-label="¡Copiado!"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;Cada imagen se abre como la abre el servidor y se vuelve a cerrar; no se sirve nada.
-Eso es &lt;strong&gt;en lectura y escritura&lt;/strong&gt; para un recurso compartido que no indica
-&lt;code&gt;read_only = true&lt;/code&gt;; solo un dispositivo se abre siempre en solo lectura, y en
+&lt;p&gt;Cada imagen se abre como la abre el servidor y se vuelve a cerrar; no se sirve nada.Eso es &lt;strong&gt;en lectura y escritura&lt;/strong&gt; para un recurso compartido que no indica&lt;code&gt;read_only = true&lt;/code&gt;; solo un dispositivo se abre siempre en solo lectura, y en
 exclusiva, de modo que un dispositivo que tiene el servidor en ejecución puede
 rechazarse aquí por estar ocupado.&lt;/p&gt;
 &lt;p&gt;Imprime &lt;strong&gt;de dónde procede una credencial y nunca lo que contiene&lt;/strong&gt;, y las columnas
-por persona son la razón de ser de
-&lt;a href="https://github.com/go-authn/directory" target="_blank" rel="noopener"&gt;&lt;code&gt;Identity.Can&lt;/code&gt;&lt;/a&gt;: eli está en el mismo grupo
+por persona son la razón de ser de&lt;a href="https://github.com/go-authn/directory" target="_blank" rel="noopener"&gt;&lt;code&gt;Identity.Can&lt;/code&gt;&lt;/a&gt;: eli está en el mismo grupo
 que dora y SMB sigue sin poder servirle, porque LDAP guarda su contraseña y no se la
 da a nadie.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="reading-the-columns"&gt;Cómo leer las columnas&lt;span class="hx:absolute hx:-mt-20" id="reading-the-columns"&gt;&lt;/span&gt;
@@ -65,15 +62,12 @@ da a nadie.&lt;/p&gt;
 confiar en la configuración, cuando procede:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;con un bloque &lt;code&gt;oidc&lt;/code&gt;, que sus tokens solo se aceptan por WebDAV, y si los nombres
-del proveedor son nombres locales (&lt;code&gt;local_names&lt;/code&gt;); consulte
-&lt;a href="https://go-fileshare.github.io/docs/0.31/es/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;identidad&lt;/a&gt;;&lt;/li&gt;
-&lt;li&gt;por protocolo, lo que está &lt;strong&gt;cifrado&lt;/strong&gt; y lo que va &lt;strong&gt;sin cifrar a propósito&lt;/strong&gt;;
-consulte &lt;a href="https://go-fileshare.github.io/docs/0.31/es/security/tls/#what-check-says"&gt;TLS&lt;/a&gt;;&lt;/li&gt;
+del proveedor son nombres locales (&lt;code&gt;local_names&lt;/code&gt;); consulte&lt;a href="https://go-fileshare.github.io/docs/0.31/es/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;identidad&lt;/a&gt;;&lt;/li&gt;
+&lt;li&gt;por protocolo, lo que está &lt;strong&gt;cifrado&lt;/strong&gt; y lo que va &lt;strong&gt;sin cifrar a propósito&lt;/strong&gt;;consulte &lt;a href="https://go-fileshare.github.io/docs/0.31/es/security/tls/#what-check-says"&gt;TLS&lt;/a&gt;;&lt;/li&gt;
 &lt;li&gt;de dónde procede una &lt;strong&gt;lista de revocación&lt;/strong&gt;, y qué ocurre mientras no se puede
 descargar; consulte &lt;a href="https://go-fileshare.github.io/docs/0.31/es/security/"&gt;qué revoca qué&lt;/a&gt;;&lt;/li&gt;
 &lt;li&gt;qué recursos compartidos se &lt;strong&gt;retiraron de servicio&lt;/strong&gt; mediante el &lt;code&gt;DisableShare&lt;/code&gt; de
-la API de administración, y no se sirven; consulte
-&lt;a href="https://go-fileshare.github.io/docs/0.31/es/administration/#disabling-a-share"&gt;la API de administración&lt;/a&gt;.&lt;/li&gt;
+la API de administración, y no se sirven; consulte&lt;a href="https://go-fileshare.github.io/docs/0.31/es/administration/#disabling-a-share"&gt;la API de administración&lt;/a&gt;.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;Para un servidor con una KRL, identidades NFS a partir de certificados y señales
 compartidas, esa parte dice:&lt;/p&gt;

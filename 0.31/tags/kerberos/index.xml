@@ -92,11 +92,8 @@ data-copied-label="Copied!"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;Since v0.9.0 NFS is served over RPC-with-TLS (RFC 9289) with &lt;code&gt;tls = true&lt;/code&gt; and a
-&lt;a href="https://go-fileshare.github.io/docs/0.31/security/tls/"&gt;&lt;code&gt;tls&lt;/code&gt; block&lt;/a&gt;. It encrypts; with &lt;code&gt;client_ca_file&lt;/code&gt; it makes a
-client present a certificate from that authority — which &lt;strong&gt;host&lt;/strong&gt; is mounting.
-The uid inside is still the one &lt;code&gt;AUTH_SYS&lt;/code&gt; claims, so a restricted share is
-&lt;strong&gt;still refused&lt;/strong&gt; over it. TLS is offered, not required: a client that never
+&lt;p&gt;Since v0.9.0 NFS is served over RPC-with-TLS (RFC 9289) with &lt;code&gt;tls = true&lt;/code&gt; and a&lt;a href="https://go-fileshare.github.io/docs/0.31/security/tls/"&gt;&lt;code&gt;tls&lt;/code&gt; block&lt;/a&gt;. It encrypts; with &lt;code&gt;client_ca_file&lt;/code&gt; it makes a
+client present a certificate from that authority — which &lt;strong&gt;host&lt;/strong&gt; is mounting.The uid inside is still the one &lt;code&gt;AUTH_SYS&lt;/code&gt; claims, so a restricted share is&lt;strong&gt;still refused&lt;/strong&gt; over it. TLS is offered, not required: a client that never
 asks for it is still served the open shares.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="a-person-from-their-certificate"&gt;A person, from their certificate&lt;span class="hx:absolute hx:-mt-20" id="a-person-from-their-certificate"&gt;&lt;/span&gt;
 &lt;a href="#a-person-from-their-certificate" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Since v0.12.0 a certificate can name a &lt;strong&gt;person&lt;/strong&gt; — as go-authn/bridge issues
@@ -125,11 +122,9 @@ data-copied-label="Copied!"
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;A Linux client&amp;rsquo;s certificate belongs to a mount&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;Every user of that mount acts as the person the certificate names. Right on
-a workstation one person uses; wrong on a machine several people log into —
-use &lt;code&gt;sec=krb5&lt;/code&gt; there.&lt;/p&gt;
+a workstation one person uses; wrong on a machine several people log into —use &lt;code&gt;sec=krb5&lt;/code&gt; there.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;p&gt;What the certificate carries, the CRL that is required, and what was measured
-with a real Linux client (&lt;code&gt;MNT&lt;/code&gt; in the clear, &lt;code&gt;tlshd&lt;/code&gt;&amp;rsquo;s pitfalls) are in
-&lt;a href="https://go-fileshare.github.io/docs/0.31/security/nfs-certificates/"&gt;NFS, with identities from certificates&lt;/a&gt;.&lt;/p&gt;</description></item></channel></rss>
+with a real Linux client (&lt;code&gt;MNT&lt;/code&gt; in the clear, &lt;code&gt;tlshd&lt;/code&gt;&amp;rsquo;s pitfalls) are in&lt;a href="https://go-fileshare.github.io/docs/0.31/security/nfs-certificates/"&gt;NFS, with identities from certificates&lt;/a&gt;.&lt;/p&gt;</description></item></channel></rss>

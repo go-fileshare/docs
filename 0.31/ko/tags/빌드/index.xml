@@ -1,6 +1,5 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – 빌드</title><link>https://go-fileshare.github.io/docs/0.31/ko/tags/%EB%B9%8C%EB%93%9C/</link><description>Recent content in 빌드 on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>ko</language><atom:link href="https://go-fileshare.github.io/docs/0.31/ko/tags/%EB%B9%8C%EB%93%9C/index.xml" rel="self" type="application/rss+xml"/><item><title>필요한 것만 빌드하기</title><link>https://go-fileshare.github.io/docs/0.31/ko/operations/build-tags/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/ko/operations/build-tags/</guid><description>
-&lt;p&gt;각 프로토콜은 빌드 태그 뒤에 있으며, 태그는 그것을 &lt;strong&gt;완전히&lt;/strong&gt; 제외합니다.
-리스너도, 파서도, 의존성도, 코드도 없습니다.&lt;/p&gt;
+&lt;p&gt;각 프로토콜은 빌드 태그 뒤에 있으며, 태그는 그것을 &lt;strong&gt;완전히&lt;/strong&gt; 제외합니다.리스너도, 파서도, 의존성도, 코드도 없습니다.&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;go install -tags nonfs,nowebdav,nosftp,nos3 github.com/go-fileshare/fileshare@latest &lt;span class="c1"&gt;# SMB only&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;go build -tags nosmb,nonfs,nosftp,nos3 . &lt;span class="c1"&gt;# WebDAV only&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
@@ -70,8 +69,7 @@ data-copied-label="복사됨!"
 &lt;p&gt;이는 fileshare README가 제시하는 수치로, 관리 API가 추가되기 전에 측정한
 것입니다. 아래 표가 그 이후의 측정입니다.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="the-admin-api-and-nogrpc"&gt;관리 API와 &lt;code&gt;nogrpc&lt;/code&gt;&lt;span class="hx:absolute hx:-mt-20" id="the-admin-api-and-nogrpc"&gt;&lt;/span&gt;
-&lt;a href="#the-admin-api-and-nogrpc" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/administration/"&gt;관리 API&lt;/a&gt;는 gRPC와 protobuf를 끌어들였고,
-이들은 &lt;code&gt;nogrpc&lt;/code&gt; 뒤에 있습니다(linux/amd64, 2026-09-29 측정. 이때 위 표의 전체
+&lt;a href="#the-admin-api-and-nogrpc" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/administration/"&gt;관리 API&lt;/a&gt;는 gRPC와 protobuf를 끌어들였고,이들은 &lt;code&gt;nogrpc&lt;/code&gt; 뒤에 있습니다(linux/amd64, 2026-09-29 측정. 이때 위 표의 전체
 빌드는 34.1 MB로 커져 있었습니다).&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
@@ -95,8 +93,7 @@ data-copied-label="복사됨!"
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;gRPC의 비용은 &lt;strong&gt;11.7 MB&lt;/strong&gt;입니다. 아래의
-&lt;a href="#why-not-subprocess-plugins"&gt;플러그인 측정&lt;/a&gt;을 이제 자체적인 이유로 다시 측정한
+&lt;p&gt;gRPC의 비용은 &lt;strong&gt;11.7 MB&lt;/strong&gt;입니다. 아래의&lt;a href="#why-not-subprocess-plugins"&gt;플러그인 측정&lt;/a&gt;을 이제 자체적인 이유로 다시 측정한
 값입니다. 공유를 파일로 관리하는 사이트는 이를 싣고 있을 필요가 없습니다.&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
@@ -107,17 +104,13 @@ data-copied-label="복사됨!"
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;&lt;code&gt;nogrpc&lt;/code&gt;는 관리 API와 함께
-&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/administration/volumes/"&gt;프로비저너&lt;/a&gt;도 제외합니다.
-&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/administration/health/"&gt;상태 점검과 메트릭&lt;/a&gt;은 평범한 HTTP이므로
+&lt;p&gt;&lt;code&gt;nogrpc&lt;/code&gt;는 관리 API와 함께&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/administration/volumes/"&gt;프로비저너&lt;/a&gt;도 제외합니다.&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/administration/health/"&gt;상태 점검과 메트릭&lt;/a&gt;은 평범한 HTTP이므로
 유지됩니다.&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;-tags noprovisioner&lt;/code&gt;는 프로비저너, 곧 권한 있는 &lt;code&gt;fileshare provisioner&lt;/code&gt; 역할만
 제외하며, go-fsctl의 zfs, btrfs, projquota도 함께 제외됩니다. 볼륨을 전혀
-제공하지 않는 서버는 볼륨을 만드는 코드를 싣고 있을 필요가 없습니다. 이런 빌드의
-&lt;code&gt;fileshare provisioner&lt;/code&gt;는 &amp;ldquo;알 수 없는 명령&amp;rdquo; 대신 그렇게 빌드되었음을 알려
+제공하지 않는 서버는 볼륨을 만드는 코드를 싣고 있을 필요가 없습니다. 이런 빌드의&lt;code&gt;fileshare provisioner&lt;/code&gt;는 &amp;ldquo;알 수 없는 명령&amp;rdquo; 대신 그렇게 빌드되었음을 알려
 줍니다.&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;nosql&lt;/code&gt;은 단연 가장 큰 수단입니다. PostgreSQL, MySQL, SQLite를 합치면
-&lt;strong&gt;11.7 MB&lt;/strong&gt;로, 이 프로그램의 모든 프로토콜을 합친 것보다 큽니다. 사용자가 파일에
+&lt;p&gt;&lt;code&gt;nosql&lt;/code&gt;은 단연 가장 큰 수단입니다. PostgreSQL, MySQL, SQLite를 합치면&lt;strong&gt;11.7 MB&lt;/strong&gt;로, 이 프로그램의 모든 프로토콜을 합친 것보다 큽니다. 사용자가 파일에
 있는 사이트에서는 이 태그가 필요합니다. 드라이버는 이를 사용하는 라이브러리가
 아니라 명령이 임포트하며, 그래서 이 선택이 포크가 아닌 빌드 태그로 가능합니다.&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
@@ -135,10 +128,8 @@ data-copied-label="복사됨!"
 끌어들이며, 이것만으로 &lt;strong&gt;13.2 MB&lt;/strong&gt;가 듭니다. 세 프로토콜과 모든 드라이버를 담은
 이 바이너리 전체보다 큽니다. 플러그인 호스트는 아무것도 로드하기 전에 이미 두 배
 크기가 될 것이고, 각 플러그인 바이너리도 gRPC를 다시 싣게 됩니다.&lt;/p&gt;
-&lt;p&gt;공격 표면 측면에서도, 실행하지 않는 것에 대해서는 태그가 더 강력한 수단입니다.
-&lt;strong&gt;컴파일된 적이 없는 코드는&lt;/strong&gt; 샌드박스 여부와 관계없이 &lt;strong&gt;도달할 수 없습니다&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;공격 표면 측면에서도, 실행하지 않는 것에 대해서는 태그가 더 강력한 수단입니다.&lt;strong&gt;컴파일된 적이 없는 코드는&lt;/strong&gt; 샌드박스 여부와 관계없이 &lt;strong&gt;도달할 수 없습니다&lt;/strong&gt;.&lt;/p&gt;
 &lt;p&gt;태그가 &lt;em&gt;주지 못하는&lt;/em&gt; 것은 &lt;strong&gt;실행하는&lt;/strong&gt; 프로토콜 사이의 격리, 그리고 다시
 컴파일하지 않고 프로토콜을 추가하는 방법입니다. 둘 다 실제 요구이며, 둘 다 더
 작은 바이너리가 아니라 프로세스 경계를 위한 논거입니다. 그 경계가 바로 플러그인
-프레임워크가 아니라 같은 바이너리를 사용하는
-&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/operations/isolation/"&gt;프로토콜마다 하나의 프로세스&lt;/a&gt;입니다.&lt;/p&gt;</description></item></channel></rss>
+프레임워크가 아니라 같은 바이너리를 사용하는&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/operations/isolation/"&gt;프로토콜마다 하나의 프로세스&lt;/a&gt;입니다.&lt;/p&gt;</description></item></channel></rss>

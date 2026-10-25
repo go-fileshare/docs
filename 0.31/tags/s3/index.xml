@@ -12,8 +12,7 @@ data-copied-label="Copied!"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;Or over HTTPS, since v0.9.0, with &lt;code&gt;tls = true&lt;/code&gt; and a
-&lt;a href="https://go-fileshare.github.io/docs/0.31/security/tls/"&gt;&lt;code&gt;tls&lt;/code&gt; block&lt;/a&gt;:&lt;/p&gt;
+&lt;p&gt;Or over HTTPS, since v0.9.0, with &lt;code&gt;tls = true&lt;/code&gt; and a&lt;a href="https://go-fileshare.github.io/docs/0.31/security/tls/"&gt;&lt;code&gt;tls&lt;/code&gt; block&lt;/a&gt;:&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;s3&amp;#34;&lt;/span&gt; {
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:9000&amp;#34;&lt;/span&gt;
@@ -85,12 +84,10 @@ password never crosses the wire, exactly as with NTLMv2.&lt;/p&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;So the directory must HOLD the password, not merely check it&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;A source that can only &lt;em&gt;verify&lt;/em&gt; a password — an LDAP bind, a bcrypt column
-— can answer WebDAV and &lt;strong&gt;cannot&lt;/strong&gt; answer S3.&lt;/p&gt;
+&lt;p&gt;A source that can only &lt;em&gt;verify&lt;/em&gt; a password — an LDAP bind, a bcrypt column— can answer WebDAV and &lt;strong&gt;cannot&lt;/strong&gt; answer S3.&lt;/p&gt;
 &lt;p&gt;And not an NT hash either: that is the MD4 SMB can work from, and an HMAC
 cannot be computed from it. &lt;strong&gt;An identity holding only an NT hash serves
-SMB and not S3&lt;/strong&gt; — near neighbours rather than the same answer.
-&lt;a href="https://go-fileshare.github.io/docs/0.31/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt; prints the column.&lt;/p&gt;
+SMB and not S3&lt;/strong&gt; — near neighbours rather than the same answer.&lt;a href="https://go-fileshare.github.io/docs/0.31/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt; prints the column.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -103,8 +100,7 @@ for that one user and nowhere else.&lt;/p&gt;
 &lt;a href="#what-is-served" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;ListBuckets&lt;/code&gt;, &lt;code&gt;HeadBucket&lt;/code&gt;, &lt;code&gt;ListObjectsV2&lt;/code&gt; with prefix, delimiter, max-keys
 and continuation, &lt;code&gt;HeadObject&lt;/code&gt;, and &lt;code&gt;GetObject&lt;/code&gt; with &lt;code&gt;Range&lt;/code&gt;. SigV4 in both
 forms, header and presigned.&lt;/p&gt;
-&lt;p&gt;The object API itself is
-&lt;a href="https://github.com/go-filesystems/s3" target="_blank" rel="noopener"&gt;&lt;code&gt;go-filesystems/s3&lt;/code&gt;&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The object API itself is&lt;a href="https://github.com/go-filesystems/s3" target="_blank" rel="noopener"&gt;&lt;code&gt;go-filesystems/s3&lt;/code&gt;&lt;/a&gt;.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="what-is-refused-and-why"&gt;What is refused, and why&lt;span class="hx:absolute hx:-mt-20" id="what-is-refused-and-why"&gt;&lt;/span&gt;
 &lt;a href="#what-is-refused-and-why" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
@@ -134,17 +130,11 @@ different mechanism, and it is &lt;strong&gt;not implemented&lt;/strong&gt;.&lt;
 &lt;p&gt;Multipart upload, versioning, ACLs, policies, lifecycle rules, replication and
 tagging are not implemented. Setting any of them, and starting a multipart
 upload, is a write, and answers &lt;code&gt;AccessDenied&lt;/code&gt; like any other. A &lt;code&gt;GET&lt;/code&gt; that
-asks for one of them (&lt;code&gt;?versioning&lt;/code&gt;, &lt;code&gt;?acl&lt;/code&gt;, &lt;code&gt;?tagging&lt;/code&gt;&amp;hellip;) is not told apart:
-the query is ignored and the bucket&amp;rsquo;s listing or the object is returned.
-&lt;code&gt;NotImplemented&lt;/code&gt; answers a listing other than &lt;code&gt;list-type=2&lt;/code&gt;, any method but
-&lt;code&gt;GET&lt;/code&gt; on &lt;code&gt;/&lt;/code&gt;, and a method no operation here uses.&lt;/p&gt;
+asks for one of them (&lt;code&gt;?versioning&lt;/code&gt;, &lt;code&gt;?acl&lt;/code&gt;, &lt;code&gt;?tagging&lt;/code&gt;&amp;hellip;) is not told apart:the query is ignored and the bucket&amp;rsquo;s listing or the object is returned.&lt;code&gt;NotImplemented&lt;/code&gt; answers a listing other than &lt;code&gt;list-type=2&lt;/code&gt;, any method but&lt;code&gt;GET&lt;/code&gt; on &lt;code&gt;/&lt;/code&gt;, and a method no operation here uses.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="two-limits-worth-knowing-before-pointing-it-at-something-large"&gt;Two limits worth knowing before pointing it at something large&lt;span class="hx:absolute hx:-mt-20" id="two-limits-worth-knowing-before-pointing-it-at-something-large"&gt;&lt;/span&gt;
-&lt;a href="#two-limits-worth-knowing-before-pointing-it-at-something-large" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;GetObject&lt;/code&gt; reads the whole object into memory.&lt;/strong&gt; The driver interface offers
-&lt;code&gt;ReadFile&lt;/code&gt; and nothing else — no opener, no reader — so there is no streaming
+&lt;a href="#two-limits-worth-knowing-before-pointing-it-at-something-large" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;GetObject&lt;/code&gt; reads the whole object into memory.&lt;/strong&gt; The driver interface offers&lt;code&gt;ReadFile&lt;/code&gt; and nothing else — no opener, no reader — so there is no streaming
 read to use. A bound, 256 MiB, answers &lt;code&gt;EntityTooLarge&lt;/code&gt; rather than taking
 the process down.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;&lt;code&gt;LastModified&lt;/code&gt; is the epoch.&lt;/strong&gt; &lt;code&gt;filesystem.Stat&lt;/code&gt; carries &lt;code&gt;Mode&lt;/code&gt;, &lt;code&gt;Size&lt;/code&gt; and
-&lt;code&gt;Inode&lt;/code&gt;, and no modification time at all. The field is not optional in the S3
-schema, so something must be sent; the epoch is obviously not a real time,
-where &lt;code&gt;time.Now()&lt;/code&gt; would look like a file that just changed and make every sync
+&lt;p&gt;&lt;strong&gt;&lt;code&gt;LastModified&lt;/code&gt; is the epoch.&lt;/strong&gt; &lt;code&gt;filesystem.Stat&lt;/code&gt; carries &lt;code&gt;Mode&lt;/code&gt;, &lt;code&gt;Size&lt;/code&gt; and&lt;code&gt;Inode&lt;/code&gt;, and no modification time at all. The field is not optional in the S3
+schema, so something must be sent; the epoch is obviously not a real time,where &lt;code&gt;time.Now()&lt;/code&gt; would look like a file that just changed and make every sync
 tool copy everything, every run.&lt;/p&gt;</description></item></channel></rss>

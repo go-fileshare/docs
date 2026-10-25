@@ -14,8 +14,7 @@ data-copied-label="Copié !"
 &lt;/div&gt;
 &lt;p&gt;Les personnes viennent d&amp;rsquo;annuaires que d&amp;rsquo;autres choses modifient — go-authn/bridge écrit
 un mot de passe d&amp;rsquo;application dans une table, et supprime la ligne quand la personne est
-désactivée. Sans rechargement, le serveur sert ceux qui étaient là à son démarrage.
-Depuis la v0.10.0, il les relit :&lt;/p&gt;
+désactivée. Sans rechargement, le serveur sert ceux qui étaient là à son démarrage.Depuis la v0.10.0, il les relit :&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;à chaque intervalle &lt;code&gt;reload&lt;/code&gt;, une durée Go d&amp;rsquo;&lt;strong&gt;au moins une seconde&lt;/strong&gt; — un annuaire
 lu plusieurs fois par seconde est une charge pour la base de données de quelqu&amp;rsquo;un, pas un serveur
@@ -26,10 +25,8 @@ a été ajouté, supprimé et modifié, si une nouvelle génération a démarré
 personne devrait lire — un groupe qui n&amp;rsquo;existe plus ou n&amp;rsquo;a plus de membres, quelqu&amp;rsquo;un qu&amp;rsquo;un partage nomme
 et qui n&amp;rsquo;est plus dans l&amp;rsquo;annuaire.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;Sans &lt;code&gt;reload&lt;/code&gt;, l&amp;rsquo;annuaire n&amp;rsquo;est lu qu&amp;rsquo;au démarrage, sur &lt;code&gt;SIGHUP&lt;/code&gt; et sur
-&lt;code&gt;ReloadDirectory&lt;/code&gt;.&lt;/p&gt;
-&lt;p&gt;Ce sont les blocs &lt;code&gt;users&lt;/code&gt; — SQL, LDAP — qui sont relus. Les blocs &lt;code&gt;user&lt;/code&gt; et
-&lt;code&gt;group&lt;/code&gt; du fichier de configuration &lt;strong&gt;sont&lt;/strong&gt; la configuration, lue au
+&lt;p&gt;Sans &lt;code&gt;reload&lt;/code&gt;, l&amp;rsquo;annuaire n&amp;rsquo;est lu qu&amp;rsquo;au démarrage, sur &lt;code&gt;SIGHUP&lt;/code&gt; et sur&lt;code&gt;ReloadDirectory&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Ce sont les blocs &lt;code&gt;users&lt;/code&gt; — SQL, LDAP — qui sont relus. Les blocs &lt;code&gt;user&lt;/code&gt; et&lt;code&gt;group&lt;/code&gt; du fichier de configuration &lt;strong&gt;sont&lt;/strong&gt; la configuration, lue au
 démarrage.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="what-a-reload-does-depends-on-what-changed"&gt;Ce que fait un rechargement dépend de ce qui a changé&lt;span class="hx:absolute hx:-mt-20" id="what-a-reload-does-depends-on-what-changed"&gt;&lt;/span&gt;
 &lt;a href="#what-a-reload-does-depends-on-what-changed" class="subheading-anchor" aria-label="Lien permanent vers cette section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;La ligne de partage passe par la &lt;strong&gt;révocation&lt;/strong&gt; :&lt;/p&gt;
@@ -59,8 +56,7 @@ démarrage.&lt;/p&gt;
 par une nouvelle génération comme toute autre modification de celui-ci : SMB fixe les listes d&amp;rsquo;un partage
 à son démarrage.&lt;/p&gt;
 &lt;p&gt;Un partage qui nomme quelqu&amp;rsquo;un de parti, ou un groupe qui n&amp;rsquo;existe plus ou n&amp;rsquo;a
-plus aucun membre (distingués depuis v0.29.1), est servi
-&lt;strong&gt;sans eux&lt;/strong&gt; — le sens sûr — et c&amp;rsquo;est signalé, plutôt que refusé comme le refuserait un
+plus aucun membre (distingués depuis v0.29.1), est servi&lt;strong&gt;sans eux&lt;/strong&gt; — le sens sûr — et c&amp;rsquo;est signalé, plutôt que refusé comme le refuserait un
 démarrage : refuser conserverait les anciennes listes, et les anciennes listes sont
 l&amp;rsquo;accès qui vient d&amp;rsquo;être retiré.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="an-empty-group-is-not-everyone"&gt;Un groupe vide n&amp;rsquo;est pas tout le monde&lt;span class="hx:absolute hx:-mt-20" id="an-empty-group-is-not-everyone"&gt;&lt;/span&gt;
@@ -71,14 +67,12 @@ l&amp;rsquo;accès qui vient d&amp;rsquo;être retiré.&lt;/p&gt;
 &lt;p&gt;Un &lt;code&gt;allow&lt;/code&gt; vide signifie « quiconque s&amp;rsquo;authentifie ». Ce qui décide si
 un partage est ouvert, c&amp;rsquo;est donc ce qui a été &lt;strong&gt;écrit&lt;/strong&gt;, et non ce à quoi il se développe maintenant : un partage
 écrit pour un groupe reste fermé quand ce groupe se vide. Un tel partage
-n&amp;rsquo;est pas du tout proposé en SMB, dont l&amp;rsquo;&lt;code&gt;AllowUsers&lt;/code&gt; vide se lirait comme
-« tout le monde ».&lt;/p&gt;
+n&amp;rsquo;est pas du tout proposé en SMB, dont l&amp;rsquo;&lt;code&gt;AllowUsers&lt;/code&gt; vide se lirait comme« tout le monde ».&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="watching-it"&gt;Le surveiller&lt;span class="hx:absolute hx:-mt-20" id="watching-it"&gt;&lt;/span&gt;
-&lt;a href="#watching-it" class="subheading-anchor" aria-label="Lien permanent vers cette section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;fileshare_directory_reloads_total{result}&lt;/code&gt; compte les rechargements qui n&amp;rsquo;ont rien trouvé
-(&lt;code&gt;unchanged&lt;/code&gt;), qui ont ajouté sur place (&lt;code&gt;added&lt;/code&gt;), qui ont démarré une génération (&lt;code&gt;swapped&lt;/code&gt;) ou
+&lt;a href="#watching-it" class="subheading-anchor" aria-label="Lien permanent vers cette section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;fileshare_directory_reloads_total{result}&lt;/code&gt; compte les rechargements qui n&amp;rsquo;ont rien trouvé(&lt;code&gt;unchanged&lt;/code&gt;), qui ont ajouté sur place (&lt;code&gt;added&lt;/code&gt;), qui ont démarré une génération (&lt;code&gt;swapped&lt;/code&gt;) ou
 qui n&amp;rsquo;ont pas pu lire l&amp;rsquo;annuaire (&lt;code&gt;failed&lt;/code&gt;) ; &lt;code&gt;fileshare_directory_people&lt;/code&gt; indique combien
 de personnes contenait la dernière lecture. Voir &lt;a href="https://go-fileshare.github.io/docs/0.31/fr/administration/health/"&gt;santé et métriques&lt;/a&gt;.&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
@@ -86,8 +80,7 @@ de personnes contenait la dernière lecture. Voir &lt;a href="https://go-filesha
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Ce qu&amp;rsquo;un rechargement n&amp;rsquo;atteint pas&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;Les personnes dont le fournisseur d&amp;rsquo;identité se porte garant par un jeton ou un certificat
-ne sont pas dans l&amp;rsquo;annuaire : aucun rechargement ne les concerne. Les reprendre, &lt;strong&gt;elles&lt;/strong&gt;,
-est le rôle des &lt;a href="https://go-fileshare.github.io/docs/0.31/fr/security/"&gt;listes de révocation et des signaux partagés&lt;/a&gt;.&lt;/p&gt;
+ne sont pas dans l&amp;rsquo;annuaire : aucun rechargement ne les concerne. Les reprendre, &lt;strong&gt;elles&lt;/strong&gt;,est le rôle des &lt;a href="https://go-fileshare.github.io/docs/0.31/fr/security/"&gt;listes de révocation et des signaux partagés&lt;/a&gt;.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;</description></item></channel></rss>

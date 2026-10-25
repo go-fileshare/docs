@@ -1,11 +1,9 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Zfs</title><link>https://go-fileshare.github.io/docs/0.31/ko/tags/zfs/</link><description>Recent content in Zfs on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>ko</language><atom:link href="https://go-fileshare.github.io/docs/0.31/ko/tags/zfs/index.xml" rel="self" type="application/rss+xml"/><item><title>볼륨: fileshare가 생성하는 스토리지</title><link>https://go-fileshare.github.io/docs/0.31/ko/administration/volumes/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/ko/administration/volumes/</guid><description>
 &lt;p&gt;v0.21.0부터 &lt;a href="https://go-fileshare.github.io/docs/0.31/ko/administration/"&gt;관리 API&lt;/a&gt;는 &lt;strong&gt;공유가
-제공하는 스토리지를 생성&lt;/strong&gt;할 수 있습니다. &lt;strong&gt;ZFS 데이터셋&lt;/strong&gt;, &lt;strong&gt;btrfs 서브볼륨&lt;/strong&gt;,
-또는 &lt;strong&gt;프로젝트 쿼터가 적용된 XFS 또는 ext4 디렉터리&lt;/strong&gt;를 크기와 소유자를 지정하고
+제공하는 스토리지를 생성&lt;/strong&gt;할 수 있습니다. &lt;strong&gt;ZFS 데이터셋&lt;/strong&gt;, &lt;strong&gt;btrfs 서브볼륨&lt;/strong&gt;,또는 &lt;strong&gt;프로젝트 쿼터가 적용된 XFS 또는 ext4 디렉터리&lt;/strong&gt;를 크기와 소유자를 지정하고
 추적하며 만들고, 그로부터 공유를 제공합니다. Linux 전용입니다. Ceph는 아직
 지원하지 않습니다.&lt;/p&gt;
-&lt;p&gt;이 스토리지를 생성하려면 &lt;code&gt;CAP_SYS_ADMIN&lt;/code&gt;(quotactl, btrfs 쿼터 ioctl,
-&lt;code&gt;/dev/zfs&lt;/code&gt;, mount(2))이 필요합니다. &lt;code&gt;fileshare serve&lt;/code&gt;는 낯선 상대를 위해 다섯
+&lt;p&gt;이 스토리지를 생성하려면 &lt;code&gt;CAP_SYS_ADMIN&lt;/code&gt;(quotactl, btrfs 쿼터 ioctl,&lt;code&gt;/dev/zfs&lt;/code&gt;, mount(2))이 필요합니다. &lt;code&gt;fileshare serve&lt;/code&gt;는 낯선 상대를 위해 다섯
 가지 네트워크 프로토콜을 파싱하며 어떤 권한도 갖지 않으므로, 권한이 필요한
 부분은 같은 바이너리의 두 번째 역할인 &lt;code&gt;fileshare provisioner&lt;/code&gt;가 맡습니다. 이
 역할은 유닉스 소켓 뒤에서 작고 닫힌 프로토콜로 동작합니다.&lt;/p&gt;
@@ -34,8 +32,7 @@ data-copied-label="복사됨!"
 &lt;p&gt;데몬 두 개가 아니라 바이너리 하나입니다. 배포할 버전도 하나, 프로토콜 정의도
 하나입니다. 스토리지 작업 자체는 &lt;a href="https://go-fsctl.github.io/" target="_blank" rel="noopener"&gt;go-fsctl&lt;/a&gt;이
 수행합니다(순수 Go이며 &lt;code&gt;zfs&lt;/code&gt;나 &lt;code&gt;btrfs&lt;/code&gt; 명령을 쓰지 않음). 설계와 구축 과정에서
-바뀐 점은 fileshare 저장소의
-&lt;a href="https://github.com/go-fileshare/fileshare/blob/v0.28.0/docs/volumes.md" target="_blank" rel="noopener"&gt;&lt;code&gt;docs/volumes.md&lt;/code&gt;&lt;/a&gt;에
+바뀐 점은 fileshare 저장소의&lt;a href="https://github.com/go-fileshare/fileshare/blob/v0.28.0/docs/volumes.md" target="_blank" rel="noopener"&gt;&lt;code&gt;docs/volumes.md&lt;/code&gt;&lt;/a&gt;에
 있습니다.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="both-processes-configured"&gt;두 프로세스의 구성&lt;span class="hx:absolute hx:-mt-20" id="both-processes-configured"&gt;&lt;/span&gt;
 &lt;a href="#both-processes-configured" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;fileshare serve&lt;/code&gt;는 &lt;code&gt;fileshare&lt;/code&gt; 사용자(uid 990)로 실행합니다.&lt;/p&gt;
@@ -158,8 +155,7 @@ data-copied-label="복사됨!"
 &lt;/table&gt;
 &lt;p&gt;프로비저너의 파일에는 &lt;code&gt;provisioner&lt;/code&gt; 블록만 있습니다. fileshare 자체의 파일을
 실수로 넘기면 일부만 읽지 않고 거부됩니다.&lt;/p&gt;
-&lt;p&gt;볼륨은 항상 &lt;code&gt;&amp;lt;부모 루트&amp;gt;/&amp;lt;이름&amp;gt;&lt;/code&gt;입니다. 데이터셋 &lt;code&gt;tank/fileshare/&amp;lt;name&amp;gt;&lt;/code&gt;은
-&lt;code&gt;/srv/fileshare/volumes/tank/&amp;lt;name&amp;gt;&lt;/code&gt;에 (&lt;code&gt;refquota&lt;/code&gt;와 함께) 마운트되고, btrfs
+&lt;p&gt;볼륨은 항상 &lt;code&gt;&amp;lt;부모 루트&amp;gt;/&amp;lt;이름&amp;gt;&lt;/code&gt;입니다. 데이터셋 &lt;code&gt;tank/fileshare/&amp;lt;name&amp;gt;&lt;/code&gt;은&lt;code&gt;/srv/fileshare/volumes/tank/&amp;lt;name&amp;gt;&lt;/code&gt;에 (&lt;code&gt;refquota&lt;/code&gt;와 함께) 마운트되고, btrfs
 서브볼륨은 qgroup으로 제한되며, XFS 또는 ext4 디렉터리는 범위에서 받은 프로젝트
 id와 하드 블록 제한을 가집니다. XFS와 ext4에는 &lt;code&gt;prjquota&lt;/code&gt; 마운트 옵션이
 필요합니다(ext4는 &lt;code&gt;project,quota&lt;/code&gt; 기능도 필요).&lt;/p&gt;
@@ -226,15 +222,13 @@ data-copied-label="복사됨!"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;서버에는 &lt;code&gt;ProtectSystem=&lt;/code&gt;을 써도 됩니다. 마운트를 수행하는 것은 프로비저너이며,
-마운트는 서버의 네임스페이스 안으로 전파될 뿐 밖으로는 전파되지 않으므로, 서버가
+&lt;p&gt;서버에는 &lt;code&gt;ProtectSystem=&lt;/code&gt;을 써도 됩니다. 마운트를 수행하는 것은 프로비저너이며,마운트는 서버의 네임스페이스 안으로 전파될 뿐 밖으로는 전파되지 않으므로, 서버가
 시작된 뒤에 마운트된 ZFS 볼륨도 서버에서 보입니다.&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;예시이며, 테스트된 유닛이 아닙니다&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;두 유닛 모두 CI에서 실행되지 않습니다. 엔드투엔드 작업은 두 프로세스를
-&lt;code&gt;sudo&lt;/code&gt;로 실행합니다.&lt;/p&gt;
+&lt;p&gt;두 유닛 모두 CI에서 실행되지 않습니다. 엔드투엔드 작업은 두 프로세스를&lt;code&gt;sudo&lt;/code&gt;로 실행합니다.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -249,8 +243,7 @@ data-copied-label="복사됨!"
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="the-admin-apis-volume-calls"&gt;관리 API의 볼륨 호출&lt;span class="hx:absolute hx:-mt-20" id="the-admin-apis-volume-calls"&gt;&lt;/span&gt;
-&lt;a href="#the-admin-apis-volume-calls" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;fileshare serve&lt;/code&gt;는 다음 호출을 프로비저너에 중계합니다
-(&lt;a href="https://github.com/go-fileshare/fileshare/blob/v0.28.0/proto/fileshare/admin/v1/admin.proto" target="_blank" rel="noopener"&gt;&lt;code&gt;admin.proto&lt;/code&gt;&lt;/a&gt;).&lt;/p&gt;
+&lt;a href="#the-admin-apis-volume-calls" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;fileshare serve&lt;/code&gt;는 다음 호출을 프로비저너에 중계합니다(&lt;a href="https://github.com/go-fileshare/fileshare/blob/v0.28.0/proto/fileshare/admin/v1/admin.proto" target="_blank" rel="noopener"&gt;&lt;code&gt;admin.proto&lt;/code&gt;&lt;/a&gt;).&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
@@ -290,12 +283,10 @@ data-copied-label="복사됨!"
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;&lt;code&gt;DeleteShare&lt;/code&gt;는 볼륨을 삭제하지 않습니다. &amp;ldquo;이를 사용하는 공유&amp;quot;는 볼륨으로 만든
-공유 &lt;strong&gt;그리고&lt;/strong&gt; 이미지나 디렉터리가 볼륨 안에 있는 모든 공유(구성 파일의 공유,
-제공 중이든 비활성화되었든 사용할 수 없든 포함)입니다.&lt;/p&gt;
+공유 &lt;strong&gt;그리고&lt;/strong&gt; 이미지나 디렉터리가 볼륨 안에 있는 모든 공유(구성 파일의 공유,제공 중이든 비활성화되었든 사용할 수 없든 포함)입니다.&lt;/p&gt;
 &lt;p&gt;이름은 &lt;code&gt;^[a-z0-9][a-z0-9_-]{0,62}$&lt;/code&gt;에 일치해야 하며, 요청은 경로를 담지
 않습니다. 프로비저너 자체 구성에 있는 &lt;code&gt;parent&lt;/code&gt;를 이름으로 지정합니다.&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;admin&lt;/code&gt; 블록에 &lt;code&gt;reflection = true&lt;/code&gt;가 있으면 &lt;code&gt;grpcurl&lt;/code&gt;로 호출할 수 있습니다.
-소켓은 0600이고 위의 &lt;code&gt;allowed_uids&lt;/code&gt;는 fileshare의 uid만 지정하므로, 그
+&lt;p&gt;&lt;code&gt;admin&lt;/code&gt; 블록에 &lt;code&gt;reflection = true&lt;/code&gt;가 있으면 &lt;code&gt;grpcurl&lt;/code&gt;로 호출할 수 있습니다.소켓은 0600이고 위의 &lt;code&gt;allowed_uids&lt;/code&gt;는 fileshare의 uid만 지정하므로, 그
 사용자로 실행하십시오.&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nv"&gt;S&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/run/fileshare/admin.sock
@@ -332,10 +323,8 @@ data-copied-label="복사됨!"
 &lt;/div&gt;
 &lt;h3 data-hextra-search-id="status-codes"&gt;상태 코드&lt;span class="hx:absolute hx:-mt-20" id="status-codes"&gt;&lt;/span&gt;
 &lt;a href="#status-codes" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;프로비저너의 코드는 받은 그대로 돌아옵니다. &lt;code&gt;INVALID_ARGUMENT&lt;/code&gt;(문법에 맞지 않는
-이름, 알 수 없는 부모, 0인 쿼터), &lt;code&gt;OUT_OF_RANGE&lt;/code&gt;(&lt;code&gt;max_volume&lt;/code&gt; 초과),
-&lt;code&gt;RESOURCE_EXHAUSTED&lt;/code&gt;(쿼터 또는 크기 조정으로 늘어나는 양이 부모의 현재 여유
-공간보다 많거나 프로젝트 id 범위를 모두 사용함), &lt;code&gt;ALREADY_EXISTS&lt;/code&gt;, &lt;code&gt;NOT_FOUND&lt;/code&gt;,
-&lt;code&gt;FAILED_PRECONDITION&lt;/code&gt;, &lt;code&gt;UNIMPLEMENTED&lt;/code&gt;입니다.&lt;/p&gt;
+이름, 알 수 없는 부모, 0인 쿼터), &lt;code&gt;OUT_OF_RANGE&lt;/code&gt;(&lt;code&gt;max_volume&lt;/code&gt; 초과),&lt;code&gt;RESOURCE_EXHAUSTED&lt;/code&gt;(쿼터 또는 크기 조정으로 늘어나는 양이 부모의 현재 여유
+공간보다 많거나 프로젝트 id 범위를 모두 사용함), &lt;code&gt;ALREADY_EXISTS&lt;/code&gt;, &lt;code&gt;NOT_FOUND&lt;/code&gt;,&lt;code&gt;FAILED_PRECONDITION&lt;/code&gt;, &lt;code&gt;UNIMPLEMENTED&lt;/code&gt;입니다.&lt;/p&gt;
 &lt;p&gt;다음 세 가지는 fileshare 자체의 코드입니다.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;provisioner&lt;/code&gt;가 구성되지 않음: &lt;code&gt;FAILED_PRECONDITION&lt;/code&gt;&lt;/li&gt;
@@ -348,8 +337,7 @@ data-copied-label="복사됨!"
 &lt;ul&gt;
 &lt;li&gt;경로가 정리되어 있고 절대 경로이며, 해석한 결과가 &lt;code&gt;source_roots&lt;/code&gt; 아래에 있음&lt;/li&gt;
 &lt;li&gt;디렉터리임&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;statfs&lt;/code&gt;가 해당 종류의 파일 시스템을 보고함(&lt;code&gt;ZFS_SUPER_MAGIC&lt;/code&gt;,
-&lt;code&gt;BTRFS_SUPER_MAGIC&lt;/code&gt;, &lt;code&gt;XFS_SUPER_MAGIC&lt;/code&gt;, &lt;code&gt;EXT4_SUPER_MAGIC&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;statfs&lt;/code&gt;가 해당 종류의 파일 시스템을 보고함(&lt;code&gt;ZFS_SUPER_MAGIC&lt;/code&gt;,&lt;code&gt;BTRFS_SUPER_MAGIC&lt;/code&gt;, &lt;code&gt;XFS_SUPER_MAGIC&lt;/code&gt;, &lt;code&gt;EXT4_SUPER_MAGIC&lt;/code&gt;)&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;ZFS&lt;/strong&gt;: 마운트 지점임 — 그 장치가 부모의 장치와 다릅니다. 마운트되지 않은
 데이터셋의 디렉터리는 쿼터 없이 쓰기를 받게 됩니다. (그 위치에 어떤 데이터셋이
 마운트되어 있는지는 확인하지 않습니다. 프로비저너의 응답에 그 정보가 없습니다.)&lt;/li&gt;
@@ -359,30 +347,22 @@ data-copied-label="복사됨!"
 &lt;/ul&gt;
 &lt;p&gt;상태 파일에는 볼륨의 경로가 아니라 &lt;strong&gt;이름&lt;/strong&gt;이 보관되며, 시작할 때마다 다시 묻고
 확인합니다. 볼륨이 사라졌거나 확인에 실패했거나 프로비저너가 10초 안에 응답하지
-않으면 그 공유는 &lt;strong&gt;정의된 채 제공되지 않으며&lt;/strong&gt;, 이는 시작할 때,
-&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/configuration/check/"&gt;&lt;code&gt;fileshare check&lt;/code&gt;&lt;/a&gt;에서, 그리고 공유의
-&lt;code&gt;unavailable&lt;/code&gt; 필드에서 알려집니다. 나머지 서버는 정상적으로 시작합니다.
-&lt;code&gt;EnableShare&lt;/code&gt;가 다시 시도합니다.&lt;/p&gt;
+않으면 그 공유는 &lt;strong&gt;정의된 채 제공되지 않으며&lt;/strong&gt;, 이는 시작할 때,&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/configuration/check/"&gt;&lt;code&gt;fileshare check&lt;/code&gt;&lt;/a&gt;에서, 그리고 공유의&lt;code&gt;unavailable&lt;/code&gt; 필드에서 알려집니다. 나머지 서버는 정상적으로 시작합니다.&lt;code&gt;EnableShare&lt;/code&gt;가 다시 시도합니다.&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;fileshare serve&lt;/code&gt;는 root 또는 &lt;code&gt;CAP_SYS_RESOURCE&lt;/code&gt;로는 볼륨 제공을 거부합니다&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;ext4는 둘 중 어느 쪽이든 프로젝트 쿼터를 넘어 쓰는 것을 허용합니다
-(fs/quota/dquot.c, &lt;code&gt;ignore_hardlimit&lt;/code&gt;). go-fsctl/projquota의 CI에서 root가 8 MiB
+&lt;p&gt;ext4는 둘 중 어느 쪽이든 프로젝트 쿼터를 넘어 쓰는 것을 허용합니다(fs/quota/dquot.c, &lt;code&gt;ignore_hardlimit&lt;/code&gt;). go-fsctl/projquota의 CI에서 root가 8 MiB
 프로젝트에 16 MiB를 썼습니다. XFS에는 이런 예외가 없지만, 이 규칙은 모든 종류에
-적용되는 프로세스 단위의 규칙 하나입니다. fileshare는 유효 uid와
-&lt;code&gt;/proc/self/status&lt;/code&gt;의 &lt;code&gt;CapEff&lt;/code&gt;/&lt;code&gt;CapPrm&lt;/code&gt;을 읽으며(허용된 권한은 &lt;code&gt;capset(2)&lt;/code&gt; 한 번이면
-유효 권한이 됩니다), 읽을 수 없는 status는 해당 권한을 가진 것으로 간주합니다.
-거부하는 것은 볼륨 호출이 아니라 &lt;strong&gt;제공&lt;/strong&gt;입니다. root로 스토리지를 생성하는 것은
-해롭지 않지만, root로 그 안에 쓰는 것은 그렇지 않습니다. 어느 쪽인지는
-&lt;code&gt;fileshare check&lt;/code&gt;가 알려 줍니다. 프로비저너가 &lt;code&gt;client_uid = 0&lt;/code&gt;을 거부하고, 위의
+적용되는 프로세스 단위의 규칙 하나입니다. fileshare는 유효 uid와&lt;code&gt;/proc/self/status&lt;/code&gt;의 &lt;code&gt;CapEff&lt;/code&gt;/&lt;code&gt;CapPrm&lt;/code&gt;을 읽으며(허용된 권한은 &lt;code&gt;capset(2)&lt;/code&gt; 한 번이면
+유효 권한이 됩니다), 읽을 수 없는 status는 해당 권한을 가진 것으로 간주합니다.거부하는 것은 볼륨 호출이 아니라 &lt;strong&gt;제공&lt;/strong&gt;입니다. root로 스토리지를 생성하는 것은
+해롭지 않지만, root로 그 안에 쓰는 것은 그렇지 않습니다. 어느 쪽인지는&lt;code&gt;fileshare check&lt;/code&gt;가 알려 줍니다. 프로비저너가 &lt;code&gt;client_uid = 0&lt;/code&gt;을 거부하고, 위의
 서버 유닛이 비어 있는 &lt;code&gt;CapabilityBoundingSet=&lt;/code&gt;을 갖는 이유가 이것입니다.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="a-full-share"&gt;가득 찬 공유&lt;span class="hx:absolute hx:-mt-20" id="a-full-share"&gt;&lt;/span&gt;
-&lt;a href="#a-full-share" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;XFS는 가득 찬 프로젝트를 &lt;code&gt;ENOSPC&lt;/code&gt;로, ext4, btrfs, ZFS는 &lt;code&gt;EDQUOT&lt;/code&gt;로 알립니다.
-v0.21.1부터 모든 프로토콜이 &amp;ldquo;가득 참&amp;quot;으로 응답합니다.&lt;/p&gt;
+&lt;a href="#a-full-share" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;XFS는 가득 찬 프로젝트를 &lt;code&gt;ENOSPC&lt;/code&gt;로, ext4, btrfs, ZFS는 &lt;code&gt;EDQUOT&lt;/code&gt;로 알립니다.v0.21.1부터 모든 프로토콜이 &amp;ldquo;가득 참&amp;quot;으로 응답합니다.&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
@@ -424,41 +404,33 @@ v0.21.1부터 모든 프로토콜이 &amp;ldquo;가득 참&amp;quot;으로 응�
 &lt;p&gt;이는 볼륨뿐 아니라 모든 &lt;a href="https://go-fileshare.github.io/docs/0.31/ko/configuration/shares/"&gt;디렉터리 공유&lt;/a&gt;에
 적용됩니다. &lt;a href="https://go-fileshare.github.io/docs/0.31/ko/status/"&gt;업그레이드 안내&lt;/a&gt;를 참고하십시오.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="the-size-a-client-sees"&gt;클라이언트에 보이는 크기&lt;span class="hx:absolute hx:-mt-20" id="the-size-a-client-sees"&gt;&lt;/span&gt;
-&lt;a href="#the-size-a-client-sees" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;모든 프로토콜은 질의할 때마다 서버에 공유의 크기를 묻습니다. NFS의 &lt;code&gt;FSSTAT&lt;/code&gt;,
-SMB의 &lt;code&gt;FileFsFullSizeInformation&lt;/code&gt;, WebDAV의 RFC 4331 쿼터 속성입니다.&lt;/p&gt;
+&lt;a href="#the-size-a-client-sees" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;모든 프로토콜은 질의할 때마다 서버에 공유의 크기를 묻습니다. NFS의 &lt;code&gt;FSSTAT&lt;/code&gt;,SMB의 &lt;code&gt;FileFsFullSizeInformation&lt;/code&gt;, WebDAV의 RFC 4331 쿼터 속성입니다.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;ZFS, XFS, ext4&lt;/strong&gt;: 크기는 볼륨 안에서 &lt;code&gt;statfs&lt;/code&gt;가 알려 주는 값이며, 커널이
 쿼터(ZFS는 &lt;code&gt;refquota&lt;/code&gt;, XFS와 ext4는 프로젝트 쿼터)로 응답합니다.&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;btrfs&lt;/strong&gt; (fileshare v0.23.0부터): btrfs의 &lt;code&gt;statfs&lt;/code&gt;는 qgroup을 무시하고
 파일 시스템 전체를 보고하므로, 서버는 대신 프로비저너의 값을 사용합니다. 크기는
-볼륨의 쿼터이고, 여유 공간은 쿼터에서 qgroup이 참조하는 바이트를 뺀 값이거나,
-그보다 작다면 파일 시스템 자체의 여유 공간입니다. 서버는 클라이언트가 요청하는
+볼륨의 쿼터이고, 여유 공간은 쿼터에서 qgroup이 참조하는 바이트를 뺀 값이거나,그보다 작다면 파일 시스템 자체의 여유 공간입니다. 서버는 클라이언트가 요청하는
 동안 최대 5초에 한 번 백그라운드에서 프로비저너에 묻고, 그사이에는 마지막
 값으로 응답합니다. btrfs는 트랜잭션을 커밋할 때(기본 30초마다) qgroup의 계수를
-갱신하므로, 클라이언트에 보이는 여유 공간은 쓰기보다 그만큼 늦을 수 있습니다.
-v0.23.0 이전에는 btrfs 볼륨이 파일 시스템 전체를 보여 주었지만, 쿼터는 그대로
+갱신하므로, 클라이언트에 보이는 여유 공간은 쓰기보다 그만큼 늦을 수 있습니다.v0.23.0 이전에는 btrfs 볼륨이 파일 시스템 전체를 보여 주었지만, 쿼터는 그대로
 적용되었습니다.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;사용량은 프로비저너(&lt;code&gt;used_bytes&lt;/code&gt;)에서 가져옵니다. XFS나 ext4 프로젝트의 사용량을
 읽으려면 fileshare에 없는 &lt;code&gt;CAP_SYS_ADMIN&lt;/code&gt;이 필요하기 때문입니다.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="what-the-provisioner-promises"&gt;프로비저너가 보장하는 것&lt;span class="hx:absolute hx:-mt-20" id="what-the-provisioner-promises"&gt;&lt;/span&gt;
 &lt;a href="#what-the-provisioner-promises" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;커널에서 읽은 단 하나의 uid.&lt;/strong&gt; 상대는 연결할 때 &lt;code&gt;SO_PEERCRED&lt;/code&gt;로 식별되며,
-&lt;code&gt;client_uid&lt;/code&gt; 외에는 root를 포함해 누구든 요청의 한 바이트도 디코딩되기 전에
-&lt;code&gt;PERMISSION_DENIED&lt;/code&gt;가 됩니다.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;커널에서 읽은 단 하나의 uid.&lt;/strong&gt; 상대는 연결할 때 &lt;code&gt;SO_PEERCRED&lt;/code&gt;로 식별되며,&lt;code&gt;client_uid&lt;/code&gt; 외에는 root를 포함해 누구든 요청의 한 바이트도 디코딩되기 전에&lt;code&gt;PERMISSION_DENIED&lt;/code&gt;가 됩니다.&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;닫힌 동사 집합.&lt;/strong&gt; 서비스에 없는 메서드, 디코딩되지 않거나 정의되지 않은
 필드를 담은 메시지에는 응답이 없고 연결이 닫힙니다.&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;자신이 만들지 않은 것은 절대 건드리지 않습니다.&lt;/strong&gt; ZFS: 데이터셋 자체의
-&lt;code&gt;fileshare:volume&lt;/code&gt; 속성 — 사용자 속성은 상속되고 상속된 표시는 자신의 것이
+&lt;li&gt;&lt;strong&gt;자신이 만들지 않은 것은 절대 건드리지 않습니다.&lt;/strong&gt; ZFS: 데이터셋 자체의&lt;code&gt;fileshare:volume&lt;/code&gt; 속성 — 사용자 속성은 상속되고 상속된 표시는 자신의 것이
 아니므로 데이터셋에 직접 설정합니다. btrfs: &lt;code&gt;state_file&lt;/code&gt;에 기록된 서브볼륨 id와
-uuid. XFS/ext4: 부모의 범위 안에 있고 &lt;em&gt;또한&lt;/em&gt; 기록된 프로젝트 id. 크기 조정,
-스냅샷, 삭제 전에 매번 확인합니다.&lt;/li&gt;
+uuid. XFS/ext4: 부모의 범위 안에 있고 &lt;em&gt;또한&lt;/em&gt; 기록된 프로젝트 id. 크기 조정,스냅샷, 삭제 전에 매번 확인합니다.&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;삭제는 데이터와 스냅샷이 있으면 거부합니다.&lt;/strong&gt; &lt;code&gt;destroy_data&lt;/code&gt;가 설정된
 경우는 예외이며, 실행되기 전에 기록됩니다.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h2 data-hextra-search-id="measured"&gt;측정 결과&lt;span class="hx:absolute hx:-mt-20" id="measured"&gt;&lt;/span&gt;
-&lt;a href="#measured" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;fileshare의 CI에서 실제 풀과 루프백 기반 파일 시스템 위에서 root로, &lt;code&gt;fileshare serve&lt;/code&gt;를 &lt;code&gt;nobody&lt;/code&gt;로 실행하고 관리 API로 구동하여 측정했습니다.
-WebDAV와 SFTP를 통한 쓰기는 네 종류 모두에서 32 MiB 볼륨의 쿼터에서
+&lt;a href="#measured" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;fileshare의 CI에서 실제 풀과 루프백 기반 파일 시스템 위에서 root로, &lt;code&gt;fileshare serve&lt;/code&gt;를 &lt;code&gt;nobody&lt;/code&gt;로 실행하고 관리 API로 구동하여 측정했습니다.WebDAV와 SFTP를 통한 쓰기는 네 종류 모두에서 32 MiB 볼륨의 쿼터에서
 멈춥니다.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="not-yet"&gt;아직 지원하지 않는 것&lt;span class="hx:absolute hx:-mt-20" id="not-yet"&gt;&lt;/span&gt;
 &lt;a href="#not-yet" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;

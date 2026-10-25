@@ -17,12 +17,9 @@ de ella. El recurso compartido indica a quien solo puede leer que es así —en 
 máscara de acceso, antes de que lo intente—, en lugar de hacer fallar una escritura
 más tarde.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="what-a-directory-must-hold"&gt;Lo que debe guardar un directorio&lt;span class="hx:absolute hx:-mt-20" id="what-a-directory-must-hold"&gt;&lt;/span&gt;
-&lt;a href="#what-a-directory-must-hold" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;NTLMv2 necesita la propia contraseña o su MD4 (&lt;code&gt;sambaNTPassword&lt;/code&gt;, una columna
-&lt;code&gt;nt_hash&lt;/code&gt;). &lt;strong&gt;Nada más sirve.&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;Un directorio que solo &lt;em&gt;comprueba&lt;/em&gt; contraseñas —un bind LDAP, una columna bcrypt—
-no puede responder a SMB, por buena que sea la comprobación, porque el servidor tiene
-que calcular la misma prueba que calculó el cliente. Es una propiedad del protocolo,
-no una limitación de este programa.&lt;/p&gt;
+&lt;a href="#what-a-directory-must-hold" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;NTLMv2 necesita la propia contraseña o su MD4 (&lt;code&gt;sambaNTPassword&lt;/code&gt;, una columna&lt;code&gt;nt_hash&lt;/code&gt;). &lt;strong&gt;Nada más sirve.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Un directorio que solo &lt;em&gt;comprueba&lt;/em&gt; contraseñas —un bind LDAP, una columna bcrypt—no puede responder a SMB, por buena que sea la comprobación, porque el servidor tiene
+que calcular la misma prueba que calculó el cliente. Es una propiedad del protocolo,no una limitación de este programa.&lt;/p&gt;
 &lt;p&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/es/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt; imprime un &lt;code&gt;-&lt;/code&gt; en la columna SMB para esa
 persona, en el momento de la configuración, en lugar de dejar que lo descubra al
 montar.&lt;/p&gt;
@@ -34,8 +31,7 @@ vincula él mismo a la dirección; el aislamiento es el mismo, la parte del puer
 privilegiado no.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="verified-against-a-client-this-project-did-not-write"&gt;Verificado con un cliente que este proyecto no escribió&lt;span class="hx:absolute hx:-mt-20" id="verified-against-a-client-this-project-did-not-write"&gt;&lt;/span&gt;
 &lt;a href="#verified-against-a-client-this-project-did-not-write" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;a href="https://github.com/cloudsoda/go-smb2" target="_blank" rel="noopener"&gt;go-smb2&lt;/a&gt; realiza veinte lecturas
-concurrentes por SMB mientras otras veinte pasan por WebDAV, con &lt;code&gt;-race&lt;/code&gt;, en la CI.
-macOS monta un recurso compartido por SMB mientras &lt;code&gt;curl&lt;/code&gt; escribe en la misma imagen
+concurrentes por SMB mientras otras veinte pasan por WebDAV, con &lt;code&gt;-race&lt;/code&gt;, en la CI.macOS monta un recurso compartido por SMB mientras &lt;code&gt;curl&lt;/code&gt; escribe en la misma imagen
 por WebDAV, y vuelve a leer lo que WebDAV escribió.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="when-the-people-change"&gt;Cuando cambian las personas&lt;span class="hx:absolute hx:-mt-20" id="when-the-people-change"&gt;&lt;/span&gt;
 &lt;a href="#when-the-people-change" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;SMB fija quién puede conectarse a un recurso compartido &lt;strong&gt;cuando se añade el recurso

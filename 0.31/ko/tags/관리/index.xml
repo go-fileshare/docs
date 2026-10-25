@@ -1,11 +1,9 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – 관리</title><link>https://go-fileshare.github.io/docs/0.31/ko/tags/%EA%B4%80%EB%A6%AC/</link><description>Recent content in 관리 on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>ko</language><atom:link href="https://go-fileshare.github.io/docs/0.31/ko/tags/%EA%B4%80%EB%A6%AC/index.xml" rel="self" type="application/rss+xml"/><item><title>볼륨: fileshare가 생성하는 스토리지</title><link>https://go-fileshare.github.io/docs/0.31/ko/administration/volumes/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/ko/administration/volumes/</guid><description>
 &lt;p&gt;v0.21.0부터 &lt;a href="https://go-fileshare.github.io/docs/0.31/ko/administration/"&gt;관리 API&lt;/a&gt;는 &lt;strong&gt;공유가
-제공하는 스토리지를 생성&lt;/strong&gt;할 수 있습니다. &lt;strong&gt;ZFS 데이터셋&lt;/strong&gt;, &lt;strong&gt;btrfs 서브볼륨&lt;/strong&gt;,
-또는 &lt;strong&gt;프로젝트 쿼터가 적용된 XFS 또는 ext4 디렉터리&lt;/strong&gt;를 크기와 소유자를 지정하고
+제공하는 스토리지를 생성&lt;/strong&gt;할 수 있습니다. &lt;strong&gt;ZFS 데이터셋&lt;/strong&gt;, &lt;strong&gt;btrfs 서브볼륨&lt;/strong&gt;,또는 &lt;strong&gt;프로젝트 쿼터가 적용된 XFS 또는 ext4 디렉터리&lt;/strong&gt;를 크기와 소유자를 지정하고
 추적하며 만들고, 그로부터 공유를 제공합니다. Linux 전용입니다. Ceph는 아직
 지원하지 않습니다.&lt;/p&gt;
-&lt;p&gt;이 스토리지를 생성하려면 &lt;code&gt;CAP_SYS_ADMIN&lt;/code&gt;(quotactl, btrfs 쿼터 ioctl,
-&lt;code&gt;/dev/zfs&lt;/code&gt;, mount(2))이 필요합니다. &lt;code&gt;fileshare serve&lt;/code&gt;는 낯선 상대를 위해 다섯
+&lt;p&gt;이 스토리지를 생성하려면 &lt;code&gt;CAP_SYS_ADMIN&lt;/code&gt;(quotactl, btrfs 쿼터 ioctl,&lt;code&gt;/dev/zfs&lt;/code&gt;, mount(2))이 필요합니다. &lt;code&gt;fileshare serve&lt;/code&gt;는 낯선 상대를 위해 다섯
 가지 네트워크 프로토콜을 파싱하며 어떤 권한도 갖지 않으므로, 권한이 필요한
 부분은 같은 바이너리의 두 번째 역할인 &lt;code&gt;fileshare provisioner&lt;/code&gt;가 맡습니다. 이
 역할은 유닉스 소켓 뒤에서 작고 닫힌 프로토콜로 동작합니다.&lt;/p&gt;
@@ -34,8 +32,7 @@ data-copied-label="복사됨!"
 &lt;p&gt;데몬 두 개가 아니라 바이너리 하나입니다. 배포할 버전도 하나, 프로토콜 정의도
 하나입니다. 스토리지 작업 자체는 &lt;a href="https://go-fsctl.github.io/" target="_blank" rel="noopener"&gt;go-fsctl&lt;/a&gt;이
 수행합니다(순수 Go이며 &lt;code&gt;zfs&lt;/code&gt;나 &lt;code&gt;btrfs&lt;/code&gt; 명령을 쓰지 않음). 설계와 구축 과정에서
-바뀐 점은 fileshare 저장소의
-&lt;a href="https://github.com/go-fileshare/fileshare/blob/v0.28.0/docs/volumes.md" target="_blank" rel="noopener"&gt;&lt;code&gt;docs/volumes.md&lt;/code&gt;&lt;/a&gt;에
+바뀐 점은 fileshare 저장소의&lt;a href="https://github.com/go-fileshare/fileshare/blob/v0.28.0/docs/volumes.md" target="_blank" rel="noopener"&gt;&lt;code&gt;docs/volumes.md&lt;/code&gt;&lt;/a&gt;에
 있습니다.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="both-processes-configured"&gt;두 프로세스의 구성&lt;span class="hx:absolute hx:-mt-20" id="both-processes-configured"&gt;&lt;/span&gt;
 &lt;a href="#both-processes-configured" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;fileshare serve&lt;/code&gt;는 &lt;code&gt;fileshare&lt;/code&gt; 사용자(uid 990)로 실행합니다.&lt;/p&gt;
@@ -158,8 +155,7 @@ data-copied-label="복사됨!"
 &lt;/table&gt;
 &lt;p&gt;프로비저너의 파일에는 &lt;code&gt;provisioner&lt;/code&gt; 블록만 있습니다. fileshare 자체의 파일을
 실수로 넘기면 일부만 읽지 않고 거부됩니다.&lt;/p&gt;
-&lt;p&gt;볼륨은 항상 &lt;code&gt;&amp;lt;부모 루트&amp;gt;/&amp;lt;이름&amp;gt;&lt;/code&gt;입니다. 데이터셋 &lt;code&gt;tank/fileshare/&amp;lt;name&amp;gt;&lt;/code&gt;은
-&lt;code&gt;/srv/fileshare/volumes/tank/&amp;lt;name&amp;gt;&lt;/code&gt;에 (&lt;code&gt;refquota&lt;/code&gt;와 함께) 마운트되고, btrfs
+&lt;p&gt;볼륨은 항상 &lt;code&gt;&amp;lt;부모 루트&amp;gt;/&amp;lt;이름&amp;gt;&lt;/code&gt;입니다. 데이터셋 &lt;code&gt;tank/fileshare/&amp;lt;name&amp;gt;&lt;/code&gt;은&lt;code&gt;/srv/fileshare/volumes/tank/&amp;lt;name&amp;gt;&lt;/code&gt;에 (&lt;code&gt;refquota&lt;/code&gt;와 함께) 마운트되고, btrfs
 서브볼륨은 qgroup으로 제한되며, XFS 또는 ext4 디렉터리는 범위에서 받은 프로젝트
 id와 하드 블록 제한을 가집니다. XFS와 ext4에는 &lt;code&gt;prjquota&lt;/code&gt; 마운트 옵션이
 필요합니다(ext4는 &lt;code&gt;project,quota&lt;/code&gt; 기능도 필요).&lt;/p&gt;
@@ -226,15 +222,13 @@ data-copied-label="복사됨!"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;서버에는 &lt;code&gt;ProtectSystem=&lt;/code&gt;을 써도 됩니다. 마운트를 수행하는 것은 프로비저너이며,
-마운트는 서버의 네임스페이스 안으로 전파될 뿐 밖으로는 전파되지 않으므로, 서버가
+&lt;p&gt;서버에는 &lt;code&gt;ProtectSystem=&lt;/code&gt;을 써도 됩니다. 마운트를 수행하는 것은 프로비저너이며,마운트는 서버의 네임스페이스 안으로 전파될 뿐 밖으로는 전파되지 않으므로, 서버가
 시작된 뒤에 마운트된 ZFS 볼륨도 서버에서 보입니다.&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;예시이며, 테스트된 유닛이 아닙니다&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;두 유닛 모두 CI에서 실행되지 않습니다. 엔드투엔드 작업은 두 프로세스를
-&lt;code&gt;sudo&lt;/code&gt;로 실행합니다.&lt;/p&gt;
+&lt;p&gt;두 유닛 모두 CI에서 실행되지 않습니다. 엔드투엔드 작업은 두 프로세스를&lt;code&gt;sudo&lt;/code&gt;로 실행합니다.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -249,8 +243,7 @@ data-copied-label="복사됨!"
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="the-admin-apis-volume-calls"&gt;관리 API의 볼륨 호출&lt;span class="hx:absolute hx:-mt-20" id="the-admin-apis-volume-calls"&gt;&lt;/span&gt;
-&lt;a href="#the-admin-apis-volume-calls" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;fileshare serve&lt;/code&gt;는 다음 호출을 프로비저너에 중계합니다
-(&lt;a href="https://github.com/go-fileshare/fileshare/blob/v0.28.0/proto/fileshare/admin/v1/admin.proto" target="_blank" rel="noopener"&gt;&lt;code&gt;admin.proto&lt;/code&gt;&lt;/a&gt;).&lt;/p&gt;
+&lt;a href="#the-admin-apis-volume-calls" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;fileshare serve&lt;/code&gt;는 다음 호출을 프로비저너에 중계합니다(&lt;a href="https://github.com/go-fileshare/fileshare/blob/v0.28.0/proto/fileshare/admin/v1/admin.proto" target="_blank" rel="noopener"&gt;&lt;code&gt;admin.proto&lt;/code&gt;&lt;/a&gt;).&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
@@ -290,12 +283,10 @@ data-copied-label="복사됨!"
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;&lt;code&gt;DeleteShare&lt;/code&gt;는 볼륨을 삭제하지 않습니다. &amp;ldquo;이를 사용하는 공유&amp;quot;는 볼륨으로 만든
-공유 &lt;strong&gt;그리고&lt;/strong&gt; 이미지나 디렉터리가 볼륨 안에 있는 모든 공유(구성 파일의 공유,
-제공 중이든 비활성화되었든 사용할 수 없든 포함)입니다.&lt;/p&gt;
+공유 &lt;strong&gt;그리고&lt;/strong&gt; 이미지나 디렉터리가 볼륨 안에 있는 모든 공유(구성 파일의 공유,제공 중이든 비활성화되었든 사용할 수 없든 포함)입니다.&lt;/p&gt;
 &lt;p&gt;이름은 &lt;code&gt;^[a-z0-9][a-z0-9_-]{0,62}$&lt;/code&gt;에 일치해야 하며, 요청은 경로를 담지
 않습니다. 프로비저너 자체 구성에 있는 &lt;code&gt;parent&lt;/code&gt;를 이름으로 지정합니다.&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;admin&lt;/code&gt; 블록에 &lt;code&gt;reflection = true&lt;/code&gt;가 있으면 &lt;code&gt;grpcurl&lt;/code&gt;로 호출할 수 있습니다.
-소켓은 0600이고 위의 &lt;code&gt;allowed_uids&lt;/code&gt;는 fileshare의 uid만 지정하므로, 그
+&lt;p&gt;&lt;code&gt;admin&lt;/code&gt; 블록에 &lt;code&gt;reflection = true&lt;/code&gt;가 있으면 &lt;code&gt;grpcurl&lt;/code&gt;로 호출할 수 있습니다.소켓은 0600이고 위의 &lt;code&gt;allowed_uids&lt;/code&gt;는 fileshare의 uid만 지정하므로, 그
 사용자로 실행하십시오.&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nv"&gt;S&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/run/fileshare/admin.sock
@@ -332,10 +323,8 @@ data-copied-label="복사됨!"
 &lt;/div&gt;
 &lt;h3 data-hextra-search-id="status-codes"&gt;상태 코드&lt;span class="hx:absolute hx:-mt-20" id="status-codes"&gt;&lt;/span&gt;
 &lt;a href="#status-codes" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;프로비저너의 코드는 받은 그대로 돌아옵니다. &lt;code&gt;INVALID_ARGUMENT&lt;/code&gt;(문법에 맞지 않는
-이름, 알 수 없는 부모, 0인 쿼터), &lt;code&gt;OUT_OF_RANGE&lt;/code&gt;(&lt;code&gt;max_volume&lt;/code&gt; 초과),
-&lt;code&gt;RESOURCE_EXHAUSTED&lt;/code&gt;(쿼터 또는 크기 조정으로 늘어나는 양이 부모의 현재 여유
-공간보다 많거나 프로젝트 id 범위를 모두 사용함), &lt;code&gt;ALREADY_EXISTS&lt;/code&gt;, &lt;code&gt;NOT_FOUND&lt;/code&gt;,
-&lt;code&gt;FAILED_PRECONDITION&lt;/code&gt;, &lt;code&gt;UNIMPLEMENTED&lt;/code&gt;입니다.&lt;/p&gt;
+이름, 알 수 없는 부모, 0인 쿼터), &lt;code&gt;OUT_OF_RANGE&lt;/code&gt;(&lt;code&gt;max_volume&lt;/code&gt; 초과),&lt;code&gt;RESOURCE_EXHAUSTED&lt;/code&gt;(쿼터 또는 크기 조정으로 늘어나는 양이 부모의 현재 여유
+공간보다 많거나 프로젝트 id 범위를 모두 사용함), &lt;code&gt;ALREADY_EXISTS&lt;/code&gt;, &lt;code&gt;NOT_FOUND&lt;/code&gt;,&lt;code&gt;FAILED_PRECONDITION&lt;/code&gt;, &lt;code&gt;UNIMPLEMENTED&lt;/code&gt;입니다.&lt;/p&gt;
 &lt;p&gt;다음 세 가지는 fileshare 자체의 코드입니다.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;provisioner&lt;/code&gt;가 구성되지 않음: &lt;code&gt;FAILED_PRECONDITION&lt;/code&gt;&lt;/li&gt;
@@ -348,8 +337,7 @@ data-copied-label="복사됨!"
 &lt;ul&gt;
 &lt;li&gt;경로가 정리되어 있고 절대 경로이며, 해석한 결과가 &lt;code&gt;source_roots&lt;/code&gt; 아래에 있음&lt;/li&gt;
 &lt;li&gt;디렉터리임&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;statfs&lt;/code&gt;가 해당 종류의 파일 시스템을 보고함(&lt;code&gt;ZFS_SUPER_MAGIC&lt;/code&gt;,
-&lt;code&gt;BTRFS_SUPER_MAGIC&lt;/code&gt;, &lt;code&gt;XFS_SUPER_MAGIC&lt;/code&gt;, &lt;code&gt;EXT4_SUPER_MAGIC&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;statfs&lt;/code&gt;가 해당 종류의 파일 시스템을 보고함(&lt;code&gt;ZFS_SUPER_MAGIC&lt;/code&gt;,&lt;code&gt;BTRFS_SUPER_MAGIC&lt;/code&gt;, &lt;code&gt;XFS_SUPER_MAGIC&lt;/code&gt;, &lt;code&gt;EXT4_SUPER_MAGIC&lt;/code&gt;)&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;ZFS&lt;/strong&gt;: 마운트 지점임 — 그 장치가 부모의 장치와 다릅니다. 마운트되지 않은
 데이터셋의 디렉터리는 쿼터 없이 쓰기를 받게 됩니다. (그 위치에 어떤 데이터셋이
 마운트되어 있는지는 확인하지 않습니다. 프로비저너의 응답에 그 정보가 없습니다.)&lt;/li&gt;
@@ -359,30 +347,22 @@ data-copied-label="복사됨!"
 &lt;/ul&gt;
 &lt;p&gt;상태 파일에는 볼륨의 경로가 아니라 &lt;strong&gt;이름&lt;/strong&gt;이 보관되며, 시작할 때마다 다시 묻고
 확인합니다. 볼륨이 사라졌거나 확인에 실패했거나 프로비저너가 10초 안에 응답하지
-않으면 그 공유는 &lt;strong&gt;정의된 채 제공되지 않으며&lt;/strong&gt;, 이는 시작할 때,
-&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/configuration/check/"&gt;&lt;code&gt;fileshare check&lt;/code&gt;&lt;/a&gt;에서, 그리고 공유의
-&lt;code&gt;unavailable&lt;/code&gt; 필드에서 알려집니다. 나머지 서버는 정상적으로 시작합니다.
-&lt;code&gt;EnableShare&lt;/code&gt;가 다시 시도합니다.&lt;/p&gt;
+않으면 그 공유는 &lt;strong&gt;정의된 채 제공되지 않으며&lt;/strong&gt;, 이는 시작할 때,&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/configuration/check/"&gt;&lt;code&gt;fileshare check&lt;/code&gt;&lt;/a&gt;에서, 그리고 공유의&lt;code&gt;unavailable&lt;/code&gt; 필드에서 알려집니다. 나머지 서버는 정상적으로 시작합니다.&lt;code&gt;EnableShare&lt;/code&gt;가 다시 시도합니다.&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;fileshare serve&lt;/code&gt;는 root 또는 &lt;code&gt;CAP_SYS_RESOURCE&lt;/code&gt;로는 볼륨 제공을 거부합니다&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;ext4는 둘 중 어느 쪽이든 프로젝트 쿼터를 넘어 쓰는 것을 허용합니다
-(fs/quota/dquot.c, &lt;code&gt;ignore_hardlimit&lt;/code&gt;). go-fsctl/projquota의 CI에서 root가 8 MiB
+&lt;p&gt;ext4는 둘 중 어느 쪽이든 프로젝트 쿼터를 넘어 쓰는 것을 허용합니다(fs/quota/dquot.c, &lt;code&gt;ignore_hardlimit&lt;/code&gt;). go-fsctl/projquota의 CI에서 root가 8 MiB
 프로젝트에 16 MiB를 썼습니다. XFS에는 이런 예외가 없지만, 이 규칙은 모든 종류에
-적용되는 프로세스 단위의 규칙 하나입니다. fileshare는 유효 uid와
-&lt;code&gt;/proc/self/status&lt;/code&gt;의 &lt;code&gt;CapEff&lt;/code&gt;/&lt;code&gt;CapPrm&lt;/code&gt;을 읽으며(허용된 권한은 &lt;code&gt;capset(2)&lt;/code&gt; 한 번이면
-유효 권한이 됩니다), 읽을 수 없는 status는 해당 권한을 가진 것으로 간주합니다.
-거부하는 것은 볼륨 호출이 아니라 &lt;strong&gt;제공&lt;/strong&gt;입니다. root로 스토리지를 생성하는 것은
-해롭지 않지만, root로 그 안에 쓰는 것은 그렇지 않습니다. 어느 쪽인지는
-&lt;code&gt;fileshare check&lt;/code&gt;가 알려 줍니다. 프로비저너가 &lt;code&gt;client_uid = 0&lt;/code&gt;을 거부하고, 위의
+적용되는 프로세스 단위의 규칙 하나입니다. fileshare는 유효 uid와&lt;code&gt;/proc/self/status&lt;/code&gt;의 &lt;code&gt;CapEff&lt;/code&gt;/&lt;code&gt;CapPrm&lt;/code&gt;을 읽으며(허용된 권한은 &lt;code&gt;capset(2)&lt;/code&gt; 한 번이면
+유효 권한이 됩니다), 읽을 수 없는 status는 해당 권한을 가진 것으로 간주합니다.거부하는 것은 볼륨 호출이 아니라 &lt;strong&gt;제공&lt;/strong&gt;입니다. root로 스토리지를 생성하는 것은
+해롭지 않지만, root로 그 안에 쓰는 것은 그렇지 않습니다. 어느 쪽인지는&lt;code&gt;fileshare check&lt;/code&gt;가 알려 줍니다. 프로비저너가 &lt;code&gt;client_uid = 0&lt;/code&gt;을 거부하고, 위의
 서버 유닛이 비어 있는 &lt;code&gt;CapabilityBoundingSet=&lt;/code&gt;을 갖는 이유가 이것입니다.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="a-full-share"&gt;가득 찬 공유&lt;span class="hx:absolute hx:-mt-20" id="a-full-share"&gt;&lt;/span&gt;
-&lt;a href="#a-full-share" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;XFS는 가득 찬 프로젝트를 &lt;code&gt;ENOSPC&lt;/code&gt;로, ext4, btrfs, ZFS는 &lt;code&gt;EDQUOT&lt;/code&gt;로 알립니다.
-v0.21.1부터 모든 프로토콜이 &amp;ldquo;가득 참&amp;quot;으로 응답합니다.&lt;/p&gt;
+&lt;a href="#a-full-share" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;XFS는 가득 찬 프로젝트를 &lt;code&gt;ENOSPC&lt;/code&gt;로, ext4, btrfs, ZFS는 &lt;code&gt;EDQUOT&lt;/code&gt;로 알립니다.v0.21.1부터 모든 프로토콜이 &amp;ldquo;가득 참&amp;quot;으로 응답합니다.&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
@@ -424,41 +404,33 @@ v0.21.1부터 모든 프로토콜이 &amp;ldquo;가득 참&amp;quot;으로 응�
 &lt;p&gt;이는 볼륨뿐 아니라 모든 &lt;a href="https://go-fileshare.github.io/docs/0.31/ko/configuration/shares/"&gt;디렉터리 공유&lt;/a&gt;에
 적용됩니다. &lt;a href="https://go-fileshare.github.io/docs/0.31/ko/status/"&gt;업그레이드 안내&lt;/a&gt;를 참고하십시오.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="the-size-a-client-sees"&gt;클라이언트에 보이는 크기&lt;span class="hx:absolute hx:-mt-20" id="the-size-a-client-sees"&gt;&lt;/span&gt;
-&lt;a href="#the-size-a-client-sees" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;모든 프로토콜은 질의할 때마다 서버에 공유의 크기를 묻습니다. NFS의 &lt;code&gt;FSSTAT&lt;/code&gt;,
-SMB의 &lt;code&gt;FileFsFullSizeInformation&lt;/code&gt;, WebDAV의 RFC 4331 쿼터 속성입니다.&lt;/p&gt;
+&lt;a href="#the-size-a-client-sees" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;모든 프로토콜은 질의할 때마다 서버에 공유의 크기를 묻습니다. NFS의 &lt;code&gt;FSSTAT&lt;/code&gt;,SMB의 &lt;code&gt;FileFsFullSizeInformation&lt;/code&gt;, WebDAV의 RFC 4331 쿼터 속성입니다.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;ZFS, XFS, ext4&lt;/strong&gt;: 크기는 볼륨 안에서 &lt;code&gt;statfs&lt;/code&gt;가 알려 주는 값이며, 커널이
 쿼터(ZFS는 &lt;code&gt;refquota&lt;/code&gt;, XFS와 ext4는 프로젝트 쿼터)로 응답합니다.&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;btrfs&lt;/strong&gt; (fileshare v0.23.0부터): btrfs의 &lt;code&gt;statfs&lt;/code&gt;는 qgroup을 무시하고
 파일 시스템 전체를 보고하므로, 서버는 대신 프로비저너의 값을 사용합니다. 크기는
-볼륨의 쿼터이고, 여유 공간은 쿼터에서 qgroup이 참조하는 바이트를 뺀 값이거나,
-그보다 작다면 파일 시스템 자체의 여유 공간입니다. 서버는 클라이언트가 요청하는
+볼륨의 쿼터이고, 여유 공간은 쿼터에서 qgroup이 참조하는 바이트를 뺀 값이거나,그보다 작다면 파일 시스템 자체의 여유 공간입니다. 서버는 클라이언트가 요청하는
 동안 최대 5초에 한 번 백그라운드에서 프로비저너에 묻고, 그사이에는 마지막
 값으로 응답합니다. btrfs는 트랜잭션을 커밋할 때(기본 30초마다) qgroup의 계수를
-갱신하므로, 클라이언트에 보이는 여유 공간은 쓰기보다 그만큼 늦을 수 있습니다.
-v0.23.0 이전에는 btrfs 볼륨이 파일 시스템 전체를 보여 주었지만, 쿼터는 그대로
+갱신하므로, 클라이언트에 보이는 여유 공간은 쓰기보다 그만큼 늦을 수 있습니다.v0.23.0 이전에는 btrfs 볼륨이 파일 시스템 전체를 보여 주었지만, 쿼터는 그대로
 적용되었습니다.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;사용량은 프로비저너(&lt;code&gt;used_bytes&lt;/code&gt;)에서 가져옵니다. XFS나 ext4 프로젝트의 사용량을
 읽으려면 fileshare에 없는 &lt;code&gt;CAP_SYS_ADMIN&lt;/code&gt;이 필요하기 때문입니다.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="what-the-provisioner-promises"&gt;프로비저너가 보장하는 것&lt;span class="hx:absolute hx:-mt-20" id="what-the-provisioner-promises"&gt;&lt;/span&gt;
 &lt;a href="#what-the-provisioner-promises" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;커널에서 읽은 단 하나의 uid.&lt;/strong&gt; 상대는 연결할 때 &lt;code&gt;SO_PEERCRED&lt;/code&gt;로 식별되며,
-&lt;code&gt;client_uid&lt;/code&gt; 외에는 root를 포함해 누구든 요청의 한 바이트도 디코딩되기 전에
-&lt;code&gt;PERMISSION_DENIED&lt;/code&gt;가 됩니다.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;커널에서 읽은 단 하나의 uid.&lt;/strong&gt; 상대는 연결할 때 &lt;code&gt;SO_PEERCRED&lt;/code&gt;로 식별되며,&lt;code&gt;client_uid&lt;/code&gt; 외에는 root를 포함해 누구든 요청의 한 바이트도 디코딩되기 전에&lt;code&gt;PERMISSION_DENIED&lt;/code&gt;가 됩니다.&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;닫힌 동사 집합.&lt;/strong&gt; 서비스에 없는 메서드, 디코딩되지 않거나 정의되지 않은
 필드를 담은 메시지에는 응답이 없고 연결이 닫힙니다.&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;자신이 만들지 않은 것은 절대 건드리지 않습니다.&lt;/strong&gt; ZFS: 데이터셋 자체의
-&lt;code&gt;fileshare:volume&lt;/code&gt; 속성 — 사용자 속성은 상속되고 상속된 표시는 자신의 것이
+&lt;li&gt;&lt;strong&gt;자신이 만들지 않은 것은 절대 건드리지 않습니다.&lt;/strong&gt; ZFS: 데이터셋 자체의&lt;code&gt;fileshare:volume&lt;/code&gt; 속성 — 사용자 속성은 상속되고 상속된 표시는 자신의 것이
 아니므로 데이터셋에 직접 설정합니다. btrfs: &lt;code&gt;state_file&lt;/code&gt;에 기록된 서브볼륨 id와
-uuid. XFS/ext4: 부모의 범위 안에 있고 &lt;em&gt;또한&lt;/em&gt; 기록된 프로젝트 id. 크기 조정,
-스냅샷, 삭제 전에 매번 확인합니다.&lt;/li&gt;
+uuid. XFS/ext4: 부모의 범위 안에 있고 &lt;em&gt;또한&lt;/em&gt; 기록된 프로젝트 id. 크기 조정,스냅샷, 삭제 전에 매번 확인합니다.&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;삭제는 데이터와 스냅샷이 있으면 거부합니다.&lt;/strong&gt; &lt;code&gt;destroy_data&lt;/code&gt;가 설정된
 경우는 예외이며, 실행되기 전에 기록됩니다.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h2 data-hextra-search-id="measured"&gt;측정 결과&lt;span class="hx:absolute hx:-mt-20" id="measured"&gt;&lt;/span&gt;
-&lt;a href="#measured" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;fileshare의 CI에서 실제 풀과 루프백 기반 파일 시스템 위에서 root로, &lt;code&gt;fileshare serve&lt;/code&gt;를 &lt;code&gt;nobody&lt;/code&gt;로 실행하고 관리 API로 구동하여 측정했습니다.
-WebDAV와 SFTP를 통한 쓰기는 네 종류 모두에서 32 MiB 볼륨의 쿼터에서
+&lt;a href="#measured" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;fileshare의 CI에서 실제 풀과 루프백 기반 파일 시스템 위에서 root로, &lt;code&gt;fileshare serve&lt;/code&gt;를 &lt;code&gt;nobody&lt;/code&gt;로 실행하고 관리 API로 구동하여 측정했습니다.WebDAV와 SFTP를 통한 쓰기는 네 종류 모두에서 32 MiB 볼륨의 쿼터에서
 멈춥니다.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="not-yet"&gt;아직 지원하지 않는 것&lt;span class="hx:absolute hx:-mt-20" id="not-yet"&gt;&lt;/span&gt;
 &lt;a href="#not-yet" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
@@ -503,8 +475,7 @@ data-copied-label="복사됨!"
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;유닉스 소켓은 &lt;code&gt;unix:///like/this&lt;/code&gt;처럼 절대 경로로 지정합니다. 그 외에는 모두
-&lt;code&gt;host:port&lt;/code&gt;여야 하며, 그렇지 않으면 블록이 거부됩니다.&lt;/p&gt;
+&lt;p&gt;유닉스 소켓은 &lt;code&gt;unix:///like/this&lt;/code&gt;처럼 절대 경로로 지정합니다. 그 외에는 모두&lt;code&gt;host:port&lt;/code&gt;여야 하며, 그렇지 않으면 블록이 거부됩니다.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="what-is-measured"&gt;측정 항목&lt;span class="hx:absolute hx:-mt-20" id="what-is-measured"&gt;&lt;/span&gt;
 &lt;a href="#what-is-measured" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
 &lt;thead&gt;
@@ -584,20 +555,17 @@ data-copied-label="복사됨!"
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;어떤 메트릭도 공유나 사용자의 이름을 담지 않습니다&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;WebDAV는 누군가 사용할 수 없는 공유에 &lt;strong&gt;404&lt;/strong&gt;로 응답하여 그 공유의 존재가
-확인되지 않도록 하며, 메트릭 수집(scrape)도 이를 확인해 주어서는 안 됩니다.
-레이블은 프로토콜, 출처, 결과, 메서드 이름이며 공유나 사용자는 절대 쓰이지
+확인되지 않도록 하며, 메트릭 수집(scrape)도 이를 확인해 주어서는 안 됩니다.레이블은 프로토콜, 출처, 결과, 메서드 이름이며 공유나 사용자는 절대 쓰이지
 않습니다.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="what-to-alert-on"&gt;알림을 설정할 대상&lt;span class="hx:absolute hx:-mt-20" id="what-to-alert-on"&gt;&lt;/span&gt;
-&lt;a href="#what-to-alert-on" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;폐기 검사는 &lt;a href="https://go-fileshare.github.io/docs/0.31/ko/security/#every-one-of-them-fails-closed"&gt;안전하게 차단됩니다(fail closed)&lt;/a&gt;.
-너무 오래된 목록이나 응답이 없는 전송자가 있으면 서버는 그 목록이 관할하는
+&lt;a href="#what-to-alert-on" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;폐기 검사는 &lt;a href="https://go-fileshare.github.io/docs/0.31/ko/security/#every-one-of-them-fails-closed"&gt;안전하게 차단됩니다(fail closed)&lt;/a&gt;.너무 오래된 목록이나 응답이 없는 전송자가 있으면 서버는 그 목록이 관할하는
 자격 증명을 &lt;strong&gt;거부합니다&lt;/strong&gt;. 그 일이 일어난 뒤가 아니라 일어나기 전에 알림을
 받으십시오.&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;code&gt;fileshare_revocation_list_age_seconds&lt;/code&gt;가 &lt;code&gt;ssh_krl_max_age&lt;/code&gt; 또는
-&lt;code&gt;crl_max_age&lt;/code&gt;(기본값 1h)에 근접할 때&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;fileshare_revocation_list_age_seconds&lt;/code&gt;가 &lt;code&gt;ssh_krl_max_age&lt;/code&gt; 또는&lt;code&gt;crl_max_age&lt;/code&gt;(기본값 1h)에 근접할 때&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;fileshare_ssf_last_heard_seconds&lt;/code&gt;가 &lt;code&gt;ssf&lt;/code&gt; 블록의 &lt;code&gt;max_age&lt;/code&gt;(기본값 10m)에
 근접할 때&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;fileshare_directory_reloads_total{result=&amp;quot;failed&amp;quot;}&lt;/code&gt;가 증가할 때: 디렉터리를
@@ -633,8 +601,7 @@ data-copied-label="복사됨!"
 &lt;/div&gt;
 &lt;p&gt;블록을 작성하지 않으면 아무것도 수신하지 않습니다.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="what-it-does"&gt;하는 일&lt;span class="hx:absolute hx:-mt-20" id="what-it-does"&gt;&lt;/span&gt;
-&lt;a href="#what-it-does" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;서비스는
-&lt;a href="https://github.com/go-fileshare/fileshare/blob/v0.28.0/proto/fileshare/admin/v1/admin.proto" target="_blank" rel="noopener"&gt;&lt;code&gt;fileshare.admin.v1.AdminService&lt;/code&gt;&lt;/a&gt;입니다.&lt;/p&gt;
+&lt;a href="#what-it-does" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;서비스는&lt;a href="https://github.com/go-fileshare/fileshare/blob/v0.28.0/proto/fileshare/admin/v1/admin.proto" target="_blank" rel="noopener"&gt;&lt;code&gt;fileshare.admin.v1.AdminService&lt;/code&gt;&lt;/a&gt;입니다.&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
@@ -677,10 +644,8 @@ data-copied-label="복사됨!"
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;권한 부여는 &lt;strong&gt;사용자&lt;/strong&gt;, &lt;strong&gt;그룹&lt;/strong&gt; (구성 파일에서는 &lt;code&gt;@group&lt;/code&gt;),
-&lt;strong&gt;&lt;code&gt;oidc:groups:&lt;/code&gt; 값&lt;/strong&gt; 또는 &lt;strong&gt;&lt;code&gt;oidc:user:&lt;/code&gt; 이름&lt;/strong&gt;을 지정합니다. 구성 파일이 쓰는
-어휘와 같으며,
-&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;ID 공급자가 지정하는 사용자&lt;/a&gt;를 참고하십시오.&lt;/p&gt;
+&lt;p&gt;권한 부여는 &lt;strong&gt;사용자&lt;/strong&gt;, &lt;strong&gt;그룹&lt;/strong&gt; (구성 파일에서는 &lt;code&gt;@group&lt;/code&gt;),&lt;strong&gt;&lt;code&gt;oidc:groups:&lt;/code&gt; 값&lt;/strong&gt; 또는 &lt;strong&gt;&lt;code&gt;oidc:user:&lt;/code&gt; 이름&lt;/strong&gt;을 지정합니다. 구성 파일이 쓰는
+어휘와 같으며,&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;ID 공급자가 지정하는 사용자&lt;/a&gt;를 참고하십시오.&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;grpc.health.v1&lt;/code&gt;은 같은 리스너에서 응답합니다. 블록에 &lt;code&gt;reflection = true&lt;/code&gt;를
 쓰면 &lt;code&gt;grpcurl&lt;/code&gt;을 위한 gRPC 서버 리플렉션이 켜집니다.&lt;/p&gt;
 &lt;h3 data-hextra-search-id="every-change-says-what-serving-it-did"&gt;모든 변경은 그 변경으로 제공 상태가 어떻게 되었는지 알려 줍니다&lt;span class="hx:absolute hx:-mt-20" id="every-change-says-what-serving-it-did"&gt;&lt;/span&gt;
@@ -701,8 +666,7 @@ data-copied-label="복사됨!"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;그래서 모든 RPC는 공유 자체를 반환하지 않고 각자의 응답 메시지를 가집니다.
-&lt;code&gt;.proto&lt;/code&gt;는 AIP-131의 &amp;ldquo;리소스 반환&amp;rdquo; 대신 &lt;a href="https://buf.build" target="_blank" rel="noopener"&gt;buf&lt;/a&gt;의 &lt;code&gt;STANDARD&lt;/code&gt;
+&lt;p&gt;그래서 모든 RPC는 공유 자체를 반환하지 않고 각자의 응답 메시지를 가집니다.&lt;code&gt;.proto&lt;/code&gt;는 AIP-131의 &amp;ldquo;리소스 반환&amp;rdquo; 대신 &lt;a href="https://buf.build" target="_blank" rel="noopener"&gt;buf&lt;/a&gt;의 &lt;code&gt;STANDARD&lt;/code&gt;
 린트 규칙을 따르며, 이는 fileshare CI의 &lt;code&gt;buf lint&lt;/code&gt;로 검사됩니다. &lt;code&gt;Applied&lt;/code&gt;를
 싣는 것이 바로 이 래퍼입니다.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="where-it-listens-and-who-may-call-it"&gt;수신하는 위치와 호출할 수 있는 대상&lt;span class="hx:absolute hx:-mt-20" id="where-it-listens-and-who-may-call-it"&gt;&lt;/span&gt;
@@ -710,10 +674,8 @@ data-copied-label="복사됨!"
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;TCP에서는 상호 TLS가 아니면 허용되지 않습니다&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;tls_cert_file&lt;/code&gt;, &lt;code&gt;tls_key_file&lt;/code&gt;, &lt;code&gt;client_ca_file&lt;/code&gt; 세 가지 모두가 필요하며,
-&lt;strong&gt;루프백도 예외가 아닙니다&lt;/strong&gt;. 모든 로컬 사용자가 루프백에 접근할 수 있고, 이
-API는 누가 누구의 파일을 읽을지를 결정하기 때문입니다. 유닉스 소켓은
-&lt;strong&gt;0600&lt;/strong&gt;으로 만들어지며, 그 권한이 곧 접근 제어입니다.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;tls_cert_file&lt;/code&gt;, &lt;code&gt;tls_key_file&lt;/code&gt;, &lt;code&gt;client_ca_file&lt;/code&gt; 세 가지 모두가 필요하며,&lt;strong&gt;루프백도 예외가 아닙니다&lt;/strong&gt;. 모든 로컬 사용자가 루프백에 접근할 수 있고, 이
+API는 누가 누구의 파일을 읽을지를 결정하기 때문입니다. 유닉스 소켓은&lt;strong&gt;0600&lt;/strong&gt;으로 만들어지며, 그 권한이 곧 접근 제어입니다.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -737,14 +699,12 @@ data-copied-label="복사됨!"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;리스너는
-&lt;a href="https://github.com/grpc-transports/control" target="_blank" rel="noopener"&gt;grpc-transports/control&lt;/a&gt;입니다. 각
+&lt;p&gt;리스너는&lt;a href="https://github.com/grpc-transports/control" target="_blank" rel="noopener"&gt;grpc-transports/control&lt;/a&gt;입니다. 각
 변경은 누가 했는지와 함께 기록됩니다. 클라이언트 인증서의 CN 또는 소켓 피어의
 uid입니다.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="over-https-for-oidc-tokens"&gt;HTTPS를 통한 접근, OIDC 토큰용&lt;span class="hx:absolute hx:-mt-20" id="over-https-for-oidc-tokens"&gt;&lt;/span&gt;
 &lt;a href="#over-https-for-oidc-tokens" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;v0.28.0부터 &lt;code&gt;admin&lt;/code&gt; 블록에 &lt;code&gt;web&lt;/code&gt; 블록이 있으면 같은 API(같은 상태, 같은 감사)가
-HTTPS로도 제공됩니다. &lt;strong&gt;Connect, gRPC-Web, gRPC가 하나의 리스너&lt;/strong&gt;에서 제공되며,
-&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/security/tls/"&gt;&lt;code&gt;tls&lt;/code&gt; 블록&lt;/a&gt;의 인증서를 사용합니다. 웹 및
+HTTPS로도 제공됩니다. &lt;strong&gt;Connect, gRPC-Web, gRPC가 하나의 리스너&lt;/strong&gt;에서 제공되며,&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/security/tls/"&gt;&lt;code&gt;tls&lt;/code&gt; 블록&lt;/a&gt;의 인증서를 사용합니다. 웹 및
 네이티브 UI가 사용하는 경로입니다.&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;admin&lt;/span&gt; {
@@ -807,11 +767,9 @@ data-copied-label="복사됨!"
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;&lt;strong&gt;응답을 받는 대상.&lt;/strong&gt; 한 발급자의 검증기가 호출의 베어러 토큰(서명, &lt;code&gt;iss&lt;/code&gt;,
-이 서버를 지정하는 &lt;code&gt;aud&lt;/code&gt;, 시각)을 수락하고, &lt;strong&gt;또한&lt;/strong&gt; 그 발급자의 블록이 토큰의
+&lt;p&gt;&lt;strong&gt;응답을 받는 대상.&lt;/strong&gt; 한 발급자의 검증기가 호출의 베어러 토큰(서명, &lt;code&gt;iss&lt;/code&gt;,이 서버를 지정하는 &lt;code&gt;aud&lt;/code&gt;, 시각)을 수락하고, &lt;strong&gt;또한&lt;/strong&gt; 그 발급자의 블록이 토큰의
 주체 또는 그 그룹 중 하나를 지정할 때 호출에 응답합니다. 한 발급자에 나열된
-주체는 다른 발급자에서는 아무도 아닙니다. 사용자는 (발급자, &lt;code&gt;sub&lt;/code&gt;)입니다.
-검사는 메시지의 한 바이트도 디코딩하기 전에 헤더만으로 수행됩니다.&lt;/p&gt;
+주체는 다른 발급자에서는 아무도 아닙니다. 사용자는 (발급자, &lt;code&gt;sub&lt;/code&gt;)입니다.검사는 메시지의 한 바이트도 디코딩하기 전에 헤더만으로 수행됩니다.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;서버마다 하나의 audience.&lt;/strong&gt; 여러 서버를 수신자로 하는 토큰은 그중 어느 서버든
 다른 서버에 재전송할 수 있으므로(RFC 8707, RFC 9068), 각 서버는 자신만의
 audience를 가지며, 여러 서버를 다루는 UI는 서버마다 토큰 하나를 요청합니다.&lt;/p&gt;
@@ -819,16 +777,12 @@ audience를 가지며, 여러 서버를 다루는 UI는 서버마다 토큰 하�
 변경은 &lt;code&gt;oidc=&amp;lt;issuer&amp;gt; &amp;lt;sub&amp;gt;&lt;/code&gt; 형식으로 감사 출력에 기록됩니다.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;CORS 없음.&lt;/strong&gt; 브라우저는 이 API를 직접 호출하지 않습니다. 토큰을 보관하는 UI
 자체의 서버를 통해 접근합니다. 요청은 1 MiB로 제한되며 연결의 모든 단계에
-타임아웃이 있습니다. 각 발급자는 키를 읽기 위해 &lt;strong&gt;시작할 때&lt;/strong&gt; 접속됩니다.
-접속할 수 없는 발급자가 있으면 그 발급자를 지목하며 시작이 중단됩니다.&lt;/p&gt;
+타임아웃이 있습니다. 각 발급자는 키를 읽기 위해 &lt;strong&gt;시작할 때&lt;/strong&gt; 접속됩니다.접속할 수 없는 발급자가 있으면 그 발급자를 지목하며 시작이 중단됩니다.&lt;/p&gt;
 &lt;h3 data-hextra-search-id="in-a-browser-the-console"&gt;브라우저에서: 콘솔&lt;span class="hx:absolute hx:-mt-20" id="in-a-browser-the-console"&gt;&lt;/span&gt;
 &lt;a href="#in-a-browser-the-console" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;&lt;a href="https://github.com/go-fileshare/console" target="_blank" rel="noopener"&gt;go-fileshare/console&lt;/a&gt;은 이 API를
-호출하는 관리 콘솔입니다. 공유, 상세 정보, 권한 부여, 생성, 활성화, 비활성화,
-삭제, 부여와 회수, 그리고 &lt;a href="https://go-fileshare.github.io/docs/0.31/ko/administration/volumes/"&gt;볼륨&lt;/a&gt;
+호출하는 관리 콘솔입니다. 공유, 상세 정보, 권한 부여, 생성, 활성화, 비활성화,삭제, 부여와 회수, 그리고 &lt;a href="https://go-fileshare.github.io/docs/0.31/ko/administration/volumes/"&gt;볼륨&lt;/a&gt;
 (생성, 크기 조정, 스냅샷, 공유, 삭제 &amp;ndash; 데이터는 절대 파기하지 않음)을 모든
-서버에 걸쳐 한꺼번에 다룹니다. 브라우저에서 실행되며,
-&lt;a href="https://github.com/go-fileshare/portal" target="_blank" rel="noopener"&gt;go-fileshare/portal&lt;/a&gt; 뒤에 위치합니다.
-포털은 OpenID Connect로 사용자를 로그인시키고 토큰을 보관합니다. 토큰은 서버마다
+서버에 걸쳐 한꺼번에 다룹니다. 브라우저에서 실행되며,&lt;a href="https://github.com/go-fileshare/portal" target="_blank" rel="noopener"&gt;go-fileshare/portal&lt;/a&gt; 뒤에 위치합니다.포털은 OpenID Connect로 사용자를 로그인시키고 토큰을 보관합니다. 토큰은 서버마다
 하나이며 해당 서버만을 수신자로 합니다. 브라우저는 토큰을 보관하지 않습니다.&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# portal.hcl
@@ -850,18 +804,13 @@ data-copied-label="복사됨!"
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;p&gt;같은 콘솔은 포털 없이 &lt;strong&gt;네이티브&lt;/strong&gt;로도 실행됩니다. 공개 클라이언트로서
-시스템 브라우저와 루프백 리스너를 통해 로그인하고
-(&lt;a href="https://github.com/go-authn/rp" target="_blank" rel="noopener"&gt;go-authn/rp&lt;/a&gt;, RFC 8252), 각 서버를 해당
-서버만을 위한 토큰으로 호출합니다. 서버 목록은 자체 &lt;code&gt;console.hcl&lt;/code&gt;에 있으며,
-&lt;code&gt;url&lt;/code&gt;과 &lt;code&gt;resource&lt;/code&gt;는 여기와 같습니다.&lt;/p&gt;
+시스템 브라우저와 루프백 리스너를 통해 로그인하고(&lt;a href="https://github.com/go-authn/rp" target="_blank" rel="noopener"&gt;go-authn/rp&lt;/a&gt;, RFC 8252), 각 서버를 해당
+서버만을 위한 토큰으로 호출합니다. 서버 목록은 자체 &lt;code&gt;console.hcl&lt;/code&gt;에 있으며,&lt;code&gt;url&lt;/code&gt;과 &lt;code&gt;resource&lt;/code&gt;는 여기와 같습니다.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;파일 탐색기&lt;/strong&gt; &lt;a href="https://github.com/go-fileshare/explorer" target="_blank" rel="noopener"&gt;go-fileshare/explorer&lt;/a&gt;는
-같은 포털 뒤에서 실행됩니다. 사용자가 이용할 수 있는 모든 공유에서 탐색,
-업로드, 다운로드, 이름 변경, 복사, 삭제를 할 수 있습니다. 포털(&lt;code&gt;/dav/&amp;lt;server&amp;gt;/...&lt;/code&gt;)을
+같은 포털 뒤에서 실행됩니다. 사용자가 이용할 수 있는 모든 공유에서 탐색,업로드, 다운로드, 이름 변경, 복사, 삭제를 할 수 있습니다. 포털(&lt;code&gt;/dav/&amp;lt;server&amp;gt;/...&lt;/code&gt;)을
 통해 해당 서버만을 위한 토큰으로 각 서버의 WebDAV에 접근하며, 포털은 돌아온
 내용을 &lt;strong&gt;비활성 상태&lt;/strong&gt;로 제공합니다(&lt;code&gt;Content-Security-Policy: sandbox&lt;/code&gt;, 첨부
-파일). 공유에 있는 페이지가 포털의 권한으로 실행되는 일은 없습니다. fileshare
-&lt;strong&gt;v0.29.0&lt;/strong&gt; 이상이 필요하며, 이 버전의
-&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/protocols/webdav/#the-root-and-uploads-in-pieces"&gt;WebDAV&lt;/a&gt;가
+파일). 공유에 있는 페이지가 포털의 권한으로 실행되는 일은 없습니다. fileshare&lt;strong&gt;v0.29.0&lt;/strong&gt; 이상이 필요하며, 이 버전의&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/protocols/webdav/#the-root-and-uploads-in-pieces"&gt;WebDAV&lt;/a&gt;가
 루트에서 공유를 나열하고 조각 단위 업로드를 받습니다.&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# portal.hcl, 동일한 서버
@@ -881,8 +830,7 @@ data-copied-label="복사됨!"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;탐색기도 콘솔처럼 포털 없이 &lt;strong&gt;네이티브&lt;/strong&gt;(explorer v0.2.0)로 실행됩니다.
-공개 클라이언트로서 시스템 브라우저로 로그인하고, 각 서버의 WebDAV를 해당
+&lt;p&gt;탐색기도 콘솔처럼 포털 없이 &lt;strong&gt;네이티브&lt;/strong&gt;(explorer v0.2.0)로 실행됩니다.공개 클라이언트로서 시스템 브라우저로 로그인하고, 각 서버의 WebDAV를 해당
 서버만을 위한 토큰으로 호출합니다. 서버 목록은 &lt;code&gt;explorer.hcl&lt;/code&gt;에 있으며, 각
 서버에는 &lt;code&gt;dav_url&lt;/code&gt;(https만 허용)과 &lt;code&gt;oidc&lt;/code&gt; 블록의 &lt;code&gt;resource&lt;/code&gt;가 있습니다. 두
 네이티브 클라이언트 모두 토큰을 가진 채 리디렉션을 따라가지 않습니다. Go의 HTTP
@@ -892,29 +840,24 @@ data-copied-label="복사됨!"
 &lt;p&gt;&lt;strong&gt;실패한 업로드는 이어집니다&lt;/strong&gt; (explorer v0.3.0). 파트 파일의 이름은 파일의
 이름, 크기, 수정 시각에서 만들어지므로, 같은 파일을 다시 업로드하면 파트가
 끝난 지점부터 이어집니다. 단, 파트의 마지막 64 KiB를 다시 읽어 파일의 내용과
-일치하는 것이 확인된 경우에 한합니다. 다른 파일은 결코 이어지지 않습니다.
-네트워크나 서버의 실패는 파트를 남기고, 거부(403, 가득 찬 공유인 507)는 파트를
+일치하는 것이 확인된 경우에 한합니다. 다른 파일은 결코 이어지지 않습니다.네트워크나 서버의 실패는 파트를 남기고, 거부(403, 가득 찬 공유인 507)는 파트를
 제거합니다.&lt;/p&gt;
 &lt;p&gt;각 서버의 &lt;code&gt;audience&lt;/code&gt;는 포털에서 그 서버에 대한 &lt;code&gt;resource&lt;/code&gt;입니다. API를 사용하기
-위해 자체 콘솔을 작성할 필요는 없습니다. 이 서버용 토큰을 가진 Connect,
-gRPC-Web 또는 gRPC 클라이언트라면 무엇이든 사용할 수 있습니다.&lt;/p&gt;
+위해 자체 콘솔을 작성할 필요는 없습니다. 이 서버용 토큰을 가진 Connect,gRPC-Web 또는 gRPC 클라이언트라면 무엇이든 사용할 수 있습니다.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="what-it-will-and-will-not-touch"&gt;건드리는 것과 건드리지 않는 것&lt;span class="hx:absolute hx:-mt-20" id="what-it-will-and-will-not-touch"&gt;&lt;/span&gt;
 &lt;a href="#what-it-will-and-will-not-touch" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;자신이 만든 공유를 관리합니다.&lt;/strong&gt; 구성에 작성된 공유도 같은 필드와 함께
-나열되지만, 그 정의를 바꾸려는 변경은 &lt;code&gt;FAILED_PRECONDITION&lt;/code&gt;으로 거부됩니다.
-두 곳에 정의된 공유는 아무도 답하고 싶지 않은 질문이며, 그 공유가 정의된
+나열되지만, 그 정의를 바꾸려는 변경은 &lt;code&gt;FAILED_PRECONDITION&lt;/code&gt;으로 거부됩니다.두 곳에 정의된 공유는 아무도 답하고 싶지 않은 질문이며, 그 공유가 정의된
 곳은 파일이기 때문입니다. API의 공유는 원자적으로 기록되는 &lt;code&gt;state_file&lt;/code&gt;에
 있으며 다음 시작 때 다시 제공됩니다. &lt;code&gt;state_file&lt;/code&gt;이 없는 블록이 거부되는
 이유가 이것입니다.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;소스는 &lt;code&gt;source_roots&lt;/code&gt; 아래에 있어야 합니다.&lt;/strong&gt; 링크를 따라가고 &lt;code&gt;..&lt;/code&gt;를 제거해
 해석한 경로가 기준이며, 보관되는 것도 해석된 경로입니다. &lt;code&gt;source_roots&lt;/code&gt;가
 없으면 API는 &lt;strong&gt;공유를 아예 만들 수 없습니다&lt;/strong&gt;. 프로세스는 &lt;code&gt;/dev&lt;/code&gt;와 &lt;code&gt;/etc&lt;/code&gt;를
-읽을 수 있지만, 이를 호출자에게 넘길 의도는 아무에게도 없었기 때문입니다.
-검사는 시작할 때마다 다시 수행되며, &lt;code&gt;state_file&lt;/code&gt;의 공유가 더 이상 어떤
+읽을 수 있지만, 이를 호출자에게 넘길 의도는 아무에게도 없었기 때문입니다.검사는 시작할 때마다 다시 수행되며, &lt;code&gt;state_file&lt;/code&gt;의 공유가 더 이상 어떤
 루트 아래에도 없으면 그 공유를 지목하며 시작이 중단됩니다.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;모든 공유에는 적어도 하나의 권한 부여가 있습니다.&lt;/strong&gt; 권한 부여가 없는 공유는
 인증하는 모든 사람에게 열려 있습니다. 파일은 의도적으로 그렇게 지정할 수
-있지만, API 호출이 누락으로 그렇게 지정해서는 안 됩니다. 그래서
-&lt;code&gt;CreateShare&lt;/code&gt;에는 권한 부여가 필요하고, 마지막 권한 부여를 회수하는 것은
+있지만, API 호출이 누락으로 그렇게 지정해서는 안 됩니다. 그래서&lt;code&gt;CreateShare&lt;/code&gt;에는 권한 부여가 필요하고, 마지막 권한 부여를 회수하는 것은
 거부됩니다. 대신 공유를 삭제하십시오.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;프로토콜이 담을 수 있는 이름.&lt;/strong&gt; 공유 이름은 최대 80자이고, 공백으로 시작하거나
 끝나지 않으며, &lt;code&gt;.&lt;/code&gt; 또는 &lt;code&gt;..&lt;/code&gt;이 아니고, 출력할 수 없는 문자와 &lt;code&gt;:*?&amp;quot;&amp;lt;&amp;gt;|{}%&lt;/code&gt; 중
@@ -924,24 +867,20 @@ gRPC-Web 또는 gRPC 클라이언트라면 무엇이든 사용할 수 있습니�
 시작할 때마다 치명적 오류를 일으켰습니다.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;어떤 공유도 포함해서는 안 되는 것&lt;/strong&gt;은 구성, 상태 파일, 그리고 이들이 지정하는
 비밀 정보입니다. 그 안에 쓸 수 있는 사람은 누가 무엇을 할 수 있는지를 다시 쓸
-수 있기 때문입니다. v0.17.0부터는 &lt;code&gt;authorized_keys_file&lt;/code&gt;, &lt;code&gt;users&lt;/code&gt; 블록의
-&lt;code&gt;dsn_file&lt;/code&gt;과 &lt;code&gt;bind_password_file&lt;/code&gt;, &lt;code&gt;ssf&lt;/code&gt; 블록의 &lt;code&gt;ca_file&lt;/code&gt;, 그리고 DSN이 지정하는
+수 있기 때문입니다. v0.17.0부터는 &lt;code&gt;authorized_keys_file&lt;/code&gt;, &lt;code&gt;users&lt;/code&gt; 블록의&lt;code&gt;dsn_file&lt;/code&gt;과 &lt;code&gt;bind_password_file&lt;/code&gt;, &lt;code&gt;ssf&lt;/code&gt; 블록의 &lt;code&gt;ca_file&lt;/code&gt;, 그리고 DSN이 지정하는
 sqlite 데이터베이스가 여기에 포함됩니다. 누군가의 &lt;code&gt;authorized_keys&lt;/code&gt;에 자신의
-키를 추가할 수 있는 쓰기 권한자는 그 사람으로 로그인할 수 있기 때문입니다.
-&lt;strong&gt;다른 공유를 포함하는 것도 허용되지 않습니다&lt;/strong&gt;
+키를 추가할 수 있는 쓰기 권한자는 그 사람으로 로그인할 수 있기 때문입니다.&lt;strong&gt;다른 공유를 포함하는 것도 허용되지 않습니다&lt;/strong&gt;
 (&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/configuration/shares/#a-directory-not-only-an-image"&gt;디렉터리&lt;/a&gt; 참고).&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;변경은 구성처럼 검사되고, 열리고, 기록된 뒤에 제공됩니다.&lt;/strong&gt; 서버가 이행할 수
 없는 변경 — 열리지 않는 이미지, 디렉터리에 없는 이름 — 은 거부되며, 제공 중이던
 것과 기록된 것은 그대로 유지됩니다.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="disabling-a-share"&gt;공유 비활성화&lt;span class="hx:absolute hx:-mt-20" id="disabling-a-share"&gt;&lt;/span&gt;
 &lt;a href="#disabling-a-share" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;비활성화는 Samba의 &lt;code&gt;available = no&lt;/code&gt;와 같습니다.&lt;/strong&gt; 공유는 정의된 채로 남고
-모든 연결 시도가 실패합니다. 열려 있던 연결은 닫히고 이미지나 디렉터리는
-&lt;strong&gt;놓아 주므로&lt;/strong&gt;, 오프라인인 동안 파일을 교체할 수 있습니다. &lt;code&gt;EnableShare&lt;/code&gt;는
+모든 연결 시도가 실패합니다. 열려 있던 연결은 닫히고 이미지나 디렉터리는&lt;strong&gt;놓아 주므로&lt;/strong&gt;, 오프라인인 동안 파일을 교체할 수 있습니다. &lt;code&gt;EnableShare&lt;/code&gt;는
 다시 제공하며, 소스를 더 이상 열 수 없으면 거부됩니다. &lt;code&gt;CreateShare&lt;/code&gt;로 처음부터
 비활성화된 공유를 만들 수도 있습니다.&lt;/p&gt;
 &lt;p&gt;다른 모든 변경과 달리 &lt;strong&gt;구성에 있는&lt;/strong&gt; 공유에도 적용됩니다. 공유를 오프라인으로
-전환하는 것은 정의가 아니라 운영이기 때문입니다. 또한 재시작 후에도 유지되며,
-상태 파일에 보관됩니다. &lt;a href="https://go-fileshare.github.io/docs/0.31/ko/configuration/check/"&gt;&lt;code&gt;fileshare check&lt;/code&gt;&lt;/a&gt;는
+전환하는 것은 정의가 아니라 운영이기 때문입니다. 또한 재시작 후에도 유지되며,상태 파일에 보관됩니다. &lt;a href="https://go-fileshare.github.io/docs/0.31/ko/configuration/check/"&gt;&lt;code&gt;fileshare check&lt;/code&gt;&lt;/a&gt;는
 오프라인인 공유를 나열합니다.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="a-change-is-a-new-generation"&gt;변경은 새로운 세대입니다&lt;span class="hx:absolute hx:-mt-20" id="a-change-is-a-new-generation"&gt;&lt;/span&gt;
 &lt;a href="#a-change-is-a-new-generation" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
@@ -955,19 +894,13 @@ sqlite 데이터베이스가 여기에 포함됩니다. 누군가의 &lt;code&gt
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;그래서 변경은 실행 중인 서버에 &lt;em&gt;적용&lt;/em&gt;되지 않습니다. 재시작할 때와 같은 방식으로,
-새 목록으로 만든 새 서버 — &lt;strong&gt;세대&lt;/strong&gt; — 로 교체되며, 포트는 놓지 않습니다.
-라이브러리 쪽에서 달리 할 수 있는 방법이 없었습니다. go-filesystems/smb에는
-&lt;code&gt;Share&lt;/code&gt;는 있지만 &lt;code&gt;Unshare&lt;/code&gt;가 없고, nfs에는 &lt;code&gt;Export&lt;/code&gt;는 있지만 &lt;code&gt;Unexport&lt;/code&gt;가
+&lt;p&gt;그래서 변경은 실행 중인 서버에 &lt;em&gt;적용&lt;/em&gt;되지 않습니다. 재시작할 때와 같은 방식으로,새 목록으로 만든 새 서버 — &lt;strong&gt;세대&lt;/strong&gt; — 로 교체되며, 포트는 놓지 않습니다.라이브러리 쪽에서 달리 할 수 있는 방법이 없었습니다. go-filesystems/smb에는&lt;code&gt;Share&lt;/code&gt;는 있지만 &lt;code&gt;Unshare&lt;/code&gt;가 없고, nfs에는 &lt;code&gt;Export&lt;/code&gt;는 있지만 &lt;code&gt;Unexport&lt;/code&gt;가
 없습니다.&lt;/p&gt;
-&lt;p&gt;포트는 계속 바인딩되어 있으므로, 변경 중에 접속하는 클라이언트는 거부되지 않고
-&lt;strong&gt;대기합니다&lt;/strong&gt;. 공유가 바뀌지 않은 이미지는 드라이버를 유지하며 두 번 열리지
-않습니다. 클라이언트는 다시 연결하며, 이것이 모든 변경에서 치르는 대가입니다.
-그래서 API는 필드마다가 아니라 호출마다 하나의 변경을 적용합니다.&lt;/p&gt;
+&lt;p&gt;포트는 계속 바인딩되어 있으므로, 변경 중에 접속하는 클라이언트는 거부되지 않고&lt;strong&gt;대기합니다&lt;/strong&gt;. 공유가 바뀌지 않은 이미지는 드라이버를 유지하며 두 번 열리지
+않습니다. 클라이언트는 다시 연결하며, 이것이 모든 변경에서 치르는 대가입니다.그래서 API는 필드마다가 아니라 호출마다 하나의 변경을 적용합니다.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="limits"&gt;제한&lt;span class="hx:absolute hx:-mt-20" id="limits"&gt;&lt;/span&gt;
 &lt;a href="#limits" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;--isolate&lt;/code&gt;는 아직 &lt;code&gt;admin&lt;/code&gt; 블록이나 &lt;code&gt;metrics&lt;/code&gt; 블록과 함께 쓸 수 없습니다.
-변경을 적용할 단일 프로세스가 없기 때문입니다. 이 조합은 거부됩니다.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--isolate&lt;/code&gt;는 아직 &lt;code&gt;admin&lt;/code&gt; 블록이나 &lt;code&gt;metrics&lt;/code&gt; 블록과 함께 쓸 수 없습니다.변경을 적용할 단일 프로세스가 없기 때문입니다. 이 조합은 거부됩니다.&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;-tags nogrpc&lt;/code&gt;로 빌드한 바이너리에는 관리 API가 없으며, &lt;code&gt;admin&lt;/code&gt; 블록이 있는
 구성은 관리 API 없이 제공되지 않고 &lt;strong&gt;거부됩니다&lt;/strong&gt;. 이 태그는 11.7 MB를
 줄입니다. &lt;a href="https://go-fileshare.github.io/docs/0.31/ko/operations/build-tags/#the-admin-api-and-nogrpc"&gt;필요한 것만 빌드하기&lt;/a&gt;를
@@ -975,8 +908,7 @@ sqlite 데이터베이스가 여기에 포함됩니다. 누군가의 &lt;code&gt
 &lt;/ul&gt;
 &lt;h2 data-hextra-search-id="changing-the-proto"&gt;&lt;code&gt;.proto&lt;/code&gt; 변경&lt;span class="hx:absolute hx:-mt-20" id="changing-the-proto"&gt;&lt;/span&gt;
 &lt;a href="#changing-the-proto" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;proto/&lt;/code&gt; 아래의 Go 코드는 생성되어 커밋되므로 &lt;code&gt;go install&lt;/code&gt;에 &lt;code&gt;protoc&lt;/code&gt;가
-필요하지 않습니다. &lt;code&gt;.proto&lt;/code&gt;(관리 API의 것 또는 프로비저너의
-&lt;code&gt;proto/fileshare/provision/v1/provision.proto&lt;/code&gt;)를 변경한 후에는 fileshare CI가
+필요하지 않습니다. &lt;code&gt;.proto&lt;/code&gt;(관리 API의 것 또는 프로비저너의&lt;code&gt;proto/fileshare/provision/v1/provision.proto&lt;/code&gt;)를 변경한 후에는 fileshare CI가
 고정한 버전(protoc 34.1, protoc-gen-go v1.36.12, protoc-gen-go-grpc v1.6.2)으로
 둘 다 다시 생성하십시오. CI는 이를 다시 생성하여 커밋된 코드와 다르거나 생성된
 코드가 커밋되지 않은 채 남아 있으면 실패합니다.&lt;/p&gt;
@@ -1018,8 +950,7 @@ data-copied-label="복사됨!"
 부하를 주는 일입니다.&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;&lt;code&gt;SIGHUP&lt;/code&gt;&lt;/strong&gt;(Unix) 수신 시&lt;/li&gt;
 &lt;li&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/administration/"&gt;관리 API&lt;/a&gt;의 &lt;strong&gt;&lt;code&gt;ReloadDirectory&lt;/code&gt;&lt;/strong&gt;
-호출 시. 이 호출은 추가, 제거, 변경된 사용자, 새 세대가 시작되었는지 여부,
-그리고 사람이 읽어 보아야 할 참고 사항(더 이상 존재하지 않거나 구성원이 없는
+호출 시. 이 호출은 추가, 제거, 변경된 사용자, 새 세대가 시작되었는지 여부,그리고 사람이 읽어 보아야 할 참고 사항(더 이상 존재하지 않거나 구성원이 없는
 그룹, 공유가 지정하지만 디렉터리에 더 이상 없는 사용자)으로 응답합니다.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;&lt;code&gt;reload&lt;/code&gt;가 없으면 디렉터리는 시작할 때, &lt;code&gt;SIGHUP&lt;/code&gt; 수신 시, &lt;code&gt;ReloadDirectory&lt;/code&gt;
@@ -1055,8 +986,7 @@ data-copied-label="복사됨!"
 때문입니다.&lt;/p&gt;
 &lt;p&gt;사라진 사용자, 또는 더 이상 존재하지 않거나 구성원이 없는 그룹(v0.29.1부터
 구분됨)을 지정한 공유는 시작할 때처럼 거부되지 않고 &lt;strong&gt;그들을 제외한 채&lt;/strong&gt;
-제공되며(안전한 방향), 그 사실이 알려집니다. 거부하면 이전 목록이 유지되는데,
-이전 목록이 바로 방금 회수된 접근 권한이기 때문입니다.&lt;/p&gt;
+제공되며(안전한 방향), 그 사실이 알려집니다. 거부하면 이전 목록이 유지되는데,이전 목록이 바로 방금 회수된 접근 권한이기 때문입니다.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="an-empty-group-is-not-everyone"&gt;빈 그룹은 모든 사람이 아닙니다&lt;span class="hx:absolute hx:-mt-20" id="an-empty-group-is-not-everyone"&gt;&lt;/span&gt;
 &lt;a href="#an-empty-group-is-not-everyone" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
@@ -1070,17 +1000,14 @@ data-copied-label="복사됨!"
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="watching-it"&gt;지켜보기&lt;span class="hx:absolute hx:-mt-20" id="watching-it"&gt;&lt;/span&gt;
-&lt;a href="#watching-it" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;fileshare_directory_reloads_total{result}&lt;/code&gt;는 아무것도 찾지 못한 다시 불러오기
-(&lt;code&gt;unchanged&lt;/code&gt;), 제자리에서 추가한 경우(&lt;code&gt;added&lt;/code&gt;), 세대를 시작한 경우(&lt;code&gt;swapped&lt;/code&gt;),
-디렉터리를 읽지 못한 경우(&lt;code&gt;failed&lt;/code&gt;)를 집계합니다. &lt;code&gt;fileshare_directory_people&lt;/code&gt;은
+&lt;a href="#watching-it" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;fileshare_directory_reloads_total{result}&lt;/code&gt;는 아무것도 찾지 못한 다시 불러오기(&lt;code&gt;unchanged&lt;/code&gt;), 제자리에서 추가한 경우(&lt;code&gt;added&lt;/code&gt;), 세대를 시작한 경우(&lt;code&gt;swapped&lt;/code&gt;),디렉터리를 읽지 못한 경우(&lt;code&gt;failed&lt;/code&gt;)를 집계합니다. &lt;code&gt;fileshare_directory_people&lt;/code&gt;은
 마지막으로 읽었을 때의 사용자 수입니다. &lt;a href="https://go-fileshare.github.io/docs/0.31/ko/administration/health/"&gt;상태 점검과 메트릭&lt;/a&gt;을 참고하십시오.&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;다시 불러오기가 미치지 않는 것&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;ID 공급자가 토큰이나 인증서로 보증하는 사용자는 디렉터리에 없으므로 다시
-불러오기와 무관합니다. &lt;strong&gt;이들&lt;/strong&gt;을 회수하는 것은
-&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/security/"&gt;폐기 목록과 공유 신호&lt;/a&gt;의 역할입니다.&lt;/p&gt;
+불러오기와 무관합니다. &lt;strong&gt;이들&lt;/strong&gt;을 회수하는 것은&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/security/"&gt;폐기 목록과 공유 신호&lt;/a&gt;의 역할입니다.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;</description></item></channel></rss>

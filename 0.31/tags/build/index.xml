@@ -107,13 +107,9 @@ starts without it does not do what it says.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;&lt;code&gt;nogrpc&lt;/code&gt; leaves out the admin API and, with it, the
-&lt;a href="https://go-fileshare.github.io/docs/0.31/administration/volumes/"&gt;provisioner&lt;/a&gt;. &lt;a href="https://go-fileshare.github.io/docs/0.31/administration/health/"&gt;Health and metrics&lt;/a&gt;
+&lt;p&gt;&lt;code&gt;nogrpc&lt;/code&gt; leaves out the admin API and, with it, the&lt;a href="https://go-fileshare.github.io/docs/0.31/administration/volumes/"&gt;provisioner&lt;/a&gt;. &lt;a href="https://go-fileshare.github.io/docs/0.31/administration/health/"&gt;Health and metrics&lt;/a&gt;
 are plain HTTP and stay.&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;-tags noprovisioner&lt;/code&gt; leaves out only the provisioner, the privileged
-&lt;code&gt;fileshare provisioner&lt;/code&gt; role, and go-fsctl&amp;rsquo;s zfs, btrfs and projquota with it:
-a server that never serves volumes need not carry the code that creates them.
-&lt;code&gt;fileshare provisioner&lt;/code&gt; in such a build says so rather than &amp;ldquo;unknown command&amp;rdquo;.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;-tags noprovisioner&lt;/code&gt; leaves out only the provisioner, the privileged&lt;code&gt;fileshare provisioner&lt;/code&gt; role, and go-fsctl&amp;rsquo;s zfs, btrfs and projquota with it:a server that never serves volumes need not carry the code that creates them.&lt;code&gt;fileshare provisioner&lt;/code&gt; in such a build says so rather than &amp;ldquo;unknown command&amp;rdquo;.&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;nosql&lt;/code&gt; is by a distance the biggest lever: PostgreSQL, MySQL and SQLite
 together weigh &lt;strong&gt;11.7 MB&lt;/strong&gt;, more than every protocol in this program put
 together. A site whose users are in the file wants it. The drivers are imported
@@ -125,8 +121,7 @@ choice a build tag rather than a fork.&lt;/p&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;A protocol this binary was built without&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;A configuration naming one is told &lt;em&gt;that&lt;/em&gt;, rather than &amp;ldquo;there is no such
 protocol&amp;rdquo; — the difference between a typo and a build tag. The same holds
-for &lt;code&gt;opkssh_client_id&lt;/code&gt; under &lt;code&gt;noopenpubkey&lt;/code&gt; and an &lt;code&gt;admin&lt;/code&gt; block under
-&lt;code&gt;nogrpc&lt;/code&gt;.&lt;/p&gt;
+for &lt;code&gt;opkssh_client_id&lt;/code&gt; under &lt;code&gt;noopenpubkey&lt;/code&gt; and an &lt;code&gt;admin&lt;/code&gt; block under&lt;code&gt;nogrpc&lt;/code&gt;.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -140,6 +135,5 @@ again.&lt;/p&gt;
 run: &lt;strong&gt;code that was never compiled cannot be reached&lt;/strong&gt;, sandboxed or not.&lt;/p&gt;
 &lt;p&gt;What tags do &lt;em&gt;not&lt;/em&gt; give is isolation between the protocols you &lt;strong&gt;do&lt;/strong&gt; run, nor
 a way to add a protocol without recompiling. Both are real, and both are
-arguments for a process boundary rather than for a smaller binary — which is
-&lt;a href="https://go-fileshare.github.io/docs/0.31/operations/isolation/"&gt;one process per protocol&lt;/a&gt;, using this same binary, not a plugin
+arguments for a process boundary rather than for a smaller binary — which is&lt;a href="https://go-fileshare.github.io/docs/0.31/operations/isolation/"&gt;one process per protocol&lt;/a&gt;, using this same binary, not a plugin
 framework.&lt;/p&gt;</description></item></channel></rss>

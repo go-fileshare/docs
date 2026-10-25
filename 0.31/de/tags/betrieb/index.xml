@@ -107,13 +107,9 @@ ohne sie startet, tut nicht, was sie sagt.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;&lt;code&gt;nogrpc&lt;/code&gt; lässt die Admin-API weg und mit ihr den
-&lt;a href="https://go-fileshare.github.io/docs/0.31/de/administration/volumes/"&gt;Provisioner&lt;/a&gt;. &lt;a href="https://go-fileshare.github.io/docs/0.31/de/administration/health/"&gt;Health und Metriken&lt;/a&gt;
+&lt;p&gt;&lt;code&gt;nogrpc&lt;/code&gt; lässt die Admin-API weg und mit ihr den&lt;a href="https://go-fileshare.github.io/docs/0.31/de/administration/volumes/"&gt;Provisioner&lt;/a&gt;. &lt;a href="https://go-fileshare.github.io/docs/0.31/de/administration/health/"&gt;Health und Metriken&lt;/a&gt;
 sind reines HTTP und bleiben.&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;-tags noprovisioner&lt;/code&gt; lässt nur den Provisioner weg, die privilegierte Rolle
-&lt;code&gt;fileshare provisioner&lt;/code&gt;, und mit ihr zfs, btrfs und projquota von go-fsctl:
-Ein Server, der nie Volumes bereitstellt, muss den Code, der sie anlegt, nicht mitschleppen.
-&lt;code&gt;fileshare provisioner&lt;/code&gt; sagt in einem solchen Build genau das, statt „unknown command&amp;quot;.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;-tags noprovisioner&lt;/code&gt; lässt nur den Provisioner weg, die privilegierte Rolle&lt;code&gt;fileshare provisioner&lt;/code&gt;, und mit ihr zfs, btrfs und projquota von go-fsctl:Ein Server, der nie Volumes bereitstellt, muss den Code, der sie anlegt, nicht mitschleppen.&lt;code&gt;fileshare provisioner&lt;/code&gt; sagt in einem solchen Build genau das, statt „unknown command&amp;quot;.&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;nosql&lt;/code&gt; ist mit Abstand der größte Hebel: PostgreSQL, MySQL und SQLite
 wiegen zusammen &lt;strong&gt;11,7 MB&lt;/strong&gt;, mehr als alle Protokolle dieses Programms
 zusammen. Eine Installation, deren Benutzer in der Datei stehen, will es. Die Treiber werden
@@ -125,8 +121,7 @@ Wahl zu einem Build-Tag statt zu einem Fork.&lt;/p&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Ein Protokoll, ohne das dieses Binary gebaut wurde&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;Eine Konfiguration, die eines nennt, erfährt &lt;em&gt;genau das&lt;/em&gt;, statt „es gibt kein solches
 Protokoll&amp;quot; – der Unterschied zwischen einem Tippfehler und einem Build-Tag. Dasselbe gilt
-für &lt;code&gt;opkssh_client_id&lt;/code&gt; unter &lt;code&gt;noopenpubkey&lt;/code&gt; und einen &lt;code&gt;admin&lt;/code&gt;-Block unter
-&lt;code&gt;nogrpc&lt;/code&gt;.&lt;/p&gt;
+für &lt;code&gt;opkssh_client_id&lt;/code&gt; unter &lt;code&gt;noopenpubkey&lt;/code&gt; und einen &lt;code&gt;admin&lt;/code&gt;-Block unter&lt;code&gt;nogrpc&lt;/code&gt;.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -140,8 +135,7 @@ mitbringen.&lt;/p&gt;
 ausführen: &lt;strong&gt;Code, der nie kompiliert wurde, ist nicht erreichbar&lt;/strong&gt;, ob in einer Sandbox oder nicht.&lt;/p&gt;
 &lt;p&gt;Was Tags &lt;em&gt;nicht&lt;/em&gt; bieten, ist Isolierung zwischen den Protokollen, die Sie &lt;strong&gt;tatsächlich&lt;/strong&gt; ausführen, noch
 eine Möglichkeit, ein Protokoll ohne Neukompilieren hinzuzufügen. Beides ist real, und beides sind
-Argumente für eine Prozessgrenze statt für ein kleineres Binary – und das ist
-&lt;a href="https://go-fileshare.github.io/docs/0.31/de/operations/isolation/"&gt;ein Prozess pro Protokoll&lt;/a&gt;, mit genau diesem Binary, kein Plugin-Framework.&lt;/p&gt;</description></item><item><title>Ein Prozess pro Protokoll</title><link>https://go-fileshare.github.io/docs/0.31/de/operations/isolation/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/de/operations/isolation/</guid><description>
+Argumente für eine Prozessgrenze statt für ein kleineres Binary – und das ist&lt;a href="https://go-fileshare.github.io/docs/0.31/de/operations/isolation/"&gt;ein Prozess pro Protokoll&lt;/a&gt;, mit genau diesem Binary, kein Plugin-Framework.&lt;/p&gt;</description></item><item><title>Ein Prozess pro Protokoll</title><link>https://go-fileshare.github.io/docs/0.31/de/operations/isolation/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/de/operations/isolation/</guid><description>
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;fileshare --config /etc/fileshare.d --isolate&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
 &lt;button
@@ -170,8 +164,7 @@ data-copied-label="Kopiert!"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;Der Elternprozess bindet die Listener und führt dann &lt;strong&gt;sich selbst&lt;/strong&gt; einmal pro Protokoll aus (exec),
-wobei er jedem Kindprozess nur die Freigaben übergibt, die dieses Protokoll bereitstellen darf.&lt;/p&gt;
+&lt;p&gt;Der Elternprozess bindet die Listener und führt dann &lt;strong&gt;sich selbst&lt;/strong&gt; einmal pro Protokoll aus (exec),wobei er jedem Kindprozess nur die Freigaben übergibt, die dieses Protokoll bereitstellen darf.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="checked-with-lsof-not-by-reading-the-code"&gt;Mit &lt;code&gt;lsof&lt;/code&gt; geprüft, nicht durch Lesen des Codes&lt;span class="hx:absolute hx:-mt-20" id="checked-with-lsof-not-by-reading-the-code"&gt;&lt;/span&gt;
 &lt;a href="#checked-with-lsof-not-by-reading-the-code" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;pre&gt;&lt;code&gt;smb (pid 19810) has open: scratch.img photos.img
@@ -191,8 +184,7 @@ data-copied-label="Kopiert!"
 &lt;p&gt;Das beschreibbare Image ist in &lt;strong&gt;genau einem Prozess&lt;/strong&gt; geöffnet, und der WebDAV-Kindprozess
 öffnet es überhaupt nie.&lt;/p&gt;
 &lt;p&gt;Das ist es, was &lt;a href="https://go-fileshare.github.io/docs/0.31/de/operations/build-tags/"&gt;Build-Tags&lt;/a&gt; nicht leisten können: Ein Panic oder ein erschöpfter
-Heap in einem Protokoll legt ein Protokoll lahm, jeder Kindprozess kann mit allem eingeschränkt werden,
-was das Betriebssystem bietet, und ein Fehler in einem Parser kann kein
+Heap in einem Protokoll legt ein Protokoll lahm, jeder Kindprozess kann mit allem eingeschränkt werden,was das Betriebssystem bietet, und ein Fehler in einem Parser kann kein
 Image erreichen, das dieser Prozess nie geöffnet hat.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="privileged-ports"&gt;Privilegierte Ports&lt;span class="hx:absolute hx:-mt-20" id="privileged-ports"&gt;&lt;/span&gt;
 &lt;a href="#privileged-ports" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Unter Unix übergibt der Elternprozess den gebundenen Listener an den Kindprozess, sodass &lt;strong&gt;ein privilegierter
@@ -201,8 +193,7 @@ das Privileg nie.&lt;/p&gt;
 &lt;p&gt;Windows hat keine &lt;code&gt;ExtraFiles&lt;/code&gt;, daher bindet der Kindprozess dort die Adresse selbst; die
 Isolierung ist dieselbe, die Hälfte mit dem privilegierten Port nicht.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="the-rule-that-makes-it-honest"&gt;Die Regel, die es ehrlich macht&lt;span class="hx:absolute hx:-mt-20" id="the-rule-that-makes-it-honest"&gt;&lt;/span&gt;
-&lt;a href="#the-rule-that-makes-it-honest" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Ein Kindprozess öffnet das Image selbst, sodass ein Image, das zwei Protokolle &lt;em&gt;beschreibbar&lt;/em&gt; bereitstellen,
-zwei Treiber über einer Datei wäre, &lt;strong&gt;ohne Sperre zwischen ihnen&lt;/strong&gt; – genau das, was
+&lt;a href="#the-rule-that-makes-it-honest" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Ein Kindprozess öffnet das Image selbst, sodass ein Image, das zwei Protokolle &lt;em&gt;beschreibbar&lt;/em&gt; bereitstellen,zwei Treiber über einer Datei wäre, &lt;strong&gt;ohne Sperre zwischen ihnen&lt;/strong&gt; – genau das, was
 die &lt;a href="https://go-fileshare.github.io/docs/0.31/de/operations/locking/"&gt;gemeinsame Sperre&lt;/a&gt; innerhalb eines Prozesses verhindert.&lt;/p&gt;
 &lt;p&gt;Das wird abgelehnt, und die Ablehnung sagt, wie es zu beheben ist:&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
@@ -220,25 +211,19 @@ data-copied-label="Kopiert!"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;&lt;code&gt;protocols = [...]&lt;/code&gt; an einer Freigabe ist für sich allein nützlich, nicht nur unter
-&lt;code&gt;--isolate&lt;/code&gt;: Eine als nur SMB deklarierte Freigabe ist eine Freigabe, von der der WebDAV-Prozess nie
-erfährt. Ein &lt;code&gt;serve&lt;/code&gt;-Block, der am Ende nichts transportieren würde, wird ebenfalls abgelehnt,
-bevor ein Image geöffnet wird, unter Nennung der Freigaben, die ihm vorenthalten wurden, und warum.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;protocols = [...]&lt;/code&gt; an einer Freigabe ist für sich allein nützlich, nicht nur unter&lt;code&gt;--isolate&lt;/code&gt;: Eine als nur SMB deklarierte Freigabe ist eine Freigabe, von der der WebDAV-Prozess nie
+erfährt. Ein &lt;code&gt;serve&lt;/code&gt;-Block, der am Ende nichts transportieren würde, wird ebenfalls abgelehnt,bevor ein Image geöffnet wird, unter Nennung der Freigaben, die ihm vorenthalten wurden, und warum.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="not-with-an-admin-or-a-metrics-block-yet"&gt;Noch nicht mit einem &lt;code&gt;admin&lt;/code&gt;- oder einem &lt;code&gt;metrics&lt;/code&gt;-Block&lt;span class="hx:absolute hx:-mt-20" id="not-with-an-admin-or-a-metrics-block-yet"&gt;&lt;/span&gt;
-&lt;a href="#not-with-an-admin-or-a-metrics-block-yet" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;--isolate&lt;/code&gt; zusammen mit einem &lt;a href="https://go-fileshare.github.io/docs/0.31/de/administration/"&gt;&lt;code&gt;admin&lt;/code&gt;&lt;/a&gt;- oder einem
-&lt;a href="https://go-fileshare.github.io/docs/0.31/de/administration/health/"&gt;&lt;code&gt;metrics&lt;/code&gt;&lt;/a&gt;-Block wird abgelehnt: Die Kindprozesse öffnen
+&lt;a href="#not-with-an-admin-or-a-metrics-block-yet" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;--isolate&lt;/code&gt; zusammen mit einem &lt;a href="https://go-fileshare.github.io/docs/0.31/de/administration/"&gt;&lt;code&gt;admin&lt;/code&gt;&lt;/a&gt;- oder einem&lt;a href="https://go-fileshare.github.io/docs/0.31/de/administration/health/"&gt;&lt;code&gt;metrics&lt;/code&gt;&lt;/a&gt;-Block wird abgelehnt: Die Kindprozesse öffnen
 die Images und der Elternprozess öffnet nichts, also gibt es keinen einzelnen Prozess, auf den eine Änderung
 über die API angewendet werden könnte oder nach dessen Bereitschaft eine Probe fragen würde.&lt;/p&gt;</description></item><item><title>Ein Image, mehrere Protokolle, eine Sperre</title><link>https://go-fileshare.github.io/docs/0.31/de/operations/locking/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/de/operations/locking/</guid><description>
-&lt;p&gt;Jeder Server dieser Familie serialisiert den Treiber selbst, weil
-&lt;a href="https://github.com/go-filesystems/interface" target="_blank" rel="noopener"&gt;&lt;code&gt;go-filesystems/interface&lt;/code&gt;&lt;/a&gt;
-nichts über gleichzeitige pfadbasierte Aufrufe zusichert – und jeder von ihnen hält
-&lt;strong&gt;seine eigene&lt;/strong&gt; Sperre, ohne etwas von den anderen zu wissen.&lt;/p&gt;
+&lt;p&gt;Jeder Server dieser Familie serialisiert den Treiber selbst, weil&lt;a href="https://github.com/go-filesystems/interface" target="_blank" rel="noopener"&gt;&lt;code&gt;go-filesystems/interface&lt;/code&gt;&lt;/a&gt;
+nichts über gleichzeitige pfadbasierte Aufrufe zusichert – und jeder von ihnen hält&lt;strong&gt;seine eigene&lt;/strong&gt; Sperre, ohne etwas von den anderen zu wissen.&lt;/p&gt;
 &lt;p&gt;Ein Image gleichzeitig über drei Protokolle bereitzustellen, hätte daher nirgends eine gemeinsame
 Sperre. Also wird das Image &lt;strong&gt;einmal&lt;/strong&gt; umhüllt, hier, und dieselbe Hülle wird
 allen übergeben.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="stated-as-measured-so-as-not-to-overstate-it"&gt;Als gemessen ausgewiesen, um nicht zu übertreiben&lt;span class="hx:absolute hx:-mt-20" id="stated-as-measured-so-as-not-to-overstate-it"&gt;&lt;/span&gt;
-&lt;a href="#stated-as-measured-so-as-not-to-overstate-it" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Acht Goroutinen, die unter &lt;code&gt;-race&lt;/code&gt; über einen &lt;strong&gt;nicht umhüllten&lt;/strong&gt; fat32-Treiber schreiben,
-erzeugen &lt;strong&gt;heute keinen Race&lt;/strong&gt;.&lt;/p&gt;
+&lt;a href="#stated-as-measured-so-as-not-to-overstate-it" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Acht Goroutinen, die unter &lt;code&gt;-race&lt;/code&gt; über einen &lt;strong&gt;nicht umhüllten&lt;/strong&gt; fat32-Treiber schreiben,erzeugen &lt;strong&gt;heute keinen Race&lt;/strong&gt;.&lt;/p&gt;
 &lt;p&gt;Das ist eine Absicherung eines Vertrags, keine Reproduktion eines Fehlers – ext4 und ntfs
 sind nicht fat32, und ein Treiber-Update ist nichts, was dieses Programm erneut
 prüfen müssen sollte.&lt;/p&gt;
@@ -248,13 +233,11 @@ prüfen müssen sollte.&lt;/p&gt;
 &lt;li&gt;ein Treiber, der &lt;code&gt;Opener&lt;/code&gt; beantwortet, erhält eine &lt;strong&gt;gesperrte &lt;code&gt;File&lt;/code&gt;&lt;/strong&gt; zurück;&lt;/li&gt;
 &lt;li&gt;einer, dessen &lt;code&gt;File&lt;/code&gt; &lt;code&gt;WritableFile&lt;/code&gt; beantwortet, behält seine &lt;strong&gt;positionellen Schreibzugriffe&lt;/strong&gt;.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;Der Unterschied zwischen diesen und dem Rückgriff auf die ganze Datei wurde an anderer Stelle der Familie mit
-&lt;strong&gt;~70×&lt;/strong&gt; gemessen, sodass eine Hülle, die sie verwischt, ein als Sicherheit
+&lt;p&gt;Der Unterschied zwischen diesen und dem Rückgriff auf die ganze Datei wurde an anderer Stelle der Familie mit&lt;strong&gt;~70×&lt;/strong&gt; gemessen, sodass eine Hülle, die sie verwischt, ein als Sicherheit
 getarnter Leistungsfehler wäre.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="under-isolate-the-lock-cannot-help"&gt;Unter &lt;code&gt;--isolate&lt;/code&gt; kann die Sperre nicht helfen&lt;span class="hx:absolute hx:-mt-20" id="under-isolate-the-lock-cannot-help"&gt;&lt;/span&gt;
 &lt;a href="#under-isolate-the-lock-cannot-help" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Ein Kindprozess öffnet das Image selbst, also gibt es keine gemeinsame Hülle zwischen
-den Kindprozessen. Deshalb wird ein Image, das zwei Protokolle beschreibbar bereitstellen,
-&lt;a href="https://go-fileshare.github.io/docs/0.31/de/operations/isolation/#the-rule-that-makes-it-honest"&gt;abgelehnt&lt;/a&gt;, statt stillschweigend
+den Kindprozessen. Deshalb wird ein Image, das zwei Protokolle beschreibbar bereitstellen,&lt;a href="https://go-fileshare.github.io/docs/0.31/de/operations/isolation/#the-rule-that-makes-it-honest"&gt;abgelehnt&lt;/a&gt;, statt stillschweigend
 ohne Sperre bereitgestellt zu werden.&lt;/p&gt;</description></item><item><title>Betrieb</title><link>https://go-fileshare.github.io/docs/0.31/de/operations/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/de/operations/</guid><description>
 &lt;div class="hextra-cards hx:mt-4 hx:gap-4 hx:grid not-prose" style="--hextra-cards-grid-cols: 3;"&gt;
 &lt;a class="hextra-card hx:group hx:flex hx:flex-col hx:justify-start hx:overflow-hidden hx:rounded-lg hx:border hx:border-gray-200 hx:text-current hx:no-underline hx:dark:shadow-none hx:hover:shadow-gray-100 hx:dark:hover:shadow-none hx:shadow-gray-100 hx:active:shadow-sm hx:active:shadow-gray-200 hx:transition-all hx:duration-200 hx:hover:border-gray-300 hx:bg-transparent hx:shadow-xs hx:dark:border-neutral-800 hx:hover:bg-slate-50 hx:hover:shadow-md hx:dark:hover:border-neutral-700 hx:dark:hover:bg-neutral-900" href="build-tags/"&gt;&lt;div&gt;

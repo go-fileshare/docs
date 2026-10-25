@@ -12,8 +12,7 @@ data-copied-label="Copié !"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;Trois points de terminaison, servis par
-&lt;a href="https://github.com/go-net-health/endpoint" target="_blank" rel="noopener"&gt;go-net-health/endpoint&lt;/a&gt; sur un
+&lt;p&gt;Trois points de terminaison, servis par&lt;a href="https://github.com/go-net-health/endpoint" target="_blank" rel="noopener"&gt;go-net-health/endpoint&lt;/a&gt; sur un
 écouteur qui leur est propre — &lt;strong&gt;jamais un port que sert un protocole&lt;/strong&gt; : le monde qui
 atteint WebDAV ne les atteint donc pas :&lt;/p&gt;
 &lt;table&gt;
@@ -126,12 +125,9 @@ protocoles, des origines, des résultats et des noms de méthodes, jamais un par
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="what-to-alert-on"&gt;Sur quoi alerter&lt;span class="hx:absolute hx:-mt-20" id="what-to-alert-on"&gt;&lt;/span&gt;
-&lt;a href="#what-to-alert-on" class="subheading-anchor" aria-label="Lien permanent vers cette section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Les vérifications de révocation &lt;a href="https://go-fileshare.github.io/docs/0.31/fr/security/#every-one-of-them-fails-closed"&gt;refusent en cas de doute&lt;/a&gt; :
-une liste trop ancienne, ou un émetteur dont on n&amp;rsquo;a plus de nouvelles, fait que le serveur
-&lt;strong&gt;refuse&lt;/strong&gt; les identifiants qu&amp;rsquo;il gouverne. Alertez avant que cela n&amp;rsquo;arrive, pas après :&lt;/p&gt;
+&lt;a href="#what-to-alert-on" class="subheading-anchor" aria-label="Lien permanent vers cette section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Les vérifications de révocation &lt;a href="https://go-fileshare.github.io/docs/0.31/fr/security/#every-one-of-them-fails-closed"&gt;refusent en cas de doute&lt;/a&gt; :une liste trop ancienne, ou un émetteur dont on n&amp;rsquo;a plus de nouvelles, fait que le serveur&lt;strong&gt;refuse&lt;/strong&gt; les identifiants qu&amp;rsquo;il gouverne. Alertez avant que cela n&amp;rsquo;arrive, pas après :&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;code&gt;fileshare_revocation_list_age_seconds&lt;/code&gt; qui approche &lt;code&gt;ssh_krl_max_age&lt;/code&gt; ou
-&lt;code&gt;crl_max_age&lt;/code&gt; (1h par défaut) ;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;fileshare_revocation_list_age_seconds&lt;/code&gt; qui approche &lt;code&gt;ssh_krl_max_age&lt;/code&gt; ou&lt;code&gt;crl_max_age&lt;/code&gt; (1h par défaut) ;&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;fileshare_ssf_last_heard_seconds&lt;/code&gt; qui approche le &lt;code&gt;max_age&lt;/code&gt; du bloc &lt;code&gt;ssf&lt;/code&gt;
 (10m par défaut) ;&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;fileshare_directory_reloads_total{result=&amp;quot;failed&amp;quot;}&lt;/code&gt; qui augmente : l&amp;rsquo;annuaire

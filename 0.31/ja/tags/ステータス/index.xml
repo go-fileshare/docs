@@ -183,12 +183,7 @@
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;v0.21.0 へのアップグレード&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;満杯のディレクトリ共有&lt;/strong&gt;の応答が変わります。&lt;code&gt;EDQUOT&lt;/code&gt;(クォータ)と
-&lt;code&gt;ENOSPC&lt;/code&gt; は、ボリュームだけでなくすべてのディレクトリ共有で、1 つのエラー
-「no space left on device (the share is full)」にまとめられました。以前は WebDAV の
-&lt;code&gt;500&lt;/code&gt;、NFS の &lt;code&gt;NFS3ERR_IO&lt;/code&gt; だった &lt;code&gt;EDQUOT&lt;/code&gt; が、&lt;code&gt;507&lt;/code&gt; と &lt;code&gt;NFS3ERR_NOSPC&lt;/code&gt; になり、
-SFTP のテキストはパスを含まないその文になります。SMB は引き続きアクセス拒否を返します。
-&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/administration/volumes/#a-full-share"&gt;満杯の共有&lt;/a&gt;を参照してください。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;満杯のディレクトリ共有&lt;/strong&gt;の応答が変わります。&lt;code&gt;EDQUOT&lt;/code&gt;(クォータ)と&lt;code&gt;ENOSPC&lt;/code&gt; は、ボリュームだけでなくすべてのディレクトリ共有で、1 つのエラー「no space left on device (the share is full)」にまとめられました。以前は WebDAV の&lt;code&gt;500&lt;/code&gt;、NFS の &lt;code&gt;NFS3ERR_IO&lt;/code&gt; だった &lt;code&gt;EDQUOT&lt;/code&gt; が、&lt;code&gt;507&lt;/code&gt; と &lt;code&gt;NFS3ERR_NOSPC&lt;/code&gt; になり、SFTP のテキストはパスを含まないその文になります。SMB は引き続きアクセス拒否を返します。&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/administration/volumes/#a-full-share"&gt;満杯の共有&lt;/a&gt;を参照してください。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -196,10 +191,7 @@ SFTP のテキストはパスを含まないその文になります。SMB は�
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;v0.20.0 へのアップグレード&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;プロバイダー側の &lt;code&gt;alice&lt;/code&gt; は、ローカルの &lt;code&gt;alice&lt;/code&gt; の共有を取得できなくなりました。
-プロバイダーの名前がそのままローカル名であるサイトは、&lt;code&gt;oidc&lt;/code&gt; ブロックに
-&lt;code&gt;local_names = true&lt;/code&gt; を追加します(あわせて &lt;code&gt;domains&lt;/code&gt; も設定します)。これがないために
-拒否された名前ごとに、サーバーはその旨のログ行を出力します。&lt;/p&gt;
+&lt;p&gt;プロバイダー側の &lt;code&gt;alice&lt;/code&gt; は、ローカルの &lt;code&gt;alice&lt;/code&gt; の共有を取得できなくなりました。プロバイダーの名前がそのままローカル名であるサイトは、&lt;code&gt;oidc&lt;/code&gt; ブロックに&lt;code&gt;local_names = true&lt;/code&gt; を追加します(あわせて &lt;code&gt;domains&lt;/code&gt; も設定します)。これがないために拒否された名前ごとに、サーバーはその旨のログ行を出力します。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -207,8 +199,7 @@ SFTP のテキストはパスを含まないその文になります。SMB は�
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;v0.19.0 へのアップグレード&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;別のマシンの &lt;code&gt;ldap://&lt;/code&gt; を指し、&lt;code&gt;start_tls = true&lt;/code&gt; のない &lt;code&gt;users &amp;quot;ldap&amp;quot;&lt;/code&gt; ブロックは
-&lt;strong&gt;起動しなくなりました&lt;/strong&gt;。&lt;code&gt;ldaps://&lt;/code&gt; または StartTLS を使用してください。&lt;/p&gt;
+&lt;p&gt;別のマシンの &lt;code&gt;ldap://&lt;/code&gt; を指し、&lt;code&gt;start_tls = true&lt;/code&gt; のない &lt;code&gt;users &amp;quot;ldap&amp;quot;&lt;/code&gt; ブロックは&lt;strong&gt;起動しなくなりました&lt;/strong&gt;。&lt;code&gt;ldaps://&lt;/code&gt; または StartTLS を使用してください。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -216,10 +207,7 @@ SFTP のテキストはパスを含まないその文になります。SMB は�
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;v0.17.0 へのアップグレード&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;ある共有の内側に別の共有がある設定、1 つのソースに 2 つの共有がある設定、
-共有の内側にアクセスファイル(&lt;code&gt;authorized_keys_file&lt;/code&gt;、&lt;code&gt;dsn_file&lt;/code&gt;、&lt;code&gt;bind_password_file&lt;/code&gt;、
-&lt;code&gt;ssf&lt;/code&gt; の &lt;code&gt;ca_file&lt;/code&gt;)がある設定は、&lt;strong&gt;起動しなくなりました&lt;/strong&gt;。エラーには
-共有とパスが示されます。&lt;/p&gt;
+&lt;p&gt;ある共有の内側に別の共有がある設定、1 つのソースに 2 つの共有がある設定、共有の内側にアクセスファイル(&lt;code&gt;authorized_keys_file&lt;/code&gt;、&lt;code&gt;dsn_file&lt;/code&gt;、&lt;code&gt;bind_password_file&lt;/code&gt;、&lt;code&gt;ssf&lt;/code&gt; の &lt;code&gt;ca_file&lt;/code&gt;)がある設定は、&lt;strong&gt;起動しなくなりました&lt;/strong&gt;。エラーには共有とパスが示されます。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -227,70 +215,35 @@ SFTP のテキストはパスを含まないその文になります。SMB は�
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;v0.9.0 より前からのアップグレード&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;他のマシンから到達できるアドレスで、誰かが認証する状況において、TLS なしで WebDAV を
-提供する設定は&lt;strong&gt;起動しなくなりました&lt;/strong&gt;。&lt;code&gt;tls = true&lt;/code&gt; と &lt;code&gt;tls&lt;/code&gt; ブロックを追加するか、
-TLS を終端するプロキシの背後であれば &lt;code&gt;plaintext = true&lt;/code&gt; を指定してください。
-&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/security/tls/#webdav-is-not-served-in-the-clear"&gt;TLS&lt;/a&gt;を参照してください。&lt;/p&gt;
+&lt;p&gt;他のマシンから到達できるアドレスで、誰かが認証する状況において、TLS なしで WebDAV を提供する設定は&lt;strong&gt;起動しなくなりました&lt;/strong&gt;。&lt;code&gt;tls = true&lt;/code&gt; と &lt;code&gt;tls&lt;/code&gt; ブロックを追加するか、TLS を終端するプロキシの背後であれば &lt;code&gt;plaintext = true&lt;/code&gt; を指定してください。&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/security/tls/#webdav-is-not-served-in-the-clear"&gt;TLS&lt;/a&gt;を参照してください。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="verified"&gt;検証済み&lt;span class="hx:absolute hx:-mt-20" id="verified"&gt;&lt;/span&gt;
-&lt;a href="#verified" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;以下は、このプロジェクトが作っていないクライアントに実際に行わせたことであり、
-コードに関する主張ではありません。&lt;/p&gt;
+&lt;a href="#verified" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;以下は、このプロジェクトが作っていないクライアントに実際に行わせたことであり、コードに関する主張ではありません。&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;macOS&lt;/strong&gt; は、&lt;code&gt;curl&lt;/code&gt; が WebDAV 経由で同じイメージに書き込んでいる間に SMB で共有を
-マウントし、WebDAV が書いた内容を読み戻します。読み取りしか許されていない共有への
-Bob の WebDAV 書き込みは &lt;code&gt;403&lt;/code&gt;、誤ったパスワードは &lt;code&gt;401&lt;/code&gt; です。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;go-smb2&lt;/strong&gt;(このプロジェクトが作っていないクライアント)は、CI の &lt;code&gt;-race&lt;/code&gt; の下で、
-SMB 経由の 20 の並行読み取りを、WebDAV 経由の 20 と同時に実行します。&lt;/li&gt;
-&lt;li&gt;アクセスルールは、設定だけでなく&lt;strong&gt;すべてのプロトコルを通して&lt;/strong&gt;検査されます。
-alice は書き込め、bob は書き込めません。これは SMB でも WebDAV でも同じで、
-NFS にはそもそも共有が提供されません。&lt;/li&gt;
-&lt;li&gt;SFTP 証明書は &lt;strong&gt;OpenSSH 自身のクライアント&lt;/strong&gt;で検証されます。証明書を脇に移すと、
-同じ鍵も拒否されることも確認されています。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;macOS&lt;/strong&gt; は、&lt;code&gt;curl&lt;/code&gt; が WebDAV 経由で同じイメージに書き込んでいる間に SMB で共有をマウントし、WebDAV が書いた内容を読み戻します。読み取りしか許されていない共有へのBob の WebDAV 書き込みは &lt;code&gt;403&lt;/code&gt;、誤ったパスワードは &lt;code&gt;401&lt;/code&gt; です。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;go-smb2&lt;/strong&gt;(このプロジェクトが作っていないクライアント)は、CI の &lt;code&gt;-race&lt;/code&gt; の下で、SMB 経由の 20 の並行読み取りを、WebDAV 経由の 20 と同時に実行します。&lt;/li&gt;
+&lt;li&gt;アクセスルールは、設定だけでなく&lt;strong&gt;すべてのプロトコルを通して&lt;/strong&gt;検査されます。alice は書き込め、bob は書き込めません。これは SMB でも WebDAV でも同じで、NFS にはそもそも共有が提供されません。&lt;/li&gt;
+&lt;li&gt;SFTP 証明書は &lt;strong&gt;OpenSSH 自身のクライアント&lt;/strong&gt;で検証されます。証明書を脇に移すと、同じ鍵も拒否されることも確認されています。&lt;/li&gt;
 &lt;li&gt;証明書による NFS の ID は、go-filesystems/nfs の CI で&lt;strong&gt;実際の Linux クライアント&lt;/strong&gt;
-(カーネル 6.17、ktls-utils 0.9)を使って計測されました。
-&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/security/nfs-certificates/#measured-with-a-real-linux-client"&gt;平文の &lt;code&gt;MNT&lt;/code&gt; と &lt;code&gt;tlshd&lt;/code&gt; の落とし穴&lt;/a&gt;
+(カーネル 6.17、ktls-utils 0.9)を使って計測されました。&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/security/nfs-certificates/#measured-with-a-real-linux-client"&gt;平文の &lt;code&gt;MNT&lt;/code&gt; と &lt;code&gt;tlshd&lt;/code&gt; の落とし穴&lt;/a&gt;
 はこれで見つかりました。&lt;/li&gt;
-&lt;li&gt;KRL の署名なし形式は計測結果です。OpenSSH 9.6 と 10.3 は署名付き KRL を読み、
-署名をスキップします(go-authn/krl、両方に対して)。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;go-authn/bridge の相互運用レーン&lt;/strong&gt;(&lt;a href="https://github.com/go-authn/bridge/pull/12" target="_blank" rel="noopener"&gt;#12&lt;/a&gt;、
-&lt;a href="https://github.com/go-authn/bridge/pull/17" target="_blank" rel="noopener"&gt;#17&lt;/a&gt;)は、fileshare v0.13.0 を本物の
-bridge に対して判定します。KRL、NFS 上の CRL、共有シグナルで失効した WebDAV トークン、
-スコープで無効化された IdP、共有シグナル上の opkssh です。&lt;/li&gt;
+&lt;li&gt;KRL の署名なし形式は計測結果です。OpenSSH 9.6 と 10.3 は署名付き KRL を読み、署名をスキップします(go-authn/krl、両方に対して)。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;go-authn/bridge の相互運用レーン&lt;/strong&gt;(&lt;a href="https://github.com/go-authn/bridge/pull/12" target="_blank" rel="noopener"&gt;#12&lt;/a&gt;、&lt;a href="https://github.com/go-authn/bridge/pull/17" target="_blank" rel="noopener"&gt;#17&lt;/a&gt;)は、fileshare v0.13.0 を本物のbridge に対して判定します。KRL、NFS 上の CRL、共有シグナルで失効した WebDAV トークン、スコープで無効化された IdP、共有シグナル上の opkssh です。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h2 data-hextra-search-id="not-yet"&gt;まだ実装されていないもの&lt;span class="hx:absolute hx:-mt-20" id="not-yet"&gt;&lt;/span&gt;
-&lt;a href="#not-yet" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;S3 での書き込み。&lt;/strong&gt; &lt;code&gt;PUT&lt;/code&gt; と &lt;code&gt;DELETE&lt;/code&gt; は 403 を返します。ライブラリは書き込めますが、
-読み取りしか許されていない人の共有は、SFTP と同じ場所で拒否しなければならず、
-それがまだ組み込まれていません。中途半端に書かれたオブジェクトよりも、拒否するほうが安全です。&lt;/p&gt;
+&lt;a href="#not-yet" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;S3 での書き込み。&lt;/strong&gt; &lt;code&gt;PUT&lt;/code&gt; と &lt;code&gt;DELETE&lt;/code&gt; は 403 を返します。ライブラリは書き込めますが、読み取りしか許されていない人の共有は、SFTP と同じ場所で拒否しなければならず、それがまだ組み込まれていません。中途半端に書かれたオブジェクトよりも、拒否するほうが安全です。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;S3 での OIDC トークン。&lt;/strong&gt; トークンが使えるのは &lt;a href="https://go-fileshare.github.io/docs/0.31/ja/protocols/webdav/"&gt;WebDAV&lt;/a&gt;
-だけです。S3 の通常の方法は STS の &lt;code&gt;AssumeRoleWithWebIdentity&lt;/code&gt; で、
-トークンを一時的な認証情報と交換し、クライアントがそれで署名します。
-これはベアラートークンを受け入れるのとは別の仕組みであり、実装されていません。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;&lt;code&gt;admin&lt;/code&gt; ブロックまたは &lt;code&gt;metrics&lt;/code&gt; ブロックがある場合の &lt;code&gt;--isolate&lt;/code&gt;。&lt;/strong&gt; 拒否されます。
-API の変更を適用できる単一のプロセスが存在しないためです。
-&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/operations/isolation/#not-with-an-admin-or-a-metrics-block-yet"&gt;プロトコルごとに 1 プロセス&lt;/a&gt;を参照してください。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;共有 Linux NFS クライアントでの、証明書によるユーザーごとの人の特定。&lt;/strong&gt; Linux
-クライアントは証明書をマウントに紐づけるため、そのマウントのすべてのユーザーが、
-証明書が指名する人として扱われます。これはクライアントの性質であり、
-その場合の答えは &lt;code&gt;sec=krb5&lt;/code&gt; です。
-&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/security/nfs-certificates/#what-it-cannot-promise"&gt;保証できないこと&lt;/a&gt;を参照してください。&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/protocols/s3/"&gt;S3 自体&lt;/a&gt;は提供済みです。共有はバケットであり、
-SFTP が使うのと同じユーザーごとのツリー上で提供されます。&lt;/p&gt;
+だけです。S3 の通常の方法は STS の &lt;code&gt;AssumeRoleWithWebIdentity&lt;/code&gt; で、トークンを一時的な認証情報と交換し、クライアントがそれで署名します。これはベアラートークンを受け入れるのとは別の仕組みであり、実装されていません。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;&lt;code&gt;admin&lt;/code&gt; ブロックまたは &lt;code&gt;metrics&lt;/code&gt; ブロックがある場合の &lt;code&gt;--isolate&lt;/code&gt;。&lt;/strong&gt; 拒否されます。API の変更を適用できる単一のプロセスが存在しないためです。&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/operations/isolation/#not-with-an-admin-or-a-metrics-block-yet"&gt;プロトコルごとに 1 プロセス&lt;/a&gt;を参照してください。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;共有 Linux NFS クライアントでの、証明書によるユーザーごとの人の特定。&lt;/strong&gt; Linuxクライアントは証明書をマウントに紐づけるため、そのマウントのすべてのユーザーが、証明書が指名する人として扱われます。これはクライアントの性質であり、その場合の答えは &lt;code&gt;sec=krb5&lt;/code&gt; です。&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/security/nfs-certificates/#what-it-cannot-promise"&gt;保証できないこと&lt;/a&gt;を参照してください。&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/protocols/s3/"&gt;S3 自体&lt;/a&gt;は提供済みです。共有はバケットであり、SFTP が使うのと同じユーザーごとのツリー上で提供されます。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="measured-and-stated-as-measured"&gt;計測済みであり、計測結果として記載しているもの&lt;span class="hx:absolute hx:-mt-20" id="measured-and-stated-as-measured"&gt;&lt;/span&gt;
-&lt;a href="#measured-and-stated-as-measured" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;このページの主張のうち、不具合の再現ではなく保険や計測にあたるもので、
-ソースにもそのように書かれているものです。&lt;/p&gt;
+&lt;a href="#measured-and-stated-as-measured" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;このページの主張のうち、不具合の再現ではなく保険や計測にあたるもので、ソースにもそのように書かれているものです。&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;ラップされていない fat32 ドライバーに対して 8 つの goroutine が &lt;code&gt;-race&lt;/code&gt; の下で書き込んでも、
-現時点ではレースは発生しません。&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/operations/locking/"&gt;共有ロック&lt;/a&gt;は
-契約に対する保険であり(&lt;code&gt;go-filesystems/interface&lt;/code&gt; は、パスベースの並行呼び出しについて
-何も保証していません)、観測された障害の修正ではありません。&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/operations/build-tags/"&gt;ビルドタグごとのサイズ&lt;/a&gt;は計測されました。
-&lt;code&gt;hashicorp/go-plugin&lt;/code&gt; だけで 13.2 MB かかり、これがプラグインフレームワークを採用しない
-決め手になりました。また、管理 API が持ち込む gRPC は 11.7 MB で、これが &lt;code&gt;nogrpc&lt;/code&gt; が
-存在する理由です。&lt;/li&gt;
-&lt;li&gt;独自のグループタグ証明書拡張を設計して Go の X.509 パーサーで&lt;strong&gt;計測&lt;/strong&gt;したところ、
-証明書全体が拒否されました。そのため、グループは代わりに
-&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/security/nfs-certificates/#what-the-certificate-carries"&gt;タグ URI&lt;/a&gt;
+&lt;li&gt;ラップされていない fat32 ドライバーに対して 8 つの goroutine が &lt;code&gt;-race&lt;/code&gt; の下で書き込んでも、現時点ではレースは発生しません。&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/operations/locking/"&gt;共有ロック&lt;/a&gt;は契約に対する保険であり(&lt;code&gt;go-filesystems/interface&lt;/code&gt; は、パスベースの並行呼び出しについて何も保証していません)、観測された障害の修正ではありません。&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/operations/build-tags/"&gt;ビルドタグごとのサイズ&lt;/a&gt;は計測されました。&lt;code&gt;hashicorp/go-plugin&lt;/code&gt; だけで 13.2 MB かかり、これがプラグインフレームワークを採用しない決め手になりました。また、管理 API が持ち込む gRPC は 11.7 MB で、これが &lt;code&gt;nogrpc&lt;/code&gt; が存在する理由です。&lt;/li&gt;
+&lt;li&gt;独自のグループタグ証明書拡張を設計して Go の X.509 パーサーで&lt;strong&gt;計測&lt;/strong&gt;したところ、証明書全体が拒否されました。そのため、グループは代わりに&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/security/nfs-certificates/#what-the-certificate-carries"&gt;タグ URI&lt;/a&gt;
 として運ばれます。&lt;/li&gt;
 &lt;/ul&gt;</description></item></channel></rss>

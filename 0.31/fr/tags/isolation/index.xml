@@ -27,8 +27,7 @@ data-copied-label="Copié !"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;Le parent ouvre les écouteurs, puis se ré-exécute &lt;strong&gt;lui-même&lt;/strong&gt; une fois par protocole,
-en ne remettant à chaque enfant que les partages que ce protocole peut servir.&lt;/p&gt;
+&lt;p&gt;Le parent ouvre les écouteurs, puis se ré-exécute &lt;strong&gt;lui-même&lt;/strong&gt; une fois par protocole,en ne remettant à chaque enfant que les partages que ce protocole peut servir.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="checked-with-lsof-not-by-reading-the-code"&gt;Vérifié avec &lt;code&gt;lsof&lt;/code&gt;, pas en lisant le code&lt;span class="hx:absolute hx:-mt-20" id="checked-with-lsof-not-by-reading-the-code"&gt;&lt;/span&gt;
 &lt;a href="#checked-with-lsof-not-by-reading-the-code" class="subheading-anchor" aria-label="Lien permanent vers cette section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;pre&gt;&lt;code&gt;smb (pid 19810) has open: scratch.img photos.img
@@ -77,12 +76,9 @@ data-copied-label="Copié !"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;&lt;code&gt;protocols = [...]&lt;/code&gt; sur un partage est utile en soi, pas seulement sous
-&lt;code&gt;--isolate&lt;/code&gt; : un partage déclaré SMB seul est un partage dont on ne parle jamais au
-processus WebDAV. Un bloc &lt;code&gt;serve&lt;/code&gt; qui finirait par ne rien porter est refusé lui aussi,
-avant qu&amp;rsquo;aucune image ne soit ouverte, en nommant les partages qui lui ont été retirés et pourquoi.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;protocols = [...]&lt;/code&gt; sur un partage est utile en soi, pas seulement sous&lt;code&gt;--isolate&lt;/code&gt; : un partage déclaré SMB seul est un partage dont on ne parle jamais au
+processus WebDAV. Un bloc &lt;code&gt;serve&lt;/code&gt; qui finirait par ne rien porter est refusé lui aussi,avant qu&amp;rsquo;aucune image ne soit ouverte, en nommant les partages qui lui ont été retirés et pourquoi.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="not-with-an-admin-or-a-metrics-block-yet"&gt;Pas encore avec un bloc &lt;code&gt;admin&lt;/code&gt; ou &lt;code&gt;metrics&lt;/code&gt;&lt;span class="hx:absolute hx:-mt-20" id="not-with-an-admin-or-a-metrics-block-yet"&gt;&lt;/span&gt;
-&lt;a href="#not-with-an-admin-or-a-metrics-block-yet" class="subheading-anchor" aria-label="Lien permanent vers cette section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;--isolate&lt;/code&gt; associé à un bloc &lt;a href="https://go-fileshare.github.io/docs/0.31/fr/administration/"&gt;&lt;code&gt;admin&lt;/code&gt;&lt;/a&gt; ou
-&lt;a href="https://go-fileshare.github.io/docs/0.31/fr/administration/health/"&gt;&lt;code&gt;metrics&lt;/code&gt;&lt;/a&gt; est refusé : les enfants ouvrent
+&lt;a href="#not-with-an-admin-or-a-metrics-block-yet" class="subheading-anchor" aria-label="Lien permanent vers cette section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;--isolate&lt;/code&gt; associé à un bloc &lt;a href="https://go-fileshare.github.io/docs/0.31/fr/administration/"&gt;&lt;code&gt;admin&lt;/code&gt;&lt;/a&gt; ou&lt;a href="https://go-fileshare.github.io/docs/0.31/fr/administration/health/"&gt;&lt;code&gt;metrics&lt;/code&gt;&lt;/a&gt; est refusé : les enfants ouvrent
 les images et le parent n&amp;rsquo;ouvre rien ; il n&amp;rsquo;y a donc aucun processus unique auquel une
 modification par l&amp;rsquo;API pourrait s&amp;rsquo;appliquer, ni dont une sonde interrogerait la disponibilité.&lt;/p&gt;</description></item></channel></rss>

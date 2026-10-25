@@ -25,8 +25,7 @@ data-copied-label="¡Copiado!"
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;p&gt;Los archivos &lt;strong&gt;se recargan cuando cambian&lt;/strong&gt;, así que una renovación escrita por otra
-herramienta se aplica sin reiniciar. El certificado lo gestiona
-&lt;a href="https://github.com/go-authn/servercert" target="_blank" rel="noopener"&gt;go-authn/servercert&lt;/a&gt;.&lt;/p&gt;
+herramienta se aplica sin reiniciar. El certificado lo gestiona&lt;a href="https://github.com/go-authn/servercert" target="_blank" rel="noopener"&gt;go-authn/servercert&lt;/a&gt;.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="from-an-acme-ca"&gt;A partir de una CA ACME&lt;span class="hx:absolute hx:-mt-20" id="from-an-acme-ca"&gt;&lt;/span&gt;
 &lt;a href="#from-an-acme-ca" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Let&amp;rsquo;s Encrypt por defecto; o una CA que le conoce mediante &lt;strong&gt;vinculación de cuenta
 externa&lt;/strong&gt; (external account binding, EAB), como GÉANT TCS a través de HARICA:&lt;/p&gt;
@@ -126,13 +125,11 @@ servidor que nadie de fuera puede alcanzar;&lt;/li&gt;
 la CA comprueba el nombre en cada pedido, con tls-alpn-01 o http-01 como
 arriba.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;En ambos casos, el registro &lt;strong&gt;CAA&lt;/strong&gt; del dominio, si lo tiene, debe autorizar
-&lt;code&gt;harica.gr&lt;/code&gt;, o el pedido se rechaza.&lt;/p&gt;
+&lt;p&gt;En ambos casos, el registro &lt;strong&gt;CAA&lt;/strong&gt; del dominio, si lo tiene, debe autorizar&lt;code&gt;harica.gr&lt;/code&gt;, o el pedido se rechaza.&lt;/p&gt;
 &lt;h4 data-hextra-search-id="when-the-certificate-is-asked-for"&gt;Cuándo se pide el certificado&lt;span class="hx:absolute hx:-mt-20" id="when-the-certificate-is-asked-for"&gt;&lt;/span&gt;
 &lt;a href="#when-the-certificate-is-asked-for" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h4&gt;&lt;p&gt;&lt;strong&gt;Al arrancar&lt;/strong&gt; (desde la v0.27.0): una vez abiertos los puertos, se obtiene el
 certificado de cada dominio configurado, o se relee del directorio de caché. Un
-fallo no detiene el servidor — sigue sirviendo y lo reintenta tras 1 minuto,
-duplicando hasta 1 hora — y la primera conexión TLS que nombra el host lo pide
+fallo no detiene el servidor — sigue sirviendo y lo reintenta tras 1 minuto,duplicando hasta 1 hora — y la primera conexión TLS que nombra el host lo pide
 de nuevo en cualquier caso. Se renueva 30 días antes de caducar, o en el último
 tercio de su vida cuando eso es antes.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Un cliente que no envía SNI&lt;/strong&gt; — uno que se conecta por dirección IP — recibe
@@ -182,8 +179,7 @@ data-copied-label="¡Copiado!"
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;Una configuración que arrancaba antes de la v0.9.0 con
-&lt;code&gt;serve &amp;quot;webdav&amp;quot; { addr = &amp;quot;0.0.0.0:8080&amp;quot; }&lt;/code&gt; no arranca después. Dos salidas:&lt;/p&gt;
+&lt;p&gt;Una configuración que arrancaba antes de la v0.9.0 con&lt;code&gt;serve &amp;quot;webdav&amp;quot; { addr = &amp;quot;0.0.0.0:8080&amp;quot; }&lt;/code&gt; no arranca después. Dos salidas:&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;webdav&amp;#34;&lt;/span&gt; {
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:443&amp;#34;&lt;/span&gt;
@@ -217,8 +213,7 @@ data-copied-label="¡Copiado!"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;Las direcciones de &lt;strong&gt;loopback&lt;/strong&gt; (&lt;code&gt;127.0.0.1&lt;/code&gt;, &lt;code&gt;::1&lt;/code&gt;, &lt;code&gt;localhost&lt;/code&gt;) y un servidor
-&lt;strong&gt;sin nadie a quien autenticar&lt;/strong&gt; —sin &lt;code&gt;user&lt;/code&gt;, sin &lt;code&gt;users&lt;/code&gt;, sin bloque &lt;code&gt;oidc&lt;/code&gt;— no se
+&lt;p&gt;Las direcciones de &lt;strong&gt;loopback&lt;/strong&gt; (&lt;code&gt;127.0.0.1&lt;/code&gt;, &lt;code&gt;::1&lt;/code&gt;, &lt;code&gt;localhost&lt;/code&gt;) y un servidor&lt;strong&gt;sin nadie a quien autenticar&lt;/strong&gt; —sin &lt;code&gt;user&lt;/code&gt;, sin &lt;code&gt;users&lt;/code&gt;, sin bloque &lt;code&gt;oidc&lt;/code&gt;— no se
 ven afectados. Un bloque &lt;code&gt;serve&lt;/code&gt; sin &lt;code&gt;addr&lt;/code&gt; queda en loopback, y tampoco se ve
 afectado.&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;plaintext&lt;/code&gt; es solo para WebDAV, el protocolo que envía una contraseña, y &lt;code&gt;plaintext&lt;/code&gt;
@@ -308,12 +303,10 @@ data-copied-label="¡Copiado!"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;&lt;code&gt;client_ca_file&lt;/code&gt; obliga al cliente a presentar un certificado de esa autoridad
-—&lt;strong&gt;qué máquina está montando&lt;/strong&gt;—, y el RFC 9289 deja la autenticación de usuarios
+&lt;p&gt;&lt;code&gt;client_ca_file&lt;/code&gt; obliga al cliente a presentar un certificado de esa autoridad—&lt;strong&gt;qué máquina está montando&lt;/strong&gt;—, y el RFC 9289 deja la autenticación de usuarios
 como estaba: el uid de dentro sigue siendo el que afirma &lt;code&gt;AUTH_SYS&lt;/code&gt;. Así que un
 recurso compartido que nombra quién puede usarlo &lt;strong&gt;sigue rechazándose por NFS&lt;/strong&gt; sin
-un bloque &lt;code&gt;kerberos&lt;/code&gt;, o sin
-&lt;a href="https://go-fileshare.github.io/docs/0.31/es/security/nfs-certificates/"&gt;identidades a partir de certificados&lt;/a&gt;, que son un uso
+un bloque &lt;code&gt;kerberos&lt;/code&gt;, o sin&lt;a href="https://go-fileshare.github.io/docs/0.31/es/security/nfs-certificates/"&gt;identidades a partir de certificados&lt;/a&gt;, que son un uso
 distinto del mismo certificado.&lt;/p&gt;
 &lt;p&gt;TLS &lt;strong&gt;se ofrece, no se exige&lt;/strong&gt;: a un cliente que nunca lo pide se le siguen sirviendo
 los recursos compartidos abiertos. &lt;code&gt;client_ca_file&lt;/code&gt; sin &lt;code&gt;tls = true&lt;/code&gt; se rechaza —no
@@ -349,17 +342,14 @@ data-copied-label="¡Copiado!"
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="what-the-certificate-carries"&gt;Lo que transporta el certificado&lt;span class="hx:absolute hx:-mt-20" id="what-the-certificate-carries"&gt;&lt;/span&gt;
-&lt;a href="#what-the-certificate-carries" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Tras un inicio de sesión en un proveedor de identidad, go-authn/bridge emite un
-&lt;strong&gt;certificado de cliente X.509 de corta duración&lt;/strong&gt; que nombra a la persona tal como
+&lt;a href="#what-the-certificate-carries" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Tras un inicio de sesión en un proveedor de identidad, go-authn/bridge emite un&lt;strong&gt;certificado de cliente X.509 de corta duración&lt;/strong&gt; que nombra a la persona tal como
 lo lee el &lt;code&gt;rpc.tlsservd -u&lt;/code&gt; de FreeBSD:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;la persona: el SubjectAltName &lt;strong&gt;otherName &lt;code&gt;1.3.6.1.4.1.2238.1.1.1&lt;/code&gt;&lt;/strong&gt;, un
 UTF8String &lt;code&gt;user@domain&lt;/code&gt;
 (&lt;a href="https://www.ietf.org/archive/id/draft-cel-nfsv4-rpc-tls-othername-04.html" target="_blank" rel="noopener"&gt;draft-cel-nfsv4-rpc-tls-othername&lt;/a&gt;
 lo describe; sus OID aún no están asignados);&lt;/li&gt;
-&lt;li&gt;sus grupos: un URI de SubjectAltName por grupo,
-&lt;code&gt;tag:go-authn.github.io,2026:group:&amp;lt;group&amp;gt;&lt;/code&gt;, un &lt;strong&gt;URI de etiqueta&lt;/strong&gt; (tag URI,
-RFC 4151: sin registro, pensado exactamente para esto). El &lt;code&gt;rpc.tlsservd&lt;/code&gt; de
+&lt;li&gt;sus grupos: un URI de SubjectAltName por grupo,&lt;code&gt;tag:go-authn.github.io,2026:group:&amp;lt;group&amp;gt;&lt;/code&gt;, un &lt;strong&gt;URI de etiqueta&lt;/strong&gt; (tag URI,RFC 4151: sin registro, pensado exactamente para esto). El &lt;code&gt;rpc.tlsservd&lt;/code&gt; de
 FreeBSD lee el primer otherName de identidad y omite cualquier otra entrada SAN.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
@@ -367,8 +357,7 @@ FreeBSD lee el primer otherName de identidad y omite cualquier otra entrada SAN.
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Por qué un URI de etiqueta, y no una extensión propia&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;Se diseñó una, bajo un arco derivado de un UUID (&lt;code&gt;2.25.&amp;lt;128-bit number&amp;gt;&lt;/code&gt;), y
-se &lt;strong&gt;midió&lt;/strong&gt;: &lt;code&gt;x509.ParseCertificate&lt;/code&gt; de Go rechaza el certificado entero
-—&lt;em&gt;malformed extension OID field&lt;/em&gt;— porque allí un arco de identificador de
+se &lt;strong&gt;midió&lt;/strong&gt;: &lt;code&gt;x509.ParseCertificate&lt;/code&gt; de Go rechaza el certificado entero—&lt;em&gt;malformed extension OID field&lt;/em&gt;— porque allí un arco de identificador de
 objeto ASN.1 es un &lt;code&gt;int&lt;/code&gt;. Todo servidor TLS en Go habría rechazado el
 certificado. Un SAN de tipo URI no necesita OID, y todos los analizadores lo
 leen. Tampoco &lt;code&gt;urn:x-…&lt;/code&gt;: el RFC 8141 suprimió los espacios de nombres URN
@@ -384,8 +373,7 @@ certificado que:&lt;/p&gt;
 &lt;li&gt;&lt;strong&gt;no está en la CRL&lt;/strong&gt;;&lt;/li&gt;
 &lt;li&gt;nombra &lt;strong&gt;exactamente a una&lt;/strong&gt; persona;&lt;/li&gt;
 &lt;li&gt;nombra a alguien que este servidor admite &lt;strong&gt;igual que admite un token&lt;/strong&gt;: una
-regla, &lt;code&gt;trust_all&lt;/code&gt;, &lt;code&gt;domains&lt;/code&gt;; consulte
-&lt;a href="https://go-fileshare.github.io/docs/0.31/es/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;las personas que nombra el proveedor de identidad&lt;/a&gt;;&lt;/li&gt;
+regla, &lt;code&gt;trust_all&lt;/code&gt;, &lt;code&gt;domains&lt;/code&gt;; consulte&lt;a href="https://go-fileshare.github.io/docs/0.31/es/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;las personas que nombra el proveedor de identidad&lt;/a&gt;;&lt;/li&gt;
 &lt;li&gt;nombra a alguien &lt;strong&gt;que el recurso compartido permite&lt;/strong&gt;.&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;Y, con un &lt;a href="https://go-fileshare.github.io/docs/0.31/es/security/shared-signals/"&gt;bloque &lt;code&gt;ssf&lt;/code&gt;&lt;/a&gt;, el certificado debe
@@ -434,24 +422,20 @@ puede revocar sobrevive a su baja durante toda su vida útil.&lt;/p&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;Se descarga y se conserva como la &lt;a href="https://go-fileshare.github.io/docs/0.31/es/security/revocation-lists/"&gt;KRL&lt;/a&gt;, y
-&lt;strong&gt;falla en modo cerrado&lt;/strong&gt; de la misma forma; una CRL que ha superado su propio
-&lt;strong&gt;&lt;code&gt;NextUpdate&lt;/code&gt;&lt;/strong&gt; cuenta como desconocida, permita lo que permita &lt;code&gt;crl_max_age&lt;/code&gt;. Una
+&lt;p&gt;Se descarga y se conserva como la &lt;a href="https://go-fileshare.github.io/docs/0.31/es/security/revocation-lists/"&gt;KRL&lt;/a&gt;, y&lt;strong&gt;falla en modo cerrado&lt;/strong&gt; de la misma forma; una CRL que ha superado su propio&lt;strong&gt;&lt;code&gt;NextUpdate&lt;/code&gt;&lt;/strong&gt; cuenta como desconocida, permita lo que permita &lt;code&gt;crl_max_age&lt;/code&gt;. Una
 CRL debe estar firmada por la CA de clientes: una CRL que cualquiera podría haber
 escrito revoca lo que quiera y, peor aún, lo des-revoca. Con la CRL accesible, &lt;strong&gt;la
 siguiente llamada después de que cambie se rechaza&lt;/strong&gt;; la vida útil del certificado
 solo limita una revocación cuando la CRL no es accesible.&lt;/p&gt;
 &lt;p&gt;Desde la v0.16.2, la firma se comprueba sobre los bytes en bruto &lt;strong&gt;antes&lt;/strong&gt; de
-analizar la CRL, mediante &lt;a href="https://github.com/go-authn/revocation" target="_blank" rel="noopener"&gt;go-authn/revocation&lt;/a&gt;:
-si se analizaba primero, una CRL grande firmada por cualquiera costaba memoria y
+analizar la CRL, mediante &lt;a href="https://github.com/go-authn/revocation" target="_blank" rel="noopener"&gt;go-authn/revocation&lt;/a&gt;:si se analizaba primero, una CRL grande firmada por cualquiera costaba memoria y
 segundos antes de rechazarse. Lo que este servidor no puede leer como una lista
 completa también se rechaza: una CRL delta, una extensión crítica o de entrada
 desconocida, la ausencia de número de CRL, la ausencia de &lt;code&gt;NextUpdate&lt;/code&gt;. Una CRL con
 un número inferior al de la que se tiene, o con el mismo número emitida antes, se
 rechaza como una &lt;a href="https://go-fileshare.github.io/docs/0.31/es/security/revocation-lists/#never-backwards-across-a-restart-too"&gt;KRL&lt;/a&gt;
 más antigua.&lt;/p&gt;
-&lt;p&gt;Un campo de CRL sin &lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt; se rechaza, y también
-&lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt; sin &lt;code&gt;tls = true&lt;/code&gt; y &lt;code&gt;client_ca_file&lt;/code&gt;: la identidad está en
+&lt;p&gt;Un campo de CRL sin &lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt; se rechaza, y también&lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt; sin &lt;code&gt;tls = true&lt;/code&gt; y &lt;code&gt;client_ca_file&lt;/code&gt;: la identidad está en
 el certificado que presenta el cliente.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="what-it-cannot-promise"&gt;Lo que no puede prometer&lt;span class="hx:absolute hx:-mt-20" id="what-it-cannot-promise"&gt;&lt;/span&gt;
 &lt;a href="#what-it-cannot-promise" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
@@ -459,14 +443,12 @@ el certificado que presenta el cliente.&lt;/p&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;El certificado de un cliente Linux pertenece a un MONTAJE, no a una persona&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;El servidor ve el certificado de una &lt;strong&gt;conexión&lt;/strong&gt;, y un cliente Linux asocia
-uno a un montaje (&lt;code&gt;tlshd&lt;/code&gt;, el número de serie del keyring en
-&lt;code&gt;mount -o xprtsec=mtls,...&lt;/code&gt;). &lt;strong&gt;Todos los usuarios de ese montaje actúan
+uno a un montaje (&lt;code&gt;tlshd&lt;/code&gt;, el número de serie del keyring en&lt;code&gt;mount -o xprtsec=mtls,...&lt;/code&gt;). &lt;strong&gt;Todos los usuarios de ese montaje actúan
 como la persona que nombra el certificado.&lt;/strong&gt; En una estación de trabajo que
 usa una sola persona, es exactamente ella; en una máquina en la que inician
 sesión varias personas, es quien montó: use &lt;code&gt;sec=krb5&lt;/code&gt; allí.&lt;/p&gt;
 &lt;p&gt;Por eso el RFC 9289 por sí solo se niega a prometer la autenticación de
-usuarios, y por eso el simple
-&lt;a href="https://go-fileshare.github.io/docs/0.31/es/security/tls/#nfs-over-tls-proves-the-machine-not-the-person"&gt;NFS sobre TLS&lt;/a&gt;
+usuarios, y por eso el simple&lt;a href="https://go-fileshare.github.io/docs/0.31/es/security/tls/#nfs-over-tls-proves-the-machine-not-the-person"&gt;NFS sobre TLS&lt;/a&gt;
 sigue probando solo la máquina.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;

@@ -129,6 +129,4 @@ data-copied-label="복사됨!"
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;인증서가 담는 것, 필수인 CRL, 실제 Linux 클라이언트로 측정한 내용(평문 &lt;code&gt;MNT&lt;/code&gt;,
-&lt;code&gt;tlshd&lt;/code&gt;의 함정)은
-&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/security/nfs-certificates/"&gt;인증서 기반 ID를 쓰는 NFS&lt;/a&gt;에 있습니다.&lt;/p&gt;</description></item></channel></rss>
+&lt;p&gt;인증서가 담는 것, 필수인 CRL, 실제 Linux 클라이언트로 측정한 내용(평문 &lt;code&gt;MNT&lt;/code&gt;,&lt;code&gt;tlshd&lt;/code&gt;의 함정)은&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/security/nfs-certificates/"&gt;인증서 기반 ID를 쓰는 NFS&lt;/a&gt;에 있습니다.&lt;/p&gt;</description></item></channel></rss>

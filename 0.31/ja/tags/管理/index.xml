@@ -1,12 +1,6 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – 管理</title><link>https://go-fileshare.github.io/docs/0.31/ja/tags/%E7%AE%A1%E7%90%86/</link><description>Recent content in 管理 on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>ja</language><atom:link href="https://go-fileshare.github.io/docs/0.31/ja/tags/%E7%AE%A1%E7%90%86/index.xml" rel="self" type="application/rss+xml"/><item><title>ボリューム: fileshare が作成するストレージ</title><link>https://go-fileshare.github.io/docs/0.31/ja/administration/volumes/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/ja/administration/volumes/</guid><description>
-&lt;p&gt;v0.21.0 以降、&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/administration/"&gt;管理 API&lt;/a&gt;は、共有が提供する&lt;strong&gt;ストレージを作成&lt;/strong&gt;し、
-そこから共有を提供できます。対象は &lt;strong&gt;ZFS データセット&lt;/strong&gt;、&lt;strong&gt;btrfs サブボリューム&lt;/strong&gt;、
-&lt;strong&gt;プロジェクトクォータ下の XFS または ext4 ディレクトリ&lt;/strong&gt;で、サイズ指定、所有者設定、追跡が行われます。
-Linux のみです。Ceph はまだサポートされていません。&lt;/p&gt;
-&lt;p&gt;そのストレージの作成には &lt;code&gt;CAP_SYS_ADMIN&lt;/code&gt;(quotactl、btrfs クォータの ioctl、&lt;code&gt;/dev/zfs&lt;/code&gt;、mount(2))が必要です。
-&lt;code&gt;fileshare serve&lt;/code&gt; は見知らぬ相手に対して 5 つのネットワークプロトコルを解析するため、特権を持ちません。
-特権を必要とする部分は、同じバイナリの 2 つ目のロールである &lt;code&gt;fileshare provisioner&lt;/code&gt; が担当し、
-Unix ソケットと、小さく閉じたプロトコルの背後で動作します。&lt;/p&gt;
+&lt;p&gt;v0.21.0 以降、&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/administration/"&gt;管理 API&lt;/a&gt;は、共有が提供する&lt;strong&gt;ストレージを作成&lt;/strong&gt;し、そこから共有を提供できます。対象は &lt;strong&gt;ZFS データセット&lt;/strong&gt;、&lt;strong&gt;btrfs サブボリューム&lt;/strong&gt;、&lt;strong&gt;プロジェクトクォータ下の XFS または ext4 ディレクトリ&lt;/strong&gt;で、サイズ指定、所有者設定、追跡が行われます。Linux のみです。Ceph はまだサポートされていません。&lt;/p&gt;
+&lt;p&gt;そのストレージの作成には &lt;code&gt;CAP_SYS_ADMIN&lt;/code&gt;(quotactl、btrfs クォータの ioctl、&lt;code&gt;/dev/zfs&lt;/code&gt;、mount(2))が必要です。&lt;code&gt;fileshare serve&lt;/code&gt; は見知らぬ相手に対して 5 つのネットワークプロトコルを解析するため、特権を持ちません。特権を必要とする部分は、同じバイナリの 2 つ目のロールである &lt;code&gt;fileshare provisioner&lt;/code&gt; が担当し、Unix ソケットと、小さく閉じたプロトコルの背後で動作します。&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;pre&gt;&lt;code&gt; admin gRPC (unix socket 0600 &amp;#43; peer uid, or mTLS)
 operator ─────────────────────────────────────────────▶ fileshare serve
@@ -29,10 +23,7 @@ data-copied-label="コピーしました！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;2 つのデーモンではなく 1 つのバイナリなので、デプロイするバージョンは 1 つ、プロトコル定義も 1 つです。
-ストレージ自体の操作は &lt;a href="https://go-fsctl.github.io/" target="_blank" rel="noopener"&gt;go-fsctl&lt;/a&gt; が行います(純粋な Go で、
-&lt;code&gt;zfs&lt;/code&gt; や &lt;code&gt;btrfs&lt;/code&gt; コマンドは使いません)。設計と、構築中に変わったことは、fileshare リポジトリの
-&lt;a href="https://github.com/go-fileshare/fileshare/blob/v0.28.0/docs/volumes.md" target="_blank" rel="noopener"&gt;&lt;code&gt;docs/volumes.md&lt;/code&gt;&lt;/a&gt;にあります。&lt;/p&gt;
+&lt;p&gt;2 つのデーモンではなく 1 つのバイナリなので、デプロイするバージョンは 1 つ、プロトコル定義も 1 つです。ストレージ自体の操作は &lt;a href="https://go-fsctl.github.io/" target="_blank" rel="noopener"&gt;go-fsctl&lt;/a&gt; が行います(純粋な Go で、&lt;code&gt;zfs&lt;/code&gt; や &lt;code&gt;btrfs&lt;/code&gt; コマンドは使いません)。設計と、構築中に変わったことは、fileshare リポジトリの&lt;a href="https://github.com/go-fileshare/fileshare/blob/v0.28.0/docs/volumes.md" target="_blank" rel="noopener"&gt;&lt;code&gt;docs/volumes.md&lt;/code&gt;&lt;/a&gt;にあります。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="both-processes-configured"&gt;両方のプロセスの設定&lt;span class="hx:absolute hx:-mt-20" id="both-processes-configured"&gt;&lt;/span&gt;
 &lt;a href="#both-processes-configured" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;fileshare serve&lt;/code&gt; を、ユーザー &lt;code&gt;fileshare&lt;/code&gt;(uid 990)として実行する場合:&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
@@ -152,12 +143,8 @@ data-copied-label="コピーしました！"
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;プロビジョナーのファイルには &lt;code&gt;provisioner&lt;/code&gt; ブロックしか含めません。fileshare 自身のファイルを
-誤って渡した場合は、半端に読み込まれるのではなく拒否されます。&lt;/p&gt;
-&lt;p&gt;ボリュームは常に &lt;code&gt;&amp;lt;parent root&amp;gt;/&amp;lt;name&amp;gt;&lt;/code&gt; です。データセット &lt;code&gt;tank/fileshare/&amp;lt;name&amp;gt;&lt;/code&gt; が
-&lt;code&gt;/srv/fileshare/volumes/tank/&amp;lt;name&amp;gt;&lt;/code&gt; にマウントされ(&lt;code&gt;refquota&lt;/code&gt; 付き)、btrfs サブボリュームは qgroup で制限され、
-XFS または ext4 のディレクトリには範囲内のプロジェクト ID とハードのブロック制限が設定されます。
-XFS と ext4 には &lt;code&gt;prjquota&lt;/code&gt; マウントオプションが必要です(ext4 では &lt;code&gt;project,quota&lt;/code&gt; 機能も必要)。&lt;/p&gt;
+&lt;p&gt;プロビジョナーのファイルには &lt;code&gt;provisioner&lt;/code&gt; ブロックしか含めません。fileshare 自身のファイルを誤って渡した場合は、半端に読み込まれるのではなく拒否されます。&lt;/p&gt;
+&lt;p&gt;ボリュームは常に &lt;code&gt;&amp;lt;parent root&amp;gt;/&amp;lt;name&amp;gt;&lt;/code&gt; です。データセット &lt;code&gt;tank/fileshare/&amp;lt;name&amp;gt;&lt;/code&gt; が&lt;code&gt;/srv/fileshare/volumes/tank/&amp;lt;name&amp;gt;&lt;/code&gt; にマウントされ(&lt;code&gt;refquota&lt;/code&gt; 付き)、btrfs サブボリュームは qgroup で制限され、XFS または ext4 のディレクトリには範囲内のプロジェクト ID とハードのブロック制限が設定されます。XFS と ext4 には &lt;code&gt;prjquota&lt;/code&gt; マウントオプションが必要です(ext4 では &lt;code&gt;project,quota&lt;/code&gt; 機能も必要)。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="the-systemd-pair"&gt;systemd のペア&lt;span class="hx:absolute hx:-mt-20" id="the-systemd-pair"&gt;&lt;/span&gt;
 &lt;a href="#the-systemd-pair" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;プロビジョナー:&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
@@ -221,15 +208,12 @@ data-copied-label="コピーしました！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;サーバーでは &lt;code&gt;ProtectSystem=&lt;/code&gt; を使っても問題ありません。マウントを行うのはプロビジョナーであり、
-マウントはサーバーの名前空間の中へ伝播しても外へは伝播しないため、サーバーの起動後にマウントされた
-ZFS ボリュームもサーバーから見えます。&lt;/p&gt;
+&lt;p&gt;サーバーでは &lt;code&gt;ProtectSystem=&lt;/code&gt; を使っても問題ありません。マウントを行うのはプロビジョナーであり、マウントはサーバーの名前空間の中へ伝播しても外へは伝播しないため、サーバーの起動後にマウントされたZFS ボリュームもサーバーから見えます。&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;例であり、テスト済みのユニットではありません&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;どちらのユニットも CI では実行されません。エンドツーエンドのジョブは、両方のプロセスを
-&lt;code&gt;sudo&lt;/code&gt; の下で実行します。&lt;/p&gt;
+&lt;p&gt;どちらのユニットも CI では実行されません。エンドツーエンドのジョブは、両方のプロセスを&lt;code&gt;sudo&lt;/code&gt; の下で実行します。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -237,15 +221,12 @@ ZFS ボリュームもサーバーから見えます。&lt;/p&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;プロビジョナーを先にアップグレードしてください&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;プロビジョナーは、自身のバージョンが定義していないフィールドを持つメッセージを拒否し、
-接続を閉じます。そのため &lt;code&gt;fileshare serve&lt;/code&gt; と &lt;code&gt;fileshare provisioner&lt;/code&gt; は同じバージョンで
-実行します。&lt;/p&gt;
+&lt;p&gt;プロビジョナーは、自身のバージョンが定義していないフィールドを持つメッセージを拒否し、接続を閉じます。そのため &lt;code&gt;fileshare serve&lt;/code&gt; と &lt;code&gt;fileshare provisioner&lt;/code&gt; は同じバージョンで実行します。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="the-admin-apis-volume-calls"&gt;管理 API のボリューム呼び出し&lt;span class="hx:absolute hx:-mt-20" id="the-admin-apis-volume-calls"&gt;&lt;/span&gt;
-&lt;a href="#the-admin-apis-volume-calls" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;fileshare serve&lt;/code&gt; は、これらをプロビジョナーに中継します
-(&lt;a href="https://github.com/go-fileshare/fileshare/blob/v0.28.0/proto/fileshare/admin/v1/admin.proto" target="_blank" rel="noopener"&gt;&lt;code&gt;admin.proto&lt;/code&gt;&lt;/a&gt;)。&lt;/p&gt;
+&lt;a href="#the-admin-apis-volume-calls" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;fileshare serve&lt;/code&gt; は、これらをプロビジョナーに中継します(&lt;a href="https://github.com/go-fileshare/fileshare/blob/v0.28.0/proto/fileshare/admin/v1/admin.proto" target="_blank" rel="noopener"&gt;&lt;code&gt;admin.proto&lt;/code&gt;&lt;/a&gt;)。&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
@@ -284,13 +265,9 @@ ZFS ボリュームもサーバーから見えます。&lt;/p&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;&lt;code&gt;DeleteShare&lt;/code&gt; がボリュームを削除することはありません。「それを使っている共有」とは、ボリュームから作られた
-共有、&lt;strong&gt;および&lt;/strong&gt;イメージまたはディレクトリがその内側にある共有(設定ファイルのものも含み、提供中、
-無効化中、利用不可のいずれも)を指します。&lt;/p&gt;
-&lt;p&gt;名前は &lt;code&gt;^[a-z0-9][a-z0-9_-]{0,62}$&lt;/code&gt; に一致しなければならず、リクエストがパスを運ぶことはありません。
-プロビジョナー自身の設定にある &lt;code&gt;parent&lt;/code&gt; を名指しします。&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;admin&lt;/code&gt; ブロックで &lt;code&gt;reflection = true&lt;/code&gt; を指定すれば、&lt;code&gt;grpcurl&lt;/code&gt; で呼び出せます。ソケットは 0600 で、
-上の &lt;code&gt;allowed_uids&lt;/code&gt; は fileshare の uid だけを指定しているため、そのユーザーとして実行してください。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;DeleteShare&lt;/code&gt; がボリュームを削除することはありません。「それを使っている共有」とは、ボリュームから作られた共有、&lt;strong&gt;および&lt;/strong&gt;イメージまたはディレクトリがその内側にある共有(設定ファイルのものも含み、提供中、無効化中、利用不可のいずれも)を指します。&lt;/p&gt;
+&lt;p&gt;名前は &lt;code&gt;^[a-z0-9][a-z0-9_-]{0,62}$&lt;/code&gt; に一致しなければならず、リクエストがパスを運ぶことはありません。プロビジョナー自身の設定にある &lt;code&gt;parent&lt;/code&gt; を名指しします。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;admin&lt;/code&gt; ブロックで &lt;code&gt;reflection = true&lt;/code&gt; を指定すれば、&lt;code&gt;grpcurl&lt;/code&gt; で呼び出せます。ソケットは 0600 で、上の &lt;code&gt;allowed_uids&lt;/code&gt; は fileshare の uid だけを指定しているため、そのユーザーとして実行してください。&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nv"&gt;S&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/run/fileshare/admin.sock
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nv"&gt;A&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;fileshare.admin.v1.AdminService
@@ -325,15 +302,11 @@ data-copied-label="コピーしました！"
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h3 data-hextra-search-id="status-codes"&gt;ステータスコード&lt;span class="hx:absolute hx:-mt-20" id="status-codes"&gt;&lt;/span&gt;
-&lt;a href="#status-codes" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;プロビジョナーのコードは、返されたとおりに戻ります。&lt;code&gt;INVALID_ARGUMENT&lt;/code&gt;(文法に合わない名前、不明な parent、
-0 のクォータ)、&lt;code&gt;OUT_OF_RANGE&lt;/code&gt;(&lt;code&gt;max_volume&lt;/code&gt; 超過)、&lt;code&gt;RESOURCE_EXHAUSTED&lt;/code&gt;(クォータまたはリサイズによる
-増分が parent の現在の空きを超える、またはプロジェクト ID の範囲を使い切った)、
-&lt;code&gt;ALREADY_EXISTS&lt;/code&gt;、&lt;code&gt;NOT_FOUND&lt;/code&gt;、&lt;code&gt;FAILED_PRECONDITION&lt;/code&gt;、&lt;code&gt;UNIMPLEMENTED&lt;/code&gt; です。&lt;/p&gt;
+&lt;a href="#status-codes" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;プロビジョナーのコードは、返されたとおりに戻ります。&lt;code&gt;INVALID_ARGUMENT&lt;/code&gt;(文法に合わない名前、不明な parent、0 のクォータ)、&lt;code&gt;OUT_OF_RANGE&lt;/code&gt;(&lt;code&gt;max_volume&lt;/code&gt; 超過)、&lt;code&gt;RESOURCE_EXHAUSTED&lt;/code&gt;(クォータまたはリサイズによる増分が parent の現在の空きを超える、またはプロジェクト ID の範囲を使い切った)、&lt;code&gt;ALREADY_EXISTS&lt;/code&gt;、&lt;code&gt;NOT_FOUND&lt;/code&gt;、&lt;code&gt;FAILED_PRECONDITION&lt;/code&gt;、&lt;code&gt;UNIMPLEMENTED&lt;/code&gt; です。&lt;/p&gt;
 &lt;p&gt;次の 3 つは fileshare 独自のものです。&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;provisioner&lt;/code&gt; が設定されていない場合: &lt;code&gt;FAILED_PRECONDITION&lt;/code&gt;。&lt;/li&gt;
-&lt;li&gt;プロビジョナーがこのサーバーの uid を拒否する場合も &lt;code&gt;FAILED_PRECONDITION&lt;/code&gt;。これは管理呼び出し元が
-してはいけないことではなく、デプロイの誤り(&lt;code&gt;client_uid&lt;/code&gt; が間違っている)であるため。&lt;/li&gt;
+&lt;li&gt;プロビジョナーがこのサーバーの uid を拒否する場合も &lt;code&gt;FAILED_PRECONDITION&lt;/code&gt;。これは管理呼び出し元がしてはいけないことではなく、デプロイの誤り(&lt;code&gt;client_uid&lt;/code&gt; が間違っている)であるため。&lt;/li&gt;
 &lt;li&gt;プロビジョナーが応答しない場合: &lt;code&gt;UNAVAILABLE&lt;/code&gt;。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h2 data-hextra-search-id="what-is-checked-before-a-volume-is-served"&gt;ボリュームを提供する前に検査されること&lt;span class="hx:absolute hx:-mt-20" id="what-is-checked-before-a-volume-is-served"&gt;&lt;/span&gt;
@@ -341,40 +314,22 @@ data-copied-label="コピーしました！"
 &lt;ul&gt;
 &lt;li&gt;パスがクリーンで絶対パスであり、解決後に &lt;code&gt;source_roots&lt;/code&gt; の下にあること。&lt;/li&gt;
 &lt;li&gt;ディレクトリであること。&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;statfs&lt;/code&gt; がその種類のファイルシステムを報告すること(&lt;code&gt;ZFS_SUPER_MAGIC&lt;/code&gt;、
-&lt;code&gt;BTRFS_SUPER_MAGIC&lt;/code&gt;、&lt;code&gt;XFS_SUPER_MAGIC&lt;/code&gt;、&lt;code&gt;EXT4_SUPER_MAGIC&lt;/code&gt;)。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;ZFS&lt;/strong&gt;: マウントポイントであること。そのデバイスが親のデバイスと異なること。マウントされていない
-データセットのディレクトリへの書き込みは、クォータなしで行われてしまいます。(そこにどのデータセットが
-マウントされているかは検証されません。プロビジョナーの応答にはそれが含まれないためです。)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;statfs&lt;/code&gt; がその種類のファイルシステムを報告すること(&lt;code&gt;ZFS_SUPER_MAGIC&lt;/code&gt;、&lt;code&gt;BTRFS_SUPER_MAGIC&lt;/code&gt;、&lt;code&gt;XFS_SUPER_MAGIC&lt;/code&gt;、&lt;code&gt;EXT4_SUPER_MAGIC&lt;/code&gt;)。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;ZFS&lt;/strong&gt;: マウントポイントであること。そのデバイスが親のデバイスと異なること。マウントされていないデータセットのディレクトリへの書き込みは、クォータなしで行われてしまいます。(そこにどのデータセットがマウントされているかは検証されません。プロビジョナーの応答にはそれが含まれないためです。)&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;btrfs&lt;/strong&gt;: サブボリュームのルートであること。parent の下の通常のディレクトリには qgroup がありません。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;XFS と ext4&lt;/strong&gt;: 新しいファイルが継承する、0 でないプロジェクト ID を持つこと。どのプロジェクトにも
-属さないディレクトリは、制限なしで提供されてしまいます。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;XFS と ext4&lt;/strong&gt;: 新しいファイルが継承する、0 でないプロジェクト ID を持つこと。どのプロジェクトにも属さないディレクトリは、制限なしで提供されてしまいます。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;状態ファイルが保持するのはボリュームの&lt;strong&gt;名前&lt;/strong&gt;であり、パスではありません。起動のたびに問い合わせと
-検査が再度行われます。ボリュームが消えている、検査に失敗する、またはプロビジョナーが 10 秒以内に
-応答しない場合、その共有は&lt;strong&gt;定義されたまま提供されず&lt;/strong&gt;、サーバーの残りは起動します。このことは、
-起動時、&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/configuration/check/"&gt;&lt;code&gt;fileshare check&lt;/code&gt;&lt;/a&gt;、および共有の
-&lt;code&gt;unavailable&lt;/code&gt; フィールドで伝えられます。&lt;code&gt;EnableShare&lt;/code&gt; で再試行できます。&lt;/p&gt;
+&lt;p&gt;状態ファイルが保持するのはボリュームの&lt;strong&gt;名前&lt;/strong&gt;であり、パスではありません。起動のたびに問い合わせと検査が再度行われます。ボリュームが消えている、検査に失敗する、またはプロビジョナーが 10 秒以内に応答しない場合、その共有は&lt;strong&gt;定義されたまま提供されず&lt;/strong&gt;、サーバーの残りは起動します。このことは、起動時、&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/configuration/check/"&gt;&lt;code&gt;fileshare check&lt;/code&gt;&lt;/a&gt;、および共有の&lt;code&gt;unavailable&lt;/code&gt; フィールドで伝えられます。&lt;code&gt;EnableShare&lt;/code&gt; で再試行できます。&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;fileshare serve&lt;/code&gt; は、root として、または &lt;code&gt;CAP_SYS_RESOURCE&lt;/code&gt; を持つ状態でのボリュームの提供を拒否します&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;ext4 では、そのどちらもプロジェクトクォータを超えて書き込めます(fs/quota/dquot.c、
-&lt;code&gt;ignore_hardlimit&lt;/code&gt;)。go-fsctl/projquota の CI では、root が 8 MiB のプロジェクトに 16 MiB を
-書き込みました。XFS にはそのような例外はありませんが、ルールはすべての種類に共通する、
-プロセスに対する 1 つのルールです。fileshare は実効 uid と &lt;code&gt;/proc/self/status&lt;/code&gt; の
-&lt;code&gt;CapEff&lt;/code&gt;/&lt;code&gt;CapPrm&lt;/code&gt; を読み取り(permitted のケーパビリティは、&lt;code&gt;capset(2)&lt;/code&gt; 1 回で effective になる)、
-読み取れないステータスは保持しているものとして扱います。拒否するのは&lt;strong&gt;提供&lt;/strong&gt;であって、ボリュームの
-呼び出しではありません。root でストレージを作成するのは無害ですが、root でそこに書き込むのは
-無害ではないからです。&lt;code&gt;fileshare check&lt;/code&gt; はそのどちらであるかを伝えます。プロビジョナーが
-&lt;code&gt;client_uid = 0&lt;/code&gt; を拒否するのも、上のサーバーのユニットに空の &lt;code&gt;CapabilityBoundingSet=&lt;/code&gt; があるのも
-そのためです。&lt;/p&gt;
+&lt;p&gt;ext4 では、そのどちらもプロジェクトクォータを超えて書き込めます(fs/quota/dquot.c、&lt;code&gt;ignore_hardlimit&lt;/code&gt;)。go-fsctl/projquota の CI では、root が 8 MiB のプロジェクトに 16 MiB を書き込みました。XFS にはそのような例外はありませんが、ルールはすべての種類に共通する、プロセスに対する 1 つのルールです。fileshare は実効 uid と &lt;code&gt;/proc/self/status&lt;/code&gt; の&lt;code&gt;CapEff&lt;/code&gt;/&lt;code&gt;CapPrm&lt;/code&gt; を読み取り(permitted のケーパビリティは、&lt;code&gt;capset(2)&lt;/code&gt; 1 回で effective になる)、読み取れないステータスは保持しているものとして扱います。拒否するのは&lt;strong&gt;提供&lt;/strong&gt;であって、ボリュームの呼び出しではありません。root でストレージを作成するのは無害ですが、root でそこに書き込むのは無害ではないからです。&lt;code&gt;fileshare check&lt;/code&gt; はそのどちらであるかを伝えます。プロビジョナーが&lt;code&gt;client_uid = 0&lt;/code&gt; を拒否するのも、上のサーバーのユニットに空の &lt;code&gt;CapabilityBoundingSet=&lt;/code&gt; があるのもそのためです。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="a-full-share"&gt;満杯の共有&lt;span class="hx:absolute hx:-mt-20" id="a-full-share"&gt;&lt;/span&gt;
-&lt;a href="#a-full-share" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;XFS は満杯のプロジェクトを &lt;code&gt;ENOSPC&lt;/code&gt; で伝え、ext4、btrfs、ZFS は &lt;code&gt;EDQUOT&lt;/code&gt; で伝えます。
-v0.21.1 以降は、すべてのプロトコルが「満杯」と応答します。&lt;/p&gt;
+&lt;a href="#a-full-share" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;XFS は満杯のプロジェクトを &lt;code&gt;ENOSPC&lt;/code&gt; で伝え、ext4、btrfs、ZFS は &lt;code&gt;EDQUOT&lt;/code&gt; で伝えます。v0.21.1 以降は、すべてのプロトコルが「満杯」と応答します。&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
@@ -412,44 +367,25 @@ v0.21.1 以降は、すべてのプロトコルが「満杯」と応答します
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;v0.21.0 では、SMB は &lt;code&gt;STATUS_ACCESS_DENIED&lt;/code&gt; で応答し、NFS はクォータに &lt;code&gt;NFS3ERR_NOSPC&lt;/code&gt; で応答していました。&lt;/p&gt;
-&lt;p&gt;これはボリュームだけでなく、すべての&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/configuration/shares/"&gt;ディレクトリ共有&lt;/a&gt;に適用されます。
-&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/status/"&gt;アップグレードの注意&lt;/a&gt;を参照してください。&lt;/p&gt;
+&lt;p&gt;これはボリュームだけでなく、すべての&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/configuration/shares/"&gt;ディレクトリ共有&lt;/a&gt;に適用されます。&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/status/"&gt;アップグレードの注意&lt;/a&gt;を参照してください。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="the-size-a-client-sees"&gt;クライアントから見えるサイズ&lt;span class="hx:absolute hx:-mt-20" id="the-size-a-client-sees"&gt;&lt;/span&gt;
-&lt;a href="#the-size-a-client-sees" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;すべてのプロトコルは、問い合わせのたびにサーバーに共有のサイズを尋ねます。NFS の &lt;code&gt;FSSTAT&lt;/code&gt;、
-SMB の &lt;code&gt;FileFsFullSizeInformation&lt;/code&gt;、WebDAV の RFC 4331 クォータプロパティです。&lt;/p&gt;
+&lt;a href="#the-size-a-client-sees" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;すべてのプロトコルは、問い合わせのたびにサーバーに共有のサイズを尋ねます。NFS の &lt;code&gt;FSSTAT&lt;/code&gt;、SMB の &lt;code&gt;FileFsFullSizeInformation&lt;/code&gt;、WebDAV の RFC 4331 クォータプロパティです。&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;ZFS、XFS、ext4&lt;/strong&gt;: サイズはボリューム内で &lt;code&gt;statfs&lt;/code&gt; が返すものであり、カーネルはクォータ
-(ZFS では &lt;code&gt;refquota&lt;/code&gt;、XFS と ext4 ではプロジェクトクォータ)で応答します。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;btrfs&lt;/strong&gt;(fileshare v0.23.0 以降): btrfs の &lt;code&gt;statfs&lt;/code&gt; は qgroup を無視してファイルシステム全体を
-報告するため、サーバーは代わりにプロビジョナーの数値を使います。サイズはボリュームのクォータで、
-空き容量はクォータから qgroup の参照バイト数を引いたもの、またはそれより少ない場合は
-ファイルシステム自身の空き容量です。サーバーはバックグラウンドでプロビジョナーに問い合わせ、
-クライアントが尋ねている間は最大 5 秒に 1 回とし、その間は直近の数値で応答します。btrfs は
-トランザクションのコミット時(既定では 30 秒ごと)に qgroup のカウントを更新するため、
-クライアントに見える空き容量は、書き込みに対してその時間だけ遅れることがあります。
-v0.23.0 より前は、btrfs ボリュームはファイルシステム全体を表示していましたが、クォータは
-変わらず有効でした。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;ZFS、XFS、ext4&lt;/strong&gt;: サイズはボリューム内で &lt;code&gt;statfs&lt;/code&gt; が返すものであり、カーネルはクォータ(ZFS では &lt;code&gt;refquota&lt;/code&gt;、XFS と ext4 ではプロジェクトクォータ)で応答します。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;btrfs&lt;/strong&gt;(fileshare v0.23.0 以降): btrfs の &lt;code&gt;statfs&lt;/code&gt; は qgroup を無視してファイルシステム全体を報告するため、サーバーは代わりにプロビジョナーの数値を使います。サイズはボリュームのクォータで、空き容量はクォータから qgroup の参照バイト数を引いたもの、またはそれより少ない場合はファイルシステム自身の空き容量です。サーバーはバックグラウンドでプロビジョナーに問い合わせ、クライアントが尋ねている間は最大 5 秒に 1 回とし、その間は直近の数値で応答します。btrfs はトランザクションのコミット時(既定では 30 秒ごと)に qgroup のカウントを更新するため、クライアントに見える空き容量は、書き込みに対してその時間だけ遅れることがあります。v0.23.0 より前は、btrfs ボリュームはファイルシステム全体を表示していましたが、クォータは変わらず有効でした。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;使用量はプロビジョナーから取得します(&lt;code&gt;used_bytes&lt;/code&gt;)。XFS や ext4 のプロジェクトの使用量の読み取りには
-&lt;code&gt;CAP_SYS_ADMIN&lt;/code&gt; が必要で、fileshare はそれを持たないためです。&lt;/p&gt;
+&lt;p&gt;使用量はプロビジョナーから取得します(&lt;code&gt;used_bytes&lt;/code&gt;)。XFS や ext4 のプロジェクトの使用量の読み取りには&lt;code&gt;CAP_SYS_ADMIN&lt;/code&gt; が必要で、fileshare はそれを持たないためです。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="what-the-provisioner-promises"&gt;プロビジョナーが保証すること&lt;span class="hx:absolute hx:-mt-20" id="what-the-provisioner-promises"&gt;&lt;/span&gt;
 &lt;a href="#what-the-provisioner-promises" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;1 つの uid、カーネルから読み取る。&lt;/strong&gt; 相手は接続時に &lt;code&gt;SO_PEERCRED&lt;/code&gt; で識別され、&lt;code&gt;client_uid&lt;/code&gt; 以外は
-root を含めて、リクエストが 1 バイトもデコードされる前に &lt;code&gt;PERMISSION_DENIED&lt;/code&gt; となります。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;閉じた動詞の集合。&lt;/strong&gt; サービスの外にあるメソッド、デコードできないメッセージ、定義にない
-フィールドを持つメッセージには、応答がありません。接続が閉じられます。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;1 つの uid、カーネルから読み取る。&lt;/strong&gt; 相手は接続時に &lt;code&gt;SO_PEERCRED&lt;/code&gt; で識別され、&lt;code&gt;client_uid&lt;/code&gt; 以外はroot を含めて、リクエストが 1 バイトもデコードされる前に &lt;code&gt;PERMISSION_DENIED&lt;/code&gt; となります。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;閉じた動詞の集合。&lt;/strong&gt; サービスの外にあるメソッド、デコードできないメッセージ、定義にないフィールドを持つメッセージには、応答がありません。接続が閉じられます。&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;自分が作成していないものには決して触れない。&lt;/strong&gt; ZFS: データセット自身の &lt;code&gt;fileshare:volume&lt;/code&gt;
-プロパティ。ユーザープロパティは継承されるため、継承されたマークは自分のものではないので、
-データセットに直接設定されたもの。btrfs: &lt;code&gt;state_file&lt;/code&gt; に記録されたサブボリューム ID と uuid。
-XFS/ext4: parent の範囲内&lt;strong&gt;かつ&lt;/strong&gt;記録されたプロジェクト ID。リサイズ、スナップショット、削除の
-たびに検査されます。&lt;/li&gt;
+プロパティ。ユーザープロパティは継承されるため、継承されたマークは自分のものではないので、データセットに直接設定されたもの。btrfs: &lt;code&gt;state_file&lt;/code&gt; に記録されたサブボリューム ID と uuid。XFS/ext4: parent の範囲内&lt;strong&gt;かつ&lt;/strong&gt;記録されたプロジェクト ID。リサイズ、スナップショット、削除のたびに検査されます。&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;削除は、&lt;code&gt;destroy_data&lt;/code&gt; が設定されていない限り、データとスナップショットを拒否する。&lt;/strong&gt;
 また、実行前に記録されます。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h2 data-hextra-search-id="measured"&gt;計測&lt;span class="hx:absolute hx:-mt-20" id="measured"&gt;&lt;/span&gt;
-&lt;a href="#measured" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;fileshare の CI で、実際のプールとループバックのファイルシステム上で root として、&lt;code&gt;fileshare serve&lt;/code&gt; を
-&lt;code&gt;nobody&lt;/code&gt; として実行し、管理 API 経由で操作しました。WebDAV と SFTP での書き込みは、4 種類すべてで
-32 MiB のボリュームのクォータで止まります。&lt;/p&gt;
+&lt;a href="#measured" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;fileshare の CI で、実際のプールとループバックのファイルシステム上で root として、&lt;code&gt;fileshare serve&lt;/code&gt; を&lt;code&gt;nobody&lt;/code&gt; として実行し、管理 API 経由で操作しました。WebDAV と SFTP での書き込みは、4 種類すべてで32 MiB のボリュームのクォータで止まります。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="not-yet"&gt;まだ実装されていないもの&lt;span class="hx:absolute hx:-mt-20" id="not-yet"&gt;&lt;/span&gt;
 &lt;a href="#not-yet" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;Ceph。&lt;/strong&gt; CephFS のクォータと RBD は後のフェーズです。&lt;/li&gt;
@@ -467,9 +403,7 @@ data-copied-label="コピーしました！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;3 つのエンドポイントを、&lt;a href="https://github.com/go-net-health/endpoint" target="_blank" rel="noopener"&gt;go-net-health/endpoint&lt;/a&gt; が
-専用のリスナーで提供します。&lt;strong&gt;プロトコルが使うポートでは決して提供しない&lt;/strong&gt;ため、
-WebDAV に到達できる外部からはこれらに到達できません。&lt;/p&gt;
+&lt;p&gt;3 つのエンドポイントを、&lt;a href="https://github.com/go-net-health/endpoint" target="_blank" rel="noopener"&gt;go-net-health/endpoint&lt;/a&gt; が専用のリスナーで提供します。&lt;strong&gt;プロトコルが使うポートでは決して提供しない&lt;/strong&gt;ため、WebDAV に到達できる外部からはこれらに到達できません。&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
@@ -492,8 +426,7 @@ WebDAV に到達できる外部からはこれらに到達できません。&lt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;Unix ソケットは &lt;code&gt;unix:///like/this&lt;/code&gt; のように絶対パスで指定します。それ以外は &lt;code&gt;host:port&lt;/code&gt; でなければならず、
-そうでなければブロックは拒否されます。&lt;/p&gt;
+&lt;p&gt;Unix ソケットは &lt;code&gt;unix:///like/this&lt;/code&gt; のように絶対パスで指定します。それ以外は &lt;code&gt;host:port&lt;/code&gt; でなければならず、そうでなければブロックは拒否されます。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="what-is-measured"&gt;計測されるもの&lt;span class="hx:absolute hx:-mt-20" id="what-is-measured"&gt;&lt;/span&gt;
 &lt;a href="#what-is-measured" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
 &lt;thead&gt;
@@ -565,30 +498,22 @@ WebDAV に到達できる外部からはこれらに到達できません。&lt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;加えて、Go ランタイムとビルド情報も公開されます。失効と共有シグナルのファミリーは、設定にリストまたは
-&lt;code&gt;ssf&lt;/code&gt; ブロックがある場合のみ、ドメイン付与のファミリーは &lt;code&gt;ssh_domains&lt;/code&gt; を設定した場合のみ、
-管理リクエストのファミリーは &lt;code&gt;admin&lt;/code&gt; ブロックがある場合のみ現れます。&lt;/p&gt;
+&lt;p&gt;加えて、Go ランタイムとビルド情報も公開されます。失効と共有シグナルのファミリーは、設定にリストまたは&lt;code&gt;ssf&lt;/code&gt; ブロックがある場合のみ、ドメイン付与のファミリーは &lt;code&gt;ssh_domains&lt;/code&gt; を設定した場合のみ、管理リクエストのファミリーは &lt;code&gt;admin&lt;/code&gt; ブロックがある場合のみ現れます。&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;共有名や人の名前を含むメトリクスはありません&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;WebDAV は、誰かが利用できない共有に対して、その存在を確認させないよう &lt;strong&gt;404&lt;/strong&gt; で応答します。
-スクレイプも存在を確認させてはなりません。ラベルはプロトコル、origin、結果、メソッド名であり、
-共有や人の名前が使われることはありません。&lt;/p&gt;
+&lt;p&gt;WebDAV は、誰かが利用できない共有に対して、その存在を確認させないよう &lt;strong&gt;404&lt;/strong&gt; で応答します。スクレイプも存在を確認させてはなりません。ラベルはプロトコル、origin、結果、メソッド名であり、共有や人の名前が使われることはありません。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="what-to-alert-on"&gt;アラートの対象&lt;span class="hx:absolute hx:-mt-20" id="what-to-alert-on"&gt;&lt;/span&gt;
-&lt;a href="#what-to-alert-on" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;失効のチェックは&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/security/#every-one-of-them-fails-closed"&gt;フェイルクローズ&lt;/a&gt;です。
-古すぎるリストや、応答のないトランスミッターがあると、サーバーはそれが管理する認証情報を&lt;strong&gt;拒否&lt;/strong&gt;します。
-そうなった後ではなく、その前にアラートを出してください。&lt;/p&gt;
+&lt;a href="#what-to-alert-on" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;失効のチェックは&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/security/#every-one-of-them-fails-closed"&gt;フェイルクローズ&lt;/a&gt;です。古すぎるリストや、応答のないトランスミッターがあると、サーバーはそれが管理する認証情報を&lt;strong&gt;拒否&lt;/strong&gt;します。そうなった後ではなく、その前にアラートを出してください。&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;code&gt;fileshare_revocation_list_age_seconds&lt;/code&gt; が &lt;code&gt;ssh_krl_max_age&lt;/code&gt; または
-&lt;code&gt;crl_max_age&lt;/code&gt;(既定では 1h)に近づいている。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;fileshare_revocation_list_age_seconds&lt;/code&gt; が &lt;code&gt;ssh_krl_max_age&lt;/code&gt; または&lt;code&gt;crl_max_age&lt;/code&gt;(既定では 1h)に近づいている。&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;fileshare_ssf_last_heard_seconds&lt;/code&gt; が &lt;code&gt;ssf&lt;/code&gt; ブロックの &lt;code&gt;max_age&lt;/code&gt;
 (既定では 10m)に近づいている。&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;fileshare_directory_reloads_total{result=&amp;quot;failed&amp;quot;}&lt;/code&gt; が増加している。ディレクトリを
-読み取れないため、削除を含めて&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/administration/reload/"&gt;何も変更されません&lt;/a&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;fileshare_directory_reloads_total{result=&amp;quot;failed&amp;quot;}&lt;/code&gt; が増加している。ディレクトリを読み取れないため、削除を含めて&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/administration/reload/"&gt;何も変更されません&lt;/a&gt;。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
@@ -611,22 +536,14 @@ data-copied-label="コピーしました！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;人は、他のものが変更するディレクトリから取得されます。たとえば go-authn/bridge は
-アプリケーションパスワードをテーブルに書き込み、その人が無効化されるとその行を削除します。
-再読み込みがなければ、サーバーは起動時にいた人にだけサービスを提供し続けます。
-v0.10.0 以降は、次のタイミングで読み直します。&lt;/p&gt;
+&lt;p&gt;人は、他のものが変更するディレクトリから取得されます。たとえば go-authn/bridge はアプリケーションパスワードをテーブルに書き込み、その人が無効化されるとその行を削除します。再読み込みがなければ、サーバーは起動時にいた人にだけサービスを提供し続けます。v0.10.0 以降は、次のタイミングで読み直します。&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;code&gt;reload&lt;/code&gt; の間隔ごと。&lt;strong&gt;1 秒以上&lt;/strong&gt;の Go の duration を指定します。1 秒に何度もディレクトリを読むのは、
-誰かのデータベースへの負荷であり、サーバーが新しくなるわけではありません。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;reload&lt;/code&gt; の間隔ごと。&lt;strong&gt;1 秒以上&lt;/strong&gt;の Go の duration を指定します。1 秒に何度もディレクトリを読むのは、誰かのデータベースへの負荷であり、サーバーが新しくなるわけではありません。&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;&lt;code&gt;SIGHUP&lt;/code&gt;&lt;/strong&gt;(Unix)を受けたとき。&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/administration/"&gt;管理 API&lt;/a&gt;の &lt;strong&gt;&lt;code&gt;ReloadDirectory&lt;/code&gt;&lt;/strong&gt; を呼んだとき。
-追加、削除、変更された人、新しい世代が始まったかどうか、そして人が読むべき注記
-(存在しなくなった、またはメンバーのいないグループ、共有が名指ししているのにディレクトリに
-いなくなった人)を応答します。&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/administration/"&gt;管理 API&lt;/a&gt;の &lt;strong&gt;&lt;code&gt;ReloadDirectory&lt;/code&gt;&lt;/strong&gt; を呼んだとき。追加、削除、変更された人、新しい世代が始まったかどうか、そして人が読むべき注記(存在しなくなった、またはメンバーのいないグループ、共有が名指ししているのにディレクトリにいなくなった人)を応答します。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;&lt;code&gt;reload&lt;/code&gt; がない場合、ディレクトリは起動時、&lt;code&gt;SIGHUP&lt;/code&gt; 時、&lt;code&gt;ReloadDirectory&lt;/code&gt; 時にのみ読み込まれます。&lt;/p&gt;
-&lt;p&gt;再読み込みされるのは、&lt;code&gt;users&lt;/code&gt; ブロック(SQL、LDAP)です。設定ファイルの &lt;code&gt;user&lt;/code&gt; ブロックと
-&lt;code&gt;group&lt;/code&gt; ブロックは、それ自体が設定であり、起動時に読み込まれます。&lt;/p&gt;
+&lt;p&gt;再読み込みされるのは、&lt;code&gt;users&lt;/code&gt; ブロック(SQL、LDAP)です。設定ファイルの &lt;code&gt;user&lt;/code&gt; ブロックと&lt;code&gt;group&lt;/code&gt; ブロックは、それ自体が設定であり、起動時に読み込まれます。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="what-a-reload-does-depends-on-what-changed"&gt;再読み込みの動作は、何が変わったかによる&lt;span class="hx:absolute hx:-mt-20" id="what-a-reload-does-depends-on-what-changed"&gt;&lt;/span&gt;
 &lt;a href="#what-a-reload-does-depends-on-what-changed" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;境界線は&lt;strong&gt;失効&lt;/strong&gt;に引かれています。&lt;/p&gt;
 &lt;table&gt;
@@ -651,41 +568,28 @@ v0.10.0 以降は、次のタイミングで読み直します。&lt;/p&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;共有が名指ししているグループに新しく加わった人は、その共有を&lt;em&gt;変える&lt;/em&gt;ので、その共有に対する
-ほかの変更と同様に、新しい世代を経ます。SMB は共有のリストを起動時に固定するためです。&lt;/p&gt;
-&lt;p&gt;いなくなった人や、存在しなくなった、またはメンバーがいなくなったグループ(v0.29.1 以降は
-区別されます)を名指しする共有は、起動時に拒否されるのとは違って、&lt;strong&gt;その人を除いて&lt;/strong&gt;提供され
-(安全な方向です)、その旨が伝えられます。拒否すれば古いリストが維持されてしまい、古いリストとは
-取り上げたばかりのアクセス権だからです。&lt;/p&gt;
+&lt;p&gt;共有が名指ししているグループに新しく加わった人は、その共有を&lt;em&gt;変える&lt;/em&gt;ので、その共有に対するほかの変更と同様に、新しい世代を経ます。SMB は共有のリストを起動時に固定するためです。&lt;/p&gt;
+&lt;p&gt;いなくなった人や、存在しなくなった、またはメンバーがいなくなったグループ(v0.29.1 以降は区別されます)を名指しする共有は、起動時に拒否されるのとは違って、&lt;strong&gt;その人を除いて&lt;/strong&gt;提供され(安全な方向です)、その旨が伝えられます。拒否すれば古いリストが維持されてしまい、古いリストとは取り上げたばかりのアクセス権だからです。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="an-empty-group-is-not-everyone"&gt;空のグループは「全員」ではない&lt;span class="hx:absolute hx:-mt-20" id="an-empty-group-is-not-everyone"&gt;&lt;/span&gt;
 &lt;a href="#an-empty-group-is-not-everyone" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;@engineers&lt;/code&gt; 向けに書かれた共有は、最後のエンジニアが去ると、誰にも提供されなくなります&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;空の &lt;code&gt;allow&lt;/code&gt; は「認証した誰でも」を意味します。そのため、共有が開放されているかどうかを決めるのは
-現在の展開結果ではなく、&lt;strong&gt;書かれた内容&lt;/strong&gt;です。グループ向けに書かれた共有は、そのグループが空に
-なっても閉じたままです。そのような共有は SMB ではまったく提供されません。SMB では空の
-&lt;code&gt;AllowUsers&lt;/code&gt; が全員と解釈されてしまうからです。&lt;/p&gt;
+&lt;p&gt;空の &lt;code&gt;allow&lt;/code&gt; は「認証した誰でも」を意味します。そのため、共有が開放されているかどうかを決めるのは現在の展開結果ではなく、&lt;strong&gt;書かれた内容&lt;/strong&gt;です。グループ向けに書かれた共有は、そのグループが空になっても閉じたままです。そのような共有は SMB ではまったく提供されません。SMB では空の&lt;code&gt;AllowUsers&lt;/code&gt; が全員と解釈されてしまうからです。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="watching-it"&gt;監視&lt;span class="hx:absolute hx:-mt-20" id="watching-it"&gt;&lt;/span&gt;
-&lt;a href="#watching-it" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;fileshare_directory_reloads_total{result}&lt;/code&gt; は、何も見つからなかった再読み込み(&lt;code&gt;unchanged&lt;/code&gt;)、
-その場で追加した再読み込み(&lt;code&gt;added&lt;/code&gt;)、世代を開始した再読み込み(&lt;code&gt;swapped&lt;/code&gt;)、ディレクトリを
-読み取れなかった再読み込み(&lt;code&gt;failed&lt;/code&gt;)を数えます。&lt;code&gt;fileshare_directory_people&lt;/code&gt; は、直近の読み取りが
-保持していた人数です。&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/administration/health/"&gt;ヘルスチェックとメトリクス&lt;/a&gt;を参照してください。&lt;/p&gt;
+&lt;a href="#watching-it" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;fileshare_directory_reloads_total{result}&lt;/code&gt; は、何も見つからなかった再読み込み(&lt;code&gt;unchanged&lt;/code&gt;)、その場で追加した再読み込み(&lt;code&gt;added&lt;/code&gt;)、世代を開始した再読み込み(&lt;code&gt;swapped&lt;/code&gt;)、ディレクトリを読み取れなかった再読み込み(&lt;code&gt;failed&lt;/code&gt;)を数えます。&lt;code&gt;fileshare_directory_people&lt;/code&gt; は、直近の読み取りが保持していた人数です。&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/administration/health/"&gt;ヘルスチェックとメトリクス&lt;/a&gt;を参照してください。&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;再読み込みが届かないもの&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;トークンや証明書を通じて ID プロバイダーが身元を保証する人は、ディレクトリにいないため、
-再読み込みの対象外です。&lt;strong&gt;その人たち&lt;/strong&gt;を取り消すのは、
-&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/security/"&gt;失効リストと共有シグナル&lt;/a&gt;の役割です。&lt;/p&gt;
+&lt;p&gt;トークンや証明書を通じて ID プロバイダーが身元を保証する人は、ディレクトリにいないため、再読み込みの対象外です。&lt;strong&gt;その人たち&lt;/strong&gt;を取り消すのは、&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/security/"&gt;失効リストと共有シグナル&lt;/a&gt;の役割です。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;</description></item><item><title>管理 API</title><link>https://go-fileshare.github.io/docs/0.31/ja/administration/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/ja/administration/</guid><description>
-&lt;p&gt;v0.8.0 以降、サーバーの稼働中に共有を変更できます。&lt;code&gt;admin&lt;/code&gt; ブロックを書くと gRPC サービスが有効になり、
-再起動やファイルの編集なしに、共有の作成、変更、オフライン化ができます。&lt;/p&gt;
+&lt;p&gt;v0.8.0 以降、サーバーの稼働中に共有を変更できます。&lt;code&gt;admin&lt;/code&gt; ブロックを書くと gRPC サービスが有効になり、再起動やファイルの編集なしに、共有の作成、変更、オフライン化ができます。&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;admin&lt;/span&gt; {
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; listen&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;unix:///run/fileshare/admin.sock&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # made 0600
@@ -705,8 +609,7 @@ data-copied-label="コピーしました！"
 &lt;/div&gt;
 &lt;p&gt;ブロックを書かない限り、何も待ち受けません。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="what-it-does"&gt;できること&lt;span class="hx:absolute hx:-mt-20" id="what-it-does"&gt;&lt;/span&gt;
-&lt;a href="#what-it-does" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;サービスは
-&lt;a href="https://github.com/go-fileshare/fileshare/blob/v0.28.0/proto/fileshare/admin/v1/admin.proto" target="_blank" rel="noopener"&gt;&lt;code&gt;fileshare.admin.v1.AdminService&lt;/code&gt;&lt;/a&gt;
+&lt;a href="#what-it-does" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;サービスは&lt;a href="https://github.com/go-fileshare/fileshare/blob/v0.28.0/proto/fileshare/admin/v1/admin.proto" target="_blank" rel="noopener"&gt;&lt;code&gt;fileshare.admin.v1.AdminService&lt;/code&gt;&lt;/a&gt;
 です。&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
@@ -750,11 +653,8 @@ data-copied-label="コピーしました！"
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;権限付与で名指しできるのは、&lt;strong&gt;ユーザー&lt;/strong&gt;、&lt;strong&gt;グループ&lt;/strong&gt;(設定ファイルでは &lt;code&gt;@group&lt;/code&gt;)、
-&lt;strong&gt;&lt;code&gt;oidc:groups:&lt;/code&gt; の値&lt;/strong&gt;、&lt;strong&gt;&lt;code&gt;oidc:user:&lt;/code&gt; の名前&lt;/strong&gt;です。これらは設定ファイルで使うのと同じ語彙です。
-&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;ID プロバイダーが名指しする人&lt;/a&gt;を参照してください。&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;grpc.health.v1&lt;/code&gt; は同じリスナーで応答します。ブロックに &lt;code&gt;reflection = true&lt;/code&gt; を指定すると、
-&lt;code&gt;grpcurl&lt;/code&gt; 用の gRPC サーバーリフレクションが有効になります。&lt;/p&gt;
+&lt;p&gt;権限付与で名指しできるのは、&lt;strong&gt;ユーザー&lt;/strong&gt;、&lt;strong&gt;グループ&lt;/strong&gt;(設定ファイルでは &lt;code&gt;@group&lt;/code&gt;)、&lt;strong&gt;&lt;code&gt;oidc:groups:&lt;/code&gt; の値&lt;/strong&gt;、&lt;strong&gt;&lt;code&gt;oidc:user:&lt;/code&gt; の名前&lt;/strong&gt;です。これらは設定ファイルで使うのと同じ語彙です。&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;ID プロバイダーが名指しする人&lt;/a&gt;を参照してください。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;grpc.health.v1&lt;/code&gt; は同じリスナーで応答します。ブロックに &lt;code&gt;reflection = true&lt;/code&gt; を指定すると、&lt;code&gt;grpcurl&lt;/code&gt; 用の gRPC サーバーリフレクションが有効になります。&lt;/p&gt;
 &lt;h3 data-hextra-search-id="every-change-says-what-serving-it-did"&gt;すべての変更は、提供にどう反映されたかを伝える&lt;span class="hx:absolute hx:-mt-20" id="every-change-says-what-serving-it-did"&gt;&lt;/span&gt;
 &lt;a href="#every-change-says-what-serving-it-did" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;変更は &lt;code&gt;Applied&lt;/code&gt; メッセージで応答します。&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
@@ -773,18 +673,13 @@ data-copied-label="コピーしました！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;そのため、すべての RPC は共有そのものを返すのではなく、それぞれ専用の応答メッセージを持ちます。
-&lt;code&gt;.proto&lt;/code&gt; は、AIP-131 の「リソースを返す」よりも、&lt;a href="https://buf.build" target="_blank" rel="noopener"&gt;buf&lt;/a&gt; の &lt;code&gt;STANDARD&lt;/code&gt; lint ルール
-(fileshare の CI で &lt;code&gt;buf lint&lt;/code&gt; により検査)に従っており、&lt;code&gt;Applied&lt;/code&gt; を運ぶのがラッパーです。&lt;/p&gt;
+&lt;p&gt;そのため、すべての RPC は共有そのものを返すのではなく、それぞれ専用の応答メッセージを持ちます。&lt;code&gt;.proto&lt;/code&gt; は、AIP-131 の「リソースを返す」よりも、&lt;a href="https://buf.build" target="_blank" rel="noopener"&gt;buf&lt;/a&gt; の &lt;code&gt;STANDARD&lt;/code&gt; lint ルール(fileshare の CI で &lt;code&gt;buf lint&lt;/code&gt; により検査)に従っており、&lt;code&gt;Applied&lt;/code&gt; を運ぶのがラッパーです。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="where-it-listens-and-who-may-call-it"&gt;待ち受ける場所と、呼び出せる人&lt;span class="hx:absolute hx:-mt-20" id="where-it-listens-and-who-may-call-it"&gt;&lt;/span&gt;
 &lt;a href="#where-it-listens-and-who-may-call-it" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;TCP の場合は、相互 TLS か、何もなしかのどちらかです&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;tls_cert_file&lt;/code&gt;、&lt;code&gt;tls_key_file&lt;/code&gt;、&lt;code&gt;client_ca_file&lt;/code&gt; の 3 つすべてが必要で、
-&lt;strong&gt;ループバックも例外ではありません&lt;/strong&gt;。ローカルユーザーなら誰でもループバックに到達でき、
-この API は誰が誰のファイルを読めるかを決めるためです。Unix ソケットは &lt;strong&gt;0600&lt;/strong&gt; で作成され、
-そのパーミッションがアクセス制御になります。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;tls_cert_file&lt;/code&gt;、&lt;code&gt;tls_key_file&lt;/code&gt;、&lt;code&gt;client_ca_file&lt;/code&gt; の 3 つすべてが必要で、&lt;strong&gt;ループバックも例外ではありません&lt;/strong&gt;。ローカルユーザーなら誰でもループバックに到達でき、この API は誰が誰のファイルを読めるかを決めるためです。Unix ソケットは &lt;strong&gt;0600&lt;/strong&gt; で作成され、そのパーミッションがアクセス制御になります。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -808,15 +703,9 @@ data-copied-label="コピーしました！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;リスナーは
-&lt;a href="https://github.com/grpc-transports/control" target="_blank" rel="noopener"&gt;grpc-transports/control&lt;/a&gt; です。
-すべての変更は、誰が行ったか(クライアント証明書の CN、またはソケットの相手の uid)とともに
-記録されます。&lt;/p&gt;
+&lt;p&gt;リスナーは&lt;a href="https://github.com/grpc-transports/control" target="_blank" rel="noopener"&gt;grpc-transports/control&lt;/a&gt; です。すべての変更は、誰が行ったか(クライアント証明書の CN、またはソケットの相手の uid)とともに記録されます。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="over-https-for-oidc-tokens"&gt;HTTPS 経由、OIDC トークン向け&lt;span class="hx:absolute hx:-mt-20" id="over-https-for-oidc-tokens"&gt;&lt;/span&gt;
-&lt;a href="#over-https-for-oidc-tokens" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;v0.28.0 以降、&lt;code&gt;admin&lt;/code&gt; ブロックに &lt;code&gt;web&lt;/code&gt; ブロックがあれば、同じ API(同じ状態、同じ監査)が
-HTTPS でも提供されます。&lt;strong&gt;Connect、gRPC-Web、gRPC を 1 つのリスナーで&lt;/strong&gt;、
-&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/security/tls/"&gt;&lt;code&gt;tls&lt;/code&gt; ブロック&lt;/a&gt;の証明書を使って提供します。
-Web UI とネイティブ UI が通信する先がこれです。&lt;/p&gt;
+&lt;a href="#over-https-for-oidc-tokens" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;v0.28.0 以降、&lt;code&gt;admin&lt;/code&gt; ブロックに &lt;code&gt;web&lt;/code&gt; ブロックがあれば、同じ API(同じ状態、同じ監査)がHTTPS でも提供されます。&lt;strong&gt;Connect、gRPC-Web、gRPC を 1 つのリスナーで&lt;/strong&gt;、&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/security/tls/"&gt;&lt;code&gt;tls&lt;/code&gt; ブロック&lt;/a&gt;の証明書を使って提供します。Web UI とネイティブ UI が通信する先がこれです。&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;admin&lt;/span&gt; {
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; listen&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;unix:///run/fileshare/admin.sock&amp;#34;&lt;/span&gt;
@@ -878,27 +767,12 @@ data-copied-label="コピーしました！"
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;&lt;strong&gt;誰に応答するか。&lt;/strong&gt; 呼び出しに応答するのは、ある発行者の検証器がそのベアラートークン
-(署名、&lt;code&gt;iss&lt;/code&gt;、このサーバーを名指しする &lt;code&gt;aud&lt;/code&gt;、時刻)を受け入れ、&lt;strong&gt;かつ&lt;/strong&gt;その発行者のブロックが
-トークンのサブジェクトまたはそのグループのいずれかを名指ししている場合です。ある発行者に
-列挙されたサブジェクトは、別の発行者では誰でもありません。人とは (発行者、&lt;code&gt;sub&lt;/code&gt;) です。
-検査はヘッダーだけで行われ、メッセージが 1 バイトもデコードされる前に実行されます。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;サーバーごとに 1 つのオーディエンス。&lt;/strong&gt; 複数のサーバー宛てのトークンは、そのうちのどれかが
-他のサーバーに対して再利用できてしまいます(RFC 8707、RFC 9068)。そのため各サーバーが
-独自のオーディエンスを持ち、複数のサーバーを操作する UI はサーバーごとに 1 つのトークンを要求します。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;拒否された呼び出し元が知ること。&lt;/strong&gt; 「拒否された」ということだけです。理由と、行われたすべての変更は、
-&lt;code&gt;oidc=&amp;lt;issuer&amp;gt; &amp;lt;sub&amp;gt;&lt;/code&gt; として監査出力に記録されます。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;CORS なし。&lt;/strong&gt; ブラウザーは直接呼び出しません。トークンを保持する UI 自身のサーバー経由で到達します。
-リクエストは 1 MiB に制限され、接続のすべての段階にタイムアウトがあります。各発行者には鍵を読むために
-&lt;strong&gt;起動時に&lt;/strong&gt;接続します。到達できない発行者があると、その名前を示して起動が停止します。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;誰に応答するか。&lt;/strong&gt; 呼び出しに応答するのは、ある発行者の検証器がそのベアラートークン(署名、&lt;code&gt;iss&lt;/code&gt;、このサーバーを名指しする &lt;code&gt;aud&lt;/code&gt;、時刻)を受け入れ、&lt;strong&gt;かつ&lt;/strong&gt;その発行者のブロックがトークンのサブジェクトまたはそのグループのいずれかを名指ししている場合です。ある発行者に列挙されたサブジェクトは、別の発行者では誰でもありません。人とは (発行者、&lt;code&gt;sub&lt;/code&gt;) です。検査はヘッダーだけで行われ、メッセージが 1 バイトもデコードされる前に実行されます。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;サーバーごとに 1 つのオーディエンス。&lt;/strong&gt; 複数のサーバー宛てのトークンは、そのうちのどれかが他のサーバーに対して再利用できてしまいます(RFC 8707、RFC 9068)。そのため各サーバーが独自のオーディエンスを持ち、複数のサーバーを操作する UI はサーバーごとに 1 つのトークンを要求します。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;拒否された呼び出し元が知ること。&lt;/strong&gt; 「拒否された」ということだけです。理由と、行われたすべての変更は、&lt;code&gt;oidc=&amp;lt;issuer&amp;gt; &amp;lt;sub&amp;gt;&lt;/code&gt; として監査出力に記録されます。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;CORS なし。&lt;/strong&gt; ブラウザーは直接呼び出しません。トークンを保持する UI 自身のサーバー経由で到達します。リクエストは 1 MiB に制限され、接続のすべての段階にタイムアウトがあります。各発行者には鍵を読むために&lt;strong&gt;起動時に&lt;/strong&gt;接続します。到達できない発行者があると、その名前を示して起動が停止します。&lt;/p&gt;
 &lt;h3 data-hextra-search-id="in-a-browser-the-console"&gt;ブラウザーで: コンソール&lt;span class="hx:absolute hx:-mt-20" id="in-a-browser-the-console"&gt;&lt;/span&gt;
-&lt;a href="#in-a-browser-the-console" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;&lt;a href="https://github.com/go-fileshare/console" target="_blank" rel="noopener"&gt;go-fileshare/console&lt;/a&gt; は、この API を呼び出す管理
-コンソールです。共有、詳細、権限付与、作成、有効化、無効化、削除、権限の付与と取り消し、
-そして&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/administration/volumes/"&gt;ボリューム&lt;/a&gt;(作成、リサイズ、スナップショット、共有、
-削除。データは決して破棄しない)を、すべてのサーバーにまたがって操作できます。
-&lt;a href="https://github.com/go-fileshare/portal" target="_blank" rel="noopener"&gt;go-fileshare/portal&lt;/a&gt; の背後でブラウザー上で動作し、
-portal が OpenID Connect で人をログインさせ、そのトークンを保持します。トークンはサーバーごとに 1 つで、
-そのサーバーだけを宛先とします。ブラウザーがトークンを保持することはありません。&lt;/p&gt;
+&lt;a href="#in-a-browser-the-console" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;&lt;a href="https://github.com/go-fileshare/console" target="_blank" rel="noopener"&gt;go-fileshare/console&lt;/a&gt; は、この API を呼び出す管理コンソールです。共有、詳細、権限付与、作成、有効化、無効化、削除、権限の付与と取り消し、そして&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/administration/volumes/"&gt;ボリューム&lt;/a&gt;(作成、リサイズ、スナップショット、共有、削除。データは決して破棄しない)を、すべてのサーバーにまたがって操作できます。&lt;a href="https://github.com/go-fileshare/portal" target="_blank" rel="noopener"&gt;go-fileshare/portal&lt;/a&gt; の背後でブラウザー上で動作し、portal が OpenID Connect で人をログインさせ、そのトークンを保持します。トークンはサーバーごとに 1 つで、そのサーバーだけを宛先とします。ブラウザーがトークンを保持することはありません。&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# portal.hcl
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;server&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;paris&amp;#34;&lt;/span&gt; {
@@ -918,18 +792,8 @@ data-copied-label="コピーしました！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;同じコンソールは、portal なしで&lt;strong&gt;ネイティブ&lt;/strong&gt;にも動作します。パブリッククライアントとして
-(&lt;a href="https://github.com/go-authn/rp" target="_blank" rel="noopener"&gt;go-authn/rp&lt;/a&gt;、RFC 8252)、システムのブラウザーとループバックの
-リスナー経由でログインし、各サーバーを、そのサーバーだけを宛先とするトークンで呼び出します。
-サーバーは自身の &lt;code&gt;console.hcl&lt;/code&gt; に、ここと同じ &lt;code&gt;url&lt;/code&gt; と &lt;code&gt;resource&lt;/code&gt; で列挙します。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;ファイルエクスプローラー&lt;/strong&gt;の &lt;a href="https://github.com/go-fileshare/explorer" target="_blank" rel="noopener"&gt;go-fileshare/explorer&lt;/a&gt; は、
-同じ portal の背後で動作します。人が利用できるすべての共有で、参照、アップロード、ダウンロード、
-名前の変更、コピー、削除ができます。portal 経由(&lt;code&gt;/dav/&amp;lt;server&amp;gt;/...&lt;/code&gt;)で各サーバーの WebDAV に、
-そのサーバー宛てのトークンで到達し、返ってきたものを portal は&lt;strong&gt;無害化して&lt;/strong&gt;提供します
-(&lt;code&gt;Content-Security-Policy: sandbox&lt;/code&gt;、添付ファイルとして)。共有上のページが portal として
-実行されることは決してありません。fileshare &lt;strong&gt;v0.29.0&lt;/strong&gt; 以降が必要です。その
-&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/protocols/webdav/#the-root-and-uploads-in-pieces"&gt;WebDAV&lt;/a&gt;は、ルートで共有を一覧し、
-分割アップロードを受け付けます。&lt;/p&gt;
+&lt;p&gt;同じコンソールは、portal なしで&lt;strong&gt;ネイティブ&lt;/strong&gt;にも動作します。パブリッククライアントとして(&lt;a href="https://github.com/go-authn/rp" target="_blank" rel="noopener"&gt;go-authn/rp&lt;/a&gt;、RFC 8252)、システムのブラウザーとループバックのリスナー経由でログインし、各サーバーを、そのサーバーだけを宛先とするトークンで呼び出します。サーバーは自身の &lt;code&gt;console.hcl&lt;/code&gt; に、ここと同じ &lt;code&gt;url&lt;/code&gt; と &lt;code&gt;resource&lt;/code&gt; で列挙します。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;ファイルエクスプローラー&lt;/strong&gt;の &lt;a href="https://github.com/go-fileshare/explorer" target="_blank" rel="noopener"&gt;go-fileshare/explorer&lt;/a&gt; は、同じ portal の背後で動作します。人が利用できるすべての共有で、参照、アップロード、ダウンロード、名前の変更、コピー、削除ができます。portal 経由(&lt;code&gt;/dav/&amp;lt;server&amp;gt;/...&lt;/code&gt;)で各サーバーの WebDAV に、そのサーバー宛てのトークンで到達し、返ってきたものを portal は&lt;strong&gt;無害化して&lt;/strong&gt;提供します(&lt;code&gt;Content-Security-Policy: sandbox&lt;/code&gt;、添付ファイルとして)。共有上のページが portal として実行されることは決してありません。fileshare &lt;strong&gt;v0.29.0&lt;/strong&gt; 以降が必要です。その&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/protocols/webdav/#the-root-and-uploads-in-pieces"&gt;WebDAV&lt;/a&gt;は、ルートで共有を一覧し、分割アップロードを受け付けます。&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# portal.hcl、同じサーバー
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;server&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;paris&amp;#34;&lt;/span&gt; {&lt;span class="c1"&gt;
@@ -948,92 +812,38 @@ data-copied-label="コピーしました！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;エクスプローラーも、コンソールと同様に portal なしで&lt;strong&gt;ネイティブ&lt;/strong&gt;に動作します(explorer v0.2.0)。
-パブリッククライアントとしてシステムのブラウザー経由でログインし、各サーバーの WebDAV を、
-そのサーバーだけを宛先とするトークンで呼び出します。サーバーは &lt;code&gt;explorer.hcl&lt;/code&gt; に、
-それぞれの &lt;code&gt;dav_url&lt;/code&gt;(https のみ)と &lt;code&gt;oidc&lt;/code&gt; ブロックの &lt;code&gt;resource&lt;/code&gt; とともに列挙します。
-どちらのネイティブクライアントも、トークン付きのリダイレクトには従いません。Go の HTTP クライアントは、
-同じホストへのリダイレクトであればスキームが異なっても &lt;code&gt;Authorization&lt;/code&gt; を保持するため、
-プレーンな &lt;code&gt;http&lt;/code&gt; アドレスに &lt;code&gt;307&lt;/code&gt; を返す誤設定のプロキシがあると、
-トークンが平文で送られてしまうからです。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;失敗したアップロードは再開されます&lt;/strong&gt;(explorer v0.3.0)。パートファイルにはファイルの名前、
-サイズ、更新時刻から付けた名前が使われるため、同じファイルをもう一度アップロードすると、
-パートの末尾から続きが行われます。ただし、パートの最後の 64 KiB を読み戻して、
-それがそのファイルのものであると確認できた場合に限ります。別のファイルの続きが行われることは
-ありません。ネットワークやサーバーの障害ではパートが保持され、拒否(403、満杯の共有の 507)では
-削除されます。&lt;/p&gt;
-&lt;p&gt;各サーバーの &lt;code&gt;audience&lt;/code&gt; は、そのサーバーに対する portal の &lt;code&gt;resource&lt;/code&gt; です。この API を使うために
-独自のコンソールを書く必要はありません。このサーバー宛てのトークンを持つ Connect、gRPC-Web、gRPC の
-クライアントであれば何でも使えます。&lt;/p&gt;
+&lt;p&gt;エクスプローラーも、コンソールと同様に portal なしで&lt;strong&gt;ネイティブ&lt;/strong&gt;に動作します(explorer v0.2.0)。パブリッククライアントとしてシステムのブラウザー経由でログインし、各サーバーの WebDAV を、そのサーバーだけを宛先とするトークンで呼び出します。サーバーは &lt;code&gt;explorer.hcl&lt;/code&gt; に、それぞれの &lt;code&gt;dav_url&lt;/code&gt;(https のみ)と &lt;code&gt;oidc&lt;/code&gt; ブロックの &lt;code&gt;resource&lt;/code&gt; とともに列挙します。どちらのネイティブクライアントも、トークン付きのリダイレクトには従いません。Go の HTTP クライアントは、同じホストへのリダイレクトであればスキームが異なっても &lt;code&gt;Authorization&lt;/code&gt; を保持するため、プレーンな &lt;code&gt;http&lt;/code&gt; アドレスに &lt;code&gt;307&lt;/code&gt; を返す誤設定のプロキシがあると、トークンが平文で送られてしまうからです。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;失敗したアップロードは再開されます&lt;/strong&gt;(explorer v0.3.0)。パートファイルにはファイルの名前、サイズ、更新時刻から付けた名前が使われるため、同じファイルをもう一度アップロードすると、パートの末尾から続きが行われます。ただし、パートの最後の 64 KiB を読み戻して、それがそのファイルのものであると確認できた場合に限ります。別のファイルの続きが行われることはありません。ネットワークやサーバーの障害ではパートが保持され、拒否(403、満杯の共有の 507)では削除されます。&lt;/p&gt;
+&lt;p&gt;各サーバーの &lt;code&gt;audience&lt;/code&gt; は、そのサーバーに対する portal の &lt;code&gt;resource&lt;/code&gt; です。この API を使うために独自のコンソールを書く必要はありません。このサーバー宛てのトークンを持つ Connect、gRPC-Web、gRPC のクライアントであれば何でも使えます。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="what-it-will-and-will-not-touch"&gt;触れるものと触れないもの&lt;span class="hx:absolute hx:-mt-20" id="what-it-will-and-will-not-touch"&gt;&lt;/span&gt;
-&lt;a href="#what-it-will-and-will-not-touch" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;自分が作成した共有を管理します。&lt;/strong&gt; 設定ファイルに書かれた共有は同じフィールドで一覧に表示されますが、
-その定義の変更は &lt;code&gt;FAILED_PRECONDITION&lt;/code&gt; で拒否されます。2 か所で定義された共有は誰も答えたくない
-問いであり、その定義の場所はファイルだからです。API の共有は &lt;code&gt;state_file&lt;/code&gt; にアトミックに書き込まれ、
-次回の起動時に再び提供されます。&lt;code&gt;state_file&lt;/code&gt; のないブロックが拒否されるのはそのためです。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;ソースは &lt;code&gt;source_roots&lt;/code&gt; の下になければなりません。&lt;/strong&gt; 解決後の(リンクをたどり、&lt;code&gt;..&lt;/code&gt; を取り除いた)
-パスで判定され、保持されるのも解決後のパスです。&lt;code&gt;source_roots&lt;/code&gt; がなければ、API は
-&lt;strong&gt;共有をまったく作成できません&lt;/strong&gt;。プロセスは &lt;code&gt;/dev&lt;/code&gt; や &lt;code&gt;/etc&lt;/code&gt; を読めますが、それらを呼び出し元に
-渡すつもりは誰にもないからです。起動のたびに再検査され、&lt;code&gt;state_file&lt;/code&gt; にある共有がルートの下に
-なくなっていれば、その名前を示して起動が停止します。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;すべての共有には少なくとも 1 つの権限付与があります。&lt;/strong&gt; 権限付与のない共有は、認証した誰にでも
-開放されます。ファイルでは意図的にそう書けますが、API 呼び出しで省略によってそうなるべきでは
-ありません。そのため &lt;code&gt;CreateShare&lt;/code&gt; には権限付与が必要で、最後の 1 つを取り消すことは拒否されます。
-代わりに共有を削除してください。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;プロトコルが運べる名前。&lt;/strong&gt; 共有名は最大 80 文字で、空白で始まったり終わったりせず、
-&lt;code&gt;.&lt;/code&gt; や &lt;code&gt;..&lt;/code&gt; ではなく、印字できない文字や &lt;code&gt;:*?&amp;quot;&amp;lt;&amp;gt;|{}%&lt;/code&gt; のいずれも含みません。サブジェクトも
-印字できない文字を含まず、1 つの共有が受け付ける権限付与は最大 1000 件です。それ以前に
-グループの仕事でしょう。これらはいずれも v0.14.0 より前には受け付けられ、&lt;code&gt;state_file&lt;/code&gt; に書き込まれた
-うえで、起動のたびに致命的な問題になっていました。&lt;/p&gt;
+&lt;a href="#what-it-will-and-will-not-touch" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;自分が作成した共有を管理します。&lt;/strong&gt; 設定ファイルに書かれた共有は同じフィールドで一覧に表示されますが、その定義の変更は &lt;code&gt;FAILED_PRECONDITION&lt;/code&gt; で拒否されます。2 か所で定義された共有は誰も答えたくない問いであり、その定義の場所はファイルだからです。API の共有は &lt;code&gt;state_file&lt;/code&gt; にアトミックに書き込まれ、次回の起動時に再び提供されます。&lt;code&gt;state_file&lt;/code&gt; のないブロックが拒否されるのはそのためです。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;ソースは &lt;code&gt;source_roots&lt;/code&gt; の下になければなりません。&lt;/strong&gt; 解決後の(リンクをたどり、&lt;code&gt;..&lt;/code&gt; を取り除いた)パスで判定され、保持されるのも解決後のパスです。&lt;code&gt;source_roots&lt;/code&gt; がなければ、API は&lt;strong&gt;共有をまったく作成できません&lt;/strong&gt;。プロセスは &lt;code&gt;/dev&lt;/code&gt; や &lt;code&gt;/etc&lt;/code&gt; を読めますが、それらを呼び出し元に渡すつもりは誰にもないからです。起動のたびに再検査され、&lt;code&gt;state_file&lt;/code&gt; にある共有がルートの下になくなっていれば、その名前を示して起動が停止します。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;すべての共有には少なくとも 1 つの権限付与があります。&lt;/strong&gt; 権限付与のない共有は、認証した誰にでも開放されます。ファイルでは意図的にそう書けますが、API 呼び出しで省略によってそうなるべきではありません。そのため &lt;code&gt;CreateShare&lt;/code&gt; には権限付与が必要で、最後の 1 つを取り消すことは拒否されます。代わりに共有を削除してください。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;プロトコルが運べる名前。&lt;/strong&gt; 共有名は最大 80 文字で、空白で始まったり終わったりせず、&lt;code&gt;.&lt;/code&gt; や &lt;code&gt;..&lt;/code&gt; ではなく、印字できない文字や &lt;code&gt;:*?&amp;quot;&amp;lt;&amp;gt;|{}%&lt;/code&gt; のいずれも含みません。サブジェクトも印字できない文字を含まず、1 つの共有が受け付ける権限付与は最大 1000 件です。それ以前にグループの仕事でしょう。これらはいずれも v0.14.0 より前には受け付けられ、&lt;code&gt;state_file&lt;/code&gt; に書き込まれたうえで、起動のたびに致命的な問題になっていました。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;どの共有も、設定、状態ファイル、およびそれらが指すシークレットを含んではなりません。&lt;/strong&gt;
-そこに書き込める人は、誰が何をできるかを書き換えられてしまいます。v0.17.0 以降は、
-&lt;code&gt;authorized_keys_file&lt;/code&gt;、&lt;code&gt;users&lt;/code&gt; ブロックの &lt;code&gt;dsn_file&lt;/code&gt; と &lt;code&gt;bind_password_file&lt;/code&gt;、&lt;code&gt;ssf&lt;/code&gt; ブロックの
-&lt;code&gt;ca_file&lt;/code&gt;、DSN が指す sqlite データベースも含みます。誰かの &lt;code&gt;authorized_keys&lt;/code&gt; に自分の鍵を
-追加できる書き込み者は、その人としてログインできてしまうからです。&lt;strong&gt;また、共有が別の共有を
-含んでもなりません&lt;/strong&gt;(&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/configuration/shares/#a-directory-not-only-an-image"&gt;ディレクトリ&lt;/a&gt;を参照)。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;変更は、設定と同じように検査され、開かれ、書き込まれ、そのあとで提供されます。&lt;/strong&gt; サーバーが
-受け入れられない変更(開けないイメージ、ディレクトリの誰も持たない名前)は拒否され、
-提供中のものと書き込まれたものは元のままに保たれます。&lt;/p&gt;
+そこに書き込める人は、誰が何をできるかを書き換えられてしまいます。v0.17.0 以降は、&lt;code&gt;authorized_keys_file&lt;/code&gt;、&lt;code&gt;users&lt;/code&gt; ブロックの &lt;code&gt;dsn_file&lt;/code&gt; と &lt;code&gt;bind_password_file&lt;/code&gt;、&lt;code&gt;ssf&lt;/code&gt; ブロックの&lt;code&gt;ca_file&lt;/code&gt;、DSN が指す sqlite データベースも含みます。誰かの &lt;code&gt;authorized_keys&lt;/code&gt; に自分の鍵を追加できる書き込み者は、その人としてログインできてしまうからです。&lt;strong&gt;また、共有が別の共有を含んでもなりません&lt;/strong&gt;(&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/configuration/shares/#a-directory-not-only-an-image"&gt;ディレクトリ&lt;/a&gt;を参照)。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;変更は、設定と同じように検査され、開かれ、書き込まれ、そのあとで提供されます。&lt;/strong&gt; サーバーが受け入れられない変更(開けないイメージ、ディレクトリの誰も持たない名前)は拒否され、提供中のものと書き込まれたものは元のままに保たれます。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="disabling-a-share"&gt;共有の無効化&lt;span class="hx:absolute hx:-mt-20" id="disabling-a-share"&gt;&lt;/span&gt;
-&lt;a href="#disabling-a-share" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;無効化は Samba の &lt;code&gt;available = no&lt;/code&gt; に相当します。&lt;/strong&gt; 共有は定義されたままで、接続の試行はすべて失敗します。
-開いている接続は閉じられ、イメージやディレクトリは&lt;strong&gt;解放される&lt;/strong&gt;ので、オフラインの間にファイルを
-置き換えられます。&lt;code&gt;EnableShare&lt;/code&gt; で再び提供され、ソースを開けなくなっている場合は拒否されます。
-&lt;code&gt;CreateShare&lt;/code&gt; で、最初から無効化された共有を作成することもできます。&lt;/p&gt;
-&lt;p&gt;ほかのすべての変更と異なり、これは&lt;strong&gt;設定ファイルの&lt;/strong&gt;共有にも適用されます。共有をオフラインにするのは
-定義ではなく操作だからで、再起動をまたいで保持されます(状態ファイルに保存されます)。
-&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/configuration/check/"&gt;&lt;code&gt;fileshare check&lt;/code&gt;&lt;/a&gt;はオフラインのものを一覧します。&lt;/p&gt;
+&lt;a href="#disabling-a-share" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;無効化は Samba の &lt;code&gt;available = no&lt;/code&gt; に相当します。&lt;/strong&gt; 共有は定義されたままで、接続の試行はすべて失敗します。開いている接続は閉じられ、イメージやディレクトリは&lt;strong&gt;解放される&lt;/strong&gt;ので、オフラインの間にファイルを置き換えられます。&lt;code&gt;EnableShare&lt;/code&gt; で再び提供され、ソースを開けなくなっている場合は拒否されます。&lt;code&gt;CreateShare&lt;/code&gt; で、最初から無効化された共有を作成することもできます。&lt;/p&gt;
+&lt;p&gt;ほかのすべての変更と異なり、これは&lt;strong&gt;設定ファイルの&lt;/strong&gt;共有にも適用されます。共有をオフラインにするのは定義ではなく操作だからで、再起動をまたいで保持されます(状態ファイルに保存されます)。&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/configuration/check/"&gt;&lt;code&gt;fileshare check&lt;/code&gt;&lt;/a&gt;はオフラインのものを一覧します。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="a-change-is-a-new-generation"&gt;変更は新しい世代&lt;span class="hx:absolute hx:-mt-20" id="a-change-is-a-new-generation"&gt;&lt;/span&gt;
 &lt;a href="#a-change-is-a-new-generation" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;変更はプロトコルサーバーを再起動し、その接続を閉じます&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;SMB は接続を許可する人をツリー接続ごとに 1 回検査し、SFTP は人のツリーをログインごとに 1 回構築します。
-そのため、失効後も生き残るセッションは、取り上げられたばかりのアクセスを保持し続けてしまいます。
-「すでに接続していた人を除いて失効」は、失効ではありません。&lt;/p&gt;
+&lt;p&gt;SMB は接続を許可する人をツリー接続ごとに 1 回検査し、SFTP は人のツリーをログインごとに 1 回構築します。そのため、失効後も生き残るセッションは、取り上げられたばかりのアクセスを保持し続けてしまいます。「すでに接続していた人を除いて失効」は、失効ではありません。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;したがって、変更は稼働中のサーバー&lt;em&gt;に対して&lt;/em&gt;適用されるのではなく、新しいリストから構築された
-新しいサーバー(&lt;strong&gt;世代&lt;/strong&gt;)に置き換えられます。再起動と同じやり方ですが、ポートは手放しません。
-ライブラリ側でほかの方法をとることはできませんでした。go-filesystems/smb には &lt;code&gt;Share&lt;/code&gt; はあっても
-&lt;code&gt;Unshare&lt;/code&gt; がなく、nfs には &lt;code&gt;Export&lt;/code&gt; はあっても &lt;code&gt;Unexport&lt;/code&gt; がありません。&lt;/p&gt;
-&lt;p&gt;ポートはバインドされたままなので、変更中に接続してきたクライアントは拒否されず、&lt;strong&gt;待たされます&lt;/strong&gt;。
-共有が変わっていないイメージは、ドライバーを保持したまま、二度開かれることはありません。
-クライアントは再接続します。これはすべての変更で支払う代価であり、API が
-フィールドごとではなく呼び出しごとに 1 つの変更を適用するのもそのためです。&lt;/p&gt;
+&lt;p&gt;したがって、変更は稼働中のサーバー&lt;em&gt;に対して&lt;/em&gt;適用されるのではなく、新しいリストから構築された新しいサーバー(&lt;strong&gt;世代&lt;/strong&gt;)に置き換えられます。再起動と同じやり方ですが、ポートは手放しません。ライブラリ側でほかの方法をとることはできませんでした。go-filesystems/smb には &lt;code&gt;Share&lt;/code&gt; はあっても&lt;code&gt;Unshare&lt;/code&gt; がなく、nfs には &lt;code&gt;Export&lt;/code&gt; はあっても &lt;code&gt;Unexport&lt;/code&gt; がありません。&lt;/p&gt;
+&lt;p&gt;ポートはバインドされたままなので、変更中に接続してきたクライアントは拒否されず、&lt;strong&gt;待たされます&lt;/strong&gt;。共有が変わっていないイメージは、ドライバーを保持したまま、二度開かれることはありません。クライアントは再接続します。これはすべての変更で支払う代価であり、API がフィールドごとではなく呼び出しごとに 1 つの変更を適用するのもそのためです。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="limits"&gt;制限&lt;span class="hx:absolute hx:-mt-20" id="limits"&gt;&lt;/span&gt;
 &lt;a href="#limits" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;--isolate&lt;/code&gt; は、&lt;code&gt;admin&lt;/code&gt; ブロックとも &lt;code&gt;metrics&lt;/code&gt; ブロックともまだ併用できません。
-変更を適用できる単一のプロセスがないためで、この組み合わせは拒否されます。&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;-tags nogrpc&lt;/code&gt; でビルドしたバイナリには管理 API がなく、&lt;code&gt;admin&lt;/code&gt; ブロックのある設定は、
-管理 API なしで提供されるのではなく&lt;strong&gt;拒否されます&lt;/strong&gt;。このタグで 11.7 MB を節約できます。
-&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/operations/build-tags/#the-admin-api-and-nogrpc"&gt;必要なものだけをビルドする&lt;/a&gt;を参照してください。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--isolate&lt;/code&gt; は、&lt;code&gt;admin&lt;/code&gt; ブロックとも &lt;code&gt;metrics&lt;/code&gt; ブロックともまだ併用できません。変更を適用できる単一のプロセスがないためで、この組み合わせは拒否されます。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;-tags nogrpc&lt;/code&gt; でビルドしたバイナリには管理 API がなく、&lt;code&gt;admin&lt;/code&gt; ブロックのある設定は、管理 API なしで提供されるのではなく&lt;strong&gt;拒否されます&lt;/strong&gt;。このタグで 11.7 MB を節約できます。&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/operations/build-tags/#the-admin-api-and-nogrpc"&gt;必要なものだけをビルドする&lt;/a&gt;を参照してください。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h2 data-hextra-search-id="changing-the-proto"&gt;&lt;code&gt;.proto&lt;/code&gt; を変更する&lt;span class="hx:absolute hx:-mt-20" id="changing-the-proto"&gt;&lt;/span&gt;
-&lt;a href="#changing-the-proto" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;proto/&lt;/code&gt; 以下の Go コードは生成されてコミットされているため、&lt;code&gt;go install&lt;/code&gt; に &lt;code&gt;protoc&lt;/code&gt; は不要です。
-&lt;code&gt;.proto&lt;/code&gt;(管理 API のもの、またはプロビジョナーの &lt;code&gt;proto/fileshare/provision/v1/provision.proto&lt;/code&gt;)を
-変更した後は、fileshare の CI が固定しているバージョン(protoc 34.1、protoc-gen-go v1.36.12、
-protoc-gen-go-grpc v1.6.2)で両方を再生成してください。CI はそれらを再生成し、コミット済みのコードと
-異なる場合や、生成コードがコミットされていない場合に失敗します。&lt;/p&gt;
+&lt;a href="#changing-the-proto" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;proto/&lt;/code&gt; 以下の Go コードは生成されてコミットされているため、&lt;code&gt;go install&lt;/code&gt; に &lt;code&gt;protoc&lt;/code&gt; は不要です。&lt;code&gt;.proto&lt;/code&gt;(管理 API のもの、またはプロビジョナーの &lt;code&gt;proto/fileshare/provision/v1/provision.proto&lt;/code&gt;)を変更した後は、fileshare の CI が固定しているバージョン(protoc 34.1、protoc-gen-go v1.36.12、protoc-gen-go-grpc v1.6.2)で両方を再生成してください。CI はそれらを再生成し、コミット済みのコードと異なる場合や、生成コードがコミットされていない場合に失敗します。&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;protoc -I proto --go_out&lt;span class="o"&gt;=&lt;/span&gt;. --go_opt&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;module&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;github.com/go-fileshare/fileshare &lt;span class="se"&gt;\
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; --go-grpc_out&lt;span class="o"&gt;=&lt;/span&gt;. --go-grpc_opt&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;module&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;github.com/go-fileshare/fileshare &lt;span class="se"&gt;\

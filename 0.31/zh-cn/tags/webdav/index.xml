@@ -20,17 +20,12 @@ data-copied-label="已复制！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;HTTP Basic 或持有者令牌，都基于 &lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/tls/"&gt;TLS&lt;/a&gt;，证书来自文件或
-ACME。&lt;/p&gt;
+&lt;p&gt;HTTP Basic 或持有者令牌，都基于 &lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/tls/"&gt;TLS&lt;/a&gt;，证书来自文件或ACME。&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;自 v0.9.0 起不再允许明文&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;HTTP Basic 在每个请求中就是密码本身，而持有者令牌与密码
-等效。其他机器可以访问的地址上&lt;strong&gt;没有 TLS&lt;/strong&gt; 的 WebDAV，
-只要有人需要身份验证，就会&lt;strong&gt;在启动时被拒绝&lt;/strong&gt;，
-&lt;code&gt;serve &amp;quot;webdav&amp;quot; { addr = &amp;quot;0.0.0.0:8080&amp;quot; }&lt;/code&gt;，即本页曾经
-展示的示例，不再能够启动。如果有代理在前端终结 TLS，请明确说明：&lt;/p&gt;
+&lt;p&gt;HTTP Basic 在每个请求中就是密码本身，而持有者令牌与密码等效。其他机器可以访问的地址上&lt;strong&gt;没有 TLS&lt;/strong&gt; 的 WebDAV，只要有人需要身份验证，就会&lt;strong&gt;在启动时被拒绝&lt;/strong&gt;，&lt;code&gt;serve &amp;quot;webdav&amp;quot; { addr = &amp;quot;0.0.0.0:8080&amp;quot; }&lt;/code&gt;，即本页曾经展示的示例，不再能够启动。如果有代理在前端终结 TLS，请明确说明：&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;webdav&amp;#34;&lt;/span&gt; {
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;10.0.0.5:8080&amp;#34;&lt;/span&gt;
@@ -47,8 +42,7 @@ data-copied-label="已复制！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;回环地址，以及没有任何人需要身份验证的服务器，不受影响。参见
-&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/tls/#webdav-is-not-served-in-the-clear"&gt;TLS&lt;/a&gt;。&lt;/p&gt;
+&lt;p&gt;回环地址，以及没有任何人需要身份验证的服务器，不受影响。参见&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/tls/#webdav-is-not-served-in-the-clear"&gt;TLS&lt;/a&gt;。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -77,21 +71,13 @@ data-copied-label="已复制！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;浏览器有令牌而没有密码。因此 WebDAV 接受 &lt;code&gt;Authorization: Bearer&lt;/code&gt;，并且在也有本地人员的情况下，它发出的质询会同时提供
-&lt;strong&gt;两种&lt;/strong&gt;方式，由客户端选择它能够应答的那一种。令牌由
-&lt;a href="https://github.com/go-authn/oidc" target="_blank" rel="noopener"&gt;go-authn/oidc&lt;/a&gt; 验证：签名、颁发者、受众、
-有效期。&lt;/p&gt;
+&lt;p&gt;浏览器有令牌而没有密码。因此 WebDAV 接受 &lt;code&gt;Authorization: Bearer&lt;/code&gt;，并且在也有本地人员的情况下，它发出的质询会同时提供&lt;strong&gt;两种&lt;/strong&gt;方式，由客户端选择它能够应答的那一种。令牌由&lt;a href="https://github.com/go-authn/oidc" target="_blank" rel="noopener"&gt;go-authn/oidc&lt;/a&gt; 验证：签名、颁发者、受众、有效期。&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;持有者令牌：仅限 WebDAV&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;SMB 使用 NTLMv2 进行身份验证，SFTP 使用密钥或证书，NFS 什么都
-没有，S3 使用 SigV4 签名：它们都没有地方放置
-&lt;code&gt;Authorization&lt;/code&gt; 标头。这是关于协议的事实，而不是本程序的
-限制。&lt;/p&gt;
-&lt;p&gt;提供方的凭证改为通过证书到达 &lt;strong&gt;SFTP&lt;/strong&gt;，参见
-&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/protocols/sftp/#people-the-identity-provider-vouches-for"&gt;SFTP&lt;/a&gt;。指明了提供方、却既不提供 WebDAV 也不提供此类 SFTP 的配置，
-会&lt;strong&gt;被拒绝，而不是启动&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;SMB 使用 NTLMv2 进行身份验证，SFTP 使用密钥或证书，NFS 什么都没有，S3 使用 SigV4 签名：它们都没有地方放置&lt;code&gt;Authorization&lt;/code&gt; 标头。这是关于协议的事实，而不是本程序的限制。&lt;/p&gt;
+&lt;p&gt;提供方的凭证改为通过证书到达 &lt;strong&gt;SFTP&lt;/strong&gt;，参见&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/protocols/sftp/#people-the-identity-provider-vouches-for"&gt;SFTP&lt;/a&gt;。指明了提供方、却既不提供 WebDAV 也不提供此类 SFTP 的配置，会&lt;strong&gt;被拒绝，而不是启动&lt;/strong&gt;。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -99,11 +85,7 @@ data-copied-label="已复制！"
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;令牌说明的是提供方认为某人是谁，并不说明本服务器有属于此人的共享。&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;对于这里没有任何来源认识的名称，即使令牌有效也会被拒绝：对
-&lt;em&gt;我不认识你&lt;/em&gt;的安全理解，不是&lt;em&gt;你被允许&lt;/em&gt;。本地
-账户同样拥有的名称，也不会因此获得该账户，除非 &lt;code&gt;local_names = true&lt;/code&gt; 表示
-提供方的名称就是本服务器的名称（自 v0.20.0 起默认关闭）；没有
-该设置时，这样的令牌同样会被拒绝，除非有 &lt;code&gt;oidc:&lt;/code&gt; 规则指明此人。&lt;/p&gt;
+&lt;p&gt;对于这里没有任何来源认识的名称，即使令牌有效也会被拒绝：对&lt;em&gt;我不认识你&lt;/em&gt;的安全理解，不是&lt;em&gt;你被允许&lt;/em&gt;。本地账户同样拥有的名称，也不会因此获得该账户，除非 &lt;code&gt;local_names = true&lt;/code&gt; 表示提供方的名称就是本服务器的名称（自 v0.20.0 起默认关闭）；没有该设置时，这样的令牌同样会被拒绝，除非有 &lt;code&gt;oidc:&lt;/code&gt; 规则指明此人。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -125,34 +107,12 @@ data-copied-label="已复制！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;这里&lt;strong&gt;没有登录流程&lt;/strong&gt;：没有重定向，没有客户端机密，没有 cookie。
-这是资源服务器。&lt;/p&gt;
-&lt;p&gt;令牌给出的&lt;strong&gt;名称&lt;/strong&gt;是 &lt;code&gt;preferred_username&lt;/code&gt;，或 &lt;code&gt;username_claim&lt;/code&gt; 所指明的
-声明。没有 &lt;code&gt;preferred_username&lt;/code&gt; 时，只有在提供方声明 &lt;code&gt;email_verified: true&lt;/code&gt; 的情况下
-才使用电子邮件，否则使用 &lt;code&gt;sub&lt;/code&gt;。设置 &lt;code&gt;username_claim = &amp;quot;email&amp;quot;&lt;/code&gt; 时，
-电子邮件未经验证的令牌会被拒绝，WebDAV 如此，
-通过 SFTP 的 opkssh 登录也是如此。在验证之前，
-电子邮件只是此人键入的内容，而携带它的已签名令牌
-会绑定到一个无人核实过的地址（OpenID Connect Core 5.1；
-go-authn/oidc v0.2.0，fileshare v0.16.3）。&lt;/p&gt;
-&lt;p&gt;提供方的哪些人可以获得共享（组、指明的个人、
-整个机构）通过 &lt;code&gt;oidc:&lt;/code&gt; 规则和 &lt;code&gt;domains&lt;/code&gt; 来写；参见
-&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;由身份提供方指明的人员&lt;/a&gt;。&lt;/p&gt;
+&lt;p&gt;这里&lt;strong&gt;没有登录流程&lt;/strong&gt;：没有重定向，没有客户端机密，没有 cookie。这是资源服务器。&lt;/p&gt;
+&lt;p&gt;令牌给出的&lt;strong&gt;名称&lt;/strong&gt;是 &lt;code&gt;preferred_username&lt;/code&gt;，或 &lt;code&gt;username_claim&lt;/code&gt; 所指明的声明。没有 &lt;code&gt;preferred_username&lt;/code&gt; 时，只有在提供方声明 &lt;code&gt;email_verified: true&lt;/code&gt; 的情况下才使用电子邮件，否则使用 &lt;code&gt;sub&lt;/code&gt;。设置 &lt;code&gt;username_claim = &amp;quot;email&amp;quot;&lt;/code&gt; 时，电子邮件未经验证的令牌会被拒绝，WebDAV 如此，通过 SFTP 的 opkssh 登录也是如此。在验证之前，电子邮件只是此人键入的内容，而携带它的已签名令牌会绑定到一个无人核实过的地址（OpenID Connect Core 5.1；go-authn/oidc v0.2.0，fileshare v0.16.3）。&lt;/p&gt;
+&lt;p&gt;提供方的哪些人可以获得共享（组、指明的个人、整个机构）通过 &lt;code&gt;oidc:&lt;/code&gt; 规则和 &lt;code&gt;domains&lt;/code&gt; 来写；参见&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;由身份提供方指明的人员&lt;/a&gt;。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="a-token-outlives-the-person-unless-something-says-otherwise"&gt;令牌比人更长寿，除非有东西另作说明&lt;span class="hx:absolute hx:-mt-20" id="a-token-outlives-the-person-unless-something-says-otherwise"&gt;&lt;/span&gt;
-&lt;a href="#a-token-outlives-the-person-unless-something-says-otherwise" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;令牌在这里独立验证，并在到期之前一直有效，无论
-此人之后发生了什么。没有任何撤销列表可以指明它。
-&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/shared-signals/"&gt;&lt;code&gt;ssf&lt;/code&gt; 块&lt;/a&gt;会使提供方发出的 CAEP &lt;code&gt;session-revoked&lt;/code&gt;
+&lt;a href="#a-token-outlives-the-person-unless-something-says-otherwise" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;令牌在这里独立验证，并在到期之前一直有效，无论此人之后发生了什么。没有任何撤销列表可以指明它。&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/shared-signals/"&gt;&lt;code&gt;ssf&lt;/code&gt; 块&lt;/a&gt;会使提供方发出的 CAEP &lt;code&gt;session-revoked&lt;/code&gt;
 让此前（&lt;code&gt;iat&lt;/code&gt;）签发的每个令牌失效。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="the-root-and-uploads-in-pieces"&gt;根目录，以及分块上传&lt;span class="hx:absolute hx:-mt-20" id="the-root-and-uploads-in-pieces"&gt;&lt;/span&gt;
-&lt;a href="#the-root-and-uploads-in-pieces" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;根目录会列出各共享&lt;/strong&gt;（自 v0.29.0 起）。浏览器访问 &lt;code&gt;/&lt;/code&gt; 会得到一个包含
-其可打开的共享的页面；对 &lt;code&gt;/&lt;/code&gt; 的 &lt;code&gt;PROPFIND&lt;/code&gt; 会将它们作为集合返回（&lt;code&gt;207&lt;/code&gt;），
-因此文件管理器可以挂载整个服务器，而不是单个共享。深度
-&lt;code&gt;infinity&lt;/code&gt; 会被拒绝（&lt;code&gt;403&lt;/code&gt;，&lt;code&gt;propfind-finite-depth&lt;/code&gt;，RFC 4918 允许这样做），
-任何会在根目录写入的操作也会被拒绝（&lt;code&gt;405&lt;/code&gt;）。直到 v0.28，
-对 &lt;code&gt;/&lt;/code&gt; 的每种方法都会得到该页面。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;大文件上传可以分块进行&lt;/strong&gt;（自 v0.29.0 起）。一次 &lt;code&gt;PUT&lt;/code&gt; 会整体保存在内存中，
-最大 1 GiB，因此无法流式传输的客户端，例如浏览器或
-&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/administration/"&gt;文件资源管理器&lt;/a&gt;，会先发送一个空的
-&lt;code&gt;PUT&lt;/code&gt;，然后发送每个分块，其 &lt;code&gt;Content-Range&lt;/code&gt; 恰好从上一块结束的位置开始，
-最后用 &lt;code&gt;MOVE&lt;/code&gt; 移到真正的名称。起点超过末尾的范围
-仍然返回 &lt;code&gt;416&lt;/code&gt;：它会留下没有人发送过的字节。&lt;/p&gt;</description></item></channel></rss>
+&lt;a href="#the-root-and-uploads-in-pieces" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;根目录会列出各共享&lt;/strong&gt;（自 v0.29.0 起）。浏览器访问 &lt;code&gt;/&lt;/code&gt; 会得到一个包含其可打开的共享的页面；对 &lt;code&gt;/&lt;/code&gt; 的 &lt;code&gt;PROPFIND&lt;/code&gt; 会将它们作为集合返回（&lt;code&gt;207&lt;/code&gt;），因此文件管理器可以挂载整个服务器，而不是单个共享。深度&lt;code&gt;infinity&lt;/code&gt; 会被拒绝（&lt;code&gt;403&lt;/code&gt;，&lt;code&gt;propfind-finite-depth&lt;/code&gt;，RFC 4918 允许这样做），任何会在根目录写入的操作也会被拒绝（&lt;code&gt;405&lt;/code&gt;）。直到 v0.28，对 &lt;code&gt;/&lt;/code&gt; 的每种方法都会得到该页面。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;大文件上传可以分块进行&lt;/strong&gt;（自 v0.29.0 起）。一次 &lt;code&gt;PUT&lt;/code&gt; 会整体保存在内存中，最大 1 GiB，因此无法流式传输的客户端，例如浏览器或&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/administration/"&gt;文件资源管理器&lt;/a&gt;，会先发送一个空的&lt;code&gt;PUT&lt;/code&gt;，然后发送每个分块，其 &lt;code&gt;Content-Range&lt;/code&gt; 恰好从上一块结束的位置开始，最后用 &lt;code&gt;MOVE&lt;/code&gt; 移到真正的名称。起点超过末尾的范围仍然返回 &lt;code&gt;416&lt;/code&gt;：它会留下没有人发送过的字节。&lt;/p&gt;</description></item></channel></rss>

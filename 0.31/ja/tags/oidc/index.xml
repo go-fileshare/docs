@@ -25,11 +25,7 @@ data-copied-label="コピーしました！"
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;v0.9.0 以降、平文では提供されません&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;HTTP Basic ではすべてのリクエストがパスワードそのものであり、ベアラートークンもそれと同等の価値を持ちます。
-他のマシンから到達できるアドレスで、誰かが認証する状況において、&lt;strong&gt;TLS なし&lt;/strong&gt;の WebDAV は
-&lt;strong&gt;起動時に拒否されます&lt;/strong&gt;。このページがかつて示していた例
-&lt;code&gt;serve &amp;quot;webdav&amp;quot; { addr = &amp;quot;0.0.0.0:8080&amp;quot; }&lt;/code&gt; は、もう起動しません。前段のプロキシが TLS を終端する場合は、
-そのことを明示してください。&lt;/p&gt;
+&lt;p&gt;HTTP Basic ではすべてのリクエストがパスワードそのものであり、ベアラートークンもそれと同等の価値を持ちます。他のマシンから到達できるアドレスで、誰かが認証する状況において、&lt;strong&gt;TLS なし&lt;/strong&gt;の WebDAV は&lt;strong&gt;起動時に拒否されます&lt;/strong&gt;。このページがかつて示していた例&lt;code&gt;serve &amp;quot;webdav&amp;quot; { addr = &amp;quot;0.0.0.0:8080&amp;quot; }&lt;/code&gt; は、もう起動しません。前段のプロキシが TLS を終端する場合は、そのことを明示してください。&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;webdav&amp;#34;&lt;/span&gt; {
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;10.0.0.5:8080&amp;#34;&lt;/span&gt;
@@ -46,8 +42,7 @@ data-copied-label="コピーしました！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;ループバックと、認証する相手のいないサーバーは影響を受けません。
-&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/security/tls/#webdav-is-not-served-in-the-clear"&gt;TLS&lt;/a&gt;を参照してください。&lt;/p&gt;
+&lt;p&gt;ループバックと、認証する相手のいないサーバーは影響を受けません。&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/security/tls/#webdav-is-not-served-in-the-clear"&gt;TLS&lt;/a&gt;を参照してください。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -76,20 +71,13 @@ data-copied-label="コピーしました！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;ブラウザーはトークンを持っていますが、パスワードを持っていません。そのため WebDAV は
-&lt;code&gt;Authorization: Bearer&lt;/code&gt; を受け付けます。ローカルの人もいる場合、送信するチャレンジは&lt;strong&gt;両方&lt;/strong&gt;を提示し、
-クライアントは応答できるほうを選びます。トークンは
-&lt;a href="https://github.com/go-authn/oidc" target="_blank" rel="noopener"&gt;go-authn/oidc&lt;/a&gt; が検証します。署名、発行者、オーディエンス、有効期限です。&lt;/p&gt;
+&lt;p&gt;ブラウザーはトークンを持っていますが、パスワードを持っていません。そのため WebDAV は&lt;code&gt;Authorization: Bearer&lt;/code&gt; を受け付けます。ローカルの人もいる場合、送信するチャレンジは&lt;strong&gt;両方&lt;/strong&gt;を提示し、クライアントは応答できるほうを選びます。トークンは&lt;a href="https://github.com/go-authn/oidc" target="_blank" rel="noopener"&gt;go-authn/oidc&lt;/a&gt; が検証します。署名、発行者、オーディエンス、有効期限です。&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;ベアラートークンは WebDAV だけ&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;SMB は NTLMv2、SFTP は鍵または証明書、NFS は何もなし、S3 は SigV4 署名で認証し、どれにも
-&lt;code&gt;Authorization&lt;/code&gt; ヘッダーを載せる場所がありません。これはプロトコルについての事実であり、
-このプログラムの制約ではありません。&lt;/p&gt;
-&lt;p&gt;プロバイダーの言葉は、代わりに証明書で &lt;strong&gt;SFTP&lt;/strong&gt; に届きます。&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/protocols/sftp/#people-the-identity-provider-vouches-for"&gt;SFTP&lt;/a&gt;を参照してください。
-プロバイダーを指定しているのに、WebDAV もそのような SFTP も提供しない設定は、
-&lt;strong&gt;起動せずに拒否されます&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;SMB は NTLMv2、SFTP は鍵または証明書、NFS は何もなし、S3 は SigV4 署名で認証し、どれにも&lt;code&gt;Authorization&lt;/code&gt; ヘッダーを載せる場所がありません。これはプロトコルについての事実であり、このプログラムの制約ではありません。&lt;/p&gt;
+&lt;p&gt;プロバイダーの言葉は、代わりに証明書で &lt;strong&gt;SFTP&lt;/strong&gt; に届きます。&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/protocols/sftp/#people-the-identity-provider-vouches-for"&gt;SFTP&lt;/a&gt;を参照してください。プロバイダーを指定しているのに、WebDAV もそのような SFTP も提供しない設定は、&lt;strong&gt;起動せずに拒否されます&lt;/strong&gt;。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -97,11 +85,7 @@ data-copied-label="コピーしました！"
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;トークンが示すのは、プロバイダーが誰だと考えているかです。このサーバーにその人の共有があるとは限りません。&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;ここのどのソースも知らない名前の有効なトークンは拒否されます。「あなたを知らない」を安全に読むと、
-「あなたは許可されている」にはなりません。ローカルアカウントにも同じ名前がある場合でも、
-&lt;code&gt;local_names = true&lt;/code&gt; でプロバイダーの名前がこのサーバーの名前と同じだと明示していない限り、
-そのアカウントにはなりません(v0.20.0 以降は既定でオフ)。それがなければ、&lt;code&gt;oidc:&lt;/code&gt; ルールがその人を
-名指ししていない限り、そのようなトークンも拒否されます。&lt;/p&gt;
+&lt;p&gt;ここのどのソースも知らない名前の有効なトークンは拒否されます。「あなたを知らない」を安全に読むと、「あなたは許可されている」にはなりません。ローカルアカウントにも同じ名前がある場合でも、&lt;code&gt;local_names = true&lt;/code&gt; でプロバイダーの名前がこのサーバーの名前と同じだと明示していない限り、そのアカウントにはなりません(v0.20.0 以降は既定でオフ)。それがなければ、&lt;code&gt;oidc:&lt;/code&gt; ルールがその人を名指ししていない限り、そのようなトークンも拒否されます。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -123,34 +107,15 @@ data-copied-label="コピーしました！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;ここには&lt;strong&gt;ログインフローはありません&lt;/strong&gt;。リダイレクトも、クライアントシークレットも、クッキーもありません。
-これはリソースサーバーです。&lt;/p&gt;
-&lt;p&gt;トークンが与える&lt;strong&gt;名前&lt;/strong&gt;は &lt;code&gt;preferred_username&lt;/code&gt;、または &lt;code&gt;username_claim&lt;/code&gt; が指すクレームです。
-&lt;code&gt;preferred_username&lt;/code&gt; がない場合は、プロバイダーが &lt;code&gt;email_verified: true&lt;/code&gt; と言っているときに限ってメール、
-そうでなければ &lt;code&gt;sub&lt;/code&gt; になります。&lt;code&gt;username_claim = &amp;quot;email&amp;quot;&lt;/code&gt; の場合、メールが検証されていないトークンは
-拒否されます。これは WebDAV でも、SFTP での opkssh ログインでも同じです。検証されるまで、
-メールは本人が入力したものにすぎず、それを載せた署名付きトークンは、誰も確認していないアドレスとして
-結びついてしまいます(OpenID Connect Core 5.1、go-authn/oidc v0.2.0、fileshare v0.16.3)。&lt;/p&gt;
-&lt;p&gt;プロバイダーの人のうち誰が共有を得るか(グループ、名指しした人、機関全体)は、&lt;code&gt;oidc:&lt;/code&gt; ルールと
-&lt;code&gt;domains&lt;/code&gt; で記述します。&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;ID プロバイダーが名指しする人&lt;/a&gt;を参照してください。&lt;/p&gt;
+&lt;p&gt;ここには&lt;strong&gt;ログインフローはありません&lt;/strong&gt;。リダイレクトも、クライアントシークレットも、クッキーもありません。これはリソースサーバーです。&lt;/p&gt;
+&lt;p&gt;トークンが与える&lt;strong&gt;名前&lt;/strong&gt;は &lt;code&gt;preferred_username&lt;/code&gt;、または &lt;code&gt;username_claim&lt;/code&gt; が指すクレームです。&lt;code&gt;preferred_username&lt;/code&gt; がない場合は、プロバイダーが &lt;code&gt;email_verified: true&lt;/code&gt; と言っているときに限ってメール、そうでなければ &lt;code&gt;sub&lt;/code&gt; になります。&lt;code&gt;username_claim = &amp;quot;email&amp;quot;&lt;/code&gt; の場合、メールが検証されていないトークンは拒否されます。これは WebDAV でも、SFTP での opkssh ログインでも同じです。検証されるまで、メールは本人が入力したものにすぎず、それを載せた署名付きトークンは、誰も確認していないアドレスとして結びついてしまいます(OpenID Connect Core 5.1、go-authn/oidc v0.2.0、fileshare v0.16.3)。&lt;/p&gt;
+&lt;p&gt;プロバイダーの人のうち誰が共有を得るか(グループ、名指しした人、機関全体)は、&lt;code&gt;oidc:&lt;/code&gt; ルールと&lt;code&gt;domains&lt;/code&gt; で記述します。&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;ID プロバイダーが名指しする人&lt;/a&gt;を参照してください。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="a-token-outlives-the-person-unless-something-says-otherwise"&gt;トークンは、何かが変えない限り、その人より長く生きる&lt;span class="hx:absolute hx:-mt-20" id="a-token-outlives-the-person-unless-something-says-otherwise"&gt;&lt;/span&gt;
-&lt;a href="#a-token-outlives-the-person-unless-something-says-otherwise" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;トークンはここで単独で検証され、期限が切れるまで、その人にその後何があっても有効です。
-どの失効リストもそれを名指しできません。&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/security/shared-signals/"&gt;&lt;code&gt;ssf&lt;/code&gt; ブロック&lt;/a&gt;を使うと、
-プロバイダーからの CAEP &lt;code&gt;session-revoked&lt;/code&gt; によって、それ以前に発行された(&lt;code&gt;iat&lt;/code&gt;)すべてのトークンが無効になります。&lt;/p&gt;
+&lt;a href="#a-token-outlives-the-person-unless-something-says-otherwise" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;トークンはここで単独で検証され、期限が切れるまで、その人にその後何があっても有効です。どの失効リストもそれを名指しできません。&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/security/shared-signals/"&gt;&lt;code&gt;ssf&lt;/code&gt; ブロック&lt;/a&gt;を使うと、プロバイダーからの CAEP &lt;code&gt;session-revoked&lt;/code&gt; によって、それ以前に発行された(&lt;code&gt;iat&lt;/code&gt;)すべてのトークンが無効になります。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="the-root-and-uploads-in-pieces"&gt;ルートと、分割アップロード&lt;span class="hx:absolute hx:-mt-20" id="the-root-and-uploads-in-pieces"&gt;&lt;/span&gt;
-&lt;a href="#the-root-and-uploads-in-pieces" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;ルートは共有を一覧します&lt;/strong&gt;(v0.29.0 以降)。&lt;code&gt;/&lt;/code&gt; にいるブラウザーは、開ける共有のページを受け取ります。
-&lt;code&gt;/&lt;/code&gt; への &lt;code&gt;PROPFIND&lt;/code&gt; は、共有をコレクションとして受け取る(&lt;code&gt;207&lt;/code&gt;)ため、ファイルマネージャーは
-1 つの共有ではなくサーバー全体をマウントできます。Depth &lt;code&gt;infinity&lt;/code&gt; は拒否され
-(RFC 4918 が許すとおり &lt;code&gt;403&lt;/code&gt;、&lt;code&gt;propfind-finite-depth&lt;/code&gt;)、ルートに書き込むものも拒否されます(&lt;code&gt;405&lt;/code&gt;)。
-v0.28 までは、&lt;code&gt;/&lt;/code&gt; へのすべてのメソッドがそのページを受け取っていました。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;大きなアップロードは分割できます&lt;/strong&gt;(v0.29.0 以降)。1 つの &lt;code&gt;PUT&lt;/code&gt; は最大 1 GiB まで丸ごとメモリに保持されるため、
-ストリーミングできないクライアント(ブラウザー、&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/administration/"&gt;ファイルエクスプローラー&lt;/a&gt;)は、
-空の &lt;code&gt;PUT&lt;/code&gt; を送り、続いて前の分が終わった位置からちょうど始まる &lt;code&gt;Content-Range&lt;/code&gt; 付きで各部分を送り、
-最後に本来の名前への &lt;code&gt;MOVE&lt;/code&gt; を行います。終端を越えて始まる範囲は、依然として &lt;code&gt;416&lt;/code&gt; です。
-誰も送っていないバイトが残ってしまうためです。&lt;/p&gt;</description></item><item><title>ユーザー、グループ、ディレクトリ</title><link>https://go-fileshare.github.io/docs/0.31/ja/configuration/identity/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/ja/configuration/identity/</guid><description>
-&lt;p&gt;&lt;code&gt;user&lt;/code&gt; ブロックは、世帯程度の規模であればそれだけでディレクトリのすべてになります。
-人がすでにデータベースや LDAP にいるサイトでは、時間が経つと古くなる 2 つ目の場所に
-コピーすべきではないため、&lt;code&gt;users&lt;/code&gt; ブロックが人を元の場所から読み取ります。&lt;/p&gt;
+&lt;a href="#the-root-and-uploads-in-pieces" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;ルートは共有を一覧します&lt;/strong&gt;(v0.29.0 以降)。&lt;code&gt;/&lt;/code&gt; にいるブラウザーは、開ける共有のページを受け取ります。&lt;code&gt;/&lt;/code&gt; への &lt;code&gt;PROPFIND&lt;/code&gt; は、共有をコレクションとして受け取る(&lt;code&gt;207&lt;/code&gt;)ため、ファイルマネージャーは1 つの共有ではなくサーバー全体をマウントできます。Depth &lt;code&gt;infinity&lt;/code&gt; は拒否され(RFC 4918 が許すとおり &lt;code&gt;403&lt;/code&gt;、&lt;code&gt;propfind-finite-depth&lt;/code&gt;)、ルートに書き込むものも拒否されます(&lt;code&gt;405&lt;/code&gt;)。v0.28 までは、&lt;code&gt;/&lt;/code&gt; へのすべてのメソッドがそのページを受け取っていました。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;大きなアップロードは分割できます&lt;/strong&gt;(v0.29.0 以降)。1 つの &lt;code&gt;PUT&lt;/code&gt; は最大 1 GiB まで丸ごとメモリに保持されるため、ストリーミングできないクライアント(ブラウザー、&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/administration/"&gt;ファイルエクスプローラー&lt;/a&gt;)は、空の &lt;code&gt;PUT&lt;/code&gt; を送り、続いて前の分が終わった位置からちょうど始まる &lt;code&gt;Content-Range&lt;/code&gt; 付きで各部分を送り、最後に本来の名前への &lt;code&gt;MOVE&lt;/code&gt; を行います。終端を越えて始まる範囲は、依然として &lt;code&gt;416&lt;/code&gt; です。誰も送っていないバイトが残ってしまうためです。&lt;/p&gt;</description></item><item><title>ユーザー、グループ、ディレクトリ</title><link>https://go-fileshare.github.io/docs/0.31/ja/configuration/identity/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/ja/configuration/identity/</guid><description>
+&lt;p&gt;&lt;code&gt;user&lt;/code&gt; ブロックは、世帯程度の規模であればそれだけでディレクトリのすべてになります。人がすでにデータベースや LDAP にいるサイトでは、時間が経つと古くなる 2 つ目の場所にコピーすべきではないため、&lt;code&gt;users&lt;/code&gt; ブロックが人を元の場所から読み取ります。&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;users&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;sql&amp;#34;&lt;/span&gt; {
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; driver&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;postgres&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # or sqlite, or mysql
@@ -176,44 +141,22 @@ data-copied-label="コピーしました！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;&lt;strong&gt;クエリはお客様が書きます。&lt;/strong&gt; サイトの人々はすでにそのサイトなりの形で存在しており、
-ここで独自のスキーマを定めれば、それを別の形にコピーさせることになるからです。
-人を取得するクエリの列は、名前ではなく&lt;strong&gt;位置&lt;/strong&gt;で読み取られます。まず名前、続いて
-パスワード、NT ハッシュ、SSH 鍵(1 行に 1 つ)、TOTP シークレットのうち任意のものを、この順序で並べます。
-NULL は、その人が持っていない認証情報を表します。例でパスワードに &lt;code&gt;null&lt;/code&gt; を選択しているのは
-そのためです。パスワードの列はパスワードそのものとして扱われます。ハッシュ化された
-パスワードを指定する設定はありません。&lt;/p&gt;
-&lt;p&gt;LDAP 側は、Samba 対応のディレクトリがすでに公開しているもの、すなわち
-&lt;code&gt;sambaNTPassword&lt;/code&gt;、&lt;code&gt;sshPublicKey&lt;/code&gt;、&lt;code&gt;memberUid&lt;/code&gt; を読み取ります。人とグループの場所、
-およびそれらを名指しする属性は設定可能です。&lt;code&gt;user_filter&lt;/code&gt;
-(既定は &lt;code&gt;(|(objectClass=posixAccount)(objectClass=account)(objectClass=uidObject))&lt;/code&gt;)、
-&lt;code&gt;user_attribute&lt;/code&gt;(&lt;code&gt;uid&lt;/code&gt;)、&lt;code&gt;group_base_dn&lt;/code&gt;(&lt;code&gt;base_dn&lt;/code&gt;)、&lt;code&gt;group_filter&lt;/code&gt;
+&lt;p&gt;&lt;strong&gt;クエリはお客様が書きます。&lt;/strong&gt; サイトの人々はすでにそのサイトなりの形で存在しており、ここで独自のスキーマを定めれば、それを別の形にコピーさせることになるからです。人を取得するクエリの列は、名前ではなく&lt;strong&gt;位置&lt;/strong&gt;で読み取られます。まず名前、続いてパスワード、NT ハッシュ、SSH 鍵(1 行に 1 つ)、TOTP シークレットのうち任意のものを、この順序で並べます。NULL は、その人が持っていない認証情報を表します。例でパスワードに &lt;code&gt;null&lt;/code&gt; を選択しているのはそのためです。パスワードの列はパスワードそのものとして扱われます。ハッシュ化されたパスワードを指定する設定はありません。&lt;/p&gt;
+&lt;p&gt;LDAP 側は、Samba 対応のディレクトリがすでに公開しているもの、すなわち&lt;code&gt;sambaNTPassword&lt;/code&gt;、&lt;code&gt;sshPublicKey&lt;/code&gt;、&lt;code&gt;memberUid&lt;/code&gt; を読み取ります。人とグループの場所、およびそれらを名指しする属性は設定可能です。&lt;code&gt;user_filter&lt;/code&gt;
+(既定は &lt;code&gt;(|(objectClass=posixAccount)(objectClass=account)(objectClass=uidObject))&lt;/code&gt;)、&lt;code&gt;user_attribute&lt;/code&gt;(&lt;code&gt;uid&lt;/code&gt;)、&lt;code&gt;group_base_dn&lt;/code&gt;(&lt;code&gt;base_dn&lt;/code&gt;)、&lt;code&gt;group_filter&lt;/code&gt;
 (&lt;code&gt;(|(objectClass=posixGroup)(objectClass=groupOfNames))&lt;/code&gt;)、&lt;code&gt;group_attribute&lt;/code&gt;
-(&lt;code&gt;cn&lt;/code&gt;)、&lt;code&gt;group_member_attribute&lt;/code&gt;(既定では &lt;code&gt;memberUid&lt;/code&gt; と &lt;code&gt;member&lt;/code&gt; の両方)、
-そして既定値のない &lt;code&gt;totp_attribute&lt;/code&gt; です。&lt;code&gt;sambaNTPassword&lt;/code&gt; と &lt;code&gt;sshPublicKey&lt;/code&gt; は、
-その名前で読み取られます。&lt;code&gt;member&lt;/code&gt; の値は DN であり、人の検索が返した誰かの DN である
-場合にのみ数えられます。ツリーの別の場所にある &lt;code&gt;uid=alice&lt;/code&gt; は alice ではありません。
-これらの既定値(v0.30.0 以降)は go-authn/authnd v0.11.0 が公開するものを読み取ります。
-以前は &lt;code&gt;(objectClass=posixAccount)&lt;/code&gt; と &lt;code&gt;(objectClass=posixGroup)&lt;/code&gt; のみで、
-組織自身のディレクトリに対しては、現在はより多くのエントリを読み取ります。&lt;/p&gt;
+(&lt;code&gt;cn&lt;/code&gt;)、&lt;code&gt;group_member_attribute&lt;/code&gt;(既定では &lt;code&gt;memberUid&lt;/code&gt; と &lt;code&gt;member&lt;/code&gt; の両方)、そして既定値のない &lt;code&gt;totp_attribute&lt;/code&gt; です。&lt;code&gt;sambaNTPassword&lt;/code&gt; と &lt;code&gt;sshPublicKey&lt;/code&gt; は、その名前で読み取られます。&lt;code&gt;member&lt;/code&gt; の値は DN であり、人の検索が返した誰かの DN である場合にのみ数えられます。ツリーの別の場所にある &lt;code&gt;uid=alice&lt;/code&gt; は alice ではありません。これらの既定値(v0.30.0 以降)は go-authn/authnd v0.11.0 が公開するものを読み取ります。以前は &lt;code&gt;(objectClass=posixAccount)&lt;/code&gt; と &lt;code&gt;(objectClass=posixGroup)&lt;/code&gt; のみで、組織自身のディレクトリに対しては、現在はより多くのエントリを読み取ります。&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;別のマシンへの平文バインドは不可(v0.19.0 以降)&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;users &amp;quot;ldap&amp;quot;&lt;/code&gt; ブロックは、&lt;code&gt;start_tls = true&lt;/code&gt; がない限り、別のマシンへの &lt;code&gt;ldap://&lt;/code&gt; を
-拒否します。バインドが確認するすべてのパスワードが、平文でネットワークを横切ることになる
-ためです。&lt;code&gt;ldaps://&lt;/code&gt; は受け付けられ、途中に誰もいないループバックアドレスへの &lt;code&gt;ldap://&lt;/code&gt; と
-&lt;code&gt;ldapi://&lt;/code&gt; も受け付けられます。これを無効にするスイッチはありません
-(go-authn/directory v0.10.0)。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;users &amp;quot;ldap&amp;quot;&lt;/code&gt; ブロックは、&lt;code&gt;start_tls = true&lt;/code&gt; がない限り、別のマシンへの &lt;code&gt;ldap://&lt;/code&gt; を拒否します。バインドが確認するすべてのパスワードが、平文でネットワークを横切ることになるためです。&lt;code&gt;ldaps://&lt;/code&gt; は受け付けられ、途中に誰もいないループバックアドレスへの &lt;code&gt;ldap://&lt;/code&gt; と&lt;code&gt;ldapi://&lt;/code&gt; も受け付けられます。これを無効にするスイッチはありません(go-authn/directory v0.10.0)。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="order-and-the-one-exception"&gt;順序と、唯一の例外&lt;span class="hx:absolute hx:-mt-20" id="order-and-the-one-exception"&gt;&lt;/span&gt;
-&lt;a href="#order-and-the-one-exception" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;ソースは&lt;strong&gt;書かれた順序で&lt;/strong&gt;問い合わされ、名前を最初に知っていたものがその名前を所有します。
-&lt;code&gt;user&lt;/code&gt; ブロックと &lt;code&gt;group&lt;/code&gt; ブロックが先頭に来るため、ローカルに書かれたサービスアカウントが、
-LDAP にある同名の誰かによって上書きされることはありません。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;グループは例外です。&lt;/strong&gt; グループのメンバーは、すべてのソースの&lt;strong&gt;和集合&lt;/strong&gt;になります。
-チームのメンバーが、ファイルにもデータベースにもいることがあるためです。&lt;/p&gt;
+&lt;a href="#order-and-the-one-exception" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;ソースは&lt;strong&gt;書かれた順序で&lt;/strong&gt;問い合わされ、名前を最初に知っていたものがその名前を所有します。&lt;code&gt;user&lt;/code&gt; ブロックと &lt;code&gt;group&lt;/code&gt; ブロックが先頭に来るため、ローカルに書かれたサービスアカウントが、LDAP にある同名の誰かによって上書きされることはありません。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;グループは例外です。&lt;/strong&gt; グループのメンバーは、すべてのソースの&lt;strong&gt;和集合&lt;/strong&gt;になります。チームのメンバーが、ファイルにもデータベースにもいることがあるためです。&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;photos&amp;#34;&lt;/span&gt; {
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; allow&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;@engineers&amp;#34;, &amp;#34;alice&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
@@ -234,13 +177,7 @@ data-copied-label="コピーしました！"
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;起動時に展開され、再読み込みのたびに再展開される&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;v0.10.0 以降、&lt;code&gt;users&lt;/code&gt; ブロック(SQL、LDAP)は &lt;code&gt;reload = &amp;quot;5m&amp;quot;&lt;/code&gt; ごと、&lt;code&gt;SIGHUP&lt;/code&gt; 時、
-管理 API の &lt;code&gt;ReloadDirectory&lt;/code&gt; 時に再読み込みされます。LDAP でメンバーシップが変わっても、
-再起動を待つ必要はありません。再読み込みでその場で適用されるもの、再起動されるもの、
-そしてグループが空になっても共有が全員に開放&lt;strong&gt;されない&lt;/strong&gt;理由については、
-&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/administration/reload/"&gt;ディレクトリの再読み込み&lt;/a&gt;を参照してください。
-ディレクトリへの問い合わせは、依然として接続のたびには行われません。それは別の設計であり、
-これはそうではありません。&lt;/p&gt;
+&lt;p&gt;v0.10.0 以降、&lt;code&gt;users&lt;/code&gt; ブロック(SQL、LDAP)は &lt;code&gt;reload = &amp;quot;5m&amp;quot;&lt;/code&gt; ごと、&lt;code&gt;SIGHUP&lt;/code&gt; 時、管理 API の &lt;code&gt;ReloadDirectory&lt;/code&gt; 時に再読み込みされます。LDAP でメンバーシップが変わっても、再起動を待つ必要はありません。再読み込みでその場で適用されるもの、再起動されるもの、そしてグループが空になっても共有が全員に開放&lt;strong&gt;されない&lt;/strong&gt;理由については、&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/administration/reload/"&gt;ディレクトリの再読み込み&lt;/a&gt;を参照してください。ディレクトリへの問い合わせは、依然として接続のたびには行われません。それは別の設計であり、これはそうではありません。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -292,20 +229,13 @@ data-copied-label="コピーしました！"
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;NTLMv2 に必要なのはパスワードかその MD4 であり、ほかのものでは代用できません&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;クライアントは SMB サーバーにパスワードを送りません。そこから計算した証明を送ります。
-そのため、パスワードを&lt;em&gt;確認&lt;/em&gt;するだけのディレクトリは、確認がどれほど優れていても
-SMB には応答できません。これはプロトコルの性質であり、このプログラムの制約ではなく、
-設定でどうにかなるものではありません。WebDAV が尋ねるのは「これは正しいパスワードか」だけで、
-バインドで答えられます。&lt;/p&gt;
+&lt;p&gt;クライアントは SMB サーバーにパスワードを送りません。そこから計算した証明を送ります。そのため、パスワードを&lt;em&gt;確認&lt;/em&gt;するだけのディレクトリは、確認がどれほど優れていてもSMB には応答できません。これはプロトコルの性質であり、このプログラムの制約ではなく、設定でどうにかなるものではありません。WebDAV が尋ねるのは「これは正しいパスワードか」だけで、バインドで答えられます。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;ディレクトリが名前を挙げているのに何も証明できない人は、正当な存在です。一覧だけがあり、
-シークレットは別の場所にあるというケースです。&lt;code&gt;check&lt;/code&gt; は、それを自分で見つけさせるのではなく、
-1 行で伝えます。&lt;/p&gt;
+&lt;p&gt;ディレクトリが名前を挙げているのに何も証明できない人は、正当な存在です。一覧だけがあり、シークレットは別の場所にあるというケースです。&lt;code&gt;check&lt;/code&gt; は、それを自分で見つけさせるのではなく、1 行で伝えます。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="people-the-identity-provider-names-not-this-file"&gt;この設定ファイルではなく、ID プロバイダーが名指しする人&lt;span class="hx:absolute hx:-mt-20" id="people-the-identity-provider-names-not-this-file"&gt;&lt;/span&gt;
-&lt;a href="#people-the-identity-provider-names-not-this-file" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;フェデレーション(たとえば &lt;a href="https://github.com/go-authn/bridge" target="_blank" rel="noopener"&gt;go-authn/bridge&lt;/a&gt; 経由の RENATER)は、
-プロジェクトに誰がいるのかを把握しており、共有はそのリストをコピーするのではなく&lt;strong&gt;フェデレーションに&lt;/strong&gt;
+&lt;a href="#people-the-identity-provider-names-not-this-file" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;フェデレーション(たとえば &lt;a href="https://github.com/go-authn/bridge" target="_blank" rel="noopener"&gt;go-authn/bridge&lt;/a&gt; 経由の RENATER)は、プロジェクトに誰がいるのかを把握しており、共有はそのリストをコピーするのではなく&lt;strong&gt;フェデレーションに&lt;/strong&gt;
 尋ねられます。&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/protocols/webdav/#a-token-over-the-one-protocol-that-can-carry-one"&gt;&lt;code&gt;oidc&lt;/code&gt; ブロック&lt;/a&gt;を使います。&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;photos&amp;#34;&lt;/span&gt; {
@@ -324,21 +254,12 @@ data-copied-label="コピーしました！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;&lt;code&gt;oidc:groups:&amp;lt;value&amp;gt;&lt;/code&gt; は、トークンの groups クレームにその値を持つ人です。
-&lt;code&gt;oidc:user:&amp;lt;name&amp;gt;&lt;/code&gt; は、トークンが名指しする人です。この表記は opkssh のものに合わせてあり、
-シェルに到達できる人と共有に到達できる人を、同じ語彙で表せます。ルールが名指しする人は、
-プロバイダーが保証する範囲でこのサーバーに知られており、開放された共有も利用できます。
-どのルールにも名指しされない人は、依然として部外者です。同じルールは
-&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/protocols/sftp/#people-the-identity-provider-vouches-for"&gt;SFTP&lt;/a&gt;でも適用されますが、
-そこではグループはトークンではなく証明書で運ばれます。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;oidc:groups:&amp;lt;value&amp;gt;&lt;/code&gt; は、トークンの groups クレームにその値を持つ人です。&lt;code&gt;oidc:user:&amp;lt;name&amp;gt;&lt;/code&gt; は、トークンが名指しする人です。この表記は opkssh のものに合わせてあり、シェルに到達できる人と共有に到達できる人を、同じ語彙で表せます。ルールが名指しする人は、プロバイダーが保証する範囲でこのサーバーに知られており、開放された共有も利用できます。どのルールにも名指しされない人は、依然として部外者です。同じルールは&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/protocols/sftp/#people-the-identity-provider-vouches-for"&gt;SFTP&lt;/a&gt;でも適用されますが、そこではグループはトークンではなく証明書で運ばれます。&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;ルールが対象とするのは、プロバイダーの人だけです&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;oidc:user:bob&lt;/code&gt; はプロバイダーが保証する bob を指します。パスワードを持つ &lt;code&gt;bob&lt;/code&gt; という
-ローカルアカウントは別人であり、どのルールにも一致しません。&lt;code&gt;oidc&lt;/code&gt; ブロックのないルール、
-形式の不正なルール、接続を許可されていないのに書き込みを許可するルールは、
-&lt;strong&gt;起動時に拒否されます&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;oidc:user:bob&lt;/code&gt; はプロバイダーが保証する bob を指します。パスワードを持つ &lt;code&gt;bob&lt;/code&gt; というローカルアカウントは別人であり、どのルールにも一致しません。&lt;code&gt;oidc&lt;/code&gt; ブロックのないルール、形式の不正なルール、接続を許可されていないのに書き込みを許可するルールは、&lt;strong&gt;起動時に拒否されます&lt;/strong&gt;。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -346,17 +267,8 @@ data-copied-label="コピーしました！"
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;明示しない限り、プロバイダーの &lt;code&gt;alice&lt;/code&gt; はローカルの &lt;code&gt;alice&lt;/code&gt; ではありません(v0.20.0 以降)&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;allow&lt;/code&gt; や &lt;code&gt;writers&lt;/code&gt; の素の名前はローカルアカウントを指します。トークンやプロバイダーの証明書が
-到達できるのは、共有の &lt;code&gt;oidc:&lt;/code&gt; ルールだけです。プロバイダーの名前がそのままローカル名であるサイトは、
-&lt;code&gt;oidc&lt;/code&gt; ブロックに &lt;code&gt;local_names = true&lt;/code&gt; を書きます。その際は &lt;code&gt;domains&lt;/code&gt; も設定するか、プロバイダーが
-管理するクレームから名前を取得してください。人が自分で &lt;code&gt;preferred_username&lt;/code&gt; を選べるプロバイダーでは、
-サインアップした誰にでも、書き込みを含めてローカルアカウントの共有を渡してしまうためです。
-これは v0.20.0 より前の既定の動作でした(セキュリティ監査 F4)。&lt;code&gt;local_names&lt;/code&gt; がないために
-拒否されたフェデレーション名は、追加すべき行とともにログに記録され、&lt;code&gt;fileshare check&lt;/code&gt; は
-どのルールが有効かを伝えます。&lt;/p&gt;
-&lt;p&gt;NFS クライアント証明書(&lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt;)は例外です。その CA はまさにそのために
-&lt;code&gt;client_ca_file&lt;/code&gt; が固定したものであり、NFS の共有が人を名指しできるのは素の名前だけなので、
-&lt;code&gt;local_names&lt;/code&gt; の設定にかかわらず、その名前はローカル名になります。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;allow&lt;/code&gt; や &lt;code&gt;writers&lt;/code&gt; の素の名前はローカルアカウントを指します。トークンやプロバイダーの証明書が到達できるのは、共有の &lt;code&gt;oidc:&lt;/code&gt; ルールだけです。プロバイダーの名前がそのままローカル名であるサイトは、&lt;code&gt;oidc&lt;/code&gt; ブロックに &lt;code&gt;local_names = true&lt;/code&gt; を書きます。その際は &lt;code&gt;domains&lt;/code&gt; も設定するか、プロバイダーが管理するクレームから名前を取得してください。人が自分で &lt;code&gt;preferred_username&lt;/code&gt; を選べるプロバイダーでは、サインアップした誰にでも、書き込みを含めてローカルアカウントの共有を渡してしまうためです。これは v0.20.0 より前の既定の動作でした(セキュリティ監査 F4)。&lt;code&gt;local_names&lt;/code&gt; がないために拒否されたフェデレーション名は、追加すべき行とともにログに記録され、&lt;code&gt;fileshare check&lt;/code&gt; はどのルールが有効かを伝えます。&lt;/p&gt;
+&lt;p&gt;NFS クライアント証明書(&lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt;)は例外です。その CA はまさにそのために&lt;code&gt;client_ca_file&lt;/code&gt; が固定したものであり、NFS の共有が人を名指しできるのは素の名前だけなので、&lt;code&gt;local_names&lt;/code&gt; の設定にかかわらず、その名前はローカル名になります。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -384,11 +296,5 @@ data-copied-label="コピーしました！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;&lt;code&gt;domains&lt;/code&gt; は認証時に、SFTP と WebDAV の両方で、また NFS クライアント証明書についても検査されます。
-名前は &lt;code&gt;&amp;lt;something&amp;gt;@&amp;lt;そのいずれか&amp;gt;&lt;/code&gt; の形でなければならず、全体が比較されます
-(&lt;code&gt;evilunivb.fr&lt;/code&gt; は &lt;code&gt;univb.fr&lt;/code&gt; ではありません)。&lt;code&gt;oidc:domain:&lt;/code&gt; は、1 つの共有に対する同じ検査です。
-ドメインを信頼できるのは、プロバイダーが信頼できる範囲までです。go-authn/bridge は、IdP の
-フェデレーションメタデータがそのスコープを許可していない eppn や subject-id を破棄します。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;グループ&lt;/strong&gt;は機関の IdP が公開するもので、go-authn/bridge の &lt;code&gt;claims { groups = [...] }&lt;/code&gt; により
-&lt;code&gt;groups&lt;/code&gt; クレームに変換されます。既定では &lt;code&gt;eduPersonEntitlement&lt;/code&gt;(研究室や VO のグループ)、
-または &lt;code&gt;eduPersonScopedAffiliation&lt;/code&gt;(&lt;code&gt;staff@univ-a.fr&lt;/code&gt;、&lt;code&gt;student@univ-b.fr&lt;/code&gt;)です。&lt;/p&gt;</description></item></channel></rss>
+&lt;p&gt;&lt;code&gt;domains&lt;/code&gt; は認証時に、SFTP と WebDAV の両方で、また NFS クライアント証明書についても検査されます。名前は &lt;code&gt;&amp;lt;something&amp;gt;@&amp;lt;そのいずれか&amp;gt;&lt;/code&gt; の形でなければならず、全体が比較されます(&lt;code&gt;evilunivb.fr&lt;/code&gt; は &lt;code&gt;univb.fr&lt;/code&gt; ではありません)。&lt;code&gt;oidc:domain:&lt;/code&gt; は、1 つの共有に対する同じ検査です。ドメインを信頼できるのは、プロバイダーが信頼できる範囲までです。go-authn/bridge は、IdP のフェデレーションメタデータがそのスコープを許可していない eppn や subject-id を破棄します。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;グループ&lt;/strong&gt;は機関の IdP が公開するもので、go-authn/bridge の &lt;code&gt;claims { groups = [...] }&lt;/code&gt; により&lt;code&gt;groups&lt;/code&gt; クレームに変換されます。既定では &lt;code&gt;eduPersonEntitlement&lt;/code&gt;(研究室や VO のグループ)、または &lt;code&gt;eduPersonScopedAffiliation&lt;/code&gt;(&lt;code&gt;staff@univ-a.fr&lt;/code&gt;、&lt;code&gt;student@univ-b.fr&lt;/code&gt;)です。&lt;/p&gt;</description></item></channel></rss>

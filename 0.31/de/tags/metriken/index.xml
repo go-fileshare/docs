@@ -12,8 +12,7 @@ data-copied-label="Kopiert!"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;Drei Endpunkte, bereitgestellt von
-&lt;a href="https://github.com/go-net-health/endpoint" target="_blank" rel="noopener"&gt;go-net-health/endpoint&lt;/a&gt; auf einem
+&lt;p&gt;Drei Endpunkte, bereitgestellt von&lt;a href="https://github.com/go-net-health/endpoint" target="_blank" rel="noopener"&gt;go-net-health/endpoint&lt;/a&gt; auf einem
 eigenen Listener – &lt;strong&gt;nie ein Port, den ein Protokoll bedient&lt;/strong&gt;, sodass die Welt, die
 WebDAV erreicht, sie nicht erreicht:&lt;/p&gt;
 &lt;table&gt;
@@ -126,14 +125,11 @@ Protokolle, Herkünfte, Ergebnisse und Methodennamen, nie eine Freigabe oder ein
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="what-to-alert-on"&gt;Worauf Sie alarmieren sollten&lt;span class="hx:absolute hx:-mt-20" id="what-to-alert-on"&gt;&lt;/span&gt;
-&lt;a href="#what-to-alert-on" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Die Widerrufsprüfungen &lt;a href="https://go-fileshare.github.io/docs/0.31/de/security/#every-one-of-them-fails-closed"&gt;sind ausfallsicher geschlossen (fail closed)&lt;/a&gt;:
-Eine zu alte Liste oder ein Transmitter, von dem nichts zu hören ist, lässt den Server
+&lt;a href="#what-to-alert-on" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Die Widerrufsprüfungen &lt;a href="https://go-fileshare.github.io/docs/0.31/de/security/#every-one-of-them-fails-closed"&gt;sind ausfallsicher geschlossen (fail closed)&lt;/a&gt;:Eine zu alte Liste oder ein Transmitter, von dem nichts zu hören ist, lässt den Server
 die Zugangsdaten &lt;strong&gt;ablehnen&lt;/strong&gt;, über die sie entscheiden. Alarmieren Sie, bevor das geschieht, nicht danach:&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;code&gt;fileshare_revocation_list_age_seconds&lt;/code&gt; nähert sich &lt;code&gt;ssh_krl_max_age&lt;/code&gt; oder
-&lt;code&gt;crl_max_age&lt;/code&gt; (standardmäßig 1h);&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;fileshare_ssf_last_heard_seconds&lt;/code&gt; nähert sich &lt;code&gt;max_age&lt;/code&gt; des &lt;code&gt;ssf&lt;/code&gt;-Blocks
-(standardmäßig 10m);&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;fileshare_revocation_list_age_seconds&lt;/code&gt; nähert sich &lt;code&gt;ssh_krl_max_age&lt;/code&gt; oder&lt;code&gt;crl_max_age&lt;/code&gt; (standardmäßig 1h);&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;fileshare_ssf_last_heard_seconds&lt;/code&gt; nähert sich &lt;code&gt;max_age&lt;/code&gt; des &lt;code&gt;ssf&lt;/code&gt;-Blocks(standardmäßig 10m);&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;fileshare_directory_reloads_total{result=&amp;quot;failed&amp;quot;}&lt;/code&gt; steigt: Das Verzeichnis
 kann nicht gelesen werden, also &lt;a href="https://go-fileshare.github.io/docs/0.31/de/administration/reload/"&gt;ändert sich nichts&lt;/a&gt; – auch keine Entfernungen.&lt;/li&gt;
 &lt;/ul&gt;

@@ -1,6 +1,5 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Acme</title><link>https://go-fileshare.github.io/docs/0.31/ja/tags/acme/</link><description>Recent content in Acme on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>ja</language><atom:link href="https://go-fileshare.github.io/docs/0.31/ja/tags/acme/index.xml" rel="self" type="application/rss+xml"/><item><title>TLS と ACME による証明書</title><link>https://go-fileshare.github.io/docs/0.31/ja/security/tls/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/ja/security/tls/</guid><description>
-&lt;p&gt;v0.9.0 以降、&lt;strong&gt;WebDAV と S3 は HTTPS で、NFS は RPC-with-TLS&lt;/strong&gt;(RFC 9289)で提供できます。
-&lt;code&gt;serve&lt;/code&gt; ブロックに &lt;code&gt;tls = true&lt;/code&gt; を指定し、証明書の取得元を示す &lt;code&gt;tls&lt;/code&gt; ブロックを 1 つ書きます。&lt;/p&gt;
+&lt;p&gt;v0.9.0 以降、&lt;strong&gt;WebDAV と S3 は HTTPS で、NFS は RPC-with-TLS&lt;/strong&gt;(RFC 9289)で提供できます。&lt;code&gt;serve&lt;/code&gt; ブロックに &lt;code&gt;tls = true&lt;/code&gt; を指定し、証明書の取得元を示す &lt;code&gt;tls&lt;/code&gt; ブロックを 1 つ書きます。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="from-files"&gt;ファイルから&lt;span class="hx:absolute hx:-mt-20" id="from-files"&gt;&lt;/span&gt;
 &lt;a href="#from-files" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;tls&lt;/span&gt; {
@@ -23,11 +22,9 @@ data-copied-label="コピーしました！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;ファイルは&lt;strong&gt;変更されると再読み込み&lt;/strong&gt;されるため、他のツールが書き込んだ更新分は再起動なしで反映されます。
-証明書は &lt;a href="https://github.com/go-authn/servercert" target="_blank" rel="noopener"&gt;go-authn/servercert&lt;/a&gt; のものです。&lt;/p&gt;
+&lt;p&gt;ファイルは&lt;strong&gt;変更されると再読み込み&lt;/strong&gt;されるため、他のツールが書き込んだ更新分は再起動なしで反映されます。証明書は &lt;a href="https://github.com/go-authn/servercert" target="_blank" rel="noopener"&gt;go-authn/servercert&lt;/a&gt; のものです。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="from-an-acme-ca"&gt;ACME CA から&lt;span class="hx:absolute hx:-mt-20" id="from-an-acme-ca"&gt;&lt;/span&gt;
-&lt;a href="#from-an-acme-ca" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;既定では Let&amp;rsquo;s Encrypt です。HARICA 経由の GÉANT TCS のように、&lt;strong&gt;外部アカウントバインディング&lt;/strong&gt;で
-利用者を把握する CA も使えます。&lt;/p&gt;
+&lt;a href="#from-an-acme-ca" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;既定では Let&amp;rsquo;s Encrypt です。HARICA 経由の GÉANT TCS のように、&lt;strong&gt;外部アカウントバインディング&lt;/strong&gt;で利用者を把握する CA も使えます。&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;tls&lt;/span&gt; {
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;acme&lt;/span&gt; {
@@ -110,38 +107,22 @@ data-copied-label="コピーしました！"
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;最後の行は、キャンパスネットワーク内のファイルサーバーにとって重要です。機関がすでに HARICA で
-ドメインを検証済みの GÉANT TCS アカウントがあれば、インターネットに向けてポートを開く必要は一切ありません。&lt;/p&gt;
+&lt;p&gt;最後の行は、キャンパスネットワーク内のファイルサーバーにとって重要です。機関がすでに HARICA でドメインを検証済みの GÉANT TCS アカウントがあれば、インターネットに向けてポートを開く必要は一切ありません。&lt;/p&gt;
 &lt;h4 data-hextra-search-id="harica-gant-tcs-which-account-and-caa"&gt;HARICA(GÉANT TCS): どのアカウントか、そして CAA&lt;span class="hx:absolute hx:-mt-20" id="harica-gant-tcs-which-account-and-caa"&gt;&lt;/span&gt;
 &lt;a href="#harica-gant-tcs-which-account-and-caa" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h4&gt;&lt;p&gt;HARICA の ACME アカウントには 2 種類あり、チャレンジを省略できるのはそのうちの 1 つだけです。&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;Enterprise Admin&lt;/strong&gt; アカウントは、機関が検証済みのドメインに対して &lt;strong&gt;OV&lt;/strong&gt; 証明書を発行します。
-&lt;strong&gt;チャレンジなし&lt;/strong&gt;で、外部から誰も到達できないサーバーにはこれを使います。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Enterprise User&lt;/strong&gt; アカウントは &lt;strong&gt;DV&lt;/strong&gt; 証明書を発行します。DV とは、CA が注文のたびに名前を検査することを意味し、
-上記のとおり tls-alpn-01 または http-01 を使います。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Enterprise Admin&lt;/strong&gt; アカウントは、機関が検証済みのドメインに対して &lt;strong&gt;OV&lt;/strong&gt; 証明書を発行します。&lt;strong&gt;チャレンジなし&lt;/strong&gt;で、外部から誰も到達できないサーバーにはこれを使います。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Enterprise User&lt;/strong&gt; アカウントは &lt;strong&gt;DV&lt;/strong&gt; 証明書を発行します。DV とは、CA が注文のたびに名前を検査することを意味し、上記のとおり tls-alpn-01 または http-01 を使います。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;どちらの場合も、ドメインの &lt;strong&gt;CAA&lt;/strong&gt; レコードがあれば、&lt;code&gt;harica.gr&lt;/code&gt; を許可していなければなりません。
-そうでなければ注文は拒否されます。&lt;/p&gt;
+&lt;p&gt;どちらの場合も、ドメインの &lt;strong&gt;CAA&lt;/strong&gt; レコードがあれば、&lt;code&gt;harica.gr&lt;/code&gt; を許可していなければなりません。そうでなければ注文は拒否されます。&lt;/p&gt;
 &lt;h4 data-hextra-search-id="when-the-certificate-is-asked-for"&gt;証明書が要求されるタイミング&lt;span class="hx:absolute hx:-mt-20" id="when-the-certificate-is-asked-for"&gt;&lt;/span&gt;
-&lt;a href="#when-the-certificate-is-asked-for" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h4&gt;&lt;p&gt;&lt;strong&gt;起動時&lt;/strong&gt;(v0.27.0 以降): リスナーが立ち上がると、設定されたすべてのドメインの証明書が取得され、
-またはキャッシュディレクトリから読み戻されます。失敗してもサーバーは停止しません。提供を続けながら
-1 分後に再試行し、最大 1 時間まで倍々にします。そのホストを名指しする最初の TLS 接続も、いずれにしても
-再度要求します。証明書は期限の 30 日前、または有効期間がそれより短い場合はその最後の 3 分の 1 の時点で
-更新されます。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;SNI を送らないクライアント&lt;/strong&gt;(IP アドレスで接続するもの)には、&lt;strong&gt;最初の&lt;/strong&gt;ドメインの証明書が渡されます
-(v0.27.0 以降)。以前はハンドシェイクが失敗していました。クライアントは依然として、その証明書を
-ダイヤルしたアドレスに対して検査するため、その名前を信頼するよう指示されたクライアントを助けるだけで、
-誰も欺きません。&lt;/p&gt;
+&lt;a href="#when-the-certificate-is-asked-for" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h4&gt;&lt;p&gt;&lt;strong&gt;起動時&lt;/strong&gt;(v0.27.0 以降): リスナーが立ち上がると、設定されたすべてのドメインの証明書が取得され、またはキャッシュディレクトリから読み戻されます。失敗してもサーバーは停止しません。提供を続けながら1 分後に再試行し、最大 1 時間まで倍々にします。そのホストを名指しする最初の TLS 接続も、いずれにしても再度要求します。証明書は期限の 30 日前、または有効期間がそれより短い場合はその最後の 3 分の 1 の時点で更新されます。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;SNI を送らないクライアント&lt;/strong&gt;(IP アドレスで接続するもの)には、&lt;strong&gt;最初の&lt;/strong&gt;ドメインの証明書が渡されます(v0.27.0 以降)。以前はハンドシェイクが失敗していました。クライアントは依然として、その証明書をダイヤルしたアドレスに対して検査するため、その名前を信頼するよう指示されたクライアントを助けるだけで、誰も欺きません。&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;ALPN&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;ACME を使うと、サーバーの ALPN リストには &lt;code&gt;acme-tls/1&lt;/code&gt; が入り、Go のサーバーは自身のリストと共通点のない
-リストを持つクライアントを拒否します。そのため WebDAV と S3 には &lt;code&gt;http/1.1&lt;/code&gt; が&lt;strong&gt;追加&lt;/strong&gt;され
-(すべてのブラウザーと WebDAV クライアントが提示します)、NFS には RFC 9289 §5.2 が RPC-with-TLS を
-識別するものとして定める &lt;code&gt;sunrpc&lt;/code&gt; が追加されます。&lt;code&gt;h2&lt;/code&gt; は追加しません。これらのリスナーでは
-HTTP/2 を提供しておらず、提示するのは偽りになるためです。&lt;code&gt;acme-tls/1&lt;/code&gt; はすべてのリスナーに残るので、
-CA がどこに到達しても tls-alpn-01 に応答できます。&lt;/p&gt;
+&lt;p&gt;ACME を使うと、サーバーの ALPN リストには &lt;code&gt;acme-tls/1&lt;/code&gt; が入り、Go のサーバーは自身のリストと共通点のないリストを持つクライアントを拒否します。そのため WebDAV と S3 には &lt;code&gt;http/1.1&lt;/code&gt; が&lt;strong&gt;追加&lt;/strong&gt;され(すべてのブラウザーと WebDAV クライアントが提示します)、NFS には RFC 9289 §5.2 が RPC-with-TLS を識別するものとして定める &lt;code&gt;sunrpc&lt;/code&gt; が追加されます。&lt;code&gt;h2&lt;/code&gt; は追加しません。これらのリスナーではHTTP/2 を提供しておらず、提示するのは偽りになるためです。&lt;code&gt;acme-tls/1&lt;/code&gt; はすべてのリスナーに残るので、CA がどこに到達しても tls-alpn-01 に応答できます。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -150,10 +131,7 @@ CA がどこに到達しても tls-alpn-01 に応答できます。&lt;/p&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;v0.9.0 での破壊的変更: 到達可能なアドレスでパスワードを使う WebDAV は拒否されます&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;HTTP Basic では、すべてのリクエストが base64 化されたパスワードそのものであり、ベアラートークンも同等の
-価値を持ちます。そのため、他のマシンから到達できるアドレスで、誰かが認証する状況において、&lt;strong&gt;TLS なし&lt;/strong&gt;で
-WebDAV を提供する設定は、&lt;strong&gt;警告ではなく拒否&lt;/strong&gt;されます。警告は流れて消えますが、漏れたパスワードは
-戻ってきません。&lt;/p&gt;
+&lt;p&gt;HTTP Basic では、すべてのリクエストが base64 化されたパスワードそのものであり、ベアラートークンも同等の価値を持ちます。そのため、他のマシンから到達できるアドレスで、誰かが認証する状況において、&lt;strong&gt;TLS なし&lt;/strong&gt;でWebDAV を提供する設定は、&lt;strong&gt;警告ではなく拒否&lt;/strong&gt;されます。警告は流れて消えますが、漏れたパスワードは戻ってきません。&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;pre&gt;&lt;code&gt;webdav on 0.0.0.0:8080 would carry passwords in the clear: serve it with
 tls = true, or -- when TLS is terminated in front of it, by a proxy -- say
@@ -172,8 +150,7 @@ data-copied-label="コピーしました！"
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;v0.9.0 より前に &lt;code&gt;serve &amp;quot;webdav&amp;quot; { addr = &amp;quot;0.0.0.0:8080&amp;quot; }&lt;/code&gt; で起動していた設定は、それ以降は起動しません。
-対処法は 2 つあります。&lt;/p&gt;
+&lt;p&gt;v0.9.0 より前に &lt;code&gt;serve &amp;quot;webdav&amp;quot; { addr = &amp;quot;0.0.0.0:8080&amp;quot; }&lt;/code&gt; で起動していた設定は、それ以降は起動しません。対処法は 2 つあります。&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;webdav&amp;#34;&lt;/span&gt; {
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:443&amp;#34;&lt;/span&gt;
@@ -207,14 +184,10 @@ data-copied-label="コピーしました！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;&lt;strong&gt;ループバック&lt;/strong&gt;アドレス(&lt;code&gt;127.0.0.1&lt;/code&gt;、&lt;code&gt;::1&lt;/code&gt;、&lt;code&gt;localhost&lt;/code&gt;)と、&lt;strong&gt;認証する相手のいない&lt;/strong&gt;サーバー
-(&lt;code&gt;user&lt;/code&gt;、&lt;code&gt;users&lt;/code&gt;、&lt;code&gt;oidc&lt;/code&gt; ブロックのいずれもない)は影響を受けません。&lt;code&gt;addr&lt;/code&gt; のない &lt;code&gt;serve&lt;/code&gt; ブロックは
-ループバックに置かれるため、これも影響を受けません。&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;plaintext&lt;/code&gt; はパスワードを送るプロトコルである WebDAV 専用で、&lt;code&gt;plaintext&lt;/code&gt; と &lt;code&gt;tls&lt;/code&gt; を同時に指定することは
-拒否されます。どちらか一方です。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;ループバック&lt;/strong&gt;アドレス(&lt;code&gt;127.0.0.1&lt;/code&gt;、&lt;code&gt;::1&lt;/code&gt;、&lt;code&gt;localhost&lt;/code&gt;)と、&lt;strong&gt;認証する相手のいない&lt;/strong&gt;サーバー(&lt;code&gt;user&lt;/code&gt;、&lt;code&gt;users&lt;/code&gt;、&lt;code&gt;oidc&lt;/code&gt; ブロックのいずれもない)は影響を受けません。&lt;code&gt;addr&lt;/code&gt; のない &lt;code&gt;serve&lt;/code&gt; ブロックはループバックに置かれるため、これも影響を受けません。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;plaintext&lt;/code&gt; はパスワードを送るプロトコルである WebDAV 専用で、&lt;code&gt;plaintext&lt;/code&gt; と &lt;code&gt;tls&lt;/code&gt; を同時に指定することは拒否されます。どちらか一方です。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="what-check-says"&gt;&lt;code&gt;check&lt;/code&gt; が伝えること&lt;span class="hx:absolute hx:-mt-20" id="what-check-says"&gt;&lt;/span&gt;
-&lt;a href="#what-check-says" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/configuration/check/"&gt;&lt;code&gt;fileshare check&lt;/code&gt;&lt;/a&gt; は、プロトコルごとに、何が暗号化されていて、
-何が&lt;strong&gt;意図的に&lt;/strong&gt;平文であるかを出力します。&lt;/p&gt;
+&lt;a href="#what-check-says" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/configuration/check/"&gt;&lt;code&gt;fileshare check&lt;/code&gt;&lt;/a&gt; は、プロトコルごとに、何が暗号化されていて、何が&lt;strong&gt;意図的に&lt;/strong&gt;平文であるかを出力します。&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;pre&gt;&lt;code&gt;webdav: TLS, certificate from the files /etc/fileshare/tls/fullchain.pem and /etc/fileshare/tls/key.pem
 nfs: TLS, certificate from the files /etc/fileshare/tls/fullchain.pem and /etc/fileshare/tls/key.pem; clients present one signed by /etc/fileshare/tls/clients.pem (the machine, not the person)&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
@@ -297,14 +270,8 @@ data-copied-label="コピーしました！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;&lt;code&gt;client_ca_file&lt;/code&gt; は、その認証局の証明書をクライアントに提示させます。これは&lt;strong&gt;どのホストがマウントしているか&lt;/strong&gt;を
-示します。RFC 9289 はユーザー認証を以前のままにしているため、内側の uid は依然として &lt;code&gt;AUTH_SYS&lt;/code&gt; が主張する
-ものです。したがって、利用できる人を指定した共有は、&lt;code&gt;kerberos&lt;/code&gt; ブロックがない限り、または同じ証明書の
-別の使い方である&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/security/nfs-certificates/"&gt;証明書による ID&lt;/a&gt;がない限り、
-NFS では&lt;strong&gt;依然として拒否されます&lt;/strong&gt;。&lt;/p&gt;
-&lt;p&gt;TLS は&lt;strong&gt;提供されるだけで必須ではありません&lt;/strong&gt;。TLS を要求しないクライアントには、引き続き開放された共有が
-提供されます。&lt;code&gt;tls = true&lt;/code&gt; のない &lt;code&gt;client_ca_file&lt;/code&gt; は、何も検査しないため拒否され、NFS 以外のプロトコルの
-&lt;code&gt;client_ca_file&lt;/code&gt; も拒否されます。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;client_ca_file&lt;/code&gt; は、その認証局の証明書をクライアントに提示させます。これは&lt;strong&gt;どのホストがマウントしているか&lt;/strong&gt;を示します。RFC 9289 はユーザー認証を以前のままにしているため、内側の uid は依然として &lt;code&gt;AUTH_SYS&lt;/code&gt; が主張するものです。したがって、利用できる人を指定した共有は、&lt;code&gt;kerberos&lt;/code&gt; ブロックがない限り、または同じ証明書の別の使い方である&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/security/nfs-certificates/"&gt;証明書による ID&lt;/a&gt;がない限り、NFS では&lt;strong&gt;依然として拒否されます&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;TLS は&lt;strong&gt;提供されるだけで必須ではありません&lt;/strong&gt;。TLS を要求しないクライアントには、引き続き開放された共有が提供されます。&lt;code&gt;tls = true&lt;/code&gt; のない &lt;code&gt;client_ca_file&lt;/code&gt; は、何も検査しないため拒否され、NFS 以外のプロトコルの&lt;code&gt;client_ca_file&lt;/code&gt; も拒否されます。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="what-else-is-refused"&gt;ほかに拒否されるもの&lt;span class="hx:absolute hx:-mt-20" id="what-else-is-refused"&gt;&lt;/span&gt;
 &lt;a href="#what-else-is-refused" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
 &lt;li&gt;&lt;code&gt;tls&lt;/code&gt; ブロックのない &lt;code&gt;tls = true&lt;/code&gt;: 証明書の取得元を示すものがありません。&lt;/li&gt;

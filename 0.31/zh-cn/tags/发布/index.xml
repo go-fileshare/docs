@@ -183,12 +183,7 @@
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;升级到 v0.21.0&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;已满的目录共享&lt;/strong&gt;的应答方式不同。&lt;code&gt;EDQUOT&lt;/code&gt;（配额）和
-&lt;code&gt;ENOSPC&lt;/code&gt; 现在是同一个错误，即“no space left on device (the share is full)”，
-适用于每个目录共享，而不仅仅是卷：原先对 WebDAV 是
-&lt;code&gt;500&lt;/code&gt;、对 NFS 是 &lt;code&gt;NFS3ERR_IO&lt;/code&gt; 的 &lt;code&gt;EDQUOT&lt;/code&gt;，现在是 &lt;code&gt;507&lt;/code&gt; 和 &lt;code&gt;NFS3ERR_NOSPC&lt;/code&gt;，而 SFTP 的文本
-就是那句话，不带路径。SMB 仍然应答拒绝访问。参见
-&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/administration/volumes/#a-full-share"&gt;已满的共享&lt;/a&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;已满的目录共享&lt;/strong&gt;的应答方式不同。&lt;code&gt;EDQUOT&lt;/code&gt;（配额）和&lt;code&gt;ENOSPC&lt;/code&gt; 现在是同一个错误，即“no space left on device (the share is full)”，适用于每个目录共享，而不仅仅是卷：原先对 WebDAV 是&lt;code&gt;500&lt;/code&gt;、对 NFS 是 &lt;code&gt;NFS3ERR_IO&lt;/code&gt; 的 &lt;code&gt;EDQUOT&lt;/code&gt;，现在是 &lt;code&gt;507&lt;/code&gt; 和 &lt;code&gt;NFS3ERR_NOSPC&lt;/code&gt;，而 SFTP 的文本就是那句话，不带路径。SMB 仍然应答拒绝访问。参见&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/administration/volumes/#a-full-share"&gt;已满的共享&lt;/a&gt;。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -196,10 +191,8 @@
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;升级到 v0.20.0&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;提供方的 &lt;code&gt;alice&lt;/code&gt; 不再获得本地 &lt;code&gt;alice&lt;/code&gt; 的共享。提供方的名称
-就是其本地名称的站点，需要在 &lt;code&gt;oidc&lt;/code&gt; 块中添加 &lt;code&gt;local_names = true&lt;/code&gt;
-（并设置 &lt;code&gt;domains&lt;/code&gt;）；服务器会为每个因缺少它而被拒绝的名称记录
-相应的日志行。&lt;/p&gt;
+&lt;p&gt;提供方的 &lt;code&gt;alice&lt;/code&gt; 不再获得本地 &lt;code&gt;alice&lt;/code&gt; 的共享。提供方的名称就是其本地名称的站点，需要在 &lt;code&gt;oidc&lt;/code&gt; 块中添加 &lt;code&gt;local_names = true&lt;/code&gt;
+（并设置 &lt;code&gt;domains&lt;/code&gt;）；服务器会为每个因缺少它而被拒绝的名称记录相应的日志行。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -207,8 +200,7 @@
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;升级到 v0.19.0&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;指向另一台机器上 &lt;code&gt;ldap://&lt;/code&gt; 且没有
-&lt;code&gt;start_tls = true&lt;/code&gt; 的 &lt;code&gt;users &amp;quot;ldap&amp;quot;&lt;/code&gt; 块&lt;strong&gt;不再能够启动&lt;/strong&gt;：请使用 &lt;code&gt;ldaps://&lt;/code&gt;，或 StartTLS。&lt;/p&gt;
+&lt;p&gt;指向另一台机器上 &lt;code&gt;ldap://&lt;/code&gt; 且没有&lt;code&gt;start_tls = true&lt;/code&gt; 的 &lt;code&gt;users &amp;quot;ldap&amp;quot;&lt;/code&gt; 块&lt;strong&gt;不再能够启动&lt;/strong&gt;：请使用 &lt;code&gt;ldaps://&lt;/code&gt;，或 StartTLS。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -216,10 +208,7 @@
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;升级到 v0.17.0&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;一个共享位于另一个共享之内、两个共享使用同一来源，
-或者访问文件（&lt;code&gt;authorized_keys_file&lt;/code&gt;、&lt;code&gt;dsn_file&lt;/code&gt;、&lt;code&gt;bind_password_file&lt;/code&gt;、
-&lt;code&gt;ssf&lt;/code&gt; 的 &lt;code&gt;ca_file&lt;/code&gt;）位于共享之内的配置&lt;strong&gt;不再能够启动&lt;/strong&gt;；错误信息会指明
-共享和路径。&lt;/p&gt;
+&lt;p&gt;一个共享位于另一个共享之内、两个共享使用同一来源，或者访问文件（&lt;code&gt;authorized_keys_file&lt;/code&gt;、&lt;code&gt;dsn_file&lt;/code&gt;、&lt;code&gt;bind_password_file&lt;/code&gt;、&lt;code&gt;ssf&lt;/code&gt; 的 &lt;code&gt;ca_file&lt;/code&gt;）位于共享之内的配置&lt;strong&gt;不再能够启动&lt;/strong&gt;；错误信息会指明共享和路径。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -227,68 +216,35 @@
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;升级到 v0.9.0 之后的版本&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;在其他机器可以访问的地址上，不使用 TLS 提供 WebDAV 且有人需要身份验证的配置
-&lt;strong&gt;不再能够启动&lt;/strong&gt;。请添加 &lt;code&gt;tls = true&lt;/code&gt;
-和 &lt;code&gt;tls&lt;/code&gt; 块，或在终结 TLS 的代理之后使用 &lt;code&gt;plaintext = true&lt;/code&gt;。参见
-&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/tls/#webdav-is-not-served-in-the-clear"&gt;TLS&lt;/a&gt;。&lt;/p&gt;
+&lt;p&gt;在其他机器可以访问的地址上，不使用 TLS 提供 WebDAV 且有人需要身份验证的配置&lt;strong&gt;不再能够启动&lt;/strong&gt;。请添加 &lt;code&gt;tls = true&lt;/code&gt;
+和 &lt;code&gt;tls&lt;/code&gt; 块，或在终结 TLS 的代理之后使用 &lt;code&gt;plaintext = true&lt;/code&gt;。参见&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/tls/#webdav-is-not-served-in-the-clear"&gt;TLS&lt;/a&gt;。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="verified"&gt;已验证&lt;span class="hx:absolute hx:-mt-20" id="verified"&gt;&lt;/span&gt;
-&lt;a href="#verified" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;以下是让本项目未编写的客户端实际做到的事情，而不是
-关于代码的断言。&lt;/p&gt;
+&lt;a href="#verified" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;以下是让本项目未编写的客户端实际做到的事情，而不是关于代码的断言。&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;macOS&lt;/strong&gt; 通过 SMB 挂载共享，同时 &lt;code&gt;curl&lt;/code&gt; 通过 WebDAV 向同一个映像写入，
-并读回 WebDAV 所写的内容。Bob 通过 WebDAV 向其只能读取的共享写入会得到
-&lt;code&gt;403&lt;/code&gt;；错误的密码得到 &lt;code&gt;401&lt;/code&gt;。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;go-smb2&lt;/strong&gt;（本项目未编写的客户端）在 CI 的 &lt;code&gt;-race&lt;/code&gt; 下，
-通过 SMB 驱动二十个并发读取，同时有二十个通过 WebDAV 进行。&lt;/li&gt;
-&lt;li&gt;访问规则是&lt;strong&gt;通过每个协议&lt;/strong&gt;检查的，而不仅仅是在
-配置中：alice 可以写入而 bob 不能，SMB 和 WebDAV 都是如此，
-而 NFS 根本不提供该共享。&lt;/li&gt;
-&lt;li&gt;SFTP 证书已对照 &lt;strong&gt;OpenSSH 自己的客户端&lt;/strong&gt;验证，当其证书被移开后，
-该客户端同样会拒绝这把密钥。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;macOS&lt;/strong&gt; 通过 SMB 挂载共享，同时 &lt;code&gt;curl&lt;/code&gt; 通过 WebDAV 向同一个映像写入，并读回 WebDAV 所写的内容。Bob 通过 WebDAV 向其只能读取的共享写入会得到&lt;code&gt;403&lt;/code&gt;；错误的密码得到 &lt;code&gt;401&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;go-smb2&lt;/strong&gt;（本项目未编写的客户端）在 CI 的 &lt;code&gt;-race&lt;/code&gt; 下，通过 SMB 驱动二十个并发读取，同时有二十个通过 WebDAV 进行。&lt;/li&gt;
+&lt;li&gt;访问规则是&lt;strong&gt;通过每个协议&lt;/strong&gt;检查的，而不仅仅是在配置中：alice 可以写入而 bob 不能，SMB 和 WebDAV 都是如此，而 NFS 根本不提供该共享。&lt;/li&gt;
+&lt;li&gt;SFTP 证书已对照 &lt;strong&gt;OpenSSH 自己的客户端&lt;/strong&gt;验证，当其证书被移开后，该客户端同样会拒绝这把密钥。&lt;/li&gt;
 &lt;li&gt;基于证书的 NFS 身份已在 go-filesystems/nfs 的 CI 中用&lt;strong&gt;真实 Linux 客户端&lt;/strong&gt;
 （内核 6.17，ktls-utils 0.9）实测，&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/nfs-certificates/#measured-with-a-real-linux-client"&gt;明文的 &lt;code&gt;MNT&lt;/code&gt; 和 &lt;code&gt;tlshd&lt;/code&gt; 的陷阱&lt;/a&gt;
 就是这样发现的。&lt;/li&gt;
-&lt;li&gt;KRL 未签名形式是一项实测：OpenSSH 9.6 和 10.3 读取已签名的
-KRL 时会跳过签名（go-authn/krl，对两者均已测试）。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;go-authn/bridge 的互操作通道&lt;/strong&gt;（&lt;a href="https://github.com/go-authn/bridge/pull/12" target="_blank" rel="noopener"&gt;#12&lt;/a&gt;、
-&lt;a href="https://github.com/go-authn/bridge/pull/17" target="_blank" rel="noopener"&gt;#17&lt;/a&gt;）针对真实的 bridge 评判 fileshare v0.13.0：
-KRL、基于 NFS 的 CRL、通过共享信号撤销的 WebDAV 令牌、按作用域停用的 IdP，
-以及基于共享信号的 opkssh。&lt;/li&gt;
+&lt;li&gt;KRL 未签名形式是一项实测：OpenSSH 9.6 和 10.3 读取已签名的KRL 时会跳过签名（go-authn/krl，对两者均已测试）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;go-authn/bridge 的互操作通道&lt;/strong&gt;（&lt;a href="https://github.com/go-authn/bridge/pull/12" target="_blank" rel="noopener"&gt;#12&lt;/a&gt;、&lt;a href="https://github.com/go-authn/bridge/pull/17" target="_blank" rel="noopener"&gt;#17&lt;/a&gt;）针对真实的 bridge 评判 fileshare v0.13.0：KRL、基于 NFS 的 CRL、通过共享信号撤销的 WebDAV 令牌、按作用域停用的 IdP，以及基于共享信号的 opkssh。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h2 data-hextra-search-id="not-yet"&gt;尚未实现&lt;span class="hx:absolute hx:-mt-20" id="not-yet"&gt;&lt;/span&gt;
-&lt;a href="#not-yet" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;通过 S3 写入。&lt;/strong&gt; &lt;code&gt;PUT&lt;/code&gt; 和 &lt;code&gt;DELETE&lt;/code&gt; 返回 403。库可以写入，但
-某人只能读取的共享必须在与 SFTP 相同的位置拒绝，而这一点
-尚未接入。拒绝胜过写了一半的对象。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;通过 S3 使用 OIDC 令牌。&lt;/strong&gt; 令牌只在 &lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/protocols/webdav/"&gt;WebDAV&lt;/a&gt;上有效，
-其他地方都不行。S3 的通常做法是 STS &lt;code&gt;AssumeRoleWithWebIdentity&lt;/code&gt;，
-它把令牌换成临时凭据，客户端随后用这些凭据签名，
-这是与接受持有者令牌不同的机制，且尚未实现。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;带 &lt;code&gt;admin&lt;/code&gt; 或 &lt;code&gt;metrics&lt;/code&gt; 块的 &lt;code&gt;--isolate&lt;/code&gt;。&lt;/strong&gt; 会被拒绝：没有任何单一
-进程可供 API 变更应用。参见
-&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/operations/isolation/#not-with-an-admin-or-a-metrics-block-yet"&gt;每个协议一个进程&lt;/a&gt;。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;在共享的 Linux NFS 客户端上，凭证书区分每个用户。&lt;/strong&gt; Linux
-客户端把证书附加到挂载上，因此该挂载的每个用户都是
-证书所指明的那个人。这是客户端的属性，那里的答案是
-&lt;code&gt;sec=krb5&lt;/code&gt;。参见&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/nfs-certificates/#what-it-cannot-promise"&gt;它无法承诺什么&lt;/a&gt;。&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/protocols/s3/"&gt;S3 本身&lt;/a&gt;已经发布：共享就是存储桶，通过
-SFTP 使用的同一棵每用户目录树提供。&lt;/p&gt;
+&lt;a href="#not-yet" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;通过 S3 写入。&lt;/strong&gt; &lt;code&gt;PUT&lt;/code&gt; 和 &lt;code&gt;DELETE&lt;/code&gt; 返回 403。库可以写入，但某人只能读取的共享必须在与 SFTP 相同的位置拒绝，而这一点尚未接入。拒绝胜过写了一半的对象。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;通过 S3 使用 OIDC 令牌。&lt;/strong&gt; 令牌只在 &lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/protocols/webdav/"&gt;WebDAV&lt;/a&gt;上有效，其他地方都不行。S3 的通常做法是 STS &lt;code&gt;AssumeRoleWithWebIdentity&lt;/code&gt;，它把令牌换成临时凭据，客户端随后用这些凭据签名，这是与接受持有者令牌不同的机制，且尚未实现。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;带 &lt;code&gt;admin&lt;/code&gt; 或 &lt;code&gt;metrics&lt;/code&gt; 块的 &lt;code&gt;--isolate&lt;/code&gt;。&lt;/strong&gt; 会被拒绝：没有任何单一进程可供 API 变更应用。参见&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/operations/isolation/#not-with-an-admin-or-a-metrics-block-yet"&gt;每个协议一个进程&lt;/a&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;在共享的 Linux NFS 客户端上，凭证书区分每个用户。&lt;/strong&gt; Linux客户端把证书附加到挂载上，因此该挂载的每个用户都是证书所指明的那个人。这是客户端的属性，那里的答案是&lt;code&gt;sec=krb5&lt;/code&gt;。参见&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/nfs-certificates/#what-it-cannot-promise"&gt;它无法承诺什么&lt;/a&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/protocols/s3/"&gt;S3 本身&lt;/a&gt;已经发布：共享就是存储桶，通过SFTP 使用的同一棵每用户目录树提供。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="measured-and-stated-as-measured"&gt;实测，并如实陈述为实测&lt;span class="hx:absolute hx:-mt-20" id="measured-and-stated-as-measured"&gt;&lt;/span&gt;
-&lt;a href="#measured-and-stated-as-measured" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;这些文档中属于保险或测量、而不是对缺陷的复现的说法，
-在源码中也是这样写的：&lt;/p&gt;
+&lt;a href="#measured-and-stated-as-measured" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;这些文档中属于保险或测量、而不是对缺陷的复现的说法，在源码中也是这样写的：&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;在 &lt;code&gt;-race&lt;/code&gt; 下，八个 goroutine 通过未包装的 fat32 驱动写入，
-目前不会产生竞争。&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/operations/locking/"&gt;共享锁&lt;/a&gt;是对契约的保险，
-&lt;code&gt;go-filesystems/interface&lt;/code&gt; 对并发的基于路径的调用不作任何保证，而不是
-对已观察到的故障的修复。&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/operations/build-tags/"&gt;构建标签的大小&lt;/a&gt;是经过测量的，包括
-&lt;code&gt;hashicorp/go-plugin&lt;/code&gt; 自身带来的 13.2 MB，这正是决定不采用
-插件框架的依据，也包括管理 API 引入 gRPC 之后的 11.7 MB，
-这正是 &lt;code&gt;nogrpc&lt;/code&gt; 存在的原因。&lt;/li&gt;
-&lt;li&gt;曾经设计过自己的组标签证书扩展，并对照 Go 的 X.509 解析器进行了&lt;strong&gt;测量&lt;/strong&gt;，
-该解析器拒绝了整个证书；因此组改为以
-&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/nfs-certificates/#what-the-certificate-carries"&gt;tag URI&lt;/a&gt;
+&lt;li&gt;在 &lt;code&gt;-race&lt;/code&gt; 下，八个 goroutine 通过未包装的 fat32 驱动写入，目前不会产生竞争。&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/operations/locking/"&gt;共享锁&lt;/a&gt;是对契约的保险，&lt;code&gt;go-filesystems/interface&lt;/code&gt; 对并发的基于路径的调用不作任何保证，而不是对已观察到的故障的修复。&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/operations/build-tags/"&gt;构建标签的大小&lt;/a&gt;是经过测量的，包括&lt;code&gt;hashicorp/go-plugin&lt;/code&gt; 自身带来的 13.2 MB，这正是决定不采用插件框架的依据，也包括管理 API 引入 gRPC 之后的 11.7 MB，这正是 &lt;code&gt;nogrpc&lt;/code&gt; 存在的原因。&lt;/li&gt;
+&lt;li&gt;曾经设计过自己的组标签证书扩展，并对照 Go 的 X.509 解析器进行了&lt;strong&gt;测量&lt;/strong&gt;，该解析器拒绝了整个证书；因此组改为以&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/nfs-certificates/#what-the-certificate-carries"&gt;tag URI&lt;/a&gt;
 传递。&lt;/li&gt;
 &lt;/ul&gt;</description></item></channel></rss>

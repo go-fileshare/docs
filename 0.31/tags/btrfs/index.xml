@@ -1,10 +1,8 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Btrfs</title><link>https://go-fileshare.github.io/docs/0.31/tags/btrfs/</link><description>Recent content in Btrfs on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>en</language><atom:link href="https://go-fileshare.github.io/docs/0.31/tags/btrfs/index.xml" rel="self" type="application/rss+xml"/><item><title>Volumes: storage fileshare creates</title><link>https://go-fileshare.github.io/docs/0.31/administration/volumes/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/administration/volumes/</guid><description>
 &lt;p&gt;Since v0.21.0 the &lt;a href="https://go-fileshare.github.io/docs/0.31/administration/"&gt;admin API&lt;/a&gt; can &lt;strong&gt;create the storage a share
 serves&lt;/strong&gt; — a &lt;strong&gt;ZFS dataset&lt;/strong&gt;, a &lt;strong&gt;btrfs subvolume&lt;/strong&gt;, an &lt;strong&gt;XFS or ext4 directory
-under a project quota&lt;/strong&gt; — sized, owned and tracked, and serve a share from it.
-Linux only. Ceph is not supported yet.&lt;/p&gt;
-&lt;p&gt;Creating that storage needs &lt;code&gt;CAP_SYS_ADMIN&lt;/code&gt; (quotactl, the btrfs quota ioctls,
-&lt;code&gt;/dev/zfs&lt;/code&gt;, mount(2)). &lt;code&gt;fileshare serve&lt;/code&gt; parses five network protocols for
+under a project quota&lt;/strong&gt; — sized, owned and tracked, and serve a share from it.Linux only. Ceph is not supported yet.&lt;/p&gt;
+&lt;p&gt;Creating that storage needs &lt;code&gt;CAP_SYS_ADMIN&lt;/code&gt; (quotactl, the btrfs quota ioctls,&lt;code&gt;/dev/zfs&lt;/code&gt;, mount(2)). &lt;code&gt;fileshare serve&lt;/code&gt; parses five network protocols for
 strangers and holds no privilege, so the part that does is a second role of the
 same binary, &lt;code&gt;fileshare provisioner&lt;/code&gt;, behind a unix socket and a small, closed
 protocol:&lt;/p&gt;
@@ -33,8 +31,7 @@ data-copied-label="Copied!"
 &lt;p&gt;One binary rather than two daemons: one version to deploy, one protocol
 definition. The storage itself is done by &lt;a href="https://go-fsctl.github.io/" target="_blank" rel="noopener"&gt;go-fsctl&lt;/a&gt;
 (pure Go, no &lt;code&gt;zfs&lt;/code&gt; or &lt;code&gt;btrfs&lt;/code&gt; command). The design and what changed while
-building it are in the fileshare repository&amp;rsquo;s
-&lt;a href="https://github.com/go-fileshare/fileshare/blob/v0.28.0/docs/volumes.md" target="_blank" rel="noopener"&gt;&lt;code&gt;docs/volumes.md&lt;/code&gt;&lt;/a&gt;.&lt;/p&gt;
+building it are in the fileshare repository&amp;rsquo;s&lt;a href="https://github.com/go-fileshare/fileshare/blob/v0.28.0/docs/volumes.md" target="_blank" rel="noopener"&gt;&lt;code&gt;docs/volumes.md&lt;/code&gt;&lt;/a&gt;.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="both-processes-configured"&gt;Both processes, configured&lt;span class="hx:absolute hx:-mt-20" id="both-processes-configured"&gt;&lt;/span&gt;
 &lt;a href="#both-processes-configured" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;fileshare serve&lt;/code&gt;, as the user &lt;code&gt;fileshare&lt;/code&gt; (uid 990):&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
@@ -241,14 +238,12 @@ under &lt;code&gt;sudo&lt;/code&gt;.&lt;/p&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Upgrade the provisioner first&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;The provisioner refuses a message carrying a field its version does not
-define — it closes the connection — so &lt;code&gt;fileshare serve&lt;/code&gt; and
-&lt;code&gt;fileshare provisioner&lt;/code&gt; run the same version.&lt;/p&gt;
+define — it closes the connection — so &lt;code&gt;fileshare serve&lt;/code&gt; and&lt;code&gt;fileshare provisioner&lt;/code&gt; run the same version.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="the-admin-apis-volume-calls"&gt;The admin API&amp;rsquo;s volume calls&lt;span class="hx:absolute hx:-mt-20" id="the-admin-apis-volume-calls"&gt;&lt;/span&gt;
-&lt;a href="#the-admin-apis-volume-calls" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;fileshare serve&lt;/code&gt; relays these to the provisioner
-(&lt;a href="https://github.com/go-fileshare/fileshare/blob/v0.28.0/proto/fileshare/admin/v1/admin.proto" target="_blank" rel="noopener"&gt;&lt;code&gt;admin.proto&lt;/code&gt;&lt;/a&gt;):&lt;/p&gt;
+&lt;a href="#the-admin-apis-volume-calls" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;fileshare serve&lt;/code&gt; relays these to the provisioner(&lt;a href="https://github.com/go-fileshare/fileshare/blob/v0.28.0/proto/fileshare/admin/v1/admin.proto" target="_blank" rel="noopener"&gt;&lt;code&gt;admin.proto&lt;/code&gt;&lt;/a&gt;):&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
@@ -288,12 +283,10 @@ define — it closes the connection — so &lt;code&gt;fileshare serve&lt;/code&
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;&lt;code&gt;DeleteShare&lt;/code&gt; never deletes a volume. &amp;ldquo;The shares that use it&amp;rdquo; are the shares
-made from it &lt;strong&gt;and&lt;/strong&gt; any share — of the configuration files too, served,
-disabled or unavailable — whose image or directory lies inside it.&lt;/p&gt;
+made from it &lt;strong&gt;and&lt;/strong&gt; any share — of the configuration files too, served,disabled or unavailable — whose image or directory lies inside it.&lt;/p&gt;
 &lt;p&gt;A name matches &lt;code&gt;^[a-z0-9][a-z0-9_-]{0,62}$&lt;/code&gt;, and a request never carries a
 path: it names a &lt;code&gt;parent&lt;/code&gt; from the provisioner&amp;rsquo;s own configuration.&lt;/p&gt;
-&lt;p&gt;With &lt;code&gt;reflection = true&lt;/code&gt; in the &lt;code&gt;admin&lt;/code&gt; block, &lt;code&gt;grpcurl&lt;/code&gt; can make the calls.
-The socket is 0600 and &lt;code&gt;allowed_uids&lt;/code&gt; above names only fileshare&amp;rsquo;s uid, so run
+&lt;p&gt;With &lt;code&gt;reflection = true&lt;/code&gt; in the &lt;code&gt;admin&lt;/code&gt; block, &lt;code&gt;grpcurl&lt;/code&gt; can make the calls.The socket is 0600 and &lt;code&gt;allowed_uids&lt;/code&gt; above names only fileshare&amp;rsquo;s uid, so run
 it as that user:&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nv"&gt;S&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/run/fileshare/admin.sock
@@ -330,10 +323,8 @@ data-copied-label="Copied!"
 &lt;/div&gt;
 &lt;h3 data-hextra-search-id="status-codes"&gt;Status codes&lt;span class="hx:absolute hx:-mt-20" id="status-codes"&gt;&lt;/span&gt;
 &lt;a href="#status-codes" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;The provisioner&amp;rsquo;s codes come back as it gave them: &lt;code&gt;INVALID_ARGUMENT&lt;/code&gt; (a name
-outside the grammar, an unknown parent, a quota of 0), &lt;code&gt;OUT_OF_RANGE&lt;/code&gt; (above
-&lt;code&gt;max_volume&lt;/code&gt;), &lt;code&gt;RESOURCE_EXHAUSTED&lt;/code&gt; (the quota, or a resize&amp;rsquo;s growth, is more
-than the parent has free now; or the project-id range is used up),
-&lt;code&gt;ALREADY_EXISTS&lt;/code&gt;, &lt;code&gt;NOT_FOUND&lt;/code&gt;, &lt;code&gt;FAILED_PRECONDITION&lt;/code&gt;, &lt;code&gt;UNIMPLEMENTED&lt;/code&gt;.&lt;/p&gt;
+outside the grammar, an unknown parent, a quota of 0), &lt;code&gt;OUT_OF_RANGE&lt;/code&gt; (above&lt;code&gt;max_volume&lt;/code&gt;), &lt;code&gt;RESOURCE_EXHAUSTED&lt;/code&gt; (the quota, or a resize&amp;rsquo;s growth, is more
+than the parent has free now; or the project-id range is used up),&lt;code&gt;ALREADY_EXISTS&lt;/code&gt;, &lt;code&gt;NOT_FOUND&lt;/code&gt;, &lt;code&gt;FAILED_PRECONDITION&lt;/code&gt;, &lt;code&gt;UNIMPLEMENTED&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;Three are fileshare&amp;rsquo;s own:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;no &lt;code&gt;provisioner&lt;/code&gt; configured: &lt;code&gt;FAILED_PRECONDITION&lt;/code&gt;;&lt;/li&gt;
@@ -347,8 +338,7 @@ caller may not do;&lt;/li&gt;
 &lt;ul&gt;
 &lt;li&gt;the path is clean, absolute and — resolved — under &lt;code&gt;source_roots&lt;/code&gt;;&lt;/li&gt;
 &lt;li&gt;it is a directory;&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;statfs&lt;/code&gt; reports the kind&amp;rsquo;s filesystem (&lt;code&gt;ZFS_SUPER_MAGIC&lt;/code&gt;,
-&lt;code&gt;BTRFS_SUPER_MAGIC&lt;/code&gt;, &lt;code&gt;XFS_SUPER_MAGIC&lt;/code&gt;, &lt;code&gt;EXT4_SUPER_MAGIC&lt;/code&gt;);&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;statfs&lt;/code&gt; reports the kind&amp;rsquo;s filesystem (&lt;code&gt;ZFS_SUPER_MAGIC&lt;/code&gt;,&lt;code&gt;BTRFS_SUPER_MAGIC&lt;/code&gt;, &lt;code&gt;XFS_SUPER_MAGIC&lt;/code&gt;, &lt;code&gt;EXT4_SUPER_MAGIC&lt;/code&gt;);&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;ZFS&lt;/strong&gt;: it is a mount point — its device is not its parent&amp;rsquo;s. An unmounted
 dataset&amp;rsquo;s directory would take writes under no quota. (Which dataset is
 mounted there is not verified: the provisioner&amp;rsquo;s answer does not say.)&lt;/li&gt;
@@ -361,18 +351,14 @@ inherit — a directory outside every project is served unbounded.&lt;/li&gt;
 and checks again. A volume that is gone, fails a check, or whose provisioner
 does not answer within 10 s leaves its share &lt;strong&gt;defined and not served&lt;/strong&gt; — said
 at the start, by &lt;a href="https://go-fileshare.github.io/docs/0.31/configuration/check/"&gt;&lt;code&gt;fileshare check&lt;/code&gt;&lt;/a&gt;, and in the
-share&amp;rsquo;s &lt;code&gt;unavailable&lt;/code&gt; field — while the rest of the server starts.
-&lt;code&gt;EnableShare&lt;/code&gt; tries it again.&lt;/p&gt;
+share&amp;rsquo;s &lt;code&gt;unavailable&lt;/code&gt; field — while the rest of the server starts.&lt;code&gt;EnableShare&lt;/code&gt; tries it again.&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;fileshare serve&lt;/code&gt; refuses to serve volumes as root or with &lt;code&gt;CAP_SYS_RESOURCE&lt;/code&gt;&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;ext4 lets either write past a project quota (fs/quota/dquot.c,
-&lt;code&gt;ignore_hardlimit&lt;/code&gt;): root wrote 16 MiB into an 8 MiB project in
+&lt;p&gt;ext4 lets either write past a project quota (fs/quota/dquot.c,&lt;code&gt;ignore_hardlimit&lt;/code&gt;): root wrote 16 MiB into an 8 MiB project in
 go-fsctl/projquota&amp;rsquo;s CI. XFS has no such exemption, but the rule is one
-rule for the process, on every kind: fileshare reads its effective uid and
-&lt;code&gt;CapEff&lt;/code&gt;/&lt;code&gt;CapPrm&lt;/code&gt; in &lt;code&gt;/proc/self/status&lt;/code&gt; (a permitted capability is one
-&lt;code&gt;capset(2)&lt;/code&gt; away from effective), and a status it cannot read counts as
+rule for the process, on every kind: fileshare reads its effective uid and&lt;code&gt;CapEff&lt;/code&gt;/&lt;code&gt;CapPrm&lt;/code&gt; in &lt;code&gt;/proc/self/status&lt;/code&gt; (a permitted capability is one&lt;code&gt;capset(2)&lt;/code&gt; away from effective), and a status it cannot read counts as
 holding it. It refuses &lt;strong&gt;serving&lt;/strong&gt;, not the volume calls — creating storage
 as root is harmless, writing into it as root is not. &lt;code&gt;fileshare check&lt;/code&gt; says
 which it is. Hence &lt;code&gt;client_uid = 0&lt;/code&gt; is refused by the provisioner, and the
@@ -419,17 +405,14 @@ v0.21.1 every protocol answers &amp;ldquo;full&amp;rdquo;:&lt;/p&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;In v0.21.0, SMB answered &lt;code&gt;STATUS_ACCESS_DENIED&lt;/code&gt; and NFS answered a quota with
-&lt;code&gt;NFS3ERR_NOSPC&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;In v0.21.0, SMB answered &lt;code&gt;STATUS_ACCESS_DENIED&lt;/code&gt; and NFS answered a quota with&lt;code&gt;NFS3ERR_NOSPC&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;This applies to every &lt;a href="https://go-fileshare.github.io/docs/0.31/configuration/shares/"&gt;directory share&lt;/a&gt;, not only
 to volumes — see the &lt;a href="https://go-fileshare.github.io/docs/0.31/status/"&gt;upgrade note&lt;/a&gt;.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="the-size-a-client-sees"&gt;The size a client sees&lt;span class="hx:absolute hx:-mt-20" id="the-size-a-client-sees"&gt;&lt;/span&gt;
-&lt;a href="#the-size-a-client-sees" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Every protocol asks the server for a share&amp;rsquo;s size at each query: NFS
-&lt;code&gt;FSSTAT&lt;/code&gt;, SMB &lt;code&gt;FileFsFullSizeInformation&lt;/code&gt; and WebDAV&amp;rsquo;s RFC 4331 quota
+&lt;a href="#the-size-a-client-sees" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Every protocol asks the server for a share&amp;rsquo;s size at each query: NFS&lt;code&gt;FSSTAT&lt;/code&gt;, SMB &lt;code&gt;FileFsFullSizeInformation&lt;/code&gt; and WebDAV&amp;rsquo;s RFC 4331 quota
 properties.&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;ZFS, XFS and ext4&lt;/strong&gt;: the size is what &lt;code&gt;statfs&lt;/code&gt; says inside the volume,
-which the kernel answers with the quota (&lt;code&gt;refquota&lt;/code&gt; for ZFS, the project
+&lt;li&gt;&lt;strong&gt;ZFS, XFS and ext4&lt;/strong&gt;: the size is what &lt;code&gt;statfs&lt;/code&gt; says inside the volume,which the kernel answers with the quota (&lt;code&gt;refquota&lt;/code&gt; for ZFS, the project
 quota for XFS and ext4).&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;btrfs&lt;/strong&gt; (since fileshare v0.23.0): btrfs&amp;rsquo;s &lt;code&gt;statfs&lt;/code&gt; ignores qgroups and
 reports the whole filesystem, so the server uses the provisioner&amp;rsquo;s numbers
@@ -447,13 +430,11 @@ project&amp;rsquo;s usage needs &lt;code&gt;CAP_SYS_ADMIN&lt;/code&gt;, which fi
 &lt;h2 data-hextra-search-id="what-the-provisioner-promises"&gt;What the provisioner promises&lt;span class="hx:absolute hx:-mt-20" id="what-the-provisioner-promises"&gt;&lt;/span&gt;
 &lt;a href="#what-the-provisioner-promises" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;One uid, read from the kernel.&lt;/strong&gt; The peer is identified with &lt;code&gt;SO_PEERCRED&lt;/code&gt;
-when it connects, and anybody but &lt;code&gt;client_uid&lt;/code&gt; — root included — is
-&lt;code&gt;PERMISSION_DENIED&lt;/code&gt; before a byte of the request is decoded.&lt;/li&gt;
+when it connects, and anybody but &lt;code&gt;client_uid&lt;/code&gt; — root included — is&lt;code&gt;PERMISSION_DENIED&lt;/code&gt; before a byte of the request is decoded.&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;A closed set of verbs.&lt;/strong&gt; A method outside its service, or a message that
 does not decode or carries a field it does not define, gets no answer: the
 connection is closed.&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;It never touches what it did not create.&lt;/strong&gt; ZFS: the dataset&amp;rsquo;s own
-&lt;code&gt;fileshare:volume&lt;/code&gt; property — set on the dataset, since user properties are
+&lt;li&gt;&lt;strong&gt;It never touches what it did not create.&lt;/strong&gt; ZFS: the dataset&amp;rsquo;s own&lt;code&gt;fileshare:volume&lt;/code&gt; property — set on the dataset, since user properties are
 inherited and an inherited mark is not its own. btrfs: the subvolume id and
 uuid recorded in &lt;code&gt;state_file&lt;/code&gt;. XFS/ext4: a project id inside the parent&amp;rsquo;s
 range &lt;em&gt;and&lt;/em&gt; recorded. Checked before every resize, snapshot and delete.&lt;/li&gt;

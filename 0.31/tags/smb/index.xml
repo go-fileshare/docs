@@ -18,8 +18,7 @@ try, rather than by failing a write later.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="what-a-directory-must-hold"&gt;What a directory must hold&lt;span class="hx:absolute hx:-mt-20" id="what-a-directory-must-hold"&gt;&lt;/span&gt;
 &lt;a href="#what-a-directory-must-hold" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;NTLMv2 needs the password itself or its MD4 (&lt;code&gt;sambaNTPassword&lt;/code&gt;, an &lt;code&gt;nt_hash&lt;/code&gt;
 column). &lt;strong&gt;Nothing else will do.&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;A directory that only &lt;em&gt;checks&lt;/em&gt; passwords — an LDAP bind, a bcrypt column —
-cannot answer SMB, however good the check is, because the server has to compute
+&lt;p&gt;A directory that only &lt;em&gt;checks&lt;/em&gt; passwords — an LDAP bind, a bcrypt column —cannot answer SMB, however good the check is, because the server has to compute
 the same proof the client did. That is a property of the protocol, not a
 limitation of this program.&lt;/p&gt;
 &lt;p&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt; prints a &lt;code&gt;-&lt;/code&gt; in the SMB column for such a

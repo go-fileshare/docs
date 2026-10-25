@@ -12,10 +12,7 @@ data-copied-label="已复制！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;三个端点，由
-&lt;a href="https://github.com/go-net-health/endpoint" target="_blank" rel="noopener"&gt;go-net-health/endpoint&lt;/a&gt; 在
-专属监听器上提供，&lt;strong&gt;绝不使用任何协议所服务的端口&lt;/strong&gt;，因此能够访问
-WebDAV 的外部网络无法访问它们：&lt;/p&gt;
+&lt;p&gt;三个端点，由&lt;a href="https://github.com/go-net-health/endpoint" target="_blank" rel="noopener"&gt;go-net-health/endpoint&lt;/a&gt; 在专属监听器上提供，&lt;strong&gt;绝不使用任何协议所服务的端口&lt;/strong&gt;，因此能够访问WebDAV 的外部网络无法访问它们：&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
@@ -38,8 +35,7 @@ WebDAV 的外部网络无法访问它们：&lt;/p&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;unix 套接字用绝对路径指定，即 &lt;code&gt;unix:///like/this&lt;/code&gt;；其他形式
-必须是 &lt;code&gt;host:port&lt;/code&gt;，否则该块会被拒绝。&lt;/p&gt;
+&lt;p&gt;unix 套接字用绝对路径指定，即 &lt;code&gt;unix:///like/this&lt;/code&gt;；其他形式必须是 &lt;code&gt;host:port&lt;/code&gt;，否则该块会被拒绝。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="what-is-measured"&gt;度量内容&lt;span class="hx:absolute hx:-mt-20" id="what-is-measured"&gt;&lt;/span&gt;
 &lt;a href="#what-is-measured" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
 &lt;thead&gt;
@@ -111,38 +107,28 @@ WebDAV 的外部网络无法访问它们：&lt;/p&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;此外还有 Go 运行时和构建信息。撤销与共享信号相关的指标族
-只有在配置中包含列表或 &lt;code&gt;ssf&lt;/code&gt; 块时才会出现，域授权指标族
-只有在设置了 &lt;code&gt;ssh_domains&lt;/code&gt; 时才会出现，管理请求指标族
-只有在存在 &lt;code&gt;admin&lt;/code&gt; 块时才会出现。&lt;/p&gt;
+&lt;p&gt;此外还有 Go 运行时和构建信息。撤销与共享信号相关的指标族只有在配置中包含列表或 &lt;code&gt;ssf&lt;/code&gt; 块时才会出现，域授权指标族只有在设置了 &lt;code&gt;ssh_domains&lt;/code&gt; 时才会出现，管理请求指标族只有在存在 &lt;code&gt;admin&lt;/code&gt; 块时才会出现。&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;没有任何指标会指明某个共享或某个人&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;对于某人无权使用的共享，WebDAV 返回 &lt;strong&gt;404&lt;/strong&gt;，以免确认其存在，
-而一次指标抓取也不得确认这一点。标签只有
-协议、来源、结果和方法名，绝不包含共享或人员。&lt;/p&gt;
+&lt;p&gt;对于某人无权使用的共享，WebDAV 返回 &lt;strong&gt;404&lt;/strong&gt;，以免确认其存在，而一次指标抓取也不得确认这一点。标签只有协议、来源、结果和方法名，绝不包含共享或人员。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="what-to-alert-on"&gt;应当针对什么设置告警&lt;span class="hx:absolute hx:-mt-20" id="what-to-alert-on"&gt;&lt;/span&gt;
-&lt;a href="#what-to-alert-on" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;撤销检查&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/#every-one-of-them-fails-closed"&gt;以拒绝为默认&lt;/a&gt;：
-列表过旧，或长时间没有收到发送方的消息，服务器就会
-&lt;strong&gt;拒绝&lt;/strong&gt;它所管辖的凭据。请在此之前告警，而不是之后：&lt;/p&gt;
+&lt;a href="#what-to-alert-on" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;撤销检查&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/#every-one-of-them-fails-closed"&gt;以拒绝为默认&lt;/a&gt;：列表过旧，或长时间没有收到发送方的消息，服务器就会&lt;strong&gt;拒绝&lt;/strong&gt;它所管辖的凭据。请在此之前告警，而不是之后：&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;code&gt;fileshare_revocation_list_age_seconds&lt;/code&gt; 接近 &lt;code&gt;ssh_krl_max_age&lt;/code&gt; 或
-&lt;code&gt;crl_max_age&lt;/code&gt;（默认 1h）；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;fileshare_revocation_list_age_seconds&lt;/code&gt; 接近 &lt;code&gt;ssh_krl_max_age&lt;/code&gt; 或&lt;code&gt;crl_max_age&lt;/code&gt;（默认 1h）；&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;fileshare_ssf_last_heard_seconds&lt;/code&gt; 接近 &lt;code&gt;ssf&lt;/code&gt; 块的 &lt;code&gt;max_age&lt;/code&gt;
 （默认 10m）；&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;fileshare_directory_reloads_total{result=&amp;quot;failed&amp;quot;}&lt;/code&gt; 持续上升：目录服务
-无法读取，因此&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/administration/reload/"&gt;不会有任何变化&lt;/a&gt;，包括移除操作。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;fileshare_directory_reloads_total{result=&amp;quot;failed&amp;quot;}&lt;/code&gt; 持续上升：目录服务无法读取，因此&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/administration/reload/"&gt;不会有任何变化&lt;/a&gt;，包括移除操作。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;--isolate&lt;/code&gt;&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;metrics&lt;/code&gt; 块目前不能与 &lt;code&gt;--isolate&lt;/code&gt; 同时使用；这种组合
-会被拒绝。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;metrics&lt;/code&gt; 块目前不能与 &lt;code&gt;--isolate&lt;/code&gt; 同时使用；这种组合会被拒绝。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;</description></item></channel></rss>

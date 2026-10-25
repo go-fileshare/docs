@@ -1,8 +1,5 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – 共享信号</title><link>https://go-fileshare.github.io/docs/0.31/zh-cn/tags/%E5%85%B1%E4%BA%AB%E4%BF%A1%E5%8F%B7/</link><description>Recent content in 共享信号 on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><atom:link href="https://go-fileshare.github.io/docs/0.31/zh-cn/tags/%E5%85%B1%E4%BA%AB%E4%BF%A1%E5%8F%B7/index.xml" rel="self" type="application/rss+xml"/><item><title>撤销列表无法涵盖的内容：共享信号</title><link>https://go-fileshare.github.io/docs/0.31/zh-cn/security/shared-signals/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/zh-cn/security/shared-signals/</guid><description>
-&lt;p&gt;证书有撤销列表，即 &lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/revocation-lists/"&gt;KRL&lt;/a&gt;和
-&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/nfs-certificates/#revocation-the-crl"&gt;CRL&lt;/a&gt;。而 fileshare 自行验证的
-&lt;strong&gt;访问令牌&lt;/strong&gt;，以及由个人自己的密钥签名的 &lt;strong&gt;OpenPubkey 证书&lt;/strong&gt;则没有：
-它们在到期之前一直有效，无论此人之后发生了什么。&lt;/p&gt;
+&lt;p&gt;证书有撤销列表，即 &lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/revocation-lists/"&gt;KRL&lt;/a&gt;和&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/nfs-certificates/#revocation-the-crl"&gt;CRL&lt;/a&gt;。而 fileshare 自行验证的&lt;strong&gt;访问令牌&lt;/strong&gt;，以及由个人自己的密钥签名的 &lt;strong&gt;OpenPubkey 证书&lt;/strong&gt;则没有：它们在到期之前一直有效，无论此人之后发生了什么。&lt;/p&gt;
 &lt;p&gt;自 v0.13.0 起，&lt;a href="https://openid.net/specs/openid-sharedsignals-framework-1_0-final.html" target="_blank" rel="noopener"&gt;OpenID 共享信号框架&lt;/a&gt;
 通过 &lt;a href="https://openid.net/specs/openid-caep-1_0-final.html" target="_blank" rel="noopener"&gt;CAEP&lt;/a&gt;
 &lt;strong&gt;&lt;code&gt;session-revoked&lt;/code&gt;&lt;/strong&gt; 事件弥补了这一点：&lt;/p&gt;
@@ -26,13 +23,9 @@ data-copied-label="已复制！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;go-authn/bridge 在停用个人或 IdP 时会发送一个；fileshare
-对其进行&lt;strong&gt;轮询&lt;/strong&gt;（RFC 8936，SSF 的默认方式），并为每个人记录它
-&lt;strong&gt;何时&lt;/strong&gt;发生。&lt;/p&gt;
+&lt;p&gt;go-authn/bridge 在停用个人或 IdP 时会发送一个；fileshare对其进行&lt;strong&gt;轮询&lt;/strong&gt;（RFC 8936，SSF 的默认方式），并为每个人记录它&lt;strong&gt;何时&lt;/strong&gt;发生。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="everything-issued-before-is-refused-on-every-protocol"&gt;此前签发的一切，在所有协议上都会被拒绝&lt;span class="hx:absolute hx:-mt-20" id="everything-issued-before-is-refused-on-every-protocol"&gt;&lt;/span&gt;
-&lt;a href="#everything-issued-before-is-refused-on-every-protocol" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;从那一刻起，&lt;strong&gt;此前签发&lt;/strong&gt;的每份联盟凭据都会被拒绝，
-&lt;strong&gt;它们所打开的会话也不再获得服务&lt;/strong&gt;，经过的关卡与
-KRL 相同。“签发”的含义取决于由什么承载它：&lt;/p&gt;
+&lt;a href="#everything-issued-before-is-refused-on-every-protocol" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;从那一刻起，&lt;strong&gt;此前签发&lt;/strong&gt;的每份联盟凭据都会被拒绝，&lt;strong&gt;它们所打开的会话也不再获得服务&lt;/strong&gt;，经过的关卡与KRL 相同。“签发”的含义取决于由什么承载它：&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
@@ -64,35 +57,20 @@ KRL 相同。“签发”的含义取决于由什么承载它：&lt;/p&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;提供方在&lt;strong&gt;此后&lt;/strong&gt;签发的凭据则属于有效凭据：重新启用的人
-不会被锁在门外。&lt;/p&gt;
+&lt;p&gt;提供方在&lt;strong&gt;此后&lt;/strong&gt;签发的凭据则属于有效凭据：重新启用的人不会被锁在门外。&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;同一秒算作之前&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;CAEP 的 &lt;code&gt;event_timestamp&lt;/code&gt; 和令牌的 &lt;code&gt;iat&lt;/code&gt; 都是整秒，而在撤销
-&lt;strong&gt;当时或之前&lt;/strong&gt;签发的凭据会被拒绝，因此与撤销在同一秒
-签发的凭据同样被拒绝，刚被停用后立即重新启用的人
-从下一秒起获得可用的凭据。
-这是有意选择的保守一侧。未知的签发时间
-并不等于“很久以前”：只要有任何针对该人的撤销，
-它就会被拒绝。&lt;/p&gt;
+&lt;p&gt;CAEP 的 &lt;code&gt;event_timestamp&lt;/code&gt; 和令牌的 &lt;code&gt;iat&lt;/code&gt; 都是整秒，而在撤销&lt;strong&gt;当时或之前&lt;/strong&gt;签发的凭据会被拒绝，因此与撤销在同一秒签发的凭据同样被拒绝，刚被停用后立即重新启用的人从下一秒起获得可用的凭据。这是有意选择的保守一侧。未知的签发时间并不等于“很久以前”：只要有任何针对该人的撤销，它就会被拒绝。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="who-an-event-is-about"&gt;事件针对的是谁&lt;span class="hx:absolute hx:-mt-20" id="who-an-event-is-about"&gt;&lt;/span&gt;
-&lt;a href="#who-an-event-is-about" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;主体是 RFC 9493 的 &lt;strong&gt;&lt;code&gt;account&lt;/code&gt;&lt;/strong&gt;（&lt;code&gt;acct:user@domain&lt;/code&gt;，即共享所使用的名称）、
-&lt;strong&gt;&lt;code&gt;iss_sub&lt;/code&gt;&lt;/strong&gt;、&lt;strong&gt;&lt;code&gt;email&lt;/code&gt;&lt;/strong&gt;，或它们的 &lt;strong&gt;&lt;code&gt;aliases&lt;/code&gt;&lt;/strong&gt;。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;整个被停用的 IdP&lt;/strong&gt; 以 CAEP &lt;em&gt;tenant&lt;/em&gt; 主体的形式到达，事件中带有 IdP 的
-作用域：名称为 &lt;code&gt;@&lt;/code&gt; 加其中之一（整体比较，
-&lt;code&gt;evil-univ-a.fr&lt;/code&gt; 不是 &lt;code&gt;univ-a.fr&lt;/code&gt;）、且凭据在此前签发的每个人，
-都会被拒绝，&lt;strong&gt;包括提供方已不再记得的人&lt;/strong&gt;。&lt;/p&gt;
+&lt;a href="#who-an-event-is-about" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;主体是 RFC 9493 的 &lt;strong&gt;&lt;code&gt;account&lt;/code&gt;&lt;/strong&gt;（&lt;code&gt;acct:user@domain&lt;/code&gt;，即共享所使用的名称）、&lt;strong&gt;&lt;code&gt;iss_sub&lt;/code&gt;&lt;/strong&gt;、&lt;strong&gt;&lt;code&gt;email&lt;/code&gt;&lt;/strong&gt;，或它们的 &lt;strong&gt;&lt;code&gt;aliases&lt;/code&gt;&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;整个被停用的 IdP&lt;/strong&gt; 以 CAEP &lt;em&gt;tenant&lt;/em&gt; 主体的形式到达，事件中带有 IdP 的作用域：名称为 &lt;code&gt;@&lt;/code&gt; 加其中之一（整体比较，&lt;code&gt;evil-univ-a.fr&lt;/code&gt; 不是 &lt;code&gt;univ-a.fr&lt;/code&gt;）、且凭据在此前签发的每个人，都会被拒绝，&lt;strong&gt;包括提供方已不再记得的人&lt;/strong&gt;。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="how-the-receiver-authenticates"&gt;接收方如何进行身份验证&lt;span class="hx:absolute hx:-mt-20" id="how-the-receiver-authenticates"&gt;&lt;/span&gt;
-&lt;a href="#how-the-receiver-authenticates" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;使用 &lt;strong&gt;OAuth 客户端凭据&lt;/strong&gt;（RFC 6749 §4.4，作用域 &lt;code&gt;ssf&lt;/code&gt;）：&lt;code&gt;client_id&lt;/code&gt; 和
-&lt;code&gt;client_secret_file&lt;/code&gt;，令牌从发送方自己的令牌端点获取，该端点
-可在其 OpenID 配置中找到，或由 &lt;code&gt;token_url&lt;/code&gt; 指定，并在其过期之前续期。
-&lt;code&gt;token_file&lt;/code&gt; 则用于发放长期持有者令牌的发送方。二者取其一：
-两者都给出或都不给出，都会被拒绝。&lt;/p&gt;
+&lt;a href="#how-the-receiver-authenticates" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;使用 &lt;strong&gt;OAuth 客户端凭据&lt;/strong&gt;（RFC 6749 §4.4，作用域 &lt;code&gt;ssf&lt;/code&gt;）：&lt;code&gt;client_id&lt;/code&gt; 和&lt;code&gt;client_secret_file&lt;/code&gt;，令牌从发送方自己的令牌端点获取，该端点可在其 OpenID 配置中找到，或由 &lt;code&gt;token_url&lt;/code&gt; 指定，并在其过期之前续期。&lt;code&gt;token_file&lt;/code&gt; 则用于发放长期持有者令牌的发送方。二者取其一：两者都给出或都不给出，都会被拒绝。&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
@@ -149,32 +127,17 @@ KRL 相同。“签发”的含义取决于由什么承载它：&lt;/p&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;撤销&lt;strong&gt;在被确认之前就已记录&lt;/strong&gt;，因此已确认的撤销
-在重启后依然有效；并且它会保留 &lt;code&gt;retain&lt;/code&gt; 的时间，长于它
-可能使之失效的任何凭据（192h 超过提供方签发的最长寿命凭据，即
-168h 的 SSH 证书）。&lt;/p&gt;
-&lt;p&gt;没有任何联盟凭据可供撤销的 &lt;code&gt;ssf&lt;/code&gt; 块（没有 &lt;code&gt;oidc&lt;/code&gt; 块，也没有 NFS
-&lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt;）会被拒绝。&lt;/p&gt;
-&lt;p&gt;传输层使用 &lt;a href="https://github.com/hstern/go-ssf" target="_blank" rel="noopener"&gt;github.com/hstern/go-ssf&lt;/a&gt;：
-发现、RFC 8936 轮询器、SET 的 JWS 层。事件的&lt;strong&gt;含义&lt;/strong&gt;则由
-fileshare 决定。&lt;/p&gt;
+&lt;p&gt;撤销&lt;strong&gt;在被确认之前就已记录&lt;/strong&gt;，因此已确认的撤销在重启后依然有效；并且它会保留 &lt;code&gt;retain&lt;/code&gt; 的时间，长于它可能使之失效的任何凭据（192h 超过提供方签发的最长寿命凭据，即168h 的 SSH 证书）。&lt;/p&gt;
+&lt;p&gt;没有任何联盟凭据可供撤销的 &lt;code&gt;ssf&lt;/code&gt; 块（没有 &lt;code&gt;oidc&lt;/code&gt; 块，也没有 NFS&lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt;）会被拒绝。&lt;/p&gt;
+&lt;p&gt;传输层使用 &lt;a href="https://github.com/hstern/go-ssf" target="_blank" rel="noopener"&gt;github.com/hstern/go-ssf&lt;/a&gt;：发现、RFC 8936 轮询器、SET 的 JWS 层。事件的&lt;strong&gt;含义&lt;/strong&gt;则由fileshare 决定。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="it-fails-closed"&gt;它以拒绝为默认&lt;span class="hx:absolute hx:-mt-20" id="it-fails-closed"&gt;&lt;/span&gt;
 &lt;a href="#it-fails-closed" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;在发送方沉默期间，联盟凭据会被拒绝&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;与 KRL 一样：在发送方没有在 &lt;code&gt;max_age&lt;/code&gt; 内应答轮询期间，
-&lt;strong&gt;每份联盟凭据&lt;/strong&gt;都会被拒绝，因为“没有撤销到达”和“撤销无法到达”
-看起来是一样的。
-&lt;code&gt;fileshare_ssf_last_heard_seconds&lt;/code&gt; 是应当设置告警的指标；
-&lt;code&gt;fileshare_ssf_revoked_subjects&lt;/code&gt; 是保留的撤销数量。参见
-&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/administration/health/#what-to-alert-on"&gt;健康检查与指标&lt;/a&gt;。&lt;/p&gt;
+&lt;p&gt;与 KRL 一样：在发送方没有在 &lt;code&gt;max_age&lt;/code&gt; 内应答轮询期间，&lt;strong&gt;每份联盟凭据&lt;/strong&gt;都会被拒绝，因为“没有撤销到达”和“撤销无法到达”看起来是一样的。&lt;code&gt;fileshare_ssf_last_heard_seconds&lt;/code&gt; 是应当设置告警的指标；&lt;code&gt;fileshare_ssf_revoked_subjects&lt;/code&gt; 是保留的撤销数量。参见&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/administration/health/#what-to-alert-on"&gt;健康检查与指标&lt;/a&gt;。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="checked-end-to-end"&gt;端到端检查&lt;span class="hx:absolute hx:-mt-20" id="checked-end-to-end"&gt;&lt;/span&gt;
-&lt;a href="#checked-end-to-end" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;go-authn/bridge 的互操作通道
-（&lt;a href="https://github.com/go-authn/bridge/pull/12" target="_blank" rel="noopener"&gt;#12&lt;/a&gt;、
-&lt;a href="https://github.com/go-authn/bridge/pull/17" target="_blank" rel="noopener"&gt;#17&lt;/a&gt;）针对真实的 bridge 评判 fileshare v0.13.0：
-KRL、基于 NFS 的 CRL、通过 SSF 撤销的 WebDAV 令牌、按作用域停用的 IdP，
-以及基于 SSF 的 opkssh，这是任何撤销列表都无法触及的情形。&lt;/p&gt;</description></item></channel></rss>
+&lt;a href="#checked-end-to-end" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;go-authn/bridge 的互操作通道（&lt;a href="https://github.com/go-authn/bridge/pull/12" target="_blank" rel="noopener"&gt;#12&lt;/a&gt;、&lt;a href="https://github.com/go-authn/bridge/pull/17" target="_blank" rel="noopener"&gt;#17&lt;/a&gt;）针对真实的 bridge 评判 fileshare v0.13.0：KRL、基于 NFS 的 CRL、通过 SSF 撤销的 WebDAV 令牌、按作用域停用的 IdP，以及基于 SSF 的 opkssh，这是任何撤销列表都无法触及的情形。&lt;/p&gt;</description></item></channel></rss>

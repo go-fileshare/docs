@@ -16,13 +16,11 @@ data-copied-label="コピーしました！"
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;NFSv3 は単独では誰も認証しません&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;AUTH_UNIX&lt;/code&gt; は&lt;strong&gt;申告&lt;/strong&gt;です。クライアントが「uid 501」と言えば、ネットワーク上でそれに反論する手段はありません。
-暗号化もありません。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;AUTH_UNIX&lt;/code&gt; は&lt;strong&gt;申告&lt;/strong&gt;です。クライアントが「uid 501」と言えば、ネットワーク上でそれに反論する手段はありません。暗号化もありません。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;したがって、&lt;strong&gt;利用できる人を指定した共有は NFS ではエクスポートされません&lt;/strong&gt;。拒否は起動時と
-&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt;で、理由とともに出力されます。&lt;/p&gt;
+&lt;p&gt;したがって、&lt;strong&gt;利用できる人を指定した共有は NFS ではエクスポートされません&lt;/strong&gt;。拒否は起動時と&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt;で、理由とともに出力されます。&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;pre&gt;&lt;code&gt;nfs on 0.0.0.0:2049 — scratch
 photos is not served over nfs: it is restricted to alice and bob, and
@@ -42,11 +40,9 @@ data-copied-label="コピーしました！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;&lt;code&gt;allow&lt;/code&gt; も &lt;code&gt;writers&lt;/code&gt; もない共有(接続した誰もが読み書きできる)は NFS でエクスポートされます。
-プロトコルが守れないルールが、そこにはないためです。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;allow&lt;/code&gt; も &lt;code&gt;writers&lt;/code&gt; もない共有(接続した誰もが読み書きできる)は NFS でエクスポートされます。プロトコルが守れないルールが、そこにはないためです。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="the-refusal-that-used-to-be-permanent"&gt;かつては恒久的だった拒否&lt;span class="hx:absolute hx:-mt-20" id="the-refusal-that-used-to-be-permanent"&gt;&lt;/span&gt;
-&lt;a href="#the-refusal-that-used-to-be-permanent" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;kerberos&lt;/code&gt; ブロックがあると、NFS は人を区別できるようになり、制限付き共有もほかの場所と同様に
-NFS で提供されます。&lt;/p&gt;
+&lt;a href="#the-refusal-that-used-to-be-permanent" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;kerberos&lt;/code&gt; ブロックがあると、NFS は人を区別できるようになり、制限付き共有もほかの場所と同様にNFS で提供されます。&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;kerberos&lt;/span&gt; {
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; realm&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;EXAMPLE.ORG&amp;#34;&lt;/span&gt;
@@ -89,15 +85,9 @@ data-copied-label="コピーしました！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;v0.9.0 以降、&lt;code&gt;tls = true&lt;/code&gt; と &lt;a href="https://go-fileshare.github.io/docs/0.31/ja/security/tls/"&gt;&lt;code&gt;tls&lt;/code&gt; ブロック&lt;/a&gt;を指定すると、
-NFS は RPC-with-TLS(RFC 9289)で提供されます。暗号化を行い、&lt;code&gt;client_ca_file&lt;/code&gt; を指定すると、
-その認証局の証明書をクライアントに提示させます。これは、どの&lt;strong&gt;ホスト&lt;/strong&gt;がマウントしているかを示します。
-内側の uid は依然として &lt;code&gt;AUTH_SYS&lt;/code&gt; が主張するものなので、制限付き共有はこの経路でも
-&lt;strong&gt;依然として拒否されます&lt;/strong&gt;。TLS は提供されるだけで必須ではなく、TLS を要求しないクライアントには、
-引き続き開放された共有が提供されます。&lt;/p&gt;
+&lt;p&gt;v0.9.0 以降、&lt;code&gt;tls = true&lt;/code&gt; と &lt;a href="https://go-fileshare.github.io/docs/0.31/ja/security/tls/"&gt;&lt;code&gt;tls&lt;/code&gt; ブロック&lt;/a&gt;を指定すると、NFS は RPC-with-TLS(RFC 9289)で提供されます。暗号化を行い、&lt;code&gt;client_ca_file&lt;/code&gt; を指定すると、その認証局の証明書をクライアントに提示させます。これは、どの&lt;strong&gt;ホスト&lt;/strong&gt;がマウントしているかを示します。内側の uid は依然として &lt;code&gt;AUTH_SYS&lt;/code&gt; が主張するものなので、制限付き共有はこの経路でも&lt;strong&gt;依然として拒否されます&lt;/strong&gt;。TLS は提供されるだけで必須ではなく、TLS を要求しないクライアントには、引き続き開放された共有が提供されます。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="a-person-from-their-certificate"&gt;証明書から得られる人&lt;span class="hx:absolute hx:-mt-20" id="a-person-from-their-certificate"&gt;&lt;/span&gt;
-&lt;a href="#a-person-from-their-certificate" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;v0.12.0 以降、証明書は&lt;strong&gt;人&lt;/strong&gt;を名指しできます。go-authn/bridge が ID プロバイダーでのログイン後に
-発行するものがそうです。この場合、人を指定した共有が kerberos なしで NFS で提供されます。&lt;/p&gt;
+&lt;a href="#a-person-from-their-certificate" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;v0.12.0 以降、証明書は&lt;strong&gt;人&lt;/strong&gt;を名指しできます。go-authn/bridge が ID プロバイダーでのログイン後に発行するものがそうです。この場合、人を指定した共有が kerberos なしで NFS で提供されます。&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;nfs&amp;#34;&lt;/span&gt; {
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; tls&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;
@@ -120,10 +110,8 @@ data-copied-label="コピーしました！"
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Linux クライアントの証明書はマウントに属します&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;そのマウントのすべてのユーザーが、証明書が名指しする人として動作します。一人が使うワークステーション
-では正しいのですが、複数人がログインするマシンでは誤りです。そこでは &lt;code&gt;sec=krb5&lt;/code&gt; を使ってください。&lt;/p&gt;
+&lt;p&gt;そのマウントのすべてのユーザーが、証明書が名指しする人として動作します。一人が使うワークステーションでは正しいのですが、複数人がログインするマシンでは誤りです。そこでは &lt;code&gt;sec=krb5&lt;/code&gt; を使ってください。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;証明書が運ぶもの、必須となる CRL、そして実際の Linux クライアントで計測したこと(平文の &lt;code&gt;MNT&lt;/code&gt;、
-&lt;code&gt;tlshd&lt;/code&gt; の落とし穴)は、&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/security/nfs-certificates/"&gt;証明書による ID を使う NFS&lt;/a&gt;にあります。&lt;/p&gt;</description></item></channel></rss>
+&lt;p&gt;証明書が運ぶもの、必須となる CRL、そして実際の Linux クライアントで計測したこと(平文の &lt;code&gt;MNT&lt;/code&gt;、&lt;code&gt;tlshd&lt;/code&gt; の落とし穴)は、&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/security/nfs-certificates/"&gt;証明書による ID を使う NFS&lt;/a&gt;にあります。&lt;/p&gt;</description></item></channel></rss>

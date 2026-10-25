@@ -17,12 +17,9 @@ de ella. El recurso compartido indica a quien solo puede leer que es así —en 
 máscara de acceso, antes de que lo intente—, en lugar de hacer fallar una escritura
 más tarde.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="what-a-directory-must-hold"&gt;Lo que debe guardar un directorio&lt;span class="hx:absolute hx:-mt-20" id="what-a-directory-must-hold"&gt;&lt;/span&gt;
-&lt;a href="#what-a-directory-must-hold" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;NTLMv2 necesita la propia contraseña o su MD4 (&lt;code&gt;sambaNTPassword&lt;/code&gt;, una columna
-&lt;code&gt;nt_hash&lt;/code&gt;). &lt;strong&gt;Nada más sirve.&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;Un directorio que solo &lt;em&gt;comprueba&lt;/em&gt; contraseñas —un bind LDAP, una columna bcrypt—
-no puede responder a SMB, por buena que sea la comprobación, porque el servidor tiene
-que calcular la misma prueba que calculó el cliente. Es una propiedad del protocolo,
-no una limitación de este programa.&lt;/p&gt;
+&lt;a href="#what-a-directory-must-hold" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;NTLMv2 necesita la propia contraseña o su MD4 (&lt;code&gt;sambaNTPassword&lt;/code&gt;, una columna&lt;code&gt;nt_hash&lt;/code&gt;). &lt;strong&gt;Nada más sirve.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Un directorio que solo &lt;em&gt;comprueba&lt;/em&gt; contraseñas —un bind LDAP, una columna bcrypt—no puede responder a SMB, por buena que sea la comprobación, porque el servidor tiene
+que calcular la misma prueba que calculó el cliente. Es una propiedad del protocolo,no una limitación de este programa.&lt;/p&gt;
 &lt;p&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/es/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt; imprime un &lt;code&gt;-&lt;/code&gt; en la columna SMB para esa
 persona, en el momento de la configuración, en lugar de dejar que lo descubra al
 montar.&lt;/p&gt;
@@ -34,8 +31,7 @@ vincula él mismo a la dirección; el aislamiento es el mismo, la parte del puer
 privilegiado no.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="verified-against-a-client-this-project-did-not-write"&gt;Verificado con un cliente que este proyecto no escribió&lt;span class="hx:absolute hx:-mt-20" id="verified-against-a-client-this-project-did-not-write"&gt;&lt;/span&gt;
 &lt;a href="#verified-against-a-client-this-project-did-not-write" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;a href="https://github.com/cloudsoda/go-smb2" target="_blank" rel="noopener"&gt;go-smb2&lt;/a&gt; realiza veinte lecturas
-concurrentes por SMB mientras otras veinte pasan por WebDAV, con &lt;code&gt;-race&lt;/code&gt;, en la CI.
-macOS monta un recurso compartido por SMB mientras &lt;code&gt;curl&lt;/code&gt; escribe en la misma imagen
+concurrentes por SMB mientras otras veinte pasan por WebDAV, con &lt;code&gt;-race&lt;/code&gt;, en la CI.macOS monta un recurso compartido por SMB mientras &lt;code&gt;curl&lt;/code&gt; escribe en la misma imagen
 por WebDAV, y vuelve a leer lo que WebDAV escribió.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="when-the-people-change"&gt;Cuando cambian las personas&lt;span class="hx:absolute hx:-mt-20" id="when-the-people-change"&gt;&lt;/span&gt;
 &lt;a href="#when-the-people-change" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;SMB fija quién puede conectarse a un recurso compartido &lt;strong&gt;cuando se añade el recurso
@@ -85,16 +81,14 @@ servidor puede saber &lt;strong&gt;quién&lt;/strong&gt; pregunta.&lt;/p&gt;
 &lt;/table&gt;
 &lt;h2 data-hextra-search-id="the-consequence-stated-once"&gt;La consecuencia, dicha una sola vez&lt;span class="hx:absolute hx:-mt-20" id="the-consequence-stated-once"&gt;&lt;/span&gt;
 &lt;a href="#the-consequence-stated-once" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;Un recurso compartido que nombra quién puede usarlo no se exporta por NFS&lt;/strong&gt;, salvo
-que Kerberos esté configurado o que NFS tome
-&lt;a href="https://go-fileshare.github.io/docs/0.31/es/security/nfs-certificates/"&gt;identidades a partir de certificados&lt;/a&gt;.&lt;/p&gt;
+que Kerberos esté configurado o que NFS tome&lt;a href="https://go-fileshare.github.io/docs/0.31/es/security/nfs-certificates/"&gt;identidades a partir de certificados&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;No es una advertencia ni una opción: una configuración que dice &lt;em&gt;photos pertenece a
 alice&lt;/em&gt; y un protocolo que entrega photos a quien se conecte no pueden respetarse a la
 vez, y ampliar el acceso en silencio es el peor de los dos fallos. El rechazo se
 imprime al arrancar y en &lt;a href="https://go-fileshare.github.io/docs/0.31/es/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt;, con el motivo.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="what-each-one-needs-from-a-directory"&gt;Lo que cada uno necesita de un directorio&lt;span class="hx:absolute hx:-mt-20" id="what-each-one-needs-from-a-directory"&gt;&lt;/span&gt;
 &lt;a href="#what-each-one-needs-from-a-directory" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Qué protocolos pueden servir a una persona determinada lo decide lo que su origen
-puede probar, no solo la configuración. Consulte
-&lt;a href="https://go-fileshare.github.io/docs/0.31/es/configuration/identity/#what-a-source-can-prove-and-what-each-protocol-needs"&gt;lo que un origen puede probar&lt;/a&gt;.&lt;/p&gt;
+puede probar, no solo la configuración. Consulte&lt;a href="https://go-fileshare.github.io/docs/0.31/es/configuration/identity/#what-a-source-can-prove-and-what-each-protocol-needs"&gt;lo que un origen puede probar&lt;/a&gt;.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="what-is-encrypted"&gt;Lo que está cifrado&lt;span class="hx:absolute hx:-mt-20" id="what-is-encrypted"&gt;&lt;/span&gt;
 &lt;a href="#what-is-encrypted" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;WebDAV, S3 y NFS admiten &lt;code&gt;tls = true&lt;/code&gt;; SMB 3 cifra con sus propias claves, y SFTP
 es SSH. Consulte &lt;a href="https://go-fileshare.github.io/docs/0.31/es/security/tls/"&gt;TLS, y certificados de ACME&lt;/a&gt;.&lt;/p&gt;</description></item><item><title>WebDAV — Basic, o un token bearer</title><link>https://go-fileshare.github.io/docs/0.31/es/protocols/webdav/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/es/protocols/webdav/</guid><description>
@@ -147,8 +141,7 @@ data-copied-label="¡Copiado!"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;Loopback, y un servidor sin nadie a quien autenticar, no se ven afectados.
-Consulte &lt;a href="https://go-fileshare.github.io/docs/0.31/es/security/tls/#webdav-is-not-served-in-the-clear"&gt;TLS&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Loopback, y un servidor sin nadie a quien autenticar, no se ven afectados.Consulte &lt;a href="https://go-fileshare.github.io/docs/0.31/es/security/tls/#webdav-is-not-served-in-the-clear"&gt;TLS&lt;/a&gt;.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -178,11 +171,8 @@ data-copied-label="¡Copiado!"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;Un navegador tiene un token y ninguna contraseña. Por eso WebDAV acepta
-&lt;code&gt;Authorization: Bearer&lt;/code&gt; y, donde también hay personas locales, el desafío que envía
-ofrece &lt;strong&gt;ambos&lt;/strong&gt;: el cliente elige el que puede responder. El token lo verifica
-&lt;a href="https://github.com/go-authn/oidc" target="_blank" rel="noopener"&gt;go-authn/oidc&lt;/a&gt;: firma, emisor, audiencia,
-caducidad.&lt;/p&gt;
+&lt;p&gt;Un navegador tiene un token y ninguna contraseña. Por eso WebDAV acepta&lt;code&gt;Authorization: Bearer&lt;/code&gt; y, donde también hay personas locales, el desafío que envía
+ofrece &lt;strong&gt;ambos&lt;/strong&gt;: el cliente elige el que puede responder. El token lo verifica&lt;a href="https://github.com/go-authn/oidc" target="_blank" rel="noopener"&gt;go-authn/oidc&lt;/a&gt;: firma, emisor, audiencia,caducidad.&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
@@ -191,8 +181,7 @@ caducidad.&lt;/p&gt;
 en absoluto, y S3 con una firma SigV4: ninguno tiene dónde poner una
 cabecera &lt;code&gt;Authorization&lt;/code&gt;. Es un hecho de los protocolos, no un límite de este
 programa.&lt;/p&gt;
-&lt;p&gt;La palabra del proveedor llega en cambio a &lt;strong&gt;SFTP&lt;/strong&gt; dentro de un certificado:
-consulte &lt;a href="https://go-fileshare.github.io/docs/0.31/es/protocols/sftp/#people-the-identity-provider-vouches-for"&gt;SFTP&lt;/a&gt;. Una
+&lt;p&gt;La palabra del proveedor llega en cambio a &lt;strong&gt;SFTP&lt;/strong&gt; dentro de un certificado:consulte &lt;a href="https://go-fileshare.github.io/docs/0.31/es/protocols/sftp/#people-the-identity-provider-vouches-for"&gt;SFTP&lt;/a&gt;. Una
 configuración que nombra un proveedor y no sirve ni WebDAV ni un SFTP de ese
 tipo se &lt;strong&gt;rechaza en lugar de arrancar&lt;/strong&gt;.&lt;/p&gt;
 &lt;/div&gt;
@@ -202,10 +191,8 @@ tipo se &lt;strong&gt;rechaza en lugar de arrancar&lt;/strong&gt;.&lt;/p&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Un token dice quién cree el proveedor que es alguien. No dice que este servidor tenga un recurso compartido para esa persona.&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;Un token válido para un nombre que ningún origen de aquí conoce se rechaza:
-la lectura segura de &lt;em&gt;no le conozco&lt;/em&gt; no es &lt;em&gt;tiene permiso&lt;/em&gt;. Tampoco un nombre
-que también tiene una cuenta local obtiene esa cuenta, salvo que
-&lt;code&gt;local_names = true&lt;/code&gt; indique que los nombres del proveedor son los de este
+&lt;p&gt;Un token válido para un nombre que ningún origen de aquí conoce se rechaza:la lectura segura de &lt;em&gt;no le conozco&lt;/em&gt; no es &lt;em&gt;tiene permiso&lt;/em&gt;. Tampoco un nombre
+que también tiene una cuenta local obtiene esa cuenta, salvo que&lt;code&gt;local_names = true&lt;/code&gt; indique que los nombres del proveedor son los de este
 servidor (desactivado por defecto, desde la v0.20.0); sin ello, ese token
 también se rechaza, salvo que una regla &lt;code&gt;oidc:&lt;/code&gt; nombre a la persona.&lt;/p&gt;
 &lt;/div&gt;
@@ -231,40 +218,33 @@ data-copied-label="¡Copiado!"
 &lt;/div&gt;
 &lt;p&gt;Aquí &lt;strong&gt;no hay flujo de inicio de sesión&lt;/strong&gt;: ni redirección, ni secreto de cliente, ni
 cookies. Esto es el servidor de recursos.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;El nombre&lt;/strong&gt; que da un token es &lt;code&gt;preferred_username&lt;/code&gt;, o el claim que nombre
-&lt;code&gt;username_claim&lt;/code&gt;. Sin &lt;code&gt;preferred_username&lt;/code&gt;, es el correo electrónico solo si el
-proveedor indica &lt;code&gt;email_verified: true&lt;/code&gt;, y si no, &lt;code&gt;sub&lt;/code&gt;. Con
-&lt;code&gt;username_claim = &amp;quot;email&amp;quot;&lt;/code&gt;, un token cuyo correo no está verificado se rechaza, tanto
+&lt;p&gt;&lt;strong&gt;El nombre&lt;/strong&gt; que da un token es &lt;code&gt;preferred_username&lt;/code&gt;, o el claim que nombre&lt;code&gt;username_claim&lt;/code&gt;. Sin &lt;code&gt;preferred_username&lt;/code&gt;, es el correo electrónico solo si el
+proveedor indica &lt;code&gt;email_verified: true&lt;/code&gt;, y si no, &lt;code&gt;sub&lt;/code&gt;. Con&lt;code&gt;username_claim = &amp;quot;email&amp;quot;&lt;/code&gt;, un token cuyo correo no está verificado se rechaza, tanto
 por WebDAV como para un inicio de sesión opkssh por SFTP. Mientras no está
 verificado, el correo es solo lo que la persona escribió, y un token firmado que lo
 llevara quedaría vinculado a una dirección que nadie comprobó (OpenID Connect Core
 5.1; go-authn/oidc v0.2.0, fileshare v0.16.3).&lt;/p&gt;
 &lt;p&gt;Qué personas del proveedor obtienen un recurso compartido —grupos, personas con
-nombre, instituciones enteras— se escribe con reglas &lt;code&gt;oidc:&lt;/code&gt; y &lt;code&gt;domains&lt;/code&gt;; consulte
-&lt;a href="https://go-fileshare.github.io/docs/0.31/es/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;las personas que nombra el proveedor de identidad&lt;/a&gt;.&lt;/p&gt;
+nombre, instituciones enteras— se escribe con reglas &lt;code&gt;oidc:&lt;/code&gt; y &lt;code&gt;domains&lt;/code&gt;; consulte&lt;a href="https://go-fileshare.github.io/docs/0.31/es/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;las personas que nombra el proveedor de identidad&lt;/a&gt;.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="a-token-outlives-the-person-unless-something-says-otherwise"&gt;Un token sobrevive a la persona, salvo que algo diga lo contrario&lt;span class="hx:absolute hx:-mt-20" id="a-token-outlives-the-person-unless-something-says-otherwise"&gt;&lt;/span&gt;
 &lt;a href="#a-token-outlives-the-person-unless-something-says-otherwise" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Un token se verifica aquí, por sí solo, y es válido hasta que caduca, pase lo que
-pase después con la persona. Ninguna lista de revocación puede nombrarlo. Un
-&lt;a href="https://go-fileshare.github.io/docs/0.31/es/security/shared-signals/"&gt;bloque &lt;code&gt;ssf&lt;/code&gt;&lt;/a&gt; hace que un &lt;code&gt;session-revoked&lt;/code&gt; de CAEP
+pase después con la persona. Ninguna lista de revocación puede nombrarlo. Un&lt;a href="https://go-fileshare.github.io/docs/0.31/es/security/shared-signals/"&gt;bloque &lt;code&gt;ssf&lt;/code&gt;&lt;/a&gt; hace que un &lt;code&gt;session-revoked&lt;/code&gt; de CAEP
 procedente del proveedor invalide todos los tokens emitidos (&lt;code&gt;iat&lt;/code&gt;) antes de él.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="the-root-and-uploads-in-pieces"&gt;La raíz, y las subidas por partes&lt;span class="hx:absolute hx:-mt-20" id="the-root-and-uploads-in-pieces"&gt;&lt;/span&gt;
 &lt;a href="#the-root-and-uploads-in-pieces" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;La raíz lista los recursos compartidos&lt;/strong&gt; (desde v0.29.0). Un navegador en &lt;code&gt;/&lt;/code&gt;
 recibe una página con los recursos que puede abrir; un &lt;code&gt;PROPFIND&lt;/code&gt; de &lt;code&gt;/&lt;/code&gt; los
 recibe como colecciones (&lt;code&gt;207&lt;/code&gt;), así que un gestor de archivos puede montar todo
-el servidor en lugar de un solo recurso. La profundidad &lt;code&gt;infinity&lt;/code&gt; se rechaza
-(&lt;code&gt;403&lt;/code&gt;, &lt;code&gt;propfind-finite-depth&lt;/code&gt;, como permite la RFC 4918), igual que todo lo que
+el servidor en lugar de un solo recurso. La profundidad &lt;code&gt;infinity&lt;/code&gt; se rechaza(&lt;code&gt;403&lt;/code&gt;, &lt;code&gt;propfind-finite-depth&lt;/code&gt;, como permite la RFC 4918), igual que todo lo que
 escribiría en la raíz (&lt;code&gt;405&lt;/code&gt;). Hasta v0.28, cualquier método en &lt;code&gt;/&lt;/code&gt; recibía la
 página.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Una subida grande puede hacerse por partes&lt;/strong&gt; (desde v0.29.0). Un &lt;code&gt;PUT&lt;/code&gt; se
 guarda entero en memoria, hasta 1 GiB, así que un cliente que no puede enviar en
-flujo — un navegador, el &lt;a href="https://go-fileshare.github.io/docs/0.31/es/administration/"&gt;explorador de archivos&lt;/a&gt; —
-envía un &lt;code&gt;PUT&lt;/code&gt; vacío, luego cada parte con un &lt;code&gt;Content-Range&lt;/code&gt; que empieza
+flujo — un navegador, el &lt;a href="https://go-fileshare.github.io/docs/0.31/es/administration/"&gt;explorador de archivos&lt;/a&gt; —envía un &lt;code&gt;PUT&lt;/code&gt; vacío, luego cada parte con un &lt;code&gt;Content-Range&lt;/code&gt; que empieza
 exactamente donde terminó la anterior, y luego un &lt;code&gt;MOVE&lt;/code&gt; al nombre real. Un rango
 que empieza después del final sigue siendo &lt;code&gt;416&lt;/code&gt;: dejaría bytes que nadie envió.&lt;/p&gt;</description></item><item><title>SFTP — claves, o certificados</title><link>https://go-fileshare.github.io/docs/0.31/es/protocols/sftp/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/es/protocols/sftp/</guid><description>
 &lt;p&gt;Todos los clientes ya lo tienen: &lt;code&gt;sftp&lt;/code&gt; viene con OpenSSH, el Finder y GNOME lo
 montan, los editores lo hablan. Es también el único protocolo de los aquí descritos
-cuya forma no encaja: una persona inicia sesión y llega a &lt;strong&gt;un&lt;/strong&gt; sistema de archivos,
-no a una lista de recursos compartidos.&lt;/p&gt;
+cuya forma no encaja: una persona inicia sesión y llega a &lt;strong&gt;un&lt;/strong&gt; sistema de archivos,no a una lista de recursos compartidos.&lt;/p&gt;
 &lt;p&gt;Así que los recursos compartidos se convierten en los directorios de nivel superior
 de un árbol construido para quien acaba de autenticarse:&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
@@ -320,8 +300,7 @@ data-copied-label="¡Copiado!"
 &lt;p&gt;Con &lt;code&gt;trusted_user_ca_file&lt;/code&gt;, basta un certificado firmado por esa autoridad que nombre
 al usuario entre sus principales; así, el acceso de una persona &lt;strong&gt;se emite y caduca
 en otro lugar&lt;/strong&gt;, y no se edita ningún archivo de aquí cuando alguien llega o se va.&lt;/p&gt;
-&lt;p&gt;La firma, el periodo de validez y los principales los comprueba el &lt;code&gt;CertChecker&lt;/code&gt; de
-&lt;code&gt;x/crypto/ssh&lt;/code&gt;; verificado frente al &lt;strong&gt;propio cliente de OpenSSH&lt;/strong&gt;, que también
+&lt;p&gt;La firma, el periodo de validez y los principales los comprueba el &lt;code&gt;CertChecker&lt;/code&gt; de&lt;code&gt;x/crypto/ssh&lt;/code&gt;; verificado frente al &lt;strong&gt;propio cliente de OpenSSH&lt;/strong&gt;, que también
 rechaza la misma clave en cuanto su certificado se aparta.&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
@@ -335,11 +314,9 @@ clave cambiada, que es el cliente haciendo su trabajo.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="certificates-meant-for-this-host-the-domain-grant"&gt;Certificados destinados a este host: la concesión de dominio&lt;span class="hx:absolute hx:-mt-20" id="certificates-meant-for-this-host-the-domain-grant"&gt;&lt;/span&gt;
 &lt;a href="#certificates-meant-for-this-host-the-domain-grant" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Desde la v0.22.0. La &lt;a href="https://integration.docs.my-eurohpc.eu/aai/ssh-ca-overview/" target="_blank" rel="noopener"&gt;CA SSH de la EuroHPC Federation Platform&lt;/a&gt;
 (GÉANT / MyAccessID) firma certificados en los que confían todos los sitios de la
-federación. Cada certificado indica a qué hosts está destinado, en la extensión
-&lt;code&gt;ssh-domain-grant@core.aai.geant.org&lt;/code&gt;. sshd ignora esa extensión, y fileshare también
+federación. Cada certificado indica a qué hosts está destinado, en la extensión&lt;code&gt;ssh-domain-grant@core.aai.geant.org&lt;/code&gt;. sshd ignora esa extensión, y fileshare también
 lo hacía hasta la v0.22.0: un certificado concedido para las máquinas de otro valía
-igual aquí. Con &lt;code&gt;ssh_domains&lt;/code&gt;, la concesión se lee, se analiza y se compara mediante
-&lt;a href="https://github.com/go-authn/sshcert" target="_blank" rel="noopener"&gt;go-authn/sshcert&lt;/a&gt;, tal como dice la
+igual aquí. Con &lt;code&gt;ssh_domains&lt;/code&gt;, la concesión se lee, se analiza y se compara mediante&lt;a href="https://github.com/go-authn/sshcert" target="_blank" rel="noopener"&gt;go-authn/sshcert&lt;/a&gt;, tal como dice la
 especificación. Un certificado cuya concesión no nombra ninguno de los nombres de
 este host se rechaza.&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
@@ -434,8 +411,7 @@ data-copied-label="¡Copiado!"
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;p&gt;Cada decisión se cuenta también en &lt;code&gt;fileshare_sftp_domain_grant_total{result}&lt;/code&gt;, con
-el resultado &lt;code&gt;granted&lt;/code&gt;, &lt;code&gt;accepted_ungranted&lt;/code&gt;, &lt;code&gt;refused_not_granted&lt;/code&gt;,
-&lt;code&gt;refused_absent&lt;/code&gt; o &lt;code&gt;refused_malformed&lt;/code&gt;. Un cliente ofrece un certificado antes de
+el resultado &lt;code&gt;granted&lt;/code&gt;, &lt;code&gt;accepted_ungranted&lt;/code&gt;, &lt;code&gt;refused_not_granted&lt;/code&gt;,&lt;code&gt;refused_absent&lt;/code&gt; o &lt;code&gt;refused_malformed&lt;/code&gt;. Un cliente ofrece un certificado antes de
 demostrar que posee la clave, así que esto cuenta intentos, no personas.&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
@@ -444,10 +420,8 @@ demostrar que posee la clave, así que esto cuenta intentos, no personas.&lt;/p&
 &lt;p&gt;Tome un host que confía en una segunda autoridad: su propia CA para el
 personal, una CA de pruebas, la CA de preproducción de EFP añadida al mismo
 archivo, o un cliente de go-authn/bridge sin concesiones. Los certificados
-de esa autoridad no llevan concesión. Si una concesión ausente significara
-«sin restricción», el filtro no filtraría nada en ese host.&lt;/p&gt;
-&lt;p&gt;Aquí, un certificado sin concesión se rechaza salvo que
-&lt;code&gt;ssh_accept_ungranted&lt;/code&gt; diga lo contrario. Una concesión presente que no se
+de esa autoridad no llevan concesión. Si una concesión ausente significara«sin restricción», el filtro no filtraría nada en ese host.&lt;/p&gt;
+&lt;p&gt;Aquí, un certificado sin concesión se rechaza salvo que&lt;code&gt;ssh_accept_ungranted&lt;/code&gt; diga lo contrario. Una concesión presente que no se
 puede analizar se rechaza diga lo que diga: una autoridad que la escribió
 pretendía restringir el certificado. go-authn/sshcert describe paso a paso
 el &lt;a href="https://github.com/go-authn/sshcert#why-fail-closed-the-multi-ca-scenario" target="_blank" rel="noopener"&gt;escenario de varias CA&lt;/a&gt;.&lt;/p&gt;
@@ -456,8 +430,7 @@ el &lt;a href="https://github.com/go-authn/sshcert#why-fail-closed-the-multi-ca-
 &lt;/div&gt;
 &lt;h3 data-hextra-search-id="with-efps-ca"&gt;Con la CA de EFP&lt;span class="hx:absolute hx:-mt-20" id="with-efps-ca"&gt;&lt;/span&gt;
 &lt;a href="#with-efps-ca" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;&lt;code&gt;trusted_user_ca_file&lt;/code&gt; es el &lt;code&gt;TrustedUserCAKeys&lt;/code&gt; de OpenSSH. Ponga en él la clave que
-EFP publica en &lt;a href="https://sshca.my-eurohpc.eu/config" target="_blank" rel="noopener"&gt;https://sshca.my-eurohpc.eu/config&lt;/a&gt;, como indica la
-&lt;a href="https://integration.docs.my-eurohpc.eu/aai/ssh-ca-trust/" target="_blank" rel="noopener"&gt;página de confianza&lt;/a&gt; de
+EFP publica en &lt;a href="https://sshca.my-eurohpc.eu/config" target="_blank" rel="noopener"&gt;https://sshca.my-eurohpc.eu/config&lt;/a&gt;, como indica la&lt;a href="https://integration.docs.my-eurohpc.eu/aai/ssh-ca-trust/" target="_blank" rel="noopener"&gt;página de confianza&lt;/a&gt; de
 EFP. Esa URL devuelve &lt;code&gt;{&amp;quot;PublicKey&amp;quot;: &amp;quot;ssh-ed25519 ...&amp;quot;}&lt;/code&gt;; el archivo contiene el
 valor de &lt;code&gt;PublicKey&lt;/code&gt; en una línea propia:&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
@@ -492,18 +465,15 @@ data-copied-label="¡Copiado!"
 &lt;/div&gt;
 &lt;h3 data-hextra-search-id="with-go-authnbridge"&gt;Con go-authn/bridge&lt;span class="hx:absolute hx:-mt-20" id="with-go-authnbridge"&gt;&lt;/span&gt;
 &lt;a href="#with-go-authnbridge" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Un cliente de &lt;a href="https://github.com/go-authn/bridge" target="_blank" rel="noopener"&gt;go-authn/bridge&lt;/a&gt; (v0.19.0 o
-posterior) con &lt;code&gt;ssh_certificates = true&lt;/code&gt; y
-&lt;code&gt;ssh_domain_grants = [&amp;quot;files.example.org&amp;quot;]&lt;/code&gt; emite certificados concedidos para este
-host. Con &lt;code&gt;ssh_principal_claim = &amp;quot;voperson_id&amp;quot;&lt;/code&gt;, su único principal es el
-&lt;code&gt;voperson_id&lt;/code&gt; de la persona, como en el perfil de EFP, y ese es el bloque &lt;code&gt;user&lt;/code&gt; que
+posterior) con &lt;code&gt;ssh_certificates = true&lt;/code&gt; y&lt;code&gt;ssh_domain_grants = [&amp;quot;files.example.org&amp;quot;]&lt;/code&gt; emite certificados concedidos para este
+host. Con &lt;code&gt;ssh_principal_claim = &amp;quot;voperson_id&amp;quot;&lt;/code&gt;, su único principal es el&lt;code&gt;voperson_id&lt;/code&gt; de la persona, como en el perfil de EFP, y ese es el bloque &lt;code&gt;user&lt;/code&gt; que
 hay que escribir aquí. Confíe en la CA de bridge como este servidor confía en
 cualquier otra:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;como &lt;code&gt;trusted_user_ca_file&lt;/code&gt;, para cuentas locales. bridge sirve su clave en el
 formato de EFP en &lt;code&gt;/ssh/config&lt;/code&gt;, así que la línea &lt;code&gt;curl | jq&lt;/code&gt; de arriba funciona
 con la URL de bridge;&lt;/li&gt;
-&lt;li&gt;o como el &lt;code&gt;ssh_ca_file&lt;/code&gt; del bloque &lt;code&gt;oidc&lt;/code&gt;, para
-&lt;a href="#people-the-identity-provider-vouches-for"&gt;las personas que el proveedor avala&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;o como el &lt;code&gt;ssh_ca_file&lt;/code&gt; del bloque &lt;code&gt;oidc&lt;/code&gt;, para&lt;a href="#people-the-identity-provider-vouches-for"&gt;las personas que el proveedor avala&lt;/a&gt;.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;Los demás clientes de bridge no escriben concesión. Si sus certificados deben seguir
 funcionando aquí, para eso está &lt;code&gt;ssh_accept_ungranted&lt;/code&gt;. Pero deja entrar &lt;strong&gt;todos&lt;/strong&gt;
@@ -511,8 +481,7 @@ los certificados sin concesión de todas las autoridades de confianza, así que 
 preferible dar una concesión a esos clientes.&lt;/p&gt;
 &lt;h3 data-hextra-search-id="a-certificate-pinned-to-an-address"&gt;Un certificado vinculado a una dirección&lt;span class="hx:absolute hx:-mt-20" id="a-certificate-pinned-to-an-address"&gt;&lt;/span&gt;
 &lt;a href="#a-certificate-pinned-to-an-address" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;El &lt;code&gt;ssh_source_address&lt;/code&gt; de bridge escribe la opción crítica &lt;code&gt;source-address&lt;/code&gt;, como
-hace &lt;code&gt;ssh-keygen -O source-address=...&lt;/code&gt;. Un certificado que la lleva se acepta
-&lt;strong&gt;solo desde esas direcciones&lt;/strong&gt;, con o sin &lt;code&gt;ssh_domains&lt;/code&gt;. Un inicio de sesión desde
+hace &lt;code&gt;ssh-keygen -O source-address=...&lt;/code&gt;. Un certificado que la lleva se acepta&lt;strong&gt;solo desde esas direcciones&lt;/strong&gt;, con o sin &lt;code&gt;ssh_domains&lt;/code&gt;. Un inicio de sesión desde
 una dirección que el certificado permite se deja entrar, siempre que su concesión
 nombre también este host cuando &lt;code&gt;ssh_domains&lt;/code&gt; está establecido. Un inicio de sesión
 desde cualquier otra dirección se rechaza.&lt;/p&gt;
@@ -548,15 +517,12 @@ desde cualquier otra dirección se rechaza.&lt;/p&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;«Rechazado desde cualquier dirección» falla en modo cerrado: la restricción del
-certificado nunca se relajó, solo se perdió el inicio de sesión. Antes de la v0.22.1,
-el sshd de go-filesystems/sftp rechazaba cualquier opción crítica en los certificados
+certificado nunca se relajó, solo se perdió el inicio de sesión. Antes de la v0.22.1,el sshd de go-filesystems/sftp rechazaba cualquier opción crítica en los certificados
 que pasaba a fileshare para que este decidiera; eso abarca los del proveedor, los de
 OpenPubkey y, con &lt;code&gt;ssh_domains&lt;/code&gt;, todos los certificados. La v0.22.1 se basa en
 go-filesystems/sftp v0.5.1, cuyo sshd acepta ahí &lt;code&gt;source-address&lt;/code&gt; y lo aplica en
-todas las rutas de certificado, frente a la dirección de la que procede la conexión,
-IPv4 o IPv6.&lt;/p&gt;
-&lt;p&gt;Cualquier otra opción crítica (&lt;code&gt;force-command&lt;/code&gt;, &lt;code&gt;verify-required&lt;/code&gt;, &amp;hellip;) se rechaza,
-ya que este servidor no actúa en consecuencia.&lt;/p&gt;
+todas las rutas de certificado, frente a la dirección de la que procede la conexión,IPv4 o IPv6.&lt;/p&gt;
+&lt;p&gt;Cualquier otra opción crítica (&lt;code&gt;force-command&lt;/code&gt;, &lt;code&gt;verify-required&lt;/code&gt;, &amp;hellip;) se rechaza,ya que este servidor no actúa en consecuencia.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="people-the-identity-provider-vouches-for"&gt;Las personas que el proveedor de identidad avala&lt;span class="hx:absolute hx:-mt-20" id="people-the-identity-provider-vouches-for"&gt;&lt;/span&gt;
 &lt;a href="#people-the-identity-provider-vouches-for" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Desde la v0.11.0, un bloque &lt;code&gt;oidc&lt;/code&gt; llega también a SFTP; no con un token, que SSH no
 tiene dónde poner, sino con un &lt;strong&gt;certificado&lt;/strong&gt;:&lt;/p&gt;
@@ -582,20 +548,15 @@ data-copied-label="¡Copiado!"
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;Un certificado firmado por la CA SSH del proveedor&lt;/strong&gt;: &lt;code&gt;authn-bridge ssh-cert&lt;/code&gt; escribe
 uno tras un inicio de sesión a través de la federación. Su principal es la
-persona, su extensión &lt;code&gt;groups@go-authn.org&lt;/code&gt; sus grupos, de modo que se aplican las
-&lt;a href="https://go-fileshare.github.io/docs/0.31/es/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;reglas &lt;code&gt;oidc:groups:&lt;/code&gt;&lt;/a&gt;.
-&lt;strong&gt;No&lt;/strong&gt; es &lt;code&gt;trusted_user_ca_file&lt;/code&gt;, cuyos certificados se refieren a cuentas
+persona, su extensión &lt;code&gt;groups@go-authn.org&lt;/code&gt; sus grupos, de modo que se aplican las&lt;a href="https://go-fileshare.github.io/docs/0.31/es/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;reglas &lt;code&gt;oidc:groups:&lt;/code&gt;&lt;/a&gt;.&lt;strong&gt;No&lt;/strong&gt; es &lt;code&gt;trusted_user_ca_file&lt;/code&gt;, cuyos certificados se refieren a cuentas
 locales: el certificado de una autoridad local que reivindica los grupos del
 proveedor se interpreta como la cuenta local que nombra.&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Un certificado OpenPubkey&lt;/strong&gt;, como el que escribe &lt;code&gt;opkssh login&lt;/code&gt;: firmado por la
 propia clave del usuario, con un ID token que se compromete con esa clave. Se
-comprueba como lo comprueba &lt;code&gt;opkssh verify&lt;/code&gt; —el verificador de
-&lt;a href="https://github.com/openpubkey/openpubkey" target="_blank" rel="noopener"&gt;openpubkey&lt;/a&gt; (la firma del proveedor
+comprueba como lo comprueba &lt;code&gt;opkssh verify&lt;/code&gt; —el verificador de&lt;a href="https://github.com/openpubkey/openpubkey" target="_blank" rel="noopener"&gt;openpubkey&lt;/a&gt; (la firma del proveedor
 frente a sus claves publicadas, el compromiso del nonce, el client ID, la
 antigüedad) y después la clave del certificado frente a la del token—, y el nombre
-de usuario SSH debe ser el nombre de usuario del token, porque aquí no hay archivo
-&lt;code&gt;auth_id&lt;/code&gt; que haga corresponder el uno con el otro:
-&lt;code&gt;sftp alice@univ-example.fr@files.example.org&lt;/code&gt;. &lt;code&gt;opkssh_client_id&lt;/code&gt; debería ser un
+de usuario SSH debe ser el nombre de usuario del token, porque aquí no hay archivo&lt;code&gt;auth_id&lt;/code&gt; que haga corresponder el uno con el otro:&lt;code&gt;sftp alice@univ-example.fr@files.example.org&lt;/code&gt;. &lt;code&gt;opkssh_client_id&lt;/code&gt; debería ser un
 client ID propio, nunca el de otra aplicación: el ID token viaja a cada servidor en
 el que la persona inicia sesión.&lt;/li&gt;
 &lt;/ul&gt;
@@ -613,8 +574,7 @@ data-copied-label="¡Copiado!"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;y el servidor indica, en cada inicio de sesión federado,
-&lt;code&gt;sftp: alice@univ-a.fr, vouched for by the provider, in groups [...]&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;y el servidor indica, en cada inicio de sesión federado,&lt;code&gt;sftp: alice@univ-a.fr, vouched for by the provider, in groups [...]&lt;/code&gt;.&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
@@ -641,8 +601,7 @@ emitido: este abre SFTP hasta que caduca, y una sesión SFTP ya abierta sigue
 abierta hasta entonces; estas personas no están en el directorio, así que
 ninguna &lt;a href="https://go-fileshare.github.io/docs/0.31/es/administration/reload/"&gt;recarga&lt;/a&gt; les concierne. El margen
 es la vida útil del certificado: el &lt;code&gt;ssh_ca { validity }&lt;/code&gt; de bridge (12h por
-defecto, 168h como máximo, nunca más allá del final de la sesión del IdP) y
-&lt;code&gt;opkssh_max_age&lt;/code&gt; aquí. Manténgalo tan corto como permita el reinicio de
+defecto, 168h como máximo, nunca más allá del final de la sesión del IdP) y&lt;code&gt;opkssh_max_age&lt;/code&gt; aquí. Manténgalo tan corto como permita el reinicio de
 sesión de los clientes. Desde la v0.17.0, una sesión opkssh ya abierta
 también termina en &lt;code&gt;opkssh_max_age&lt;/code&gt;, diga lo que diga el certificado (que la
 persona firma ella misma).&lt;/p&gt;
@@ -651,8 +610,7 @@ persona firma ella misma).&lt;/p&gt;
 &lt;/div&gt;
 &lt;p&gt;Dos mecanismos cierran ese margen:&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;la &lt;strong&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/es/security/revocation-lists/"&gt;KRL&lt;/a&gt;&lt;/strong&gt; del proveedor (&lt;code&gt;ssh_krl_url&lt;/code&gt;):
-un certificado revocado se rechaza al iniciar sesión, y cada operación de una
+&lt;li&gt;la &lt;strong&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/es/security/revocation-lists/"&gt;KRL&lt;/a&gt;&lt;/strong&gt; del proveedor (&lt;code&gt;ssh_krl_url&lt;/code&gt;):un certificado revocado se rechaza al iniciar sesión, y cada operación de una
 sesión que abrió vuelve a consultar la lista, incluidos los archivos abiertos;&lt;/li&gt;
 &lt;li&gt;las &lt;strong&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/es/security/shared-signals/"&gt;señales compartidas&lt;/a&gt;&lt;/strong&gt; (&lt;code&gt;ssf&lt;/code&gt;): todo
 lo que el proveedor emitió a la persona antes de un &lt;code&gt;session-revoked&lt;/code&gt; de CAEP se
@@ -682,8 +640,7 @@ data-copied-label="¡Copiado!"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;O por HTTPS, desde la v0.9.0, con &lt;code&gt;tls = true&lt;/code&gt; y un
-&lt;a href="https://go-fileshare.github.io/docs/0.31/es/security/tls/"&gt;bloque &lt;code&gt;tls&lt;/code&gt;&lt;/a&gt;:&lt;/p&gt;
+&lt;p&gt;O por HTTPS, desde la v0.9.0, con &lt;code&gt;tls = true&lt;/code&gt; y un&lt;a href="https://go-fileshare.github.io/docs/0.31/es/security/tls/"&gt;bloque &lt;code&gt;tls&lt;/code&gt;&lt;/a&gt;:&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;s3&amp;#34;&lt;/span&gt; {
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:9000&amp;#34;&lt;/span&gt;
@@ -729,8 +686,7 @@ protocolo.&lt;/p&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Un directorio dentro de un recurso compartido es un prefijo, no un objeto&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;Que es lo que los clientes S3 ya creen: muestran como carpetas los prefijos
-que terminan en el delimitador. Un &lt;code&gt;GET&lt;/code&gt; de un directorio responde
-&lt;code&gt;NoSuchKey&lt;/code&gt;, porque responder 200 haría creer a un cliente que puede
+que terminan en el delimitador. Un &lt;code&gt;GET&lt;/code&gt; de un directorio responde&lt;code&gt;NoSuchKey&lt;/code&gt;, porque responder 200 haría creer a un cliente que puede
 descargar los bytes de una carpeta.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -775,8 +731,7 @@ SigV4 vive en go-filesystems/s3; el secreto va a esa comprobación de firma, par
 &lt;a href="#what-is-served" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;ListBuckets&lt;/code&gt;, &lt;code&gt;HeadBucket&lt;/code&gt;, &lt;code&gt;ListObjectsV2&lt;/code&gt; con prefijo, delimitador, max-keys y
 continuación, &lt;code&gt;HeadObject&lt;/code&gt;, y &lt;code&gt;GetObject&lt;/code&gt; con &lt;code&gt;Range&lt;/code&gt;. SigV4 en sus dos formas, en
 cabecera y prefirmada.&lt;/p&gt;
-&lt;p&gt;La API de objetos en sí es
-&lt;a href="https://github.com/go-filesystems/s3" target="_blank" rel="noopener"&gt;&lt;code&gt;go-filesystems/s3&lt;/code&gt;&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;La API de objetos en sí es&lt;a href="https://github.com/go-filesystems/s3" target="_blank" rel="noopener"&gt;&lt;code&gt;go-filesystems/s3&lt;/code&gt;&lt;/a&gt;.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="what-is-refused-and-why"&gt;Lo que se rechaza, y por qué&lt;span class="hx:absolute hx:-mt-20" id="what-is-refused-and-why"&gt;&lt;/span&gt;
 &lt;a href="#what-is-refused-and-why" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
@@ -785,8 +740,7 @@ cabecera y prefirmada.&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;PUT&lt;/code&gt;, &lt;code&gt;POST&lt;/code&gt; y &lt;code&gt;DELETE&lt;/code&gt; se rechazan con &lt;code&gt;AccessDenied&lt;/code&gt; (&amp;ldquo;this export is
 read-only&amp;rdquo;). fileshare mantiene el servidor S3 en solo lectura porque un
 recurso compartido que una persona solo puede leer tiene que rechazar en el
-mismo punto en que lo hace SFTP, y eso aún no está conectado;
-go-filesystems/s3 v0.3.0, sobre la que se construye esta versión, rechaza de
+mismo punto en que lo hace SFTP, y eso aún no está conectado;go-filesystems/s3 v0.3.0, sobre la que se construye esta versión, rechaza de
 todos modos cualquier escritura. Rechazar es mejor que un objeto escrito a
 medias.&lt;/p&gt;
 &lt;/div&gt;
@@ -808,20 +762,15 @@ mecanismo distinto, y &lt;strong&gt;no está implementado&lt;/strong&gt;.&lt;/p&
 &lt;p&gt;La subida multiparte, el versionado, las ACL, las políticas, las reglas de ciclo de
 vida, la replicación y el etiquetado no están implementados. Configurar cualquiera de
 ellos, e iniciar una subida multiparte, es una escritura, y responde &lt;code&gt;AccessDenied&lt;/code&gt;
-como cualquier otra. Un &lt;code&gt;GET&lt;/code&gt; que pide uno de ellos (&lt;code&gt;?versioning&lt;/code&gt;, &lt;code&gt;?acl&lt;/code&gt;,
-&lt;code&gt;?tagging&lt;/code&gt;&amp;hellip;) no se distingue: la consulta se ignora y se devuelve el listado del
-bucket o el objeto. &lt;code&gt;NotImplemented&lt;/code&gt; responde a un listado distinto de
-&lt;code&gt;list-type=2&lt;/code&gt;, a cualquier método salvo &lt;code&gt;GET&lt;/code&gt; sobre &lt;code&gt;/&lt;/code&gt;, y a un método que ninguna
+como cualquier otra. Un &lt;code&gt;GET&lt;/code&gt; que pide uno de ellos (&lt;code&gt;?versioning&lt;/code&gt;, &lt;code&gt;?acl&lt;/code&gt;,&lt;code&gt;?tagging&lt;/code&gt;&amp;hellip;) no se distingue: la consulta se ignora y se devuelve el listado del
+bucket o el objeto. &lt;code&gt;NotImplemented&lt;/code&gt; responde a un listado distinto de&lt;code&gt;list-type=2&lt;/code&gt;, a cualquier método salvo &lt;code&gt;GET&lt;/code&gt; sobre &lt;code&gt;/&lt;/code&gt;, y a un método que ninguna
 operación de aquí utiliza.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="two-limits-worth-knowing-before-pointing-it-at-something-large"&gt;Dos límites que conviene conocer antes de apuntarlo a algo grande&lt;span class="hx:absolute hx:-mt-20" id="two-limits-worth-knowing-before-pointing-it-at-something-large"&gt;&lt;/span&gt;
-&lt;a href="#two-limits-worth-knowing-before-pointing-it-at-something-large" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;GetObject&lt;/code&gt; lee el objeto entero en memoria.&lt;/strong&gt; La interfaz del controlador ofrece
-&lt;code&gt;ReadFile&lt;/code&gt; y nada más —ni función de apertura, ni lector—, así que no hay lectura en
+&lt;a href="#two-limits-worth-knowing-before-pointing-it-at-something-large" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;GetObject&lt;/code&gt; lee el objeto entero en memoria.&lt;/strong&gt; La interfaz del controlador ofrece&lt;code&gt;ReadFile&lt;/code&gt; y nada más —ni función de apertura, ni lector—, así que no hay lectura en
 streaming que usar. Un límite, 256 MiB, responde &lt;code&gt;EntityTooLarge&lt;/code&gt; en lugar de tumbar
 el proceso.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;&lt;code&gt;LastModified&lt;/code&gt; es la época Unix.&lt;/strong&gt; &lt;code&gt;filesystem.Stat&lt;/code&gt; lleva &lt;code&gt;Mode&lt;/code&gt;, &lt;code&gt;Size&lt;/code&gt; e
-&lt;code&gt;Inode&lt;/code&gt;, y ninguna fecha de modificación. El campo no es opcional en el esquema de
-S3, así que hay que enviar algo; la época es obviamente una fecha que no es real,
-mientras que &lt;code&gt;time.Now()&lt;/code&gt; parecería un archivo que acaba de cambiar y haría que
+&lt;p&gt;&lt;strong&gt;&lt;code&gt;LastModified&lt;/code&gt; es la época Unix.&lt;/strong&gt; &lt;code&gt;filesystem.Stat&lt;/code&gt; lleva &lt;code&gt;Mode&lt;/code&gt;, &lt;code&gt;Size&lt;/code&gt; e&lt;code&gt;Inode&lt;/code&gt;, y ninguna fecha de modificación. El campo no es opcional en el esquema de
+S3, así que hay que enviar algo; la época es obviamente una fecha que no es real,mientras que &lt;code&gt;time.Now()&lt;/code&gt; parecería un archivo que acaba de cambiar y haría que
 cualquier herramienta de sincronización lo copiara todo, en cada ejecución.&lt;/p&gt;</description></item><item><title>NFS — nada, salvo Kerberos o un certificado</title><link>https://go-fileshare.github.io/docs/0.31/es/protocols/nfs/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/es/protocols/nfs/</guid><description>
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;serve &amp;#34;nfs&amp;#34; { addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:2049&amp;#34;&lt;/span&gt; }&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
@@ -846,8 +795,7 @@ puede contradecirlo. Tampoco hay cifrado.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;p&gt;Por eso &lt;strong&gt;un recurso compartido que nombra quién puede usarlo no se exporta por
-NFS&lt;/strong&gt;. El rechazo se imprime al arrancar y en &lt;a href="https://go-fileshare.github.io/docs/0.31/es/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt;,
-con el motivo:&lt;/p&gt;
+NFS&lt;/strong&gt;. El rechazo se imprime al arrancar y en &lt;a href="https://go-fileshare.github.io/docs/0.31/es/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt;,con el motivo:&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;pre&gt;&lt;code&gt;nfs on 0.0.0.0:2049 — scratch
 photos is not served over nfs: it is restricted to alice and bob, and
@@ -916,8 +864,7 @@ data-copied-label="¡Copiado!"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;Desde la v0.9.0, NFS se sirve sobre RPC-with-TLS (RFC 9289) con &lt;code&gt;tls = true&lt;/code&gt; y un
-&lt;a href="https://go-fileshare.github.io/docs/0.31/es/security/tls/"&gt;bloque &lt;code&gt;tls&lt;/code&gt;&lt;/a&gt;. Cifra; con &lt;code&gt;client_ca_file&lt;/code&gt; obliga al cliente
+&lt;p&gt;Desde la v0.9.0, NFS se sirve sobre RPC-with-TLS (RFC 9289) con &lt;code&gt;tls = true&lt;/code&gt; y un&lt;a href="https://go-fileshare.github.io/docs/0.31/es/security/tls/"&gt;bloque &lt;code&gt;tls&lt;/code&gt;&lt;/a&gt;. Cifra; con &lt;code&gt;client_ca_file&lt;/code&gt; obliga al cliente
 a presentar un certificado de esa autoridad, que indica qué &lt;strong&gt;máquina&lt;/strong&gt; está
 montando. El uid de dentro sigue siendo el que afirma &lt;code&gt;AUTH_SYS&lt;/code&gt;, así que un recurso
 compartido restringido &lt;strong&gt;sigue rechazándose&lt;/strong&gt; por esta vía. TLS se ofrece, no se
@@ -950,12 +897,9 @@ data-copied-label="¡Copiado!"
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;El certificado de un cliente Linux pertenece a un montaje&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;Todos los usuarios de ese montaje actúan como la persona que nombra el
-certificado. Correcto en una estación de trabajo que usa una sola persona;
-incorrecto en una máquina en la que inician sesión varias personas: use
-&lt;code&gt;sec=krb5&lt;/code&gt; allí.&lt;/p&gt;
+certificado. Correcto en una estación de trabajo que usa una sola persona;incorrecto en una máquina en la que inician sesión varias personas: use&lt;code&gt;sec=krb5&lt;/code&gt; allí.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;p&gt;Lo que transporta el certificado, la CRL que se exige y lo que se midió con un
-cliente Linux real (&lt;code&gt;MNT&lt;/code&gt; sin cifrar, las trampas de &lt;code&gt;tlshd&lt;/code&gt;) se encuentran en
-&lt;a href="https://go-fileshare.github.io/docs/0.31/es/security/nfs-certificates/"&gt;NFS, con identidades a partir de certificados&lt;/a&gt;.&lt;/p&gt;</description></item></channel></rss>
+cliente Linux real (&lt;code&gt;MNT&lt;/code&gt; sin cifrar, las trampas de &lt;code&gt;tlshd&lt;/code&gt;) se encuentran en&lt;a href="https://go-fileshare.github.io/docs/0.31/es/security/nfs-certificates/"&gt;NFS, con identidades a partir de certificados&lt;/a&gt;.&lt;/p&gt;</description></item></channel></rss>

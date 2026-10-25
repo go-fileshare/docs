@@ -1,6 +1,5 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Recursos</title><link>https://go-fileshare.github.io/docs/0.31/es/tags/recursos/</link><description>Recent content in Recursos on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>es</language><atom:link href="https://go-fileshare.github.io/docs/0.31/es/tags/recursos/index.xml" rel="self" type="application/rss+xml"/><item><title>Directorios servidos con la identidad de cada persona</title><link>https://go-fileshare.github.io/docs/0.31/es/configuration/as-each-person/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/es/configuration/as-each-person/</guid><description>
-&lt;p&gt;Normalmente un único proceso fileshare sirve a todos con una sola cuenta:
-fileshare decide quién puede hacer qué, y cada archivo que crea pertenece a
+&lt;p&gt;Normalmente un único proceso fileshare sirve a todos con una sola cuenta:fileshare decide quién puede hacer qué, y cada archivo que crea pertenece a
 esa cuenta. Un recurso de directorio puede servirse en cambio &lt;strong&gt;con la
 identidad de cada persona&lt;/strong&gt;. Los archivos de quien se conectó los abre un
 proceso con su uid, su gid y sus grupos: el núcleo aplica los permisos del
@@ -60,8 +59,7 @@ segundo proceso, como &lt;code&gt;service_user&lt;/code&gt;.&lt;/p&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;Un worker comprueba primero que se ejecuta exactamente con el uid, el gid y
-los grupos esperados, y que &lt;code&gt;setuid(0)&lt;/code&gt; falla. Solo entonces abre el árbol,
-mediante un &lt;code&gt;os.Root&lt;/code&gt;. Un mismo worker sirve todas las conexiones de esa
+los grupos esperados, y que &lt;code&gt;setuid(0)&lt;/code&gt; falla. Solo entonces abre el árbol,mediante un &lt;code&gt;os.Root&lt;/code&gt;. Un mismo worker sirve todas las conexiones de esa
 persona a ese recurso, por SFTP y por WebDAV, y se detiene cuando nada lo ha
 usado durante &lt;code&gt;idle&lt;/code&gt;. Cuando el servidor se detiene, los workers se detienen
 con él.&lt;/p&gt;
@@ -75,22 +73,17 @@ con él.&lt;/p&gt;
 &lt;li&gt;una fuente LDAP con &lt;code&gt;attributes = [&amp;quot;uidNumber&amp;quot;, &amp;quot;gidNumber&amp;quot;]&lt;/code&gt;;&lt;/li&gt;
 &lt;li&gt;la consulta &lt;code&gt;users_attributes&lt;/code&gt; de una fuente SQL.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;Los grupos suplementarios son los grupos que listan a la persona (los
-&lt;code&gt;members&lt;/code&gt; de un bloque &lt;code&gt;group&lt;/code&gt;, &lt;code&gt;memberUid&lt;/code&gt;) y los que la persona nombra
-(&lt;code&gt;memberOf&lt;/code&gt;), cada uno por su &lt;code&gt;gidNumber&lt;/code&gt;. Un grupo sin él no es un grupo
+&lt;p&gt;Los grupos suplementarios son los grupos que listan a la persona (los&lt;code&gt;members&lt;/code&gt; de un bloque &lt;code&gt;group&lt;/code&gt;, &lt;code&gt;memberUid&lt;/code&gt;) y los que la persona nombra(&lt;code&gt;memberOf&lt;/code&gt;), cada uno por su &lt;code&gt;gidNumber&lt;/code&gt;. Un grupo sin él no es un grupo
 del sistema.&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;&lt;strong&gt;&lt;code&gt;/etc/passwd&lt;/code&gt; y &lt;code&gt;/etc/group&lt;/code&gt;&lt;/strong&gt;, por nombre.&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;&lt;strong&gt;Rechazados&lt;/strong&gt;: el uid 0, el gid 0, &lt;code&gt;(uid_t)-1&lt;/code&gt;, un uid por debajo de
-&lt;code&gt;min_uid&lt;/code&gt;, un gid primario por debajo de &lt;code&gt;min_gid&lt;/code&gt;, y todo uid de
-&lt;code&gt;deny_uids&lt;/code&gt;. Un grupo suplementario por debajo de &lt;code&gt;min_gid&lt;/code&gt; se omite, y el
+&lt;p&gt;&lt;strong&gt;Rechazados&lt;/strong&gt;: el uid 0, el gid 0, &lt;code&gt;(uid_t)-1&lt;/code&gt;, un uid por debajo de&lt;code&gt;min_uid&lt;/code&gt;, un gid primario por debajo de &lt;code&gt;min_gid&lt;/code&gt;, y todo uid de&lt;code&gt;deny_uids&lt;/code&gt;. Un grupo suplementario por debajo de &lt;code&gt;min_gid&lt;/code&gt; se omite, y el
 registro lo dice. Una persona que no aparece en ninguno de los dos se rechaza
 también: no hay cuenta compartida de reserva. Una persona avalada por el
-proveedor de identidad obtiene un worker solo con
-&lt;a href="https://go-fileshare.github.io/docs/0.31/es/configuration/identity/"&gt;&lt;code&gt;local_names&lt;/code&gt;&lt;/a&gt;, que hace de su
+proveedor de identidad obtiene un worker solo con&lt;a href="https://go-fileshare.github.io/docs/0.31/es/configuration/identity/"&gt;&lt;code&gt;local_names&lt;/code&gt;&lt;/a&gt;, que hace de su
 nombre un nombre local.&lt;/p&gt;
 &lt;p&gt;Así, un front comprometido solo puede pedir una persona que existe y está
 permitida, en un recurso que existe. Sigue siendo él quien decide &lt;strong&gt;quién&lt;/strong&gt;
@@ -137,8 +130,7 @@ afirmación del cliente (RFC 5531 §14).&lt;/p&gt;
 &lt;h2 data-hextra-search-id="what-it-asks-of-the-system"&gt;Lo que pide al sistema&lt;span class="hx:absolute hx:-mt-20" id="what-it-asks-of-the-system"&gt;&lt;/span&gt;
 &lt;a href="#what-it-asks-of-the-system" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;Unix&lt;/strong&gt;: Linux, los BSD y macOS. En Windows el recurso se rechaza.&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Legibles por &lt;code&gt;service_user&lt;/code&gt;&lt;/strong&gt;: la configuración y cada archivo que nombra
-(archivos de contraseñas, clave de host, certificados), porque los lee el
+&lt;li&gt;&lt;strong&gt;Legibles por &lt;code&gt;service_user&lt;/code&gt;&lt;/strong&gt;: la configuración y cada archivo que nombra(archivos de contraseñas, clave de host, certificados), porque los lee el
 front.&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Ejecutable por las personas&lt;/strong&gt;: el binario, porque cada worker lo ejecuta
 como su persona.&lt;/li&gt;
@@ -147,5 +139,4 @@ configuración una vez, y rechaza un recurso que no conoce en lugar de dejar
 que el front lo sirva.&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;--isolate&lt;/code&gt; no va con ello.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;El diseño, y el porqué de cada decisión, están en
-&lt;a href="https://github.com/go-fileshare/fileshare/blob/main/docs/identity.md" target="_blank" rel="noopener"&gt;docs/identity.md&lt;/a&gt;.&lt;/p&gt;</description></item></channel></rss>
+&lt;p&gt;El diseño, y el porqué de cada decisión, están en&lt;a href="https://github.com/go-fileshare/fileshare/blob/main/docs/identity.md" target="_blank" rel="noopener"&gt;docs/identity.md&lt;/a&gt;.&lt;/p&gt;</description></item></channel></rss>

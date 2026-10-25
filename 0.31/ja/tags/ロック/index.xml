@@ -1,24 +1,15 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – ロック</title><link>https://go-fileshare.github.io/docs/0.31/ja/tags/%E3%83%AD%E3%83%83%E3%82%AF/</link><description>Recent content in ロック on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>ja</language><atom:link href="https://go-fileshare.github.io/docs/0.31/ja/tags/%E3%83%AD%E3%83%83%E3%82%AF/index.xml" rel="self" type="application/rss+xml"/><item><title>1 つのイメージ、複数のプロトコル、1 つのロック</title><link>https://go-fileshare.github.io/docs/0.31/ja/operations/locking/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/ja/operations/locking/</guid><description>
-&lt;p&gt;このファミリーのサーバーはすべて、ドライバー自体を直列化しています。
-&lt;a href="https://github.com/go-filesystems/interface" target="_blank" rel="noopener"&gt;&lt;code&gt;go-filesystems/interface&lt;/code&gt;&lt;/a&gt; が、パスベースの
-並行呼び出しについて何も保証していないためです。そして、それぞれが&lt;strong&gt;自分専用の&lt;/strong&gt;ロックを持ち、
-他のサーバーのことは何も知りません。&lt;/p&gt;
-&lt;p&gt;したがって、1 つのイメージを 3 つのプロトコルで同時に提供すると、どこにも共通のロックがないことに
-なります。そこで、イメージはここで&lt;strong&gt;一度だけ&lt;/strong&gt;ラップされ、同じラッパーがすべてのプロトコルに渡されます。&lt;/p&gt;
+&lt;p&gt;このファミリーのサーバーはすべて、ドライバー自体を直列化しています。&lt;a href="https://github.com/go-filesystems/interface" target="_blank" rel="noopener"&gt;&lt;code&gt;go-filesystems/interface&lt;/code&gt;&lt;/a&gt; が、パスベースの並行呼び出しについて何も保証していないためです。そして、それぞれが&lt;strong&gt;自分専用の&lt;/strong&gt;ロックを持ち、他のサーバーのことは何も知りません。&lt;/p&gt;
+&lt;p&gt;したがって、1 つのイメージを 3 つのプロトコルで同時に提供すると、どこにも共通のロックがないことになります。そこで、イメージはここで&lt;strong&gt;一度だけ&lt;/strong&gt;ラップされ、同じラッパーがすべてのプロトコルに渡されます。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="stated-as-measured-so-as-not-to-overstate-it"&gt;誇張しないよう、計測結果として記載する&lt;span class="hx:absolute hx:-mt-20" id="stated-as-measured-so-as-not-to-overstate-it"&gt;&lt;/span&gt;
-&lt;a href="#stated-as-measured-so-as-not-to-overstate-it" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;ラップされていない&lt;/strong&gt; fat32 ドライバーに対して 8 つの goroutine が &lt;code&gt;-race&lt;/code&gt; の下で書き込んでも、
-&lt;strong&gt;現時点ではレースは発生しません&lt;/strong&gt;。&lt;/p&gt;
-&lt;p&gt;これは不具合の再現ではなく、契約に対する保険です。ext4 や ntfs は fat32 ではなく、
-ドライバーの更新のたびにこのプログラムが再監査しなければならないというのは望ましくないためです。&lt;/p&gt;
+&lt;a href="#stated-as-measured-so-as-not-to-overstate-it" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;ラップされていない&lt;/strong&gt; fat32 ドライバーに対して 8 つの goroutine が &lt;code&gt;-race&lt;/code&gt; の下で書き込んでも、&lt;strong&gt;現時点ではレースは発生しません&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;これは不具合の再現ではなく、契約に対する保険です。ext4 や ntfs は fat32 ではなく、ドライバーの更新のたびにこのプログラムが再監査しなければならないというのは望ましくないためです。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="the-wrapper-carries-capabilities-through"&gt;ラッパーはケーパビリティを引き継ぐ&lt;span class="hx:absolute hx:-mt-20" id="the-wrapper-carries-capabilities-through"&gt;&lt;/span&gt;
 &lt;a href="#the-wrapper-carries-capabilities-through" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;ケーパビリティを隠すことはありません。&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;Opener&lt;/code&gt; に応答するドライバーは、&lt;strong&gt;ロック付きの &lt;code&gt;File&lt;/code&gt;&lt;/strong&gt; を受け取ります。&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;File&lt;/code&gt; が &lt;code&gt;WritableFile&lt;/code&gt; に応答するドライバーは、&lt;strong&gt;位置指定の書き込み&lt;/strong&gt;を維持します。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;これらとファイル全体にフォールバックする方式との差は、このファミリーの別の場所で&lt;strong&gt;約 70 倍&lt;/strong&gt;と計測されています。
-そのため、これらを消してしまうラッパーは、安全性を装ったパフォーマンス上の欠陥になってしまいます。&lt;/p&gt;
+&lt;p&gt;これらとファイル全体にフォールバックする方式との差は、このファミリーの別の場所で&lt;strong&gt;約 70 倍&lt;/strong&gt;と計測されています。そのため、これらを消してしまうラッパーは、安全性を装ったパフォーマンス上の欠陥になってしまいます。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="under-isolate-the-lock-cannot-help"&gt;&lt;code&gt;--isolate&lt;/code&gt; の下では、ロックは役に立たない&lt;span class="hx:absolute hx:-mt-20" id="under-isolate-the-lock-cannot-help"&gt;&lt;/span&gt;
-&lt;a href="#under-isolate-the-lock-cannot-help" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;子プロセスは自分でイメージを開くため、子プロセス間に共有のラッパーはありません。2 つのプロトコルで
-書き込み可能として提供されるイメージが、ロックなしで黙って提供されるのではなく、
-&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/operations/isolation/#the-rule-that-makes-it-honest"&gt;拒否される&lt;/a&gt;のはそのためです。&lt;/p&gt;</description></item></channel></rss>
+&lt;a href="#under-isolate-the-lock-cannot-help" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;子プロセスは自分でイメージを開くため、子プロセス間に共有のラッパーはありません。2 つのプロトコルで書き込み可能として提供されるイメージが、ロックなしで黙って提供されるのではなく、&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/operations/isolation/#the-rule-that-makes-it-honest"&gt;拒否される&lt;/a&gt;のはそのためです。&lt;/p&gt;</description></item></channel></rss>

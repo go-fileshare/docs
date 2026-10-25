@@ -23,14 +23,8 @@ data-copied-label="コピーしました！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;すべてのイメージは、サーバーが開くのと同じ方法で開かれ、また閉じられます。何も
-提供されません。&lt;code&gt;read_only = true&lt;/code&gt; を指定していない共有では、これは&lt;strong&gt;読み書き&lt;/strong&gt;で開くことを意味します。
-常に読み取り専用かつ排他的に開かれるのはデバイスだけで、そのため実行中のサーバーが
-保持しているデバイスは、ここでビジー状態として拒否されることがあります。&lt;/p&gt;
-&lt;p&gt;出力されるのは&lt;strong&gt;認証情報の出所であり、その中身ではありません&lt;/strong&gt;。人ごとの列があるのは、
-&lt;a href="https://github.com/go-authn/directory" target="_blank" rel="noopener"&gt;&lt;code&gt;Identity.Can&lt;/code&gt;&lt;/a&gt; が存在する理由そのものです。
-eli は dora と同じグループにいますが、LDAP が彼のパスワードを保持していて誰にも渡さないため、
-SMB では依然として彼にサービスを提供できません。&lt;/p&gt;
+&lt;p&gt;すべてのイメージは、サーバーが開くのと同じ方法で開かれ、また閉じられます。何も提供されません。&lt;code&gt;read_only = true&lt;/code&gt; を指定していない共有では、これは&lt;strong&gt;読み書き&lt;/strong&gt;で開くことを意味します。常に読み取り専用かつ排他的に開かれるのはデバイスだけで、そのため実行中のサーバーが保持しているデバイスは、ここでビジー状態として拒否されることがあります。&lt;/p&gt;
+&lt;p&gt;出力されるのは&lt;strong&gt;認証情報の出所であり、その中身ではありません&lt;/strong&gt;。人ごとの列があるのは、&lt;a href="https://github.com/go-authn/directory" target="_blank" rel="noopener"&gt;&lt;code&gt;Identity.Can&lt;/code&gt;&lt;/a&gt; が存在する理由そのものです。eli は dora と同じグループにいますが、LDAP が彼のパスワードを保持していて誰にも渡さないため、SMB では依然として彼にサービスを提供できません。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="reading-the-columns"&gt;列の読み方&lt;span class="hx:absolute hx:-mt-20" id="reading-the-columns"&gt;&lt;/span&gt;
 &lt;a href="#reading-the-columns" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
 &lt;thead&gt;
@@ -61,15 +55,10 @@ SMB では依然として彼にサービスを提供できません。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="what-else-it-says"&gt;ほかに表示される内容&lt;span class="hx:absolute hx:-mt-20" id="what-else-it-says"&gt;&lt;/span&gt;
 &lt;a href="#what-else-it-says" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;表の後に、該当する場合、設定を信頼する前に知っておくべきことを &lt;code&gt;check&lt;/code&gt; が伝えます。&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;code&gt;oidc&lt;/code&gt; ブロックがある場合は、そのトークンが WebDAV でのみ受け入れられること、および
-プロバイダーの名前がローカル名として扱われるかどうか(&lt;code&gt;local_names&lt;/code&gt;)。
-&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;ID&lt;/a&gt;を参照。&lt;/li&gt;
-&lt;li&gt;プロトコルごとに、何が&lt;strong&gt;暗号化&lt;/strong&gt;されていて、何が&lt;strong&gt;意図的に平文&lt;/strong&gt;であるか。
-&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/security/tls/#what-check-says"&gt;TLS&lt;/a&gt;を参照。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;失効リスト&lt;/strong&gt;の取得元と、取得できない間に何が起こるか。
-&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/security/"&gt;何が何を失効させるか&lt;/a&gt;を参照。&lt;/li&gt;
-&lt;li&gt;管理 API の &lt;code&gt;DisableShare&lt;/code&gt; で&lt;strong&gt;オフライン化&lt;/strong&gt;され、提供されていない共有。
-&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/administration/#disabling-a-share"&gt;管理 API&lt;/a&gt;を参照。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;oidc&lt;/code&gt; ブロックがある場合は、そのトークンが WebDAV でのみ受け入れられること、およびプロバイダーの名前がローカル名として扱われるかどうか(&lt;code&gt;local_names&lt;/code&gt;)。&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;ID&lt;/a&gt;を参照。&lt;/li&gt;
+&lt;li&gt;プロトコルごとに、何が&lt;strong&gt;暗号化&lt;/strong&gt;されていて、何が&lt;strong&gt;意図的に平文&lt;/strong&gt;であるか。&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/security/tls/#what-check-says"&gt;TLS&lt;/a&gt;を参照。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;失効リスト&lt;/strong&gt;の取得元と、取得できない間に何が起こるか。&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/security/"&gt;何が何を失効させるか&lt;/a&gt;を参照。&lt;/li&gt;
+&lt;li&gt;管理 API の &lt;code&gt;DisableShare&lt;/code&gt; で&lt;strong&gt;オフライン化&lt;/strong&gt;され、提供されていない共有。&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/administration/#disabling-a-share"&gt;管理 API&lt;/a&gt;を参照。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;KRL、証明書による NFS の ID、共有シグナルを使うサーバーでは、この部分は次のようになります。&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
@@ -88,6 +77,4 @@ data-copied-label="コピーしました！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;&lt;code&gt;check&lt;/code&gt; はリストを取得しません。取得元と、それが得られない場合に何が起こるかを伝えるだけです。
-一方、ID プロバイダーのディスカバリードキュメントと鍵は&lt;strong&gt;読み取られます&lt;/strong&gt;。
-発行者に到達できない &lt;code&gt;oidc&lt;/code&gt; ブロックは、&lt;code&gt;check&lt;/code&gt; によって拒否されます。&lt;/p&gt;</description></item></channel></rss>
+&lt;p&gt;&lt;code&gt;check&lt;/code&gt; はリストを取得しません。取得元と、それが得られない場合に何が起こるかを伝えるだけです。一方、ID プロバイダーのディスカバリードキュメントと鍵は&lt;strong&gt;読み取られます&lt;/strong&gt;。発行者に到達できない &lt;code&gt;oidc&lt;/code&gt; ブロックは、&lt;code&gt;check&lt;/code&gt; によって拒否されます。&lt;/p&gt;</description></item></channel></rss>

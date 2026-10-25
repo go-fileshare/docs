@@ -1,7 +1,5 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – 安全</title><link>https://go-fileshare.github.io/docs/0.31/zh-cn/tags/%E5%AE%89%E5%85%A8/</link><description>Recent content in 安全 on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><atom:link href="https://go-fileshare.github.io/docs/0.31/zh-cn/tags/%E5%AE%89%E5%85%A8/index.xml" rel="self" type="application/rss+xml"/><item><title>TLS 与来自 ACME 的证书</title><link>https://go-fileshare.github.io/docs/0.31/zh-cn/security/tls/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/zh-cn/security/tls/</guid><description>
-&lt;p&gt;自 v0.9.0 起，&lt;strong&gt;WebDAV 和 S3 通过 HTTPS 提供，NFS 通过
-RPC-with-TLS 提供&lt;/strong&gt;（RFC 9289），方法是在它们的 &lt;code&gt;serve&lt;/code&gt; 块上设置 &lt;code&gt;tls = true&lt;/code&gt;，
-并用一个 &lt;code&gt;tls&lt;/code&gt; 块说明证书的来源。&lt;/p&gt;
+&lt;p&gt;自 v0.9.0 起，&lt;strong&gt;WebDAV 和 S3 通过 HTTPS 提供，NFS 通过RPC-with-TLS 提供&lt;/strong&gt;（RFC 9289），方法是在它们的 &lt;code&gt;serve&lt;/code&gt; 块上设置 &lt;code&gt;tls = true&lt;/code&gt;，并用一个 &lt;code&gt;tls&lt;/code&gt; 块说明证书的来源。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="from-files"&gt;来自文件&lt;span class="hx:absolute hx:-mt-20" id="from-files"&gt;&lt;/span&gt;
 &lt;a href="#from-files" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;tls&lt;/span&gt; {
@@ -24,12 +22,9 @@ data-copied-label="已复制！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;文件&lt;strong&gt;在发生变化时会重新加载&lt;/strong&gt;，因此其他
-工具写入的续期证书无需重启即可生效。证书由
-&lt;a href="https://github.com/go-authn/servercert" target="_blank" rel="noopener"&gt;go-authn/servercert&lt;/a&gt; 提供。&lt;/p&gt;
+&lt;p&gt;文件&lt;strong&gt;在发生变化时会重新加载&lt;/strong&gt;，因此其他工具写入的续期证书无需重启即可生效。证书由&lt;a href="https://github.com/go-authn/servercert" target="_blank" rel="noopener"&gt;go-authn/servercert&lt;/a&gt; 提供。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="from-an-acme-ca"&gt;来自 ACME CA&lt;span class="hx:absolute hx:-mt-20" id="from-an-acme-ca"&gt;&lt;/span&gt;
-&lt;a href="#from-an-acme-ca" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;默认为 Let&amp;rsquo;s Encrypt；也可以是通过&lt;strong&gt;外部账户
-绑定&lt;/strong&gt;认识你的 CA，例如通过 HARICA 提供的 GÉANT TCS：&lt;/p&gt;
+&lt;a href="#from-an-acme-ca" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;默认为 Let&amp;rsquo;s Encrypt；也可以是通过&lt;strong&gt;外部账户绑定&lt;/strong&gt;认识你的 CA，例如通过 HARICA 提供的 GÉANT TCS：&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;tls&lt;/span&gt; {
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;acme&lt;/span&gt; {
@@ -112,42 +107,23 @@ data-copied-label="已复制！"
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;最后一行对校园网内部的文件服务器最为重要：
-如果使用的 GÉANT TCS 账户的域名已由机构在 HARICA 验证，
-则完全不必向互联网开放任何端口。&lt;/p&gt;
+&lt;p&gt;最后一行对校园网内部的文件服务器最为重要：如果使用的 GÉANT TCS 账户的域名已由机构在 HARICA 验证，则完全不必向互联网开放任何端口。&lt;/p&gt;
 &lt;h4 data-hextra-search-id="harica-gant-tcs-which-account-and-caa"&gt;HARICA（GÉANT TCS）：使用哪种账户，以及 CAA&lt;span class="hx:absolute hx:-mt-20" id="harica-gant-tcs-which-account-and-caa"&gt;&lt;/span&gt;
-&lt;a href="#harica-gant-tcs-which-account-and-caa" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h4&gt;&lt;p&gt;HARICA 的 ACME 账户有两种，只有其中一种可以跳过
-质询：&lt;/p&gt;
+&lt;a href="#harica-gant-tcs-which-account-and-caa" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h4&gt;&lt;p&gt;HARICA 的 ACME 账户有两种，只有其中一种可以跳过质询：&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;Enterprise Admin&lt;/strong&gt; 账户为机构已验证的域名签发 &lt;strong&gt;OV&lt;/strong&gt; 证书：
-&lt;strong&gt;无需质询&lt;/strong&gt;，这是用于外部无法访问的服务器的账户；&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Enterprise User&lt;/strong&gt; 账户签发 &lt;strong&gt;DV&lt;/strong&gt; 证书，而 DV 意味着
-CA 在每次订单中都要检查名称，如上所述使用 tls-alpn-01 或 http-01。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Enterprise Admin&lt;/strong&gt; 账户为机构已验证的域名签发 &lt;strong&gt;OV&lt;/strong&gt; 证书：&lt;strong&gt;无需质询&lt;/strong&gt;，这是用于外部无法访问的服务器的账户；&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Enterprise User&lt;/strong&gt; 账户签发 &lt;strong&gt;DV&lt;/strong&gt; 证书，而 DV 意味着CA 在每次订单中都要检查名称，如上所述使用 tls-alpn-01 或 http-01。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;无论哪种情况，域名的 &lt;strong&gt;CAA&lt;/strong&gt; 记录（如果有）都必须允许
-&lt;code&gt;harica.gr&lt;/code&gt;，否则订单会被拒绝。&lt;/p&gt;
+&lt;p&gt;无论哪种情况，域名的 &lt;strong&gt;CAA&lt;/strong&gt; 记录（如果有）都必须允许&lt;code&gt;harica.gr&lt;/code&gt;，否则订单会被拒绝。&lt;/p&gt;
 &lt;h4 data-hextra-search-id="when-the-certificate-is-asked-for"&gt;何时申请证书&lt;span class="hx:absolute hx:-mt-20" id="when-the-certificate-is-asked-for"&gt;&lt;/span&gt;
-&lt;a href="#when-the-certificate-is-asked-for" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h4&gt;&lt;p&gt;&lt;strong&gt;在启动时&lt;/strong&gt;（自 v0.27.0 起）：监听器就绪后，每个已配置域名的证书
-都会被获取，或从缓存目录读回。失败
-不会使服务器停止：它继续提供服务，并在 1 分钟后重试，
-间隔加倍直至 1 小时，而第一个指明该主机的 TLS 连接无论如何都会再次申请。
-证书在到期前 30 天续期，如果其有效期更短，则在
-有效期的最后三分之一时续期。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;不发送 SNI 的客户端&lt;/strong&gt;，即通过 IP 地址连接的客户端，会得到
-&lt;strong&gt;第一个&lt;/strong&gt;域名的证书（自 v0.27.0 起）；此前握手会失败。
-客户端仍会对照其所拨打的地址检查该证书，因此它
-对被告知信任该名称的客户端有帮助，而不会欺骗任何人。&lt;/p&gt;
+&lt;a href="#when-the-certificate-is-asked-for" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h4&gt;&lt;p&gt;&lt;strong&gt;在启动时&lt;/strong&gt;（自 v0.27.0 起）：监听器就绪后，每个已配置域名的证书都会被获取，或从缓存目录读回。失败不会使服务器停止：它继续提供服务，并在 1 分钟后重试，间隔加倍直至 1 小时，而第一个指明该主机的 TLS 连接无论如何都会再次申请。证书在到期前 30 天续期，如果其有效期更短，则在有效期的最后三分之一时续期。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;不发送 SNI 的客户端&lt;/strong&gt;，即通过 IP 地址连接的客户端，会得到&lt;strong&gt;第一个&lt;/strong&gt;域名的证书（自 v0.27.0 起）；此前握手会失败。客户端仍会对照其所拨打的地址检查该证书，因此它对被告知信任该名称的客户端有帮助，而不会欺骗任何人。&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;ALPN&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;使用 ACME 时，服务器的 ALPN 列表包含 &lt;code&gt;acme-tls/1&lt;/code&gt;，而 Go 服务器
-会拒绝其列表与自身没有任何交集的客户端。因此对于 WebDAV 和 S3，会&lt;strong&gt;追加&lt;/strong&gt; &lt;code&gt;http/1.1&lt;/code&gt;
-（每个浏览器和 WebDAV 客户端都提供它），
-对于 NFS 追加 &lt;code&gt;sunrpc&lt;/code&gt;，即 RFC 9289 §5.2 用于标识 RPC-with-TLS 的值。不使用 &lt;code&gt;h2&lt;/code&gt;：
-这些监听器不提供 HTTP/2，提供它就是撒谎。
-&lt;code&gt;acme-tls/1&lt;/code&gt; 保留在每个监听器上，因此 CA 无论从哪里访问，
-tls-alpn-01 都能得到应答。&lt;/p&gt;
+&lt;p&gt;使用 ACME 时，服务器的 ALPN 列表包含 &lt;code&gt;acme-tls/1&lt;/code&gt;，而 Go 服务器会拒绝其列表与自身没有任何交集的客户端。因此对于 WebDAV 和 S3，会&lt;strong&gt;追加&lt;/strong&gt; &lt;code&gt;http/1.1&lt;/code&gt;
+（每个浏览器和 WebDAV 客户端都提供它），对于 NFS 追加 &lt;code&gt;sunrpc&lt;/code&gt;，即 RFC 9289 §5.2 用于标识 RPC-with-TLS 的值。不使用 &lt;code&gt;h2&lt;/code&gt;：这些监听器不提供 HTTP/2，提供它就是撒谎。&lt;code&gt;acme-tls/1&lt;/code&gt; 保留在每个监听器上，因此 CA 无论从哪里访问，tls-alpn-01 都能得到应答。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -156,11 +132,7 @@ tls-alpn-01 都能得到应答。&lt;/p&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;v0.9.0 中的破坏性变更：可访问地址上带密码的 WebDAV 会被拒绝&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;HTTP Basic 在每个请求中就是经过 base64 编码的密码，而持有者令牌
-与密码等效。因此，在其他机器可以访问的地址上提供&lt;strong&gt;没有 TLS&lt;/strong&gt; 的
-WebDAV，而又有人需要身份验证的配置会被
-&lt;strong&gt;拒绝，而不是仅仅警告&lt;/strong&gt;：警告一闪而过，而泄露的密码
-无法收回：&lt;/p&gt;
+&lt;p&gt;HTTP Basic 在每个请求中就是经过 base64 编码的密码，而持有者令牌与密码等效。因此，在其他机器可以访问的地址上提供&lt;strong&gt;没有 TLS&lt;/strong&gt; 的WebDAV，而又有人需要身份验证的配置会被&lt;strong&gt;拒绝，而不是仅仅警告&lt;/strong&gt;：警告一闪而过，而泄露的密码无法收回：&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;pre&gt;&lt;code&gt;webdav on 0.0.0.0:8080 would carry passwords in the clear: serve it with
 tls = true, or -- when TLS is terminated in front of it, by a proxy -- say
@@ -179,9 +151,7 @@ data-copied-label="已复制！"
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;在 v0.9.0 之前以
-&lt;code&gt;serve &amp;quot;webdav&amp;quot; { addr = &amp;quot;0.0.0.0:8080&amp;quot; }&lt;/code&gt; 启动的配置，在此之后无法启动。有两种
-解决办法：&lt;/p&gt;
+&lt;p&gt;在 v0.9.0 之前以&lt;code&gt;serve &amp;quot;webdav&amp;quot; { addr = &amp;quot;0.0.0.0:8080&amp;quot; }&lt;/code&gt; 启动的配置，在此之后无法启动。有两种解决办法：&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;webdav&amp;#34;&lt;/span&gt; {
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:443&amp;#34;&lt;/span&gt;
@@ -215,14 +185,10 @@ data-copied-label="已复制！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;&lt;strong&gt;回环&lt;/strong&gt;地址（&lt;code&gt;127.0.0.1&lt;/code&gt;、&lt;code&gt;::1&lt;/code&gt;、&lt;code&gt;localhost&lt;/code&gt;），以及&lt;strong&gt;没有任何人需要
-身份验证&lt;/strong&gt;的服务器（没有 &lt;code&gt;user&lt;/code&gt;、没有 &lt;code&gt;users&lt;/code&gt;、没有 &lt;code&gt;oidc&lt;/code&gt; 块）
-不受影响。没有 &lt;code&gt;addr&lt;/code&gt; 的 &lt;code&gt;serve&lt;/code&gt; 块落在回环地址上，同样不受影响。&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;plaintext&lt;/code&gt; 仅适用于 WebDAV，即会发送密码的协议，
-而 &lt;code&gt;plaintext&lt;/code&gt; 与 &lt;code&gt;tls&lt;/code&gt; 同时出现会被拒绝：二者取其一。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;回环&lt;/strong&gt;地址（&lt;code&gt;127.0.0.1&lt;/code&gt;、&lt;code&gt;::1&lt;/code&gt;、&lt;code&gt;localhost&lt;/code&gt;），以及&lt;strong&gt;没有任何人需要身份验证&lt;/strong&gt;的服务器（没有 &lt;code&gt;user&lt;/code&gt;、没有 &lt;code&gt;users&lt;/code&gt;、没有 &lt;code&gt;oidc&lt;/code&gt; 块）不受影响。没有 &lt;code&gt;addr&lt;/code&gt; 的 &lt;code&gt;serve&lt;/code&gt; 块落在回环地址上，同样不受影响。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;plaintext&lt;/code&gt; 仅适用于 WebDAV，即会发送密码的协议，而 &lt;code&gt;plaintext&lt;/code&gt; 与 &lt;code&gt;tls&lt;/code&gt; 同时出现会被拒绝：二者取其一。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="what-check-says"&gt;&lt;code&gt;check&lt;/code&gt; 会说明什么&lt;span class="hx:absolute hx:-mt-20" id="what-check-says"&gt;&lt;/span&gt;
-&lt;a href="#what-check-says" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/configuration/check/"&gt;&lt;code&gt;fileshare check&lt;/code&gt;&lt;/a&gt;会按协议打印哪些是
-加密的，哪些是&lt;strong&gt;有意&lt;/strong&gt;明文的：&lt;/p&gt;
+&lt;a href="#what-check-says" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/configuration/check/"&gt;&lt;code&gt;fileshare check&lt;/code&gt;&lt;/a&gt;会按协议打印哪些是加密的，哪些是&lt;strong&gt;有意&lt;/strong&gt;明文的：&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;pre&gt;&lt;code&gt;webdav: TLS, certificate from the files /etc/fileshare/tls/fullchain.pem and /etc/fileshare/tls/key.pem
 nfs: TLS, certificate from the files /etc/fileshare/tls/fullchain.pem and /etc/fileshare/tls/key.pem; clients present one signed by /etc/fileshare/tls/clients.pem (the machine, not the person)&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
@@ -305,15 +271,8 @@ data-copied-label="已复制！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;&lt;code&gt;client_ca_file&lt;/code&gt; 会要求客户端出示由该颁发机构签发的证书，由此得知
-&lt;strong&gt;是哪台主机在挂载&lt;/strong&gt;，而 RFC 9289 对用户身份验证保持原样：
-其中的 uid 仍然是 &lt;code&gt;AUTH_SYS&lt;/code&gt; 所声明的那个。因此，指明了谁可以使用的共享，
-在没有 &lt;code&gt;kerberos&lt;/code&gt; 块时&lt;strong&gt;通过 NFS 仍然会被拒绝&lt;/strong&gt;，在没有
-&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/nfs-certificates/"&gt;基于证书的身份&lt;/a&gt;时也一样，后者是对
-同一证书的另一种用法。&lt;/p&gt;
-&lt;p&gt;TLS 是&lt;strong&gt;可选提供，而非强制&lt;/strong&gt;的：从不请求它的客户端仍然可以使用
-开放的共享。没有 &lt;code&gt;tls = true&lt;/code&gt; 的 &lt;code&gt;client_ca_file&lt;/code&gt; 会被拒绝，因为它
-什么都不会检查，而在 NFS 以外的任何协议上使用 &lt;code&gt;client_ca_file&lt;/code&gt;
+&lt;p&gt;&lt;code&gt;client_ca_file&lt;/code&gt; 会要求客户端出示由该颁发机构签发的证书，由此得知&lt;strong&gt;是哪台主机在挂载&lt;/strong&gt;，而 RFC 9289 对用户身份验证保持原样：其中的 uid 仍然是 &lt;code&gt;AUTH_SYS&lt;/code&gt; 所声明的那个。因此，指明了谁可以使用的共享，在没有 &lt;code&gt;kerberos&lt;/code&gt; 块时&lt;strong&gt;通过 NFS 仍然会被拒绝&lt;/strong&gt;，在没有&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/nfs-certificates/"&gt;基于证书的身份&lt;/a&gt;时也一样，后者是对同一证书的另一种用法。&lt;/p&gt;
+&lt;p&gt;TLS 是&lt;strong&gt;可选提供，而非强制&lt;/strong&gt;的：从不请求它的客户端仍然可以使用开放的共享。没有 &lt;code&gt;tls = true&lt;/code&gt; 的 &lt;code&gt;client_ca_file&lt;/code&gt; 会被拒绝，因为它什么都不会检查，而在 NFS 以外的任何协议上使用 &lt;code&gt;client_ca_file&lt;/code&gt;
 同样会被拒绝。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="what-else-is-refused"&gt;还有哪些会被拒绝&lt;span class="hx:absolute hx:-mt-20" id="what-else-is-refused"&gt;&lt;/span&gt;
 &lt;a href="#what-else-is-refused" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
@@ -321,12 +280,7 @@ data-copied-label="已复制！"
 &lt;li&gt;没有任何 &lt;code&gt;serve&lt;/code&gt; 块使用的 &lt;code&gt;tls&lt;/code&gt; 块：没有任何东西会用到它。&lt;/li&gt;
 &lt;li&gt;不是可监听地址的 &lt;code&gt;http_challenge&lt;/code&gt;。&lt;/li&gt;
 &lt;/ul&gt;</description></item><item><title>以每个人的身份提供目录服务</title><link>https://go-fileshare.github.io/docs/0.31/zh-cn/configuration/as-each-person/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/zh-cn/configuration/as-each-person/</guid><description>
-&lt;p&gt;通常，一个 fileshare 进程以同一个账户为所有人提供服务：fileshare
-决定谁可以做什么，它创建的每个文件都属于该账户。
-目录共享也可以改为&lt;strong&gt;以每个人的身份&lt;/strong&gt;提供服务。每位登录者
-的文件都由以其 uid、gid 和
-组运行的进程打开，因此内核会应用目录树的权限，而该用户创建的内容
-归该用户所有。&lt;/p&gt;
+&lt;p&gt;通常，一个 fileshare 进程以同一个账户为所有人提供服务：fileshare决定谁可以做什么，它创建的每个文件都属于该账户。目录共享也可以改为&lt;strong&gt;以每个人的身份&lt;/strong&gt;提供服务。每位登录者的文件都由以其 uid、gid 和组运行的进程打开，因此内核会应用目录树的权限，而该用户创建的内容归该用户所有。&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;identity&lt;/span&gt; {
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; service_user&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;fileshare&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # 以其身份提供各协议服务的账户
@@ -352,9 +306,7 @@ data-copied-label="已复制！"
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="three-processes"&gt;三个进程&lt;span class="hx:absolute hx:-mt-20" id="three-processes"&gt;&lt;/span&gt;
-&lt;a href="#three-processes" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;fileshare serve&lt;/code&gt; 必须&lt;strong&gt;以 root 启动&lt;/strong&gt;。它保持 root 身份只是为了启动
-每个人的工作进程。所有面向网络的部分都运行在第二个
-进程中，以 &lt;code&gt;service_user&lt;/code&gt; 身份运行。&lt;/p&gt;
+&lt;a href="#three-processes" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;fileshare serve&lt;/code&gt; 必须&lt;strong&gt;以 root 启动&lt;/strong&gt;。它保持 root 身份只是为了启动每个人的工作进程。所有面向网络的部分都运行在第二个进程中，以 &lt;code&gt;service_user&lt;/code&gt; 身份运行。&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
@@ -381,11 +333,7 @@ data-copied-label="已复制！"
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;工作进程首先检查自己是否恰好以预期的 uid、gid 和组运行，
-以及 &lt;code&gt;setuid(0)&lt;/code&gt; 是否失败。只有这样，它才会通过 &lt;code&gt;os.Root&lt;/code&gt; 打开
-目录树。一个工作进程为该人对该共享的所有连接提供服务，
-SFTP 和 WebDAV 都一样，并且在 &lt;code&gt;idle&lt;/code&gt; 时间内无人使用后就会停止。
-服务器停止时，工作进程也随之停止。&lt;/p&gt;
+&lt;p&gt;工作进程首先检查自己是否恰好以预期的 uid、gid 和组运行，以及 &lt;code&gt;setuid(0)&lt;/code&gt; 是否失败。只有这样，它才会通过 &lt;code&gt;os.Root&lt;/code&gt; 打开目录树。一个工作进程为该人对该共享的所有连接提供服务，SFTP 和 WebDAV 都一样，并且在 &lt;code&gt;idle&lt;/code&gt; 时间内无人使用后就会停止。服务器停止时，工作进程也随之停止。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="who-a-person-is-on-this-system"&gt;一个人在本系统中是谁&lt;span class="hx:absolute hx:-mt-20" id="who-a-person-is-on-this-system"&gt;&lt;/span&gt;
 &lt;a href="#who-a-person-is-on-this-system" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;启动器&lt;strong&gt;自行&lt;/strong&gt;解析此人，顺序如下：&lt;/p&gt;
 &lt;ol&gt;
@@ -397,23 +345,14 @@ SFTP 和 WebDAV 都一样，并且在 &lt;code&gt;idle&lt;/code&gt; 时间内无
 &lt;li&gt;SQL 来源的 &lt;code&gt;users_attributes&lt;/code&gt; 查询。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;附加组是列出此人的组（&lt;code&gt;group&lt;/code&gt;
-块的 &lt;code&gt;members&lt;/code&gt;、&lt;code&gt;memberUid&lt;/code&gt;）以及此人所指明的组（&lt;code&gt;memberOf&lt;/code&gt;），
-各自以其 &lt;code&gt;gidNumber&lt;/code&gt; 标识。没有 &lt;code&gt;gidNumber&lt;/code&gt; 的组不是系统组。&lt;/p&gt;
+块的 &lt;code&gt;members&lt;/code&gt;、&lt;code&gt;memberUid&lt;/code&gt;）以及此人所指明的组（&lt;code&gt;memberOf&lt;/code&gt;），各自以其 &lt;code&gt;gidNumber&lt;/code&gt; 标识。没有 &lt;code&gt;gidNumber&lt;/code&gt; 的组不是系统组。&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;&lt;strong&gt;&lt;code&gt;/etc/passwd&lt;/code&gt; 和 &lt;code&gt;/etc/group&lt;/code&gt;&lt;/strong&gt;，按名称查找。&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;&lt;strong&gt;被拒绝的情况&lt;/strong&gt;：uid 0、gid 0、&lt;code&gt;(uid_t)-1&lt;/code&gt;、低于 &lt;code&gt;min_uid&lt;/code&gt; 的 uid、低于
-&lt;code&gt;min_gid&lt;/code&gt; 的主 gid，以及 &lt;code&gt;deny_uids&lt;/code&gt; 中的每个 uid。低于
-&lt;code&gt;min_gid&lt;/code&gt; 的附加组会被忽略，日志中会说明。在这两处都找不到的人
-同样会被拒绝：不存在共享的后备账户。由身份
-提供方担保的人，只有配合
-&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/configuration/identity/"&gt;&lt;code&gt;local_names&lt;/code&gt;&lt;/a&gt;（它使
-其名称成为本地名称）才会获得工作进程。&lt;/p&gt;
-&lt;p&gt;因此，被接管的前端只能为存在且被允许的人，
-在存在的共享上提出请求。它仍然负责判定&lt;strong&gt;谁&lt;/strong&gt;已通过
-身份验证，而启动器无法替它检查这一点。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;被拒绝的情况&lt;/strong&gt;：uid 0、gid 0、&lt;code&gt;(uid_t)-1&lt;/code&gt;、低于 &lt;code&gt;min_uid&lt;/code&gt; 的 uid、低于&lt;code&gt;min_gid&lt;/code&gt; 的主 gid，以及 &lt;code&gt;deny_uids&lt;/code&gt; 中的每个 uid。低于&lt;code&gt;min_gid&lt;/code&gt; 的附加组会被忽略，日志中会说明。在这两处都找不到的人同样会被拒绝：不存在共享的后备账户。由身份提供方担保的人，只有配合&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/configuration/identity/"&gt;&lt;code&gt;local_names&lt;/code&gt;&lt;/a&gt;（它使其名称成为本地名称）才会获得工作进程。&lt;/p&gt;
+&lt;p&gt;因此，被接管的前端只能为存在且被允许的人，在存在的共享上提出请求。它仍然负责判定&lt;strong&gt;谁&lt;/strong&gt;已通过身份验证，而启动器无法替它检查这一点。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="what-a-client-sees"&gt;客户端看到什么&lt;span class="hx:absolute hx:-mt-20" id="what-a-client-sees"&gt;&lt;/span&gt;
 &lt;a href="#what-a-client-sees" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
 &lt;thead&gt;
@@ -447,33 +386,20 @@ SFTP 和 WebDAV 都一样，并且在 &lt;code&gt;idle&lt;/code&gt; 时间内无
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;目前不支持 SMB、NFS 或 S3&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;它们会拒绝这样的共享，&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt;
-会指出这一点。SMB 和 NFS 需要其库中为每个会话提供一个文件系统。NFS
-只会在 Kerberos 下才支持，因为 &lt;code&gt;AUTH_UNIX&lt;/code&gt; 是客户端自己的
-声明（RFC 5531 §14）。&lt;/p&gt;
+会指出这一点。SMB 和 NFS 需要其库中为每个会话提供一个文件系统。NFS只会在 Kerberos 下才支持，因为 &lt;code&gt;AUTH_UNIX&lt;/code&gt; 是客户端自己的声明（RFC 5531 §14）。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="what-it-asks-of-the-system"&gt;它对系统有什么要求&lt;span class="hx:absolute hx:-mt-20" id="what-it-asks-of-the-system"&gt;&lt;/span&gt;
 &lt;a href="#what-it-asks-of-the-system" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;Unix&lt;/strong&gt;：Linux、BSD 和 macOS。在 Windows 上该共享会被拒绝。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;&lt;code&gt;service_user&lt;/code&gt; 可读&lt;/strong&gt;：配置以及它所指明的每个文件
-（密码文件、主机密钥、证书），因为前端要读取它们。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;用户可执行&lt;/strong&gt;：二进制文件，因为每个工作进程都以
-各自用户的身份运行它。&lt;/li&gt;
-&lt;li&gt;添加或更改这样的共享需要&lt;strong&gt;重启&lt;/strong&gt;。启动器只读取一次
-配置，并拒绝它不认识的共享，而不是让
-前端去提供它。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;service_user&lt;/code&gt; 可读&lt;/strong&gt;：配置以及它所指明的每个文件（密码文件、主机密钥、证书），因为前端要读取它们。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;用户可执行&lt;/strong&gt;：二进制文件，因为每个工作进程都以各自用户的身份运行它。&lt;/li&gt;
+&lt;li&gt;添加或更改这样的共享需要&lt;strong&gt;重启&lt;/strong&gt;。启动器只读取一次配置，并拒绝它不认识的共享，而不是让前端去提供它。&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;--isolate&lt;/code&gt; 不能与之同时使用。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;设计以及每项选择的理由，见
-&lt;a href="https://github.com/go-fileshare/fileshare/blob/main/docs/identity.md" target="_blank" rel="noopener"&gt;docs/identity.md&lt;/a&gt;。&lt;/p&gt;</description></item><item><title>撤销 SSH 证书：KRL</title><link>https://go-fileshare.github.io/docs/0.31/zh-cn/security/revocation-lists/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/zh-cn/security/revocation-lists/</guid><description>
-&lt;p&gt;身份提供方的 SSH CA 签发的证书（参见
-&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/protocols/sftp/#people-the-identity-provider-vouches-for"&gt;针对提供方所担保人员的 SFTP&lt;/a&gt;）
-在登录时检查。在 go-authn/bridge 中停用某人会撤销其
-令牌并删除其应用密码，这一点由
-&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/administration/reload/"&gt;目录服务重新加载&lt;/a&gt;在此处应用；但没有
-列表的话，已经签发的证书在到期之前仍可打开 SFTP，
-而已经打开的 SFTP 会话也会保持打开。&lt;/p&gt;
+&lt;p&gt;设计以及每项选择的理由，见&lt;a href="https://github.com/go-fileshare/fileshare/blob/main/docs/identity.md" target="_blank" rel="noopener"&gt;docs/identity.md&lt;/a&gt;。&lt;/p&gt;</description></item><item><title>撤销 SSH 证书：KRL</title><link>https://go-fileshare.github.io/docs/0.31/zh-cn/security/revocation-lists/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/zh-cn/security/revocation-lists/</guid><description>
+&lt;p&gt;身份提供方的 SSH CA 签发的证书（参见&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/protocols/sftp/#people-the-identity-provider-vouches-for"&gt;针对提供方所担保人员的 SFTP&lt;/a&gt;）在登录时检查。在 go-authn/bridge 中停用某人会撤销其令牌并删除其应用密码，这一点由&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/administration/reload/"&gt;目录服务重新加载&lt;/a&gt;在此处应用；但没有列表的话，已经签发的证书在到期之前仍可打开 SFTP，而已经打开的 SFTP 会话也会保持打开。&lt;/p&gt;
 &lt;p&gt;自 v0.12.0 起，列表可以弥补这一点：&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;oidc&lt;/span&gt; {
@@ -495,14 +421,9 @@ data-copied-label="已复制！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;go-authn/bridge 会把它已撤销的 SSH 证书（被停用的个人、
-被停用的 IdP）发布为 OpenSSH &lt;strong&gt;KRL&lt;/strong&gt;（&lt;code&gt;PROTOCOL.krl&lt;/code&gt;，即
-&lt;code&gt;sshd&lt;/code&gt; 的 &lt;code&gt;RevokedKeys&lt;/code&gt; 读取的列表），而 fileshare 保留其副本，并用
-&lt;a href="https://github.com/go-authn/krl" target="_blank" rel="noopener"&gt;go-authn/krl&lt;/a&gt; 读取。&lt;/p&gt;
+&lt;p&gt;go-authn/bridge 会把它已撤销的 SSH 证书（被停用的个人、被停用的 IdP）发布为 OpenSSH &lt;strong&gt;KRL&lt;/strong&gt;（&lt;code&gt;PROTOCOL.krl&lt;/code&gt;，即&lt;code&gt;sshd&lt;/code&gt; 的 &lt;code&gt;RevokedKeys&lt;/code&gt; 读取的列表），而 fileshare 保留其副本，并用&lt;a href="https://github.com/go-authn/krl" target="_blank" rel="noopener"&gt;go-authn/krl&lt;/a&gt; 读取。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="refused-at-login-and-in-the-middle-of-a-session"&gt;在登录时拒绝，在会话中途也拒绝&lt;span class="hx:absolute hx:-mt-20" id="refused-at-login-and-in-the-middle-of-a-session"&gt;&lt;/span&gt;
-&lt;a href="#refused-at-login-and-in-the-middle-of-a-session" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;被撤销的证书在登录时被拒绝，&lt;strong&gt;它已经打开的会话
-也不再获得服务&lt;/strong&gt;。SSH 只在握手时检查一次证书；因此联盟 SFTP 会话的每次
-操作都会再次查询 KRL，&lt;strong&gt;包括已打开的文件&lt;/strong&gt;。本服务器的列表副本发生变化之后的第一次操作就会被拒绝。&lt;/p&gt;
+&lt;a href="#refused-at-login-and-in-the-middle-of-a-session" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;被撤销的证书在登录时被拒绝，&lt;strong&gt;它已经打开的会话也不再获得服务&lt;/strong&gt;。SSH 只在握手时检查一次证书；因此联盟 SFTP 会话的每次操作都会再次查询 KRL，&lt;strong&gt;包括已打开的文件&lt;/strong&gt;。本服务器的列表副本发生变化之后的第一次操作就会被拒绝。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="fields"&gt;字段&lt;span class="hx:absolute hx:-mt-20" id="fields"&gt;&lt;/span&gt;
 &lt;a href="#fields" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
 &lt;thead&gt;
@@ -545,80 +466,44 @@ data-copied-label="已复制！"
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;短于 &lt;code&gt;refresh&lt;/code&gt; 的 &lt;code&gt;max_age&lt;/code&gt; 会被拒绝，因为每一份副本在
-下一次获取之前都已过期。没有 &lt;code&gt;ssh_ca_file&lt;/code&gt; 的 KRL 同样会被拒绝：它撤销
-提供方的证书，而没有该 CA 就没有这样的证书。&lt;/p&gt;
+&lt;p&gt;短于 &lt;code&gt;refresh&lt;/code&gt; 的 &lt;code&gt;max_age&lt;/code&gt; 会被拒绝，因为每一份副本在下一次获取之前都已过期。没有 &lt;code&gt;ssh_ca_file&lt;/code&gt; 的 KRL 同样会被拒绝：它撤销提供方的证书，而没有该 CA 就没有这样的证书。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="it-fails-closed"&gt;它以拒绝为默认&lt;span class="hx:absolute hx:-mt-20" id="it-fails-closed"&gt;&lt;/span&gt;
 &lt;a href="#it-fails-closed" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;在无法获取 KRL 期间，提供方的证书会被拒绝&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;在无法获取列表，或最近一份有效副本比
-&lt;code&gt;ssh_krl_max_age&lt;/code&gt; 更旧时，提供方的 CA 签发的&lt;strong&gt;每一份&lt;/strong&gt;证书都会
-被拒绝：在列表无法访问时放行一切的撤销检查，会被能够阻断该列表的
-攻击者击败。因此列表
-必须与它所管辖的登录一样可靠地提供服务。
-&lt;code&gt;fileshare_revocation_list_age_seconds{list=&amp;quot;ssh_krl&amp;quot;}&lt;/code&gt; 是应当在到达 &lt;code&gt;max_age&lt;/code&gt;
-之前设置告警的指标；参见
-&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/administration/health/#what-to-alert-on"&gt;健康检查与指标&lt;/a&gt;。&lt;/p&gt;
+&lt;p&gt;在无法获取列表，或最近一份有效副本比&lt;code&gt;ssh_krl_max_age&lt;/code&gt; 更旧时，提供方的 CA 签发的&lt;strong&gt;每一份&lt;/strong&gt;证书都会被拒绝：在列表无法访问时放行一切的撤销检查，会被能够阻断该列表的攻击者击败。因此列表必须与它所管辖的登录一样可靠地提供服务。&lt;code&gt;fileshare_revocation_list_age_seconds{list=&amp;quot;ssh_krl&amp;quot;}&lt;/code&gt; 是应当在到达 &lt;code&gt;max_age&lt;/code&gt;
+之前设置告警的指标；参见&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/administration/health/#what-to-alert-on"&gt;健康检查与指标&lt;/a&gt;。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="signed-and-dated-from-ssh_krl_url"&gt;带签名、带日期，来自 &lt;code&gt;ssh_krl_url&lt;/code&gt;&lt;span class="hx:absolute hx:-mt-20" id="signed-and-dated-from-ssh_krl_url"&gt;&lt;/span&gt;
-&lt;a href="#signed-and-dated-from-ssh_krl_url" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;自 v0.15.0 起，&lt;strong&gt;来自 &lt;code&gt;ssh_krl_url&lt;/code&gt; 的 KRL 必须带有签名，并说明何时
-过期&lt;/strong&gt;，如 &lt;a href="https://github.com/go-authn/revocation" target="_blank" rel="noopener"&gt;go-authn/revocation&lt;/a&gt;
+&lt;a href="#signed-and-dated-from-ssh_krl_url" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;自 v0.15.0 起，&lt;strong&gt;来自 &lt;code&gt;ssh_krl_url&lt;/code&gt; 的 KRL 必须带有签名，并说明何时过期&lt;/strong&gt;，如 &lt;a href="https://github.com/go-authn/revocation" target="_blank" rel="noopener"&gt;go-authn/revocation&lt;/a&gt;
 所述，go-authn/bridge 自 v0.10.0 起提供：&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;签名：&lt;/strong&gt; &lt;code&gt;&amp;lt;url&amp;gt;.sig&lt;/code&gt; 是提供方 SSH CA（&lt;code&gt;ssh_ca_file&lt;/code&gt;，因此
-&lt;code&gt;ssh_krl_url&lt;/code&gt; 要求提供它）在命名空间 &lt;code&gt;krl@go-authn.github.io&lt;/code&gt; 中的分离式 SSHSIG 签名。
-获取时对列表的 ETag 使用 &lt;code&gt;If-Match&lt;/code&gt;，如果列表在此期间被重新签发，
-则立即再次获取。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;过期时间：&lt;/strong&gt; &lt;code&gt;expires@go-authn.github.io&lt;/code&gt; 扩展。过了该时间，列表
-就不再是最新的，无论多近的 &lt;code&gt;304&lt;/code&gt; 确认过它。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;签名：&lt;/strong&gt; &lt;code&gt;&amp;lt;url&amp;gt;.sig&lt;/code&gt; 是提供方 SSH CA（&lt;code&gt;ssh_ca_file&lt;/code&gt;，因此&lt;code&gt;ssh_krl_url&lt;/code&gt; 要求提供它）在命名空间 &lt;code&gt;krl@go-authn.github.io&lt;/code&gt; 中的分离式 SSHSIG 签名。获取时对列表的 ETag 使用 &lt;code&gt;If-Match&lt;/code&gt;，如果列表在此期间被重新签发，则立即再次获取。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;过期时间：&lt;/strong&gt; &lt;code&gt;expires@go-authn.github.io&lt;/code&gt; 扩展。过了该时间，列表就不再是最新的，无论多近的 &lt;code&gt;304&lt;/code&gt; 确认过它。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;HTTPS（&lt;code&gt;ssh_krl_ca_file&lt;/code&gt; 固定其颁发机构）验证的是应答的服务器，
-而不是列表：镜像、缓存或被攻陷的 Web 服务器都可能
-提供空列表，而仅凭 KRL 本身无法看出它已过期。未通过验证的列表
-会被拒绝，并保留最近一份有效副本。通过 &lt;code&gt;ssh_krl_file&lt;/code&gt; 手工放置的列表，
-其可信度等同于保存它的文件系统，不需要
-签名或过期时间；若其中带有，则予以遵守。&lt;/p&gt;
+&lt;p&gt;HTTPS（&lt;code&gt;ssh_krl_ca_file&lt;/code&gt; 固定其颁发机构）验证的是应答的服务器，而不是列表：镜像、缓存或被攻陷的 Web 服务器都可能提供空列表，而仅凭 KRL 本身无法看出它已过期。未通过验证的列表会被拒绝，并保留最近一份有效副本。通过 &lt;code&gt;ssh_krl_file&lt;/code&gt; 手工放置的列表，其可信度等同于保存它的文件系统，不需要签名或过期时间；若其中带有，则予以遵守。&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;升级到 v0.15.0&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;提供未签名 KRL 或没有过期时间的 &lt;code&gt;ssh_krl_url&lt;/code&gt;
-不再被接受：此时提供方的证书会被拒绝，与任何
-无法获得的列表一样。请先运行 go-authn/bridge v0.10.0 或更高版本。&lt;/p&gt;
+不再被接受：此时提供方的证书会被拒绝，与任何无法获得的列表一样。请先运行 go-authn/bridge v0.10.0 或更高版本。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="never-backwards-across-a-restart-too"&gt;绝不倒退，重启之后也一样&lt;span class="hx:absolute hx:-mt-20" id="never-backwards-across-a-restart-too"&gt;&lt;/span&gt;
-&lt;a href="#never-backwards-across-a-restart-too" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;自 v0.16.0 起，比已持有的列表更旧的列表会被拒绝：版本更低
-（KRL 的版本、CRL 的编号），或版本相同但签发更早。配合 &lt;code&gt;ssh_krl_state_file&lt;/code&gt;
-（&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/nfs-certificates/#revocation-the-crl"&gt;NFS&lt;/a&gt;对应的是 &lt;code&gt;crl_state_file&lt;/code&gt;），最近一份通过验证的列表会
-保存在磁盘上，在启动时再次验证，并决定下一份列表的先后。它本身
-在获取到列表之前不被视为最新。没有它，重启
-会忘记先后顺序，fileshare 会在启动时说明这一点：较旧的列表，只要仍有签名
-且未过期，就会被接受。&lt;/p&gt;
-&lt;p&gt;这些文件，与 &lt;code&gt;ssh_ca_file&lt;/code&gt;、各 CA 文件、列表文件，以及（自
-v0.17.0 起）&lt;code&gt;authorized_keys_file&lt;/code&gt;、&lt;code&gt;dsn_file&lt;/code&gt;、&lt;code&gt;bind_password_file&lt;/code&gt; 和
-&lt;code&gt;ssf&lt;/code&gt; 的 &lt;code&gt;ca_file&lt;/code&gt; 一样，&lt;strong&gt;不得位于共享之内&lt;/strong&gt;：能在那里写入的人
-就能决定谁可以进入。&lt;/p&gt;
+&lt;a href="#never-backwards-across-a-restart-too" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;自 v0.16.0 起，比已持有的列表更旧的列表会被拒绝：版本更低（KRL 的版本、CRL 的编号），或版本相同但签发更早。配合 &lt;code&gt;ssh_krl_state_file&lt;/code&gt;
+（&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/nfs-certificates/#revocation-the-crl"&gt;NFS&lt;/a&gt;对应的是 &lt;code&gt;crl_state_file&lt;/code&gt;），最近一份通过验证的列表会保存在磁盘上，在启动时再次验证，并决定下一份列表的先后。它本身在获取到列表之前不被视为最新。没有它，重启会忘记先后顺序，fileshare 会在启动时说明这一点：较旧的列表，只要仍有签名且未过期，就会被接受。&lt;/p&gt;
+&lt;p&gt;这些文件，与 &lt;code&gt;ssh_ca_file&lt;/code&gt;、各 CA 文件、列表文件，以及（自v0.17.0 起）&lt;code&gt;authorized_keys_file&lt;/code&gt;、&lt;code&gt;dsn_file&lt;/code&gt;、&lt;code&gt;bind_password_file&lt;/code&gt; 和&lt;code&gt;ssf&lt;/code&gt; 的 &lt;code&gt;ca_file&lt;/code&gt; 一样，&lt;strong&gt;不得位于共享之内&lt;/strong&gt;：能在那里写入的人就能决定谁可以进入。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="a-plain-sshd-next-to-fileshare"&gt;与 fileshare 并存的普通 &lt;code&gt;sshd&lt;/code&gt;&lt;span class="hx:absolute hx:-mt-20" id="a-plain-sshd-next-to-fileshare"&gt;&lt;/span&gt;
-&lt;a href="#a-plain-sshd-next-to-fileshare" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;同样的验证无需 fileshare 也能使用：go-authn/revocation 的
-&lt;code&gt;authn-revokd&lt;/code&gt; 获取列表，只保留通过验证的列表，在磁盘上保持它们的先后顺序，
-为 &lt;code&gt;sshd&lt;/code&gt; 写入 &lt;code&gt;RevokedKeys&lt;/code&gt;，并且在列表失效时，写入一份
-撤销 CA 本身的列表，使 &lt;code&gt;sshd&lt;/code&gt; 同样以拒绝为默认。&lt;/p&gt;
+&lt;a href="#a-plain-sshd-next-to-fileshare" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;同样的验证无需 fileshare 也能使用：go-authn/revocation 的&lt;code&gt;authn-revokd&lt;/code&gt; 获取列表，只保留通过验证的列表，在磁盘上保持它们的先后顺序，为 &lt;code&gt;sshd&lt;/code&gt; 写入 &lt;code&gt;RevokedKeys&lt;/code&gt;，并且在列表失效时，写入一份撤销 CA 本身的列表，使 &lt;code&gt;sshd&lt;/code&gt; 同样以拒绝为默认。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="what-it-does-not-cover"&gt;它不涵盖什么&lt;span class="hx:absolute hx:-mt-20" id="what-it-does-not-cover"&gt;&lt;/span&gt;
-&lt;a href="#what-it-does-not-cover" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;OpenPubkey（opkssh）证书不在任何 KRL 中&lt;/strong&gt;，因为只有
-此人自己的密钥签发过它们。它们受 &lt;code&gt;opkssh_max_age&lt;/code&gt; 限制，并由
-&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/shared-signals/"&gt;共享信号&lt;/a&gt;收回。WebDAV 上的访问令牌同样如此。&lt;/p&gt;
-&lt;p&gt;同样的机制（获取、保存、以拒绝为默认）也承载着
-&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/nfs-certificates/#revocation-the-crl"&gt;基于证书的 NFS 身份&lt;/a&gt;的 &lt;strong&gt;X.509 CRL&lt;/strong&gt;。&lt;/p&gt;</description></item><item><title>NFS 与基于证书的身份</title><link>https://go-fileshare.github.io/docs/0.31/zh-cn/security/nfs-certificates/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/zh-cn/security/nfs-certificates/</guid><description>
-&lt;p&gt;NFSv3 自身不对任何人进行身份验证，这就是指明了谁可以使用的共享
-&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/protocols/nfs/"&gt;不会通过 NFS 导出&lt;/a&gt;的原因，除非有东西能够
-区分不同的人。&lt;code&gt;kerberos&lt;/code&gt; 块是一种答案。自 v0.12.0 起，
-&lt;strong&gt;指明某个人&lt;/strong&gt;的客户端证书是另一种：&lt;/p&gt;
+&lt;a href="#what-it-does-not-cover" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;OpenPubkey（opkssh）证书不在任何 KRL 中&lt;/strong&gt;，因为只有此人自己的密钥签发过它们。它们受 &lt;code&gt;opkssh_max_age&lt;/code&gt; 限制，并由&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/shared-signals/"&gt;共享信号&lt;/a&gt;收回。WebDAV 上的访问令牌同样如此。&lt;/p&gt;
+&lt;p&gt;同样的机制（获取、保存、以拒绝为默认）也承载着&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/nfs-certificates/#revocation-the-crl"&gt;基于证书的 NFS 身份&lt;/a&gt;的 &lt;strong&gt;X.509 CRL&lt;/strong&gt;。&lt;/p&gt;</description></item><item><title>NFS 与基于证书的身份</title><link>https://go-fileshare.github.io/docs/0.31/zh-cn/security/nfs-certificates/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/zh-cn/security/nfs-certificates/</guid><description>
+&lt;p&gt;NFSv3 自身不对任何人进行身份验证，这就是指明了谁可以使用的共享&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/protocols/nfs/"&gt;不会通过 NFS 导出&lt;/a&gt;的原因，除非有东西能够区分不同的人。&lt;code&gt;kerberos&lt;/code&gt; 块是一种答案。自 v0.12.0 起，&lt;strong&gt;指明某个人&lt;/strong&gt;的客户端证书是另一种：&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;nfs&amp;#34;&lt;/span&gt; {
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; tls&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;
@@ -639,49 +524,33 @@ data-copied-label="已复制！"
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="what-the-certificate-carries"&gt;证书携带什么&lt;span class="hx:absolute hx:-mt-20" id="what-the-certificate-carries"&gt;&lt;/span&gt;
-&lt;a href="#what-the-certificate-carries" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;在身份提供方登录之后，go-authn/bridge 会签发一份&lt;strong&gt;短期有效的 X.509
-客户端证书&lt;/strong&gt;，以 FreeBSD 的 &lt;code&gt;rpc.tlsservd -u&lt;/code&gt; 读取的方式指明
-此人：&lt;/p&gt;
+&lt;a href="#what-the-certificate-carries" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;在身份提供方登录之后，go-authn/bridge 会签发一份&lt;strong&gt;短期有效的 X.509客户端证书&lt;/strong&gt;，以 FreeBSD 的 &lt;code&gt;rpc.tlsservd -u&lt;/code&gt; 读取的方式指明此人：&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;此人：SubjectAltName &lt;strong&gt;otherName &lt;code&gt;1.3.6.1.4.1.2238.1.1.1&lt;/code&gt;&lt;/strong&gt;，一个
-UTF8String &lt;code&gt;user@domain&lt;/code&gt;
+&lt;li&gt;此人：SubjectAltName &lt;strong&gt;otherName &lt;code&gt;1.3.6.1.4.1.2238.1.1.1&lt;/code&gt;&lt;/strong&gt;，一个UTF8String &lt;code&gt;user@domain&lt;/code&gt;
 （&lt;a href="https://www.ietf.org/archive/id/draft-cel-nfsv4-rpc-tls-othername-04.html" target="_blank" rel="noopener"&gt;draft-cel-nfsv4-rpc-tls-othername&lt;/a&gt;
 对它作了描述；其 OID 尚未分配）；&lt;/li&gt;
-&lt;li&gt;此人所属的组：每个组一个 SubjectAltName URI，
-&lt;code&gt;tag:go-authn.github.io,2026:group:&amp;lt;group&amp;gt;&lt;/code&gt;，即 &lt;strong&gt;tag URI&lt;/strong&gt;（RFC 4151：无需
-注册，正是为此而设计）。FreeBSD 的 &lt;code&gt;rpc.tlsservd&lt;/code&gt; 读取第一个
-身份 otherName，并跳过其他所有 SAN 条目。&lt;/li&gt;
+&lt;li&gt;此人所属的组：每个组一个 SubjectAltName URI，&lt;code&gt;tag:go-authn.github.io,2026:group:&amp;lt;group&amp;gt;&lt;/code&gt;，即 &lt;strong&gt;tag URI&lt;/strong&gt;（RFC 4151：无需注册，正是为此而设计）。FreeBSD 的 &lt;code&gt;rpc.tlsservd&lt;/code&gt; 读取第一个身份 otherName，并跳过其他所有 SAN 条目。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;为什么用 tag URI，而不是自己的扩展&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;曾经设计过一个，使用由 UUID 派生的弧（&lt;code&gt;2.25.&amp;lt;128 位数字&amp;gt;&lt;/code&gt;），并经过&lt;strong&gt;实测&lt;/strong&gt;：
-Go 的 &lt;code&gt;x509.ParseCertificate&lt;/code&gt; 会拒绝整个证书，提示
-&lt;em&gt;malformed extension OID field&lt;/em&gt;，因为 ASN.1 对象标识符的弧在那里是
-&lt;code&gt;int&lt;/code&gt;。每个 Go TLS 服务器都会拒绝这份证书。
-URI SAN 不需要 OID，每个解析器都能读取它。也不使用 &lt;code&gt;urn:x-…&lt;/code&gt;：
-RFC 8141 取消了实验性的 URN 命名空间，严格的解析器
-会拒绝它。&lt;/p&gt;
+&lt;p&gt;曾经设计过一个，使用由 UUID 派生的弧（&lt;code&gt;2.25.&amp;lt;128 位数字&amp;gt;&lt;/code&gt;），并经过&lt;strong&gt;实测&lt;/strong&gt;：Go 的 &lt;code&gt;x509.ParseCertificate&lt;/code&gt; 会拒绝整个证书，提示&lt;em&gt;malformed extension OID field&lt;/em&gt;，因为 ASN.1 对象标识符的弧在那里是&lt;code&gt;int&lt;/code&gt;。每个 Go TLS 服务器都会拒绝这份证书。URI SAN 不需要 OID，每个解析器都能读取它。也不使用 &lt;code&gt;urn:x-…&lt;/code&gt;：RFC 8141 取消了实验性的 URN 命名空间，严格的解析器会拒绝它。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="what-every-call-is-asked"&gt;每次调用都会被检查什么&lt;span class="hx:absolute hx:-mt-20" id="what-every-call-is-asked"&gt;&lt;/span&gt;
-&lt;a href="#what-every-call-is-asked" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;设置 &lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt; 后，指明了人员的共享可以通过 NFS 提供服务，
-&lt;strong&gt;无需 kerberos&lt;/strong&gt;。针对它的每次调用都必须通过 TLS 到达，并且其证书必须：&lt;/p&gt;
+&lt;a href="#what-every-call-is-asked" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;设置 &lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt; 后，指明了人员的共享可以通过 NFS 提供服务，&lt;strong&gt;无需 kerberos&lt;/strong&gt;。针对它的每次调用都必须通过 TLS 到达，并且其证书必须：&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;&lt;strong&gt;不在 CRL 中&lt;/strong&gt;；&lt;/li&gt;
 &lt;li&gt;恰好指明&lt;strong&gt;一个&lt;/strong&gt;人；&lt;/li&gt;
-&lt;li&gt;指明的人是本服务器以&lt;strong&gt;对待令牌的方式&lt;/strong&gt;准入的：规则、
-&lt;code&gt;trust_all&lt;/code&gt;、&lt;code&gt;domains&lt;/code&gt;，参见
-&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;由身份提供方指明的人员&lt;/a&gt;；&lt;/li&gt;
+&lt;li&gt;指明的人是本服务器以&lt;strong&gt;对待令牌的方式&lt;/strong&gt;准入的：规则、&lt;code&gt;trust_all&lt;/code&gt;、&lt;code&gt;domains&lt;/code&gt;，参见&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;由身份提供方指明的人员&lt;/a&gt;；&lt;/li&gt;
 &lt;li&gt;指明的人是&lt;strong&gt;共享所允许的&lt;/strong&gt;。&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;并且，如果有 &lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/shared-signals/"&gt;&lt;code&gt;ssf&lt;/code&gt; 块&lt;/a&gt;，证书必须是在对此人的任何撤销&lt;strong&gt;之后&lt;/strong&gt;
 签发的（以其 &lt;code&gt;NotBefore&lt;/code&gt; 为准）。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="revocation-the-crl"&gt;撤销：CRL&lt;span class="hx:absolute hx:-mt-20" id="revocation-the-crl"&gt;&lt;/span&gt;
-&lt;a href="#revocation-the-crl" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;CRL 是必需的&lt;/strong&gt;，即 &lt;code&gt;crl_url&lt;/code&gt; 或 &lt;code&gt;crl_file&lt;/code&gt;。无法被任何东西撤销的
-个人证书，会在此人被移除之后继续存在整个有效期。&lt;/p&gt;
+&lt;a href="#revocation-the-crl" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;CRL 是必需的&lt;/strong&gt;，即 &lt;code&gt;crl_url&lt;/code&gt; 或 &lt;code&gt;crl_file&lt;/code&gt;。无法被任何东西撤销的个人证书，会在此人被移除之后继续存在整个有效期。&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
@@ -723,35 +592,18 @@ RFC 8141 取消了实验性的 URN 命名空间，严格的解析器
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;它的获取和保存方式与 &lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/revocation-lists/"&gt;KRL&lt;/a&gt;相同，并同样&lt;strong&gt;以拒绝为默认&lt;/strong&gt;；
-超过自身 &lt;strong&gt;&lt;code&gt;NextUpdate&lt;/code&gt;&lt;/strong&gt; 的 CRL 无论 &lt;code&gt;crl_max_age&lt;/code&gt; 允许与否都视为未知。CRL 必须由客户端 CA 签名：任何人
-都可以编写的 CRL 可以随意撤销，更糟的是，也可以撤销后又恢复。只要
-CRL 可访问，&lt;strong&gt;它变化之后的下一次调用就会被拒绝&lt;/strong&gt;；只有在 CRL 无法访问时，
-撤销才受证书有效期的限制。&lt;/p&gt;
+&lt;p&gt;它的获取和保存方式与 &lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/revocation-lists/"&gt;KRL&lt;/a&gt;相同，并同样&lt;strong&gt;以拒绝为默认&lt;/strong&gt;；超过自身 &lt;strong&gt;&lt;code&gt;NextUpdate&lt;/code&gt;&lt;/strong&gt; 的 CRL 无论 &lt;code&gt;crl_max_age&lt;/code&gt; 允许与否都视为未知。CRL 必须由客户端 CA 签名：任何人都可以编写的 CRL 可以随意撤销，更糟的是，也可以撤销后又恢复。只要CRL 可访问，&lt;strong&gt;它变化之后的下一次调用就会被拒绝&lt;/strong&gt;；只有在 CRL 无法访问时，撤销才受证书有效期的限制。&lt;/p&gt;
 &lt;p&gt;自 v0.16.2 起，会通过 &lt;a href="https://github.com/go-authn/revocation" target="_blank" rel="noopener"&gt;go-authn/revocation&lt;/a&gt;
-在解析 CRL &lt;strong&gt;之前&lt;/strong&gt;对原始字节检查签名：
-如果先解析，由任何人签名的大型 CRL 在被拒绝之前就会消耗内存和数秒时间。
-本服务器无法读作完整列表的内容同样会被拒绝：
-增量 CRL、未知的关键扩展或条目扩展、没有 CRL
-编号、没有 &lt;code&gt;NextUpdate&lt;/code&gt;。编号低于已持有 CRL 的 CRL，或编号相同但签发更早的 CRL，
-会像更旧的
-&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/revocation-lists/#never-backwards-across-a-restart-too"&gt;KRL&lt;/a&gt;一样被拒绝。&lt;/p&gt;
-&lt;p&gt;没有 &lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt; 的 CRL 字段会被拒绝，没有 &lt;code&gt;tls = true&lt;/code&gt; 和
-&lt;code&gt;client_ca_file&lt;/code&gt; 的 &lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt; 同样如此：
-身份就在客户端出示的证书中。&lt;/p&gt;
+在解析 CRL &lt;strong&gt;之前&lt;/strong&gt;对原始字节检查签名：如果先解析，由任何人签名的大型 CRL 在被拒绝之前就会消耗内存和数秒时间。本服务器无法读作完整列表的内容同样会被拒绝：增量 CRL、未知的关键扩展或条目扩展、没有 CRL编号、没有 &lt;code&gt;NextUpdate&lt;/code&gt;。编号低于已持有 CRL 的 CRL，或编号相同但签发更早的 CRL，会像更旧的&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/revocation-lists/#never-backwards-across-a-restart-too"&gt;KRL&lt;/a&gt;一样被拒绝。&lt;/p&gt;
+&lt;p&gt;没有 &lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt; 的 CRL 字段会被拒绝，没有 &lt;code&gt;tls = true&lt;/code&gt; 和&lt;code&gt;client_ca_file&lt;/code&gt; 的 &lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt; 同样如此：身份就在客户端出示的证书中。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="what-it-cannot-promise"&gt;它无法承诺什么&lt;span class="hx:absolute hx:-mt-20" id="what-it-cannot-promise"&gt;&lt;/span&gt;
 &lt;a href="#what-it-cannot-promise" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Linux 客户端的证书属于一次挂载，而不是一个人&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;服务器看到的是&lt;strong&gt;连接&lt;/strong&gt;的证书，而 Linux 客户端把证书
-附加到挂载上（&lt;code&gt;tlshd&lt;/code&gt;，&lt;code&gt;mount -o xprtsec=mtls,...&lt;/code&gt; 上的
-密钥环序列号）。&lt;strong&gt;该挂载的每个用户都以证书所指明的那个人的身份行事。&lt;/strong&gt;
-对于一个人使用的工作站，这恰好就是
-此人；对于多人登录的机器，则是挂载者，请在那里使用
-&lt;code&gt;sec=krb5&lt;/code&gt;。&lt;/p&gt;
-&lt;p&gt;这就是 RFC 9289 本身拒绝承诺用户身份验证的原因，也是普通的
-&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/tls/#nfs-over-tls-proves-the-machine-not-the-person"&gt;基于 TLS 的 NFS&lt;/a&gt;
+&lt;p&gt;服务器看到的是&lt;strong&gt;连接&lt;/strong&gt;的证书，而 Linux 客户端把证书附加到挂载上（&lt;code&gt;tlshd&lt;/code&gt;，&lt;code&gt;mount -o xprtsec=mtls,...&lt;/code&gt; 上的密钥环序列号）。&lt;strong&gt;该挂载的每个用户都以证书所指明的那个人的身份行事。&lt;/strong&gt;
+对于一个人使用的工作站，这恰好就是此人；对于多人登录的机器，则是挂载者，请在那里使用&lt;code&gt;sec=krb5&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;这就是 RFC 9289 本身拒绝承诺用户身份验证的原因，也是普通的&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/tls/#nfs-over-tls-proves-the-machine-not-the-person"&gt;基于 TLS 的 NFS&lt;/a&gt;
 仍然只能证明机器的原因。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -759,19 +611,10 @@ CRL 可访问，&lt;strong&gt;它变化之后的下一次调用就会被拒绝&l
 &lt;h2 data-hextra-search-id="measured-with-a-real-linux-client"&gt;用真实 Linux 客户端实测&lt;span class="hx:absolute hx:-mt-20" id="measured-with-a-real-linux-client"&gt;&lt;/span&gt;
 &lt;a href="#measured-with-a-real-linux-client" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;内核 6.17，ktls-utils 0.9，在 go-filesystems/nfs 的 CI 中：&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;MOUNT 的 &lt;code&gt;MNT&lt;/code&gt; 以明文到达&lt;/strong&gt;，无论 &lt;code&gt;xprtsec=&lt;/code&gt; 如何设置：内核的
-挂载客户端不支持 TLS。它会得到应答，而随后每个未使用 TLS 的 NFS 调用
-都会被拒绝，因此共享不允许的人在第一次访问时就会看到
-&lt;em&gt;access denied&lt;/em&gt;，而不是在 &lt;code&gt;mount&lt;/code&gt; 时。&lt;strong&gt;共享的任何内容都不会以明文传输。&lt;/strong&gt;&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;tlshd&lt;/code&gt; 只对照&lt;strong&gt;系统&lt;/strong&gt;信任库检查本服务器的证书，
-它会忽略 &lt;code&gt;x509.truststore&lt;/code&gt;，并且要求客户端的证书和
-密钥&lt;strong&gt;归 root 所有，密钥模式为 600&lt;/strong&gt;。否则它会以
-&lt;em&gt;gnutls: Error in the certificate (-43)&lt;/em&gt; 失败，两者都不会指明。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;MOUNT 的 &lt;code&gt;MNT&lt;/code&gt; 以明文到达&lt;/strong&gt;，无论 &lt;code&gt;xprtsec=&lt;/code&gt; 如何设置：内核的挂载客户端不支持 TLS。它会得到应答，而随后每个未使用 TLS 的 NFS 调用都会被拒绝，因此共享不允许的人在第一次访问时就会看到&lt;em&gt;access denied&lt;/em&gt;，而不是在 &lt;code&gt;mount&lt;/code&gt; 时。&lt;strong&gt;共享的任何内容都不会以明文传输。&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;tlshd&lt;/code&gt; 只对照&lt;strong&gt;系统&lt;/strong&gt;信任库检查本服务器的证书，它会忽略 &lt;code&gt;x509.truststore&lt;/code&gt;，并且要求客户端的证书和密钥&lt;strong&gt;归 root 所有，密钥模式为 600&lt;/strong&gt;。否则它会以&lt;em&gt;gnutls: Error in the certificate (-43)&lt;/em&gt; 失败，两者都不会指明。&lt;/li&gt;
 &lt;/ul&gt;</description></item><item><title>什么撤销什么</title><link>https://go-fileshare.github.io/docs/0.31/zh-cn/security/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/zh-cn/security/</guid><description>
-&lt;p&gt;凭据在出示时被检查。事后收回某个人的权限，例如离职的
-员工、在 go-authn/bridge 中被停用的账户、整个被关闭的 IdP，
-必须触及此人获得的&lt;strong&gt;每一份&lt;/strong&gt;凭据，以及这些凭据已经打开的
-会话。这里每种凭据都由不同的机制处理，因为每种凭据的签发和检查方式各不相同：&lt;/p&gt;
+&lt;p&gt;凭据在出示时被检查。事后收回某个人的权限，例如离职的员工、在 go-authn/bridge 中被停用的账户、整个被关闭的 IdP，必须触及此人获得的&lt;strong&gt;每一份&lt;/strong&gt;凭据，以及这些凭据已经打开的会话。这里每种凭据都由不同的机制处理，因为每种凭据的签发和检查方式各不相同：&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
@@ -820,39 +663,21 @@ CRL 可访问，&lt;strong&gt;它变化之后的下一次调用就会被拒绝&l
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;没有第三列中的机制，凭据在到期之前一直有效；对于证书或令牌，
-这个窗口期就是它的有效期。&lt;/p&gt;
+&lt;p&gt;没有第三列中的机制，凭据在到期之前一直有效；对于证书或令牌，这个窗口期就是它的有效期。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="every-one-of-them-fails-closed"&gt;它们每一个都以拒绝为默认&lt;span class="hx:absolute hx:-mt-20" id="every-one-of-them-fails-closed"&gt;&lt;/span&gt;
-&lt;a href="#every-one-of-them-fails-closed" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;无法获取的撤销列表、比其 &lt;code&gt;max_age&lt;/code&gt; 更旧的副本、
-超过自身 &lt;code&gt;NextUpdate&lt;/code&gt; 的 CRL、&lt;code&gt;max_age&lt;/code&gt; 之内没有收到消息的
-共享信号发送方：这些都不会被理解为“没有任何东西被撤销”。
-而是“本服务器不知道”，该机制所管辖的凭据会被
-&lt;strong&gt;拒绝&lt;/strong&gt;，直到它重新得知为止。&lt;/p&gt;
+&lt;a href="#every-one-of-them-fails-closed" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;无法获取的撤销列表、比其 &lt;code&gt;max_age&lt;/code&gt; 更旧的副本、超过自身 &lt;code&gt;NextUpdate&lt;/code&gt; 的 CRL、&lt;code&gt;max_age&lt;/code&gt; 之内没有收到消息的共享信号发送方：这些都不会被理解为“没有任何东西被撤销”。而是“本服务器不知道”，该机制所管辖的凭据会被&lt;strong&gt;拒绝&lt;/strong&gt;，直到它重新得知为止。&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;代价是可用性，而且是有意付出的&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;在列表无法访问时放行一切的撤销检查，会被能够阻断该列表的
-攻击者击败；这正是浏览器的软失败 OCSP 被称为“一旦撞车
-就会断开的安全带”的原因。因此，列表或发送方
-必须与它所管辖的登录一样可靠地提供服务，而表明它正在变旧的
-指标，正是应当&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/administration/health/#what-to-alert-on"&gt;设置告警&lt;/a&gt;的指标。&lt;/p&gt;
+&lt;p&gt;在列表无法访问时放行一切的撤销检查，会被能够阻断该列表的攻击者击败；这正是浏览器的软失败 OCSP 被称为“一旦撞车就会断开的安全带”的原因。因此，列表或发送方必须与它所管辖的登录一样可靠地提供服务，而表明它正在变旧的指标，正是应当&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/administration/health/#what-to-alert-on"&gt;设置告警&lt;/a&gt;的指标。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;只有解析成功的列表才会替换副本：到达时已损坏的列表会让
-最近一份有效副本保持原位，并仍从&lt;strong&gt;它&lt;/strong&gt;被获取的时刻起计入 &lt;code&gt;max_age&lt;/code&gt;。
-而且列表&lt;strong&gt;只通过 HTTPS&lt;/strong&gt; 获取，因为路径上的攻击者可以替换的列表
-什么都撤销不了，所以纯 HTTP 的 URL 会在
-启动时被拒绝。&lt;/p&gt;
+&lt;p&gt;只有解析成功的列表才会替换副本：到达时已损坏的列表会让最近一份有效副本保持原位，并仍从&lt;strong&gt;它&lt;/strong&gt;被获取的时刻起计入 &lt;code&gt;max_age&lt;/code&gt;。而且列表&lt;strong&gt;只通过 HTTPS&lt;/strong&gt; 获取，因为路径上的攻击者可以替换的列表什么都撤销不了，所以纯 HTTP 的 URL 会在启动时被拒绝。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="transport"&gt;传输&lt;span class="hx:absolute hx:-mt-20" id="transport"&gt;&lt;/span&gt;
-&lt;a href="#transport" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;凭据本身不得以明文穿过网络。这就是
-&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/tls/"&gt;TLS&lt;/a&gt;：基于 TLS 的 WebDAV、S3 和 NFS、来自文件或 ACME 的证书，
-并且自 v0.9.0 起，&lt;strong&gt;带密码的 WebDAV 在明文下会被拒绝&lt;/strong&gt;。&lt;/p&gt;</description></item><item><title>撤销列表无法涵盖的内容：共享信号</title><link>https://go-fileshare.github.io/docs/0.31/zh-cn/security/shared-signals/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/zh-cn/security/shared-signals/</guid><description>
-&lt;p&gt;证书有撤销列表，即 &lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/revocation-lists/"&gt;KRL&lt;/a&gt;和
-&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/nfs-certificates/#revocation-the-crl"&gt;CRL&lt;/a&gt;。而 fileshare 自行验证的
-&lt;strong&gt;访问令牌&lt;/strong&gt;，以及由个人自己的密钥签名的 &lt;strong&gt;OpenPubkey 证书&lt;/strong&gt;则没有：
-它们在到期之前一直有效，无论此人之后发生了什么。&lt;/p&gt;
+&lt;a href="#transport" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;凭据本身不得以明文穿过网络。这就是&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/tls/"&gt;TLS&lt;/a&gt;：基于 TLS 的 WebDAV、S3 和 NFS、来自文件或 ACME 的证书，并且自 v0.9.0 起，&lt;strong&gt;带密码的 WebDAV 在明文下会被拒绝&lt;/strong&gt;。&lt;/p&gt;</description></item><item><title>撤销列表无法涵盖的内容：共享信号</title><link>https://go-fileshare.github.io/docs/0.31/zh-cn/security/shared-signals/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/zh-cn/security/shared-signals/</guid><description>
+&lt;p&gt;证书有撤销列表，即 &lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/revocation-lists/"&gt;KRL&lt;/a&gt;和&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/nfs-certificates/#revocation-the-crl"&gt;CRL&lt;/a&gt;。而 fileshare 自行验证的&lt;strong&gt;访问令牌&lt;/strong&gt;，以及由个人自己的密钥签名的 &lt;strong&gt;OpenPubkey 证书&lt;/strong&gt;则没有：它们在到期之前一直有效，无论此人之后发生了什么。&lt;/p&gt;
 &lt;p&gt;自 v0.13.0 起，&lt;a href="https://openid.net/specs/openid-sharedsignals-framework-1_0-final.html" target="_blank" rel="noopener"&gt;OpenID 共享信号框架&lt;/a&gt;
 通过 &lt;a href="https://openid.net/specs/openid-caep-1_0-final.html" target="_blank" rel="noopener"&gt;CAEP&lt;/a&gt;
 &lt;strong&gt;&lt;code&gt;session-revoked&lt;/code&gt;&lt;/strong&gt; 事件弥补了这一点：&lt;/p&gt;
@@ -876,13 +701,9 @@ data-copied-label="已复制！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;go-authn/bridge 在停用个人或 IdP 时会发送一个；fileshare
-对其进行&lt;strong&gt;轮询&lt;/strong&gt;（RFC 8936，SSF 的默认方式），并为每个人记录它
-&lt;strong&gt;何时&lt;/strong&gt;发生。&lt;/p&gt;
+&lt;p&gt;go-authn/bridge 在停用个人或 IdP 时会发送一个；fileshare对其进行&lt;strong&gt;轮询&lt;/strong&gt;（RFC 8936，SSF 的默认方式），并为每个人记录它&lt;strong&gt;何时&lt;/strong&gt;发生。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="everything-issued-before-is-refused-on-every-protocol"&gt;此前签发的一切，在所有协议上都会被拒绝&lt;span class="hx:absolute hx:-mt-20" id="everything-issued-before-is-refused-on-every-protocol"&gt;&lt;/span&gt;
-&lt;a href="#everything-issued-before-is-refused-on-every-protocol" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;从那一刻起，&lt;strong&gt;此前签发&lt;/strong&gt;的每份联盟凭据都会被拒绝，
-&lt;strong&gt;它们所打开的会话也不再获得服务&lt;/strong&gt;，经过的关卡与
-KRL 相同。“签发”的含义取决于由什么承载它：&lt;/p&gt;
+&lt;a href="#everything-issued-before-is-refused-on-every-protocol" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;从那一刻起，&lt;strong&gt;此前签发&lt;/strong&gt;的每份联盟凭据都会被拒绝，&lt;strong&gt;它们所打开的会话也不再获得服务&lt;/strong&gt;，经过的关卡与KRL 相同。“签发”的含义取决于由什么承载它：&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
@@ -914,35 +735,20 @@ KRL 相同。“签发”的含义取决于由什么承载它：&lt;/p&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;提供方在&lt;strong&gt;此后&lt;/strong&gt;签发的凭据则属于有效凭据：重新启用的人
-不会被锁在门外。&lt;/p&gt;
+&lt;p&gt;提供方在&lt;strong&gt;此后&lt;/strong&gt;签发的凭据则属于有效凭据：重新启用的人不会被锁在门外。&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;同一秒算作之前&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;CAEP 的 &lt;code&gt;event_timestamp&lt;/code&gt; 和令牌的 &lt;code&gt;iat&lt;/code&gt; 都是整秒，而在撤销
-&lt;strong&gt;当时或之前&lt;/strong&gt;签发的凭据会被拒绝，因此与撤销在同一秒
-签发的凭据同样被拒绝，刚被停用后立即重新启用的人
-从下一秒起获得可用的凭据。
-这是有意选择的保守一侧。未知的签发时间
-并不等于“很久以前”：只要有任何针对该人的撤销，
-它就会被拒绝。&lt;/p&gt;
+&lt;p&gt;CAEP 的 &lt;code&gt;event_timestamp&lt;/code&gt; 和令牌的 &lt;code&gt;iat&lt;/code&gt; 都是整秒，而在撤销&lt;strong&gt;当时或之前&lt;/strong&gt;签发的凭据会被拒绝，因此与撤销在同一秒签发的凭据同样被拒绝，刚被停用后立即重新启用的人从下一秒起获得可用的凭据。这是有意选择的保守一侧。未知的签发时间并不等于“很久以前”：只要有任何针对该人的撤销，它就会被拒绝。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="who-an-event-is-about"&gt;事件针对的是谁&lt;span class="hx:absolute hx:-mt-20" id="who-an-event-is-about"&gt;&lt;/span&gt;
-&lt;a href="#who-an-event-is-about" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;主体是 RFC 9493 的 &lt;strong&gt;&lt;code&gt;account&lt;/code&gt;&lt;/strong&gt;（&lt;code&gt;acct:user@domain&lt;/code&gt;，即共享所使用的名称）、
-&lt;strong&gt;&lt;code&gt;iss_sub&lt;/code&gt;&lt;/strong&gt;、&lt;strong&gt;&lt;code&gt;email&lt;/code&gt;&lt;/strong&gt;，或它们的 &lt;strong&gt;&lt;code&gt;aliases&lt;/code&gt;&lt;/strong&gt;。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;整个被停用的 IdP&lt;/strong&gt; 以 CAEP &lt;em&gt;tenant&lt;/em&gt; 主体的形式到达，事件中带有 IdP 的
-作用域：名称为 &lt;code&gt;@&lt;/code&gt; 加其中之一（整体比较，
-&lt;code&gt;evil-univ-a.fr&lt;/code&gt; 不是 &lt;code&gt;univ-a.fr&lt;/code&gt;）、且凭据在此前签发的每个人，
-都会被拒绝，&lt;strong&gt;包括提供方已不再记得的人&lt;/strong&gt;。&lt;/p&gt;
+&lt;a href="#who-an-event-is-about" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;主体是 RFC 9493 的 &lt;strong&gt;&lt;code&gt;account&lt;/code&gt;&lt;/strong&gt;（&lt;code&gt;acct:user@domain&lt;/code&gt;，即共享所使用的名称）、&lt;strong&gt;&lt;code&gt;iss_sub&lt;/code&gt;&lt;/strong&gt;、&lt;strong&gt;&lt;code&gt;email&lt;/code&gt;&lt;/strong&gt;，或它们的 &lt;strong&gt;&lt;code&gt;aliases&lt;/code&gt;&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;整个被停用的 IdP&lt;/strong&gt; 以 CAEP &lt;em&gt;tenant&lt;/em&gt; 主体的形式到达，事件中带有 IdP 的作用域：名称为 &lt;code&gt;@&lt;/code&gt; 加其中之一（整体比较，&lt;code&gt;evil-univ-a.fr&lt;/code&gt; 不是 &lt;code&gt;univ-a.fr&lt;/code&gt;）、且凭据在此前签发的每个人，都会被拒绝，&lt;strong&gt;包括提供方已不再记得的人&lt;/strong&gt;。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="how-the-receiver-authenticates"&gt;接收方如何进行身份验证&lt;span class="hx:absolute hx:-mt-20" id="how-the-receiver-authenticates"&gt;&lt;/span&gt;
-&lt;a href="#how-the-receiver-authenticates" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;使用 &lt;strong&gt;OAuth 客户端凭据&lt;/strong&gt;（RFC 6749 §4.4，作用域 &lt;code&gt;ssf&lt;/code&gt;）：&lt;code&gt;client_id&lt;/code&gt; 和
-&lt;code&gt;client_secret_file&lt;/code&gt;，令牌从发送方自己的令牌端点获取，该端点
-可在其 OpenID 配置中找到，或由 &lt;code&gt;token_url&lt;/code&gt; 指定，并在其过期之前续期。
-&lt;code&gt;token_file&lt;/code&gt; 则用于发放长期持有者令牌的发送方。二者取其一：
-两者都给出或都不给出，都会被拒绝。&lt;/p&gt;
+&lt;a href="#how-the-receiver-authenticates" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;使用 &lt;strong&gt;OAuth 客户端凭据&lt;/strong&gt;（RFC 6749 §4.4，作用域 &lt;code&gt;ssf&lt;/code&gt;）：&lt;code&gt;client_id&lt;/code&gt; 和&lt;code&gt;client_secret_file&lt;/code&gt;，令牌从发送方自己的令牌端点获取，该端点可在其 OpenID 配置中找到，或由 &lt;code&gt;token_url&lt;/code&gt; 指定，并在其过期之前续期。&lt;code&gt;token_file&lt;/code&gt; 则用于发放长期持有者令牌的发送方。二者取其一：两者都给出或都不给出，都会被拒绝。&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
@@ -999,32 +805,17 @@ KRL 相同。“签发”的含义取决于由什么承载它：&lt;/p&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;撤销&lt;strong&gt;在被确认之前就已记录&lt;/strong&gt;，因此已确认的撤销
-在重启后依然有效；并且它会保留 &lt;code&gt;retain&lt;/code&gt; 的时间，长于它
-可能使之失效的任何凭据（192h 超过提供方签发的最长寿命凭据，即
-168h 的 SSH 证书）。&lt;/p&gt;
-&lt;p&gt;没有任何联盟凭据可供撤销的 &lt;code&gt;ssf&lt;/code&gt; 块（没有 &lt;code&gt;oidc&lt;/code&gt; 块，也没有 NFS
-&lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt;）会被拒绝。&lt;/p&gt;
-&lt;p&gt;传输层使用 &lt;a href="https://github.com/hstern/go-ssf" target="_blank" rel="noopener"&gt;github.com/hstern/go-ssf&lt;/a&gt;：
-发现、RFC 8936 轮询器、SET 的 JWS 层。事件的&lt;strong&gt;含义&lt;/strong&gt;则由
-fileshare 决定。&lt;/p&gt;
+&lt;p&gt;撤销&lt;strong&gt;在被确认之前就已记录&lt;/strong&gt;，因此已确认的撤销在重启后依然有效；并且它会保留 &lt;code&gt;retain&lt;/code&gt; 的时间，长于它可能使之失效的任何凭据（192h 超过提供方签发的最长寿命凭据，即168h 的 SSH 证书）。&lt;/p&gt;
+&lt;p&gt;没有任何联盟凭据可供撤销的 &lt;code&gt;ssf&lt;/code&gt; 块（没有 &lt;code&gt;oidc&lt;/code&gt; 块，也没有 NFS&lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt;）会被拒绝。&lt;/p&gt;
+&lt;p&gt;传输层使用 &lt;a href="https://github.com/hstern/go-ssf" target="_blank" rel="noopener"&gt;github.com/hstern/go-ssf&lt;/a&gt;：发现、RFC 8936 轮询器、SET 的 JWS 层。事件的&lt;strong&gt;含义&lt;/strong&gt;则由fileshare 决定。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="it-fails-closed"&gt;它以拒绝为默认&lt;span class="hx:absolute hx:-mt-20" id="it-fails-closed"&gt;&lt;/span&gt;
 &lt;a href="#it-fails-closed" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;在发送方沉默期间，联盟凭据会被拒绝&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;与 KRL 一样：在发送方没有在 &lt;code&gt;max_age&lt;/code&gt; 内应答轮询期间，
-&lt;strong&gt;每份联盟凭据&lt;/strong&gt;都会被拒绝，因为“没有撤销到达”和“撤销无法到达”
-看起来是一样的。
-&lt;code&gt;fileshare_ssf_last_heard_seconds&lt;/code&gt; 是应当设置告警的指标；
-&lt;code&gt;fileshare_ssf_revoked_subjects&lt;/code&gt; 是保留的撤销数量。参见
-&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/administration/health/#what-to-alert-on"&gt;健康检查与指标&lt;/a&gt;。&lt;/p&gt;
+&lt;p&gt;与 KRL 一样：在发送方没有在 &lt;code&gt;max_age&lt;/code&gt; 内应答轮询期间，&lt;strong&gt;每份联盟凭据&lt;/strong&gt;都会被拒绝，因为“没有撤销到达”和“撤销无法到达”看起来是一样的。&lt;code&gt;fileshare_ssf_last_heard_seconds&lt;/code&gt; 是应当设置告警的指标；&lt;code&gt;fileshare_ssf_revoked_subjects&lt;/code&gt; 是保留的撤销数量。参见&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/administration/health/#what-to-alert-on"&gt;健康检查与指标&lt;/a&gt;。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="checked-end-to-end"&gt;端到端检查&lt;span class="hx:absolute hx:-mt-20" id="checked-end-to-end"&gt;&lt;/span&gt;
-&lt;a href="#checked-end-to-end" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;go-authn/bridge 的互操作通道
-（&lt;a href="https://github.com/go-authn/bridge/pull/12" target="_blank" rel="noopener"&gt;#12&lt;/a&gt;、
-&lt;a href="https://github.com/go-authn/bridge/pull/17" target="_blank" rel="noopener"&gt;#17&lt;/a&gt;）针对真实的 bridge 评判 fileshare v0.13.0：
-KRL、基于 NFS 的 CRL、通过 SSF 撤销的 WebDAV 令牌、按作用域停用的 IdP，
-以及基于 SSF 的 opkssh，这是任何撤销列表都无法触及的情形。&lt;/p&gt;</description></item></channel></rss>
+&lt;a href="#checked-end-to-end" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;go-authn/bridge 的互操作通道（&lt;a href="https://github.com/go-authn/bridge/pull/12" target="_blank" rel="noopener"&gt;#12&lt;/a&gt;、&lt;a href="https://github.com/go-authn/bridge/pull/17" target="_blank" rel="noopener"&gt;#17&lt;/a&gt;）针对真实的 bridge 评判 fileshare v0.13.0：KRL、基于 NFS 的 CRL、通过 SSF 撤销的 WebDAV 令牌、按作用域停用的 IdP，以及基于 SSF 的 opkssh，这是任何撤销列表都无法触及的情形。&lt;/p&gt;</description></item></channel></rss>

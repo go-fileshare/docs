@@ -12,8 +12,7 @@ data-copied-label="Copied!"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;Three endpoints, served by
-&lt;a href="https://github.com/go-net-health/endpoint" target="_blank" rel="noopener"&gt;go-net-health/endpoint&lt;/a&gt; on a
+&lt;p&gt;Three endpoints, served by&lt;a href="https://github.com/go-net-health/endpoint" target="_blank" rel="noopener"&gt;go-net-health/endpoint&lt;/a&gt; on a
 listener of their own — &lt;strong&gt;never a port a protocol serves&lt;/strong&gt;, so the world that
 reaches WebDAV does not reach them:&lt;/p&gt;
 &lt;table&gt;
@@ -126,12 +125,9 @@ protocols, origins, outcomes and method names, never a share or a person.&lt;/p&
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="what-to-alert-on"&gt;What to alert on&lt;span class="hx:absolute hx:-mt-20" id="what-to-alert-on"&gt;&lt;/span&gt;
-&lt;a href="#what-to-alert-on" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;The revocation checks &lt;a href="https://go-fileshare.github.io/docs/0.31/security/#every-one-of-them-fails-closed"&gt;fail closed&lt;/a&gt;:
-a list that is too old, or a transmitter not heard from, makes the server
-&lt;strong&gt;refuse&lt;/strong&gt; the credentials it governs. Alert before that happens, not after:&lt;/p&gt;
+&lt;a href="#what-to-alert-on" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;The revocation checks &lt;a href="https://go-fileshare.github.io/docs/0.31/security/#every-one-of-them-fails-closed"&gt;fail closed&lt;/a&gt;:a list that is too old, or a transmitter not heard from, makes the server&lt;strong&gt;refuse&lt;/strong&gt; the credentials it governs. Alert before that happens, not after:&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;code&gt;fileshare_revocation_list_age_seconds&lt;/code&gt; approaching &lt;code&gt;ssh_krl_max_age&lt;/code&gt; or
-&lt;code&gt;crl_max_age&lt;/code&gt; (1h by default);&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;fileshare_revocation_list_age_seconds&lt;/code&gt; approaching &lt;code&gt;ssh_krl_max_age&lt;/code&gt; or&lt;code&gt;crl_max_age&lt;/code&gt; (1h by default);&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;fileshare_ssf_last_heard_seconds&lt;/code&gt; approaching the &lt;code&gt;ssf&lt;/code&gt; block&amp;rsquo;s &lt;code&gt;max_age&lt;/code&gt;
 (10m by default);&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;fileshare_directory_reloads_total{result=&amp;quot;failed&amp;quot;}&lt;/code&gt; rising: the directory

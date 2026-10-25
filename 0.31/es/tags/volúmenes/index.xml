@@ -1,9 +1,7 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Volúmenes</title><link>https://go-fileshare.github.io/docs/0.31/es/tags/vol%C3%BAmenes/</link><description>Recent content in Volúmenes on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>es</language><atom:link href="https://go-fileshare.github.io/docs/0.31/es/tags/vol%C3%BAmenes/index.xml" rel="self" type="application/rss+xml"/><item><title>Volúmenes: almacenamiento que crea fileshare</title><link>https://go-fileshare.github.io/docs/0.31/es/administration/volumes/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/es/administration/volumes/</guid><description>
 &lt;p&gt;Desde la v0.21.0, la &lt;a href="https://go-fileshare.github.io/docs/0.31/es/administration/"&gt;API de administración&lt;/a&gt; puede &lt;strong&gt;crear
-el almacenamiento que sirve un recurso compartido&lt;/strong&gt; —un &lt;strong&gt;dataset ZFS&lt;/strong&gt;, un
-&lt;strong&gt;subvolumen btrfs&lt;/strong&gt;, un &lt;strong&gt;directorio XFS o ext4 bajo una cuota de proyecto&lt;/strong&gt;—, con
-tamaño, propietario y seguimiento, y servir un recurso compartido a partir de él.
-Solo en Linux. Ceph aún no está soportado.&lt;/p&gt;
+el almacenamiento que sirve un recurso compartido&lt;/strong&gt; —un &lt;strong&gt;dataset ZFS&lt;/strong&gt;, un&lt;strong&gt;subvolumen btrfs&lt;/strong&gt;, un &lt;strong&gt;directorio XFS o ext4 bajo una cuota de proyecto&lt;/strong&gt;—, con
+tamaño, propietario y seguimiento, y servir un recurso compartido a partir de él.Solo en Linux. Ceph aún no está soportado.&lt;/p&gt;
 &lt;p&gt;Crear ese almacenamiento requiere &lt;code&gt;CAP_SYS_ADMIN&lt;/code&gt; (quotactl, los ioctl de cuotas de
 btrfs, &lt;code&gt;/dev/zfs&lt;/code&gt;, mount(2)). &lt;code&gt;fileshare serve&lt;/code&gt; analiza cinco protocolos de red para
 desconocidos y no tiene ningún privilegio, así que la parte que sí lo tiene es un
@@ -34,8 +32,7 @@ data-copied-label="¡Copiado!"
 &lt;p&gt;Un binario en lugar de dos demonios: una versión que desplegar, una definición de
 protocolo. El almacenamiento en sí lo gestiona &lt;a href="https://go-fsctl.github.io/" target="_blank" rel="noopener"&gt;go-fsctl&lt;/a&gt;
 (Go puro, sin los comandos &lt;code&gt;zfs&lt;/code&gt; ni &lt;code&gt;btrfs&lt;/code&gt;). El diseño, y lo que cambió durante su
-construcción, están en el
-&lt;a href="https://github.com/go-fileshare/fileshare/blob/v0.28.0/docs/volumes.md" target="_blank" rel="noopener"&gt;&lt;code&gt;docs/volumes.md&lt;/code&gt;&lt;/a&gt;
+construcción, están en el&lt;a href="https://github.com/go-fileshare/fileshare/blob/v0.28.0/docs/volumes.md" target="_blank" rel="noopener"&gt;&lt;code&gt;docs/volumes.md&lt;/code&gt;&lt;/a&gt;
 del repositorio de fileshare.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="both-processes-configured"&gt;Los dos procesos, configurados&lt;span class="hx:absolute hx:-mt-20" id="both-processes-configured"&gt;&lt;/span&gt;
 &lt;a href="#both-processes-configured" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;fileshare serve&lt;/code&gt;, como el usuario &lt;code&gt;fileshare&lt;/code&gt; (uid 990):&lt;/p&gt;
@@ -228,8 +225,7 @@ data-copied-label="¡Copiado!"
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;p&gt;&lt;code&gt;ProtectSystem=&lt;/code&gt; no plantea problemas para el servidor: quien monta es el
-aprovisionador, y los montajes se propagan hacia el espacio de nombres del servidor,
-no fuera de él, así que un volumen ZFS montado después de que arrancara el servidor
+aprovisionador, y los montajes se propagan hacia el espacio de nombres del servidor,no fuera de él, así que un volumen ZFS montado después de que arrancara el servidor
 le resulta visible.&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
@@ -245,14 +241,12 @@ extremo ejecuta ambos procesos con &lt;code&gt;sudo&lt;/code&gt;.&lt;/p&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Actualice primero el aprovisionador&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;El aprovisionador rechaza un mensaje que lleve un campo que su versión no
-define —cierra la conexión—, así que &lt;code&gt;fileshare serve&lt;/code&gt; y
-&lt;code&gt;fileshare provisioner&lt;/code&gt; ejecutan la misma versión.&lt;/p&gt;
+define —cierra la conexión—, así que &lt;code&gt;fileshare serve&lt;/code&gt; y&lt;code&gt;fileshare provisioner&lt;/code&gt; ejecutan la misma versión.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="the-admin-apis-volume-calls"&gt;Las llamadas de volúmenes de la API de administración&lt;span class="hx:absolute hx:-mt-20" id="the-admin-apis-volume-calls"&gt;&lt;/span&gt;
-&lt;a href="#the-admin-apis-volume-calls" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;fileshare serve&lt;/code&gt; las transmite al aprovisionador
-(&lt;a href="https://github.com/go-fileshare/fileshare/blob/v0.28.0/proto/fileshare/admin/v1/admin.proto" target="_blank" rel="noopener"&gt;&lt;code&gt;admin.proto&lt;/code&gt;&lt;/a&gt;):&lt;/p&gt;
+&lt;a href="#the-admin-apis-volume-calls" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;fileshare serve&lt;/code&gt; las transmite al aprovisionador(&lt;a href="https://github.com/go-fileshare/fileshare/blob/v0.28.0/proto/fileshare/admin/v1/admin.proto" target="_blank" rel="noopener"&gt;&lt;code&gt;admin.proto&lt;/code&gt;&lt;/a&gt;):&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
@@ -292,11 +286,8 @@ define —cierra la conexión—, así que &lt;code&gt;fileshare serve&lt;/code&
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;&lt;code&gt;DeleteShare&lt;/code&gt; nunca elimina un volumen. «Los recursos compartidos que lo usan» son los
-recursos compartidos creados a partir de él &lt;strong&gt;y&lt;/strong&gt; cualquier recurso compartido
-—también de los archivos de configuración, servido, desactivado o no disponible—
-cuya imagen o directorio esté dentro de él.&lt;/p&gt;
-&lt;p&gt;Un nombre cumple &lt;code&gt;^[a-z0-9][a-z0-9_-]{0,62}$&lt;/code&gt;, y una petición nunca lleva una ruta:
-nombra un &lt;code&gt;parent&lt;/code&gt; de la propia configuración del aprovisionador.&lt;/p&gt;
+recursos compartidos creados a partir de él &lt;strong&gt;y&lt;/strong&gt; cualquier recurso compartido—también de los archivos de configuración, servido, desactivado o no disponible—cuya imagen o directorio esté dentro de él.&lt;/p&gt;
+&lt;p&gt;Un nombre cumple &lt;code&gt;^[a-z0-9][a-z0-9_-]{0,62}$&lt;/code&gt;, y una petición nunca lleva una ruta:nombra un &lt;code&gt;parent&lt;/code&gt; de la propia configuración del aprovisionador.&lt;/p&gt;
 &lt;p&gt;Con &lt;code&gt;reflection = true&lt;/code&gt; en el bloque &lt;code&gt;admin&lt;/code&gt;, &lt;code&gt;grpcurl&lt;/code&gt; puede hacer las llamadas. El
 socket es 0600 y el &lt;code&gt;allowed_uids&lt;/code&gt; de arriba solo nombra el uid de fileshare, así que
 ejecútelo como ese usuario:&lt;/p&gt;
@@ -338,13 +329,11 @@ data-copied-label="¡Copiado!"
 nombre fuera de la gramática, un padre desconocido, una cuota de 0), &lt;code&gt;OUT_OF_RANGE&lt;/code&gt;
 (por encima de &lt;code&gt;max_volume&lt;/code&gt;), &lt;code&gt;RESOURCE_EXHAUSTED&lt;/code&gt; (la cuota, o el crecimiento de un
 redimensionado, supera lo que el padre tiene libre ahora; o el rango de ids de
-proyecto se ha agotado), &lt;code&gt;ALREADY_EXISTS&lt;/code&gt;, &lt;code&gt;NOT_FOUND&lt;/code&gt;, &lt;code&gt;FAILED_PRECONDITION&lt;/code&gt;,
-&lt;code&gt;UNIMPLEMENTED&lt;/code&gt;.&lt;/p&gt;
+proyecto se ha agotado), &lt;code&gt;ALREADY_EXISTS&lt;/code&gt;, &lt;code&gt;NOT_FOUND&lt;/code&gt;, &lt;code&gt;FAILED_PRECONDITION&lt;/code&gt;,&lt;code&gt;UNIMPLEMENTED&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;Tres son propios de fileshare:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;ningún &lt;code&gt;provisioner&lt;/code&gt; configurado: &lt;code&gt;FAILED_PRECONDITION&lt;/code&gt;;&lt;/li&gt;
-&lt;li&gt;el aprovisionador rechaza el uid de este servidor: también &lt;code&gt;FAILED_PRECONDITION&lt;/code&gt;;
-es un error de despliegue (su &lt;code&gt;client_uid&lt;/code&gt; es incorrecto), no algo que el llamante
+&lt;li&gt;el aprovisionador rechaza el uid de este servidor: también &lt;code&gt;FAILED_PRECONDITION&lt;/code&gt;;es un error de despliegue (su &lt;code&gt;client_uid&lt;/code&gt; es incorrecto), no algo que el llamante
 de administración no tenga permitido;&lt;/li&gt;
 &lt;li&gt;el aprovisionador no responde: &lt;code&gt;UNAVAILABLE&lt;/code&gt;.&lt;/li&gt;
 &lt;/ul&gt;
@@ -354,8 +343,7 @@ mismo:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;que la ruta es limpia, absoluta y —una vez resuelta— está bajo &lt;code&gt;source_roots&lt;/code&gt;;&lt;/li&gt;
 &lt;li&gt;que es un directorio;&lt;/li&gt;
-&lt;li&gt;que &lt;code&gt;statfs&lt;/code&gt; indica el sistema de archivos del tipo (&lt;code&gt;ZFS_SUPER_MAGIC&lt;/code&gt;,
-&lt;code&gt;BTRFS_SUPER_MAGIC&lt;/code&gt;, &lt;code&gt;XFS_SUPER_MAGIC&lt;/code&gt;, &lt;code&gt;EXT4_SUPER_MAGIC&lt;/code&gt;);&lt;/li&gt;
+&lt;li&gt;que &lt;code&gt;statfs&lt;/code&gt; indica el sistema de archivos del tipo (&lt;code&gt;ZFS_SUPER_MAGIC&lt;/code&gt;,&lt;code&gt;BTRFS_SUPER_MAGIC&lt;/code&gt;, &lt;code&gt;XFS_SUPER_MAGIC&lt;/code&gt;, &lt;code&gt;EXT4_SUPER_MAGIC&lt;/code&gt;);&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;ZFS&lt;/strong&gt;: que es un punto de montaje, es decir, que su dispositivo no es el de su
 padre. El directorio de un dataset sin montar aceptaría escrituras sin ninguna
 cuota. (No se verifica qué dataset está montado ahí: la respuesta del
@@ -367,9 +355,7 @@ archivos; un directorio fuera de todo proyecto se sirve sin límite.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;El archivo de estado guarda el &lt;strong&gt;nombre&lt;/strong&gt; del volumen, no su ruta, y cada arranque
 vuelve a preguntar y a comprobar. Un volumen que ha desaparecido, que no supera una
-comprobación, o cuyo aprovisionador no responde en 10 s deja su recurso compartido
-&lt;strong&gt;definido y sin servir&lt;/strong&gt; —se indica al arrancar, en
-&lt;a href="https://go-fileshare.github.io/docs/0.31/es/configuration/check/"&gt;&lt;code&gt;fileshare check&lt;/code&gt;&lt;/a&gt; y en el campo &lt;code&gt;unavailable&lt;/code&gt;
+comprobación, o cuyo aprovisionador no responde en 10 s deja su recurso compartido&lt;strong&gt;definido y sin servir&lt;/strong&gt; —se indica al arrancar, en&lt;a href="https://go-fileshare.github.io/docs/0.31/es/configuration/check/"&gt;&lt;code&gt;fileshare check&lt;/code&gt;&lt;/a&gt; y en el campo &lt;code&gt;unavailable&lt;/code&gt;
 del recurso compartido— mientras el resto del servidor arranca. &lt;code&gt;EnableShare&lt;/code&gt; lo
 vuelve a intentar.&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
@@ -379,13 +365,9 @@ vuelve a intentar.&lt;/p&gt;
 &lt;p&gt;ext4 permite a cualquiera de los dos escribir más allá de una cuota de
 proyecto (fs/quota/dquot.c, &lt;code&gt;ignore_hardlimit&lt;/code&gt;): root escribió 16 MiB en un
 proyecto de 8 MiB en la CI de go-fsctl/projquota. XFS no tiene esa
-excepción, pero la regla es una sola para el proceso, en todos los tipos:
-fileshare lee su uid efectivo y &lt;code&gt;CapEff&lt;/code&gt;/&lt;code&gt;CapPrm&lt;/code&gt; en &lt;code&gt;/proc/self/status&lt;/code&gt;
+excepción, pero la regla es una sola para el proceso, en todos los tipos:fileshare lee su uid efectivo y &lt;code&gt;CapEff&lt;/code&gt;/&lt;code&gt;CapPrm&lt;/code&gt; en &lt;code&gt;/proc/self/status&lt;/code&gt;
 (una capability permitida está a un &lt;code&gt;capset(2)&lt;/code&gt; de ser efectiva), y un
-estado que no puede leer cuenta como si la tuviera. Se niega a &lt;strong&gt;servir&lt;/strong&gt;,
-no a las llamadas de volúmenes: crear almacenamiento como root es inofensivo,
-escribir en él como root no lo es. &lt;code&gt;fileshare check&lt;/code&gt; indica cuál es el caso.
-Por eso el aprovisionador rechaza &lt;code&gt;client_uid = 0&lt;/code&gt;, y la unidad del servidor
+estado que no puede leer cuenta como si la tuviera. Se niega a &lt;strong&gt;servir&lt;/strong&gt;,no a las llamadas de volúmenes: crear almacenamiento como root es inofensivo,escribir en él como root no lo es. &lt;code&gt;fileshare check&lt;/code&gt; indica cuál es el caso.Por eso el aprovisionador rechaza &lt;code&gt;client_uid = 0&lt;/code&gt;, y la unidad del servidor
 de arriba tiene un &lt;code&gt;CapabilityBoundingSet=&lt;/code&gt; vacío.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -429,10 +411,8 @@ la v0.21.1, todos los protocolos responden «lleno»:&lt;/p&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;En la v0.21.0, SMB respondía &lt;code&gt;STATUS_ACCESS_DENIED&lt;/code&gt; y NFS respondía a una cuota con
-&lt;code&gt;NFS3ERR_NOSPC&lt;/code&gt;.&lt;/p&gt;
-&lt;p&gt;Esto se aplica a todo &lt;a href="https://go-fileshare.github.io/docs/0.31/es/configuration/shares/"&gt;recurso compartido de directorio&lt;/a&gt;,
-no solo a los volúmenes; consulte la &lt;a href="https://go-fileshare.github.io/docs/0.31/es/status/"&gt;nota de actualización&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;En la v0.21.0, SMB respondía &lt;code&gt;STATUS_ACCESS_DENIED&lt;/code&gt; y NFS respondía a una cuota con&lt;code&gt;NFS3ERR_NOSPC&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Esto se aplica a todo &lt;a href="https://go-fileshare.github.io/docs/0.31/es/configuration/shares/"&gt;recurso compartido de directorio&lt;/a&gt;,no solo a los volúmenes; consulte la &lt;a href="https://go-fileshare.github.io/docs/0.31/es/status/"&gt;nota de actualización&lt;/a&gt;.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="the-size-a-client-sees"&gt;El tamaño que ve un cliente&lt;span class="hx:absolute hx:-mt-20" id="the-size-a-client-sees"&gt;&lt;/span&gt;
 &lt;a href="#the-size-a-client-sees" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Cada protocolo pregunta al servidor el tamaño de un recurso compartido en cada
 consulta: &lt;code&gt;FSSTAT&lt;/code&gt; en NFS, &lt;code&gt;FileFsFullSizeInformation&lt;/code&gt; en SMB y las propiedades de
@@ -456,8 +436,7 @@ proyecto XFS o ext4 requiere &lt;code&gt;CAP_SYS_ADMIN&lt;/code&gt;, que filesha
 &lt;h2 data-hextra-search-id="what-the-provisioner-promises"&gt;Lo que promete el aprovisionador&lt;span class="hx:absolute hx:-mt-20" id="what-the-provisioner-promises"&gt;&lt;/span&gt;
 &lt;a href="#what-the-provisioner-promises" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;Un único uid, leído del núcleo.&lt;/strong&gt; El par se identifica con &lt;code&gt;SO_PEERCRED&lt;/code&gt; cuando
-se conecta, y cualquiera que no sea &lt;code&gt;client_uid&lt;/code&gt; —root incluido— recibe
-&lt;code&gt;PERMISSION_DENIED&lt;/code&gt; antes de que se decodifique un solo byte de la petición.&lt;/li&gt;
+se conecta, y cualquiera que no sea &lt;code&gt;client_uid&lt;/code&gt; —root incluido— recibe&lt;code&gt;PERMISSION_DENIED&lt;/code&gt; antes de que se decodifique un solo byte de la petición.&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Un conjunto cerrado de verbos.&lt;/strong&gt; Un método fuera de su servicio, o un mensaje que
 no se decodifica o que lleva un campo que no define, no recibe respuesta: la
 conexión se cierra.&lt;/li&gt;
@@ -466,8 +445,7 @@ dataset, establecida en el dataset, ya que las propiedades de usuario se heredan
 una marca heredada no es propia. btrfs: el id y el uuid del subvolumen registrados
 en &lt;code&gt;state_file&lt;/code&gt;. XFS/ext4: un id de proyecto dentro del rango del padre &lt;em&gt;y&lt;/em&gt;
 registrado. Se comprueba antes de cada redimensionado, instantánea y eliminación.&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;La eliminación rechaza datos e instantáneas&lt;/strong&gt; salvo que se establezca
-&lt;code&gt;destroy_data&lt;/code&gt;, y se registra antes de que ocurra.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;La eliminación rechaza datos e instantáneas&lt;/strong&gt; salvo que se establezca&lt;code&gt;destroy_data&lt;/code&gt;, y se registra antes de que ocurra.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h2 data-hextra-search-id="measured"&gt;Medido&lt;span class="hx:absolute hx:-mt-20" id="measured"&gt;&lt;/span&gt;
 &lt;a href="#measured" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;En la CI de fileshare, como root sobre pools reales y sistemas de archivos sobre

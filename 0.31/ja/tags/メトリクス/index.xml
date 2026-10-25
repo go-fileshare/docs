@@ -12,9 +12,7 @@ data-copied-label="コピーしました！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;3 つのエンドポイントを、&lt;a href="https://github.com/go-net-health/endpoint" target="_blank" rel="noopener"&gt;go-net-health/endpoint&lt;/a&gt; が
-専用のリスナーで提供します。&lt;strong&gt;プロトコルが使うポートでは決して提供しない&lt;/strong&gt;ため、
-WebDAV に到達できる外部からはこれらに到達できません。&lt;/p&gt;
+&lt;p&gt;3 つのエンドポイントを、&lt;a href="https://github.com/go-net-health/endpoint" target="_blank" rel="noopener"&gt;go-net-health/endpoint&lt;/a&gt; が専用のリスナーで提供します。&lt;strong&gt;プロトコルが使うポートでは決して提供しない&lt;/strong&gt;ため、WebDAV に到達できる外部からはこれらに到達できません。&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
@@ -37,8 +35,7 @@ WebDAV に到達できる外部からはこれらに到達できません。&lt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;Unix ソケットは &lt;code&gt;unix:///like/this&lt;/code&gt; のように絶対パスで指定します。それ以外は &lt;code&gt;host:port&lt;/code&gt; でなければならず、
-そうでなければブロックは拒否されます。&lt;/p&gt;
+&lt;p&gt;Unix ソケットは &lt;code&gt;unix:///like/this&lt;/code&gt; のように絶対パスで指定します。それ以外は &lt;code&gt;host:port&lt;/code&gt; でなければならず、そうでなければブロックは拒否されます。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="what-is-measured"&gt;計測されるもの&lt;span class="hx:absolute hx:-mt-20" id="what-is-measured"&gt;&lt;/span&gt;
 &lt;a href="#what-is-measured" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
 &lt;thead&gt;
@@ -110,30 +107,22 @@ WebDAV に到達できる外部からはこれらに到達できません。&lt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;加えて、Go ランタイムとビルド情報も公開されます。失効と共有シグナルのファミリーは、設定にリストまたは
-&lt;code&gt;ssf&lt;/code&gt; ブロックがある場合のみ、ドメイン付与のファミリーは &lt;code&gt;ssh_domains&lt;/code&gt; を設定した場合のみ、
-管理リクエストのファミリーは &lt;code&gt;admin&lt;/code&gt; ブロックがある場合のみ現れます。&lt;/p&gt;
+&lt;p&gt;加えて、Go ランタイムとビルド情報も公開されます。失効と共有シグナルのファミリーは、設定にリストまたは&lt;code&gt;ssf&lt;/code&gt; ブロックがある場合のみ、ドメイン付与のファミリーは &lt;code&gt;ssh_domains&lt;/code&gt; を設定した場合のみ、管理リクエストのファミリーは &lt;code&gt;admin&lt;/code&gt; ブロックがある場合のみ現れます。&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;共有名や人の名前を含むメトリクスはありません&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;WebDAV は、誰かが利用できない共有に対して、その存在を確認させないよう &lt;strong&gt;404&lt;/strong&gt; で応答します。
-スクレイプも存在を確認させてはなりません。ラベルはプロトコル、origin、結果、メソッド名であり、
-共有や人の名前が使われることはありません。&lt;/p&gt;
+&lt;p&gt;WebDAV は、誰かが利用できない共有に対して、その存在を確認させないよう &lt;strong&gt;404&lt;/strong&gt; で応答します。スクレイプも存在を確認させてはなりません。ラベルはプロトコル、origin、結果、メソッド名であり、共有や人の名前が使われることはありません。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="what-to-alert-on"&gt;アラートの対象&lt;span class="hx:absolute hx:-mt-20" id="what-to-alert-on"&gt;&lt;/span&gt;
-&lt;a href="#what-to-alert-on" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;失効のチェックは&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/security/#every-one-of-them-fails-closed"&gt;フェイルクローズ&lt;/a&gt;です。
-古すぎるリストや、応答のないトランスミッターがあると、サーバーはそれが管理する認証情報を&lt;strong&gt;拒否&lt;/strong&gt;します。
-そうなった後ではなく、その前にアラートを出してください。&lt;/p&gt;
+&lt;a href="#what-to-alert-on" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;失効のチェックは&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/security/#every-one-of-them-fails-closed"&gt;フェイルクローズ&lt;/a&gt;です。古すぎるリストや、応答のないトランスミッターがあると、サーバーはそれが管理する認証情報を&lt;strong&gt;拒否&lt;/strong&gt;します。そうなった後ではなく、その前にアラートを出してください。&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;code&gt;fileshare_revocation_list_age_seconds&lt;/code&gt; が &lt;code&gt;ssh_krl_max_age&lt;/code&gt; または
-&lt;code&gt;crl_max_age&lt;/code&gt;(既定では 1h)に近づいている。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;fileshare_revocation_list_age_seconds&lt;/code&gt; が &lt;code&gt;ssh_krl_max_age&lt;/code&gt; または&lt;code&gt;crl_max_age&lt;/code&gt;(既定では 1h)に近づいている。&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;fileshare_ssf_last_heard_seconds&lt;/code&gt; が &lt;code&gt;ssf&lt;/code&gt; ブロックの &lt;code&gt;max_age&lt;/code&gt;
 (既定では 10m)に近づいている。&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;fileshare_directory_reloads_total{result=&amp;quot;failed&amp;quot;}&lt;/code&gt; が増加している。ディレクトリを
-読み取れないため、削除を含めて&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/administration/reload/"&gt;何も変更されません&lt;/a&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;fileshare_directory_reloads_total{result=&amp;quot;failed&amp;quot;}&lt;/code&gt; が増加している。ディレクトリを読み取れないため、削除を含めて&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/administration/reload/"&gt;何も変更されません&lt;/a&gt;。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;

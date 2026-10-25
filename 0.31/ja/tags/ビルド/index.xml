@@ -1,6 +1,5 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – ビルド</title><link>https://go-fileshare.github.io/docs/0.31/ja/tags/%E3%83%93%E3%83%AB%E3%83%89/</link><description>Recent content in ビルド on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>ja</language><atom:link href="https://go-fileshare.github.io/docs/0.31/ja/tags/%E3%83%93%E3%83%AB%E3%83%89/index.xml" rel="self" type="application/rss+xml"/><item><title>必要なものだけをビルドする</title><link>https://go-fileshare.github.io/docs/0.31/ja/operations/build-tags/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/ja/operations/build-tags/</guid><description>
-&lt;p&gt;各プロトコルはビルドタグの背後にあり、タグを指定するとそのプロトコルは&lt;strong&gt;完全に&lt;/strong&gt;除外されます。
-リスナーも、パーサーも、依存関係も、コードもありません。&lt;/p&gt;
+&lt;p&gt;各プロトコルはビルドタグの背後にあり、タグを指定するとそのプロトコルは&lt;strong&gt;完全に&lt;/strong&gt;除外されます。リスナーも、パーサーも、依存関係も、コードもありません。&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;go install -tags nonfs,nowebdav,nosftp,nos3 github.com/go-fileshare/fileshare@latest &lt;span class="c1"&gt;# SMB only&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;go build -tags nosmb,nonfs,nosftp,nos3 . &lt;span class="c1"&gt;# WebDAV only&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
@@ -15,8 +14,7 @@ data-copied-label="コピーしました！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;&lt;strong&gt;人&lt;/strong&gt;の取得元も、それ専用のタグの背後にあります。&lt;code&gt;nosql&lt;/code&gt; は 3 つのデータベースドライバーを、
-&lt;code&gt;noldap&lt;/code&gt; は LDAP クライアントを除外します。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;人&lt;/strong&gt;の取得元も、それ専用のタグの背後にあります。&lt;code&gt;nosql&lt;/code&gt; は 3 つのデータベースドライバーを、&lt;code&gt;noldap&lt;/code&gt; は LDAP クライアントを除外します。&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
@@ -67,12 +65,9 @@ data-copied-label="コピーしました！"
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;これらは fileshare の README に記載されている数値で、管理 API が加わる前に計測されたものです。
-下の表がそれ以降の計測です。&lt;/p&gt;
+&lt;p&gt;これらは fileshare の README に記載されている数値で、管理 API が加わる前に計測されたものです。下の表がそれ以降の計測です。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="the-admin-api-and-nogrpc"&gt;管理 API と &lt;code&gt;nogrpc&lt;/code&gt;&lt;span class="hx:absolute hx:-mt-20" id="the-admin-api-and-nogrpc"&gt;&lt;/span&gt;
-&lt;a href="#the-admin-api-and-nogrpc" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/administration/"&gt;管理 API&lt;/a&gt;は gRPC と protobuf を持ち込み、それらは
-&lt;code&gt;nogrpc&lt;/code&gt; の背後にあります(linux/amd64、2026-09-29 に計測。このとき上の行は、すべて含めると
-34.1 MB に増えていました)。&lt;/p&gt;
+&lt;a href="#the-admin-api-and-nogrpc" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/administration/"&gt;管理 API&lt;/a&gt;は gRPC と protobuf を持ち込み、それらは&lt;code&gt;nogrpc&lt;/code&gt; の背後にあります(linux/amd64、2026-09-29 に計測。このとき上の行は、すべて含めると34.1 MB に増えていました)。&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
@@ -95,46 +90,27 @@ data-copied-label="コピーしました！"
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;gRPC のコストは &lt;strong&gt;11.7 MB&lt;/strong&gt; です。これは下の&lt;a href="#why-not-subprocess-plugins"&gt;プラグインの計測&lt;/a&gt;を、
-今回は独自の理由があって取り直したものです。共有をファイルで管理するサイトは、
-これを抱える必要がありません。&lt;/p&gt;
+&lt;p&gt;gRPC のコストは &lt;strong&gt;11.7 MB&lt;/strong&gt; です。これは下の&lt;a href="#why-not-subprocess-plugins"&gt;プラグインの計測&lt;/a&gt;を、今回は独自の理由があって取り直したものです。共有をファイルで管理するサイトは、これを抱える必要がありません。&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;nogrpc&lt;/code&gt; ビルドで &lt;code&gt;admin&lt;/code&gt; ブロックを指定すると拒否されます&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;管理 API なしで提供するのではなく、拒否します。API を求めておきながらそれなしで起動する設定は、
-書いてあることと異なる動作をするためです。&lt;/p&gt;
+&lt;p&gt;管理 API なしで提供するのではなく、拒否します。API を求めておきながらそれなしで起動する設定は、書いてあることと異なる動作をするためです。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;&lt;code&gt;nogrpc&lt;/code&gt; は管理 API を除外し、それに伴って&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/administration/volumes/"&gt;プロビジョナー&lt;/a&gt;も除外します。
-&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/administration/health/"&gt;ヘルスチェックとメトリクス&lt;/a&gt;は通常の HTTP なので、残ります。&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;-tags noprovisioner&lt;/code&gt; はプロビジョナー、つまり特権を持つ &lt;code&gt;fileshare provisioner&lt;/code&gt; ロールだけを除外し、
-go-fsctl の zfs、btrfs、projquota も一緒に除外します。ボリュームを一切提供しないサーバーは、
-それを作成するコードを抱える必要がありません。そのようなビルドの &lt;code&gt;fileshare provisioner&lt;/code&gt; は、
-「不明なコマンド」ではなく、その旨を伝えます。&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;nosql&lt;/code&gt; は群を抜いて大きな節約手段です。PostgreSQL、MySQL、SQLite を合わせると &lt;strong&gt;11.7 MB&lt;/strong&gt; になり、
-このプログラムのすべてのプロトコルを合わせたものより大きくなります。ユーザーをファイルで管理する
-サイトには、これが向いています。ドライバーはそれを使うライブラリではなくコマンドによって
-インポートされるため、この選択はフォークではなくビルドタグで行えます。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;nogrpc&lt;/code&gt; は管理 API を除外し、それに伴って&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/administration/volumes/"&gt;プロビジョナー&lt;/a&gt;も除外します。&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/administration/health/"&gt;ヘルスチェックとメトリクス&lt;/a&gt;は通常の HTTP なので、残ります。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;-tags noprovisioner&lt;/code&gt; はプロビジョナー、つまり特権を持つ &lt;code&gt;fileshare provisioner&lt;/code&gt; ロールだけを除外し、go-fsctl の zfs、btrfs、projquota も一緒に除外します。ボリュームを一切提供しないサーバーは、それを作成するコードを抱える必要がありません。そのようなビルドの &lt;code&gt;fileshare provisioner&lt;/code&gt; は、「不明なコマンド」ではなく、その旨を伝えます。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;nosql&lt;/code&gt; は群を抜いて大きな節約手段です。PostgreSQL、MySQL、SQLite を合わせると &lt;strong&gt;11.7 MB&lt;/strong&gt; になり、このプログラムのすべてのプロトコルを合わせたものより大きくなります。ユーザーをファイルで管理するサイトには、これが向いています。ドライバーはそれを使うライブラリではなくコマンドによってインポートされるため、この選択はフォークではなくビルドタグで行えます。&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;このバイナリがビルドされていないプロトコル&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;そのプロトコルを指定した設定には、「そのようなプロトコルはありません」ではなく、&lt;em&gt;そうである&lt;/em&gt;ことが
-伝えられます。これは、タイプミスとビルドタグの違いです。&lt;code&gt;noopenpubkey&lt;/code&gt; の下の &lt;code&gt;opkssh_client_id&lt;/code&gt; と、
-&lt;code&gt;nogrpc&lt;/code&gt; の下の &lt;code&gt;admin&lt;/code&gt; ブロックでも同様です。&lt;/p&gt;
+&lt;p&gt;そのプロトコルを指定した設定には、「そのようなプロトコルはありません」ではなく、&lt;em&gt;そうである&lt;/em&gt;ことが伝えられます。これは、タイプミスとビルドタグの違いです。&lt;code&gt;noopenpubkey&lt;/code&gt; の下の &lt;code&gt;opkssh_client_id&lt;/code&gt; と、&lt;code&gt;nogrpc&lt;/code&gt; の下の &lt;code&gt;admin&lt;/code&gt; ブロックでも同様です。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="why-not-subprocess-plugins"&gt;サブプロセスのプラグインを使わない理由&lt;span class="hx:absolute hx:-mt-20" id="why-not-subprocess-plugins"&gt;&lt;/span&gt;
-&lt;a href="#why-not-subprocess-plugins" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;これは議論ではなく&lt;strong&gt;計測&lt;/strong&gt;で決めました。&lt;code&gt;hashicorp/go-plugin&lt;/code&gt; は gRPC と protobuf を持ち込み、
-それだけで &lt;strong&gt;13.2 MB&lt;/strong&gt; かかります。3 つのプロトコルとすべてのドライバーを含むこのバイナリ全体よりも
-大きい値です。プラグインホストは、何も読み込む前からサイズが 2 倍になり、各プラグインのバイナリも
-それぞれ gRPC を抱えることになります。&lt;/p&gt;
-&lt;p&gt;攻撃対象領域の観点でも、実行しないものについてはタグのほうが強力な手段です。
-&lt;strong&gt;一度もコンパイルされなかったコードには、サンドボックスの有無にかかわらず到達できません。&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;タグが与え&lt;em&gt;ない&lt;/em&gt;のは、&lt;strong&gt;実際に動かす&lt;/strong&gt;プロトコル同士の分離と、再コンパイルせずにプロトコルを追加する手段です。
-どちらも現実的な要件であり、どちらもバイナリを小さくするのではなく、プロセスの境界を支持する議論です。
-それがこの同じバイナリを使う&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/operations/isolation/"&gt;プロトコルごとに 1 プロセス&lt;/a&gt;であり、
-プラグインフレームワークではありません。&lt;/p&gt;</description></item></channel></rss>
+&lt;a href="#why-not-subprocess-plugins" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;これは議論ではなく&lt;strong&gt;計測&lt;/strong&gt;で決めました。&lt;code&gt;hashicorp/go-plugin&lt;/code&gt; は gRPC と protobuf を持ち込み、それだけで &lt;strong&gt;13.2 MB&lt;/strong&gt; かかります。3 つのプロトコルとすべてのドライバーを含むこのバイナリ全体よりも大きい値です。プラグインホストは、何も読み込む前からサイズが 2 倍になり、各プラグインのバイナリもそれぞれ gRPC を抱えることになります。&lt;/p&gt;
+&lt;p&gt;攻撃対象領域の観点でも、実行しないものについてはタグのほうが強力な手段です。&lt;strong&gt;一度もコンパイルされなかったコードには、サンドボックスの有無にかかわらず到達できません。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;タグが与え&lt;em&gt;ない&lt;/em&gt;のは、&lt;strong&gt;実際に動かす&lt;/strong&gt;プロトコル同士の分離と、再コンパイルせずにプロトコルを追加する手段です。どちらも現実的な要件であり、どちらもバイナリを小さくするのではなく、プロセスの境界を支持する議論です。それがこの同じバイナリを使う&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/operations/isolation/"&gt;プロトコルごとに 1 プロセス&lt;/a&gt;であり、プラグインフレームワークではありません。&lt;/p&gt;</description></item></channel></rss>

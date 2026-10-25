@@ -183,12 +183,8 @@
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Passer à la v0.21.0&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;Un &lt;strong&gt;partage de répertoire plein&lt;/strong&gt; répond différemment. &lt;code&gt;EDQUOT&lt;/code&gt; (un quota) et
-&lt;code&gt;ENOSPC&lt;/code&gt; sont désormais une seule erreur, « no space left on device (the share is full) »,
-sur tous les partages de répertoires, pas seulement les volumes : un &lt;code&gt;EDQUOT&lt;/code&gt; qui donnait
-&lt;code&gt;500&lt;/code&gt; en WebDAV et &lt;code&gt;NFS3ERR_IO&lt;/code&gt; en NFS donne maintenant &lt;code&gt;507&lt;/code&gt; et &lt;code&gt;NFS3ERR_NOSPC&lt;/code&gt;, et le texte de SFTP
-est cette phrase, sans le chemin. SMB répond toujours « accès refusé ». Voir
-&lt;a href="https://go-fileshare.github.io/docs/0.31/fr/administration/volumes/#a-full-share"&gt;un partage plein&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Un &lt;strong&gt;partage de répertoire plein&lt;/strong&gt; répond différemment. &lt;code&gt;EDQUOT&lt;/code&gt; (un quota) et&lt;code&gt;ENOSPC&lt;/code&gt; sont désormais une seule erreur, « no space left on device (the share is full) »,sur tous les partages de répertoires, pas seulement les volumes : un &lt;code&gt;EDQUOT&lt;/code&gt; qui donnait&lt;code&gt;500&lt;/code&gt; en WebDAV et &lt;code&gt;NFS3ERR_IO&lt;/code&gt; en NFS donne maintenant &lt;code&gt;507&lt;/code&gt; et &lt;code&gt;NFS3ERR_NOSPC&lt;/code&gt;, et le texte de SFTP
+est cette phrase, sans le chemin. SMB répond toujours « accès refusé ». Voir&lt;a href="https://go-fileshare.github.io/docs/0.31/fr/administration/volumes/#a-full-share"&gt;un partage plein&lt;/a&gt;.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -207,8 +203,7 @@ qu&amp;rsquo;il refuse faute de ce réglage.&lt;/p&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Passer à la v0.19.0&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;Un bloc &lt;code&gt;users &amp;quot;ldap&amp;quot;&lt;/code&gt; qui pointe vers &lt;code&gt;ldap://&lt;/code&gt; sur une autre machine sans
-&lt;code&gt;start_tls = true&lt;/code&gt; &lt;strong&gt;ne démarre plus&lt;/strong&gt; : utilisez &lt;code&gt;ldaps://&lt;/code&gt;, ou StartTLS.&lt;/p&gt;
+&lt;p&gt;Un bloc &lt;code&gt;users &amp;quot;ldap&amp;quot;&lt;/code&gt; qui pointe vers &lt;code&gt;ldap://&lt;/code&gt; sur une autre machine sans&lt;code&gt;start_tls = true&lt;/code&gt; &lt;strong&gt;ne démarre plus&lt;/strong&gt; : utilisez &lt;code&gt;ldaps://&lt;/code&gt;, ou StartTLS.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -216,9 +211,7 @@ qu&amp;rsquo;il refuse faute de ce réglage.&lt;/p&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Passer à la v0.17.0&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;Une configuration avec un partage dans un autre, deux partages sur une même source,
-ou un fichier d&amp;rsquo;accès (&lt;code&gt;authorized_keys_file&lt;/code&gt;, &lt;code&gt;dsn_file&lt;/code&gt;, &lt;code&gt;bind_password_file&lt;/code&gt;,
-le &lt;code&gt;ca_file&lt;/code&gt; de &lt;code&gt;ssf&lt;/code&gt;) dans un partage &lt;strong&gt;ne démarre plus&lt;/strong&gt; ; l&amp;rsquo;erreur nomme
+&lt;p&gt;Une configuration avec un partage dans un autre, deux partages sur une même source,ou un fichier d&amp;rsquo;accès (&lt;code&gt;authorized_keys_file&lt;/code&gt;, &lt;code&gt;dsn_file&lt;/code&gt;, &lt;code&gt;bind_password_file&lt;/code&gt;,le &lt;code&gt;ca_file&lt;/code&gt; de &lt;code&gt;ssf&lt;/code&gt;) dans un partage &lt;strong&gt;ne démarre plus&lt;/strong&gt; ; l&amp;rsquo;erreur nomme
 le partage et le chemin.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -229,8 +222,7 @@ le partage et le chemin.&lt;/p&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Passer au-delà de la v0.9.0&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;Une configuration qui sert WebDAV sans TLS sur une adresse que d&amp;rsquo;autres machines peuvent
 atteindre, avec quelqu&amp;rsquo;un à authentifier, &lt;strong&gt;ne démarre plus&lt;/strong&gt;. Ajoutez &lt;code&gt;tls = true&lt;/code&gt;
-et un bloc &lt;code&gt;tls&lt;/code&gt;, ou &lt;code&gt;plaintext = true&lt;/code&gt; derrière un proxy qui termine TLS. Voir
-&lt;a href="https://go-fileshare.github.io/docs/0.31/fr/security/tls/#webdav-is-not-served-in-the-clear"&gt;TLS&lt;/a&gt;.&lt;/p&gt;
+et un bloc &lt;code&gt;tls&lt;/code&gt;, ou &lt;code&gt;plaintext = true&lt;/code&gt; derrière un proxy qui termine TLS. Voir&lt;a href="https://go-fileshare.github.io/docs/0.31/fr/security/tls/#webdav-is-not-served-in-the-clear"&gt;TLS&lt;/a&gt;.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -244,18 +236,15 @@ qu&amp;rsquo;il ne peut que lire donne &lt;code&gt;403&lt;/code&gt; ; un mauvais
 &lt;li&gt;&lt;strong&gt;go-smb2&lt;/strong&gt; — un client que ce projet n&amp;rsquo;a pas écrit — mène vingt lectures
 concurrentes en SMB pendant que vingt autres passent par WebDAV, sous &lt;code&gt;-race&lt;/code&gt;, en CI.&lt;/li&gt;
 &lt;li&gt;Les règles d&amp;rsquo;accès sont vérifiées &lt;strong&gt;à travers chaque protocole&lt;/strong&gt; plutôt que dans la seule
-configuration : alice écrit et bob non, en SMB comme en WebDAV,
-et le partage n&amp;rsquo;est même pas proposé à NFS.&lt;/li&gt;
+configuration : alice écrit et bob non, en SMB comme en WebDAV,et le partage n&amp;rsquo;est même pas proposé à NFS.&lt;/li&gt;
 &lt;li&gt;Les certificats SFTP sont vérifiés face au &lt;strong&gt;propre client d&amp;rsquo;OpenSSH&lt;/strong&gt;, qui
 refuse aussi la même clé dès que son certificat est mis de côté.&lt;/li&gt;
 &lt;li&gt;Les identités NFS issues de certificats ont été mesurées avec un &lt;strong&gt;vrai client Linux&lt;/strong&gt;
-(noyau 6.17, ktls-utils 0.9) dans la CI de go-filesystems/nfs — c&amp;rsquo;est ainsi que
-&lt;a href="https://go-fileshare.github.io/docs/0.31/fr/security/nfs-certificates/#measured-with-a-real-linux-client"&gt;&lt;code&gt;MNT&lt;/code&gt; en clair et les pièges de &lt;code&gt;tlshd&lt;/code&gt;&lt;/a&gt;
+(noyau 6.17, ktls-utils 0.9) dans la CI de go-filesystems/nfs — c&amp;rsquo;est ainsi que&lt;a href="https://go-fileshare.github.io/docs/0.31/fr/security/nfs-certificates/#measured-with-a-real-linux-client"&gt;&lt;code&gt;MNT&lt;/code&gt; en clair et les pièges de &lt;code&gt;tlshd&lt;/code&gt;&lt;/a&gt;
 ont été découverts.&lt;/li&gt;
 &lt;li&gt;La forme non signée de la KRL est une mesure : OpenSSH 9.6 et 10.3 lisent une KRL
 signée et ignorent la signature (go-authn/krl, contre les deux).&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;La voie d&amp;rsquo;interopérabilité de go-authn/bridge&lt;/strong&gt; (&lt;a href="https://github.com/go-authn/bridge/pull/12" target="_blank" rel="noopener"&gt;#12&lt;/a&gt;,
-&lt;a href="https://github.com/go-authn/bridge/pull/17" target="_blank" rel="noopener"&gt;#17&lt;/a&gt;) juge fileshare v0.13.0
+&lt;li&gt;&lt;strong&gt;La voie d&amp;rsquo;interopérabilité de go-authn/bridge&lt;/strong&gt; (&lt;a href="https://github.com/go-authn/bridge/pull/12" target="_blank" rel="noopener"&gt;#12&lt;/a&gt;,&lt;a href="https://github.com/go-authn/bridge/pull/17" target="_blank" rel="noopener"&gt;#17&lt;/a&gt;) juge fileshare v0.13.0
 face au vrai bridge : la KRL, la CRL en NFS, les jetons WebDAV révoqués par
 signaux partagés, un IdP désactivé par portée, et opkssh par signaux partagés.&lt;/li&gt;
 &lt;/ul&gt;
@@ -264,17 +253,14 @@ signaux partagés, un IdP désactivé par portée, et opkssh par signaux partag�
 un partage qu&amp;rsquo;une personne ne peut que lire doit refuser au même endroit que SFTP, et
 ce n&amp;rsquo;est pas câblé. Refuser vaut mieux qu&amp;rsquo;un objet à moitié écrit.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Un jeton OIDC en S3.&lt;/strong&gt; Les jetons fonctionnent en &lt;a href="https://go-fileshare.github.io/docs/0.31/fr/protocols/webdav/"&gt;WebDAV&lt;/a&gt; et
-nulle part ailleurs. La voie habituelle pour S3 est STS &lt;code&gt;AssumeRoleWithWebIdentity&lt;/code&gt;,
-qui échange le jeton contre des identifiants temporaires avec lesquels le client signe
+nulle part ailleurs. La voie habituelle pour S3 est STS &lt;code&gt;AssumeRoleWithWebIdentity&lt;/code&gt;,qui échange le jeton contre des identifiants temporaires avec lesquels le client signe
 ensuite — un mécanisme différent de l&amp;rsquo;acceptation d&amp;rsquo;un jeton porteur, et non
 implémenté.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;&lt;code&gt;--isolate&lt;/code&gt; avec un bloc &lt;code&gt;admin&lt;/code&gt; ou &lt;code&gt;metrics&lt;/code&gt;.&lt;/strong&gt; Refusé : il n&amp;rsquo;y a aucun processus
-unique auquel une modification par l&amp;rsquo;API pourrait s&amp;rsquo;appliquer. Voir
-&lt;a href="https://go-fileshare.github.io/docs/0.31/fr/operations/isolation/#not-with-an-admin-or-a-metrics-block-yet"&gt;un processus par protocole&lt;/a&gt;.&lt;/p&gt;
+unique auquel une modification par l&amp;rsquo;API pourrait s&amp;rsquo;appliquer. Voir&lt;a href="https://go-fileshare.github.io/docs/0.31/fr/operations/isolation/#not-with-an-admin-or-a-metrics-block-yet"&gt;un processus par protocole&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Une personne par utilisateur sur un client NFS Linux partagé, à partir d&amp;rsquo;un certificat.&lt;/strong&gt; Un client
 Linux attache le certificat à un montage : chaque utilisateur du montage est donc la
-personne qu&amp;rsquo;il nomme. C&amp;rsquo;est une propriété du client, et la réponse y est
-&lt;code&gt;sec=krb5&lt;/code&gt;. Voir &lt;a href="https://go-fileshare.github.io/docs/0.31/fr/security/nfs-certificates/#what-it-cannot-promise"&gt;ce qu&amp;rsquo;elle ne peut pas promettre&lt;/a&gt;.&lt;/p&gt;
+personne qu&amp;rsquo;il nomme. C&amp;rsquo;est une propriété du client, et la réponse y est&lt;code&gt;sec=krb5&lt;/code&gt;. Voir &lt;a href="https://go-fileshare.github.io/docs/0.31/fr/security/nfs-certificates/#what-it-cannot-promise"&gt;ce qu&amp;rsquo;elle ne peut pas promettre&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/fr/protocols/s3/"&gt;S3 lui-même&lt;/a&gt; est livré : un partage est un bucket, servi sur
 la même arborescence par utilisateur que celle de SFTP.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="measured-and-stated-as-measured"&gt;Mesuré, et énoncé comme mesuré&lt;span class="hx:absolute hx:-mt-20" id="measured-and-stated-as-measured"&gt;&lt;/span&gt;

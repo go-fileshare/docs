@@ -12,8 +12,7 @@ data-copied-label="¡Copiado!"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;Tres endpoints, servidos por
-&lt;a href="https://github.com/go-net-health/endpoint" target="_blank" rel="noopener"&gt;go-net-health/endpoint&lt;/a&gt; en una escucha
+&lt;p&gt;Tres endpoints, servidos por&lt;a href="https://github.com/go-net-health/endpoint" target="_blank" rel="noopener"&gt;go-net-health/endpoint&lt;/a&gt; en una escucha
 propia —&lt;strong&gt;nunca un puerto que sirve un protocolo&lt;/strong&gt;—, de modo que quien alcanza WebDAV
 no los alcanza:&lt;/p&gt;
 &lt;table&gt;
@@ -127,13 +126,11 @@ método, nunca un recurso compartido ni una persona.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="what-to-alert-on"&gt;Sobre qué alertar&lt;span class="hx:absolute hx:-mt-20" id="what-to-alert-on"&gt;&lt;/span&gt;
-&lt;a href="#what-to-alert-on" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Las comprobaciones de revocación &lt;a href="https://go-fileshare.github.io/docs/0.31/es/security/#every-one-of-them-fails-closed"&gt;fallan en modo cerrado&lt;/a&gt;:
-una lista demasiado antigua, o un transmisor del que no se sabe nada, hace que el
+&lt;a href="#what-to-alert-on" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Las comprobaciones de revocación &lt;a href="https://go-fileshare.github.io/docs/0.31/es/security/#every-one-of-them-fails-closed"&gt;fallan en modo cerrado&lt;/a&gt;:una lista demasiado antigua, o un transmisor del que no se sabe nada, hace que el
 servidor &lt;strong&gt;rechace&lt;/strong&gt; las credenciales que gobierna. Alerte antes de que ocurra, no
 después:&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;code&gt;fileshare_revocation_list_age_seconds&lt;/code&gt; acercándose a &lt;code&gt;ssh_krl_max_age&lt;/code&gt; o a
-&lt;code&gt;crl_max_age&lt;/code&gt; (1h por defecto);&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;fileshare_revocation_list_age_seconds&lt;/code&gt; acercándose a &lt;code&gt;ssh_krl_max_age&lt;/code&gt; o a&lt;code&gt;crl_max_age&lt;/code&gt; (1h por defecto);&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;fileshare_ssf_last_heard_seconds&lt;/code&gt; acercándose al &lt;code&gt;max_age&lt;/code&gt; del bloque &lt;code&gt;ssf&lt;/code&gt;
 (10m por defecto);&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;fileshare_directory_reloads_total{result=&amp;quot;failed&amp;quot;}&lt;/code&gt; en aumento: el directorio no

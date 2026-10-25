@@ -1,10 +1,8 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Btrfs</title><link>https://go-fileshare.github.io/docs/0.31/de/tags/btrfs/</link><description>Recent content in Btrfs on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>de</language><atom:link href="https://go-fileshare.github.io/docs/0.31/de/tags/btrfs/index.xml" rel="self" type="application/rss+xml"/><item><title>Volumes: Speicher, den fileshare anlegt</title><link>https://go-fileshare.github.io/docs/0.31/de/administration/volumes/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/de/administration/volumes/</guid><description>
 &lt;p&gt;Seit v0.21.0 kann die &lt;a href="https://go-fileshare.github.io/docs/0.31/de/administration/"&gt;Admin-API&lt;/a&gt; &lt;strong&gt;den Speicher anlegen, den eine Freigabe
 bereitstellt&lt;/strong&gt; – ein &lt;strong&gt;ZFS-Dataset&lt;/strong&gt;, ein &lt;strong&gt;btrfs-Subvolume&lt;/strong&gt;, ein &lt;strong&gt;XFS- oder ext4-Verzeichnis
-unter einer Projekt-Quota&lt;/strong&gt; –, mit Größe, Eigentümer und Buchführung, und eine Freigabe daraus bereitstellen.
-Nur Linux. Ceph wird noch nicht unterstützt.&lt;/p&gt;
-&lt;p&gt;Diesen Speicher anzulegen erfordert &lt;code&gt;CAP_SYS_ADMIN&lt;/code&gt; (quotactl, die btrfs-Quota-ioctls,
-&lt;code&gt;/dev/zfs&lt;/code&gt;, mount(2)). &lt;code&gt;fileshare serve&lt;/code&gt; parst fünf Netzwerkprotokolle für
+unter einer Projekt-Quota&lt;/strong&gt; –, mit Größe, Eigentümer und Buchführung, und eine Freigabe daraus bereitstellen.Nur Linux. Ceph wird noch nicht unterstützt.&lt;/p&gt;
+&lt;p&gt;Diesen Speicher anzulegen erfordert &lt;code&gt;CAP_SYS_ADMIN&lt;/code&gt; (quotactl, die btrfs-Quota-ioctls,&lt;code&gt;/dev/zfs&lt;/code&gt;, mount(2)). &lt;code&gt;fileshare serve&lt;/code&gt; parst fünf Netzwerkprotokolle für
 Fremde und hält kein Privileg, also ist der Teil, der eines braucht, eine zweite Rolle desselben
 Binarys, &lt;code&gt;fileshare provisioner&lt;/code&gt;, hinter einem Unix-Socket und einem kleinen, geschlossenen
 Protokoll:&lt;/p&gt;
@@ -33,8 +31,7 @@ data-copied-label="Kopiert!"
 &lt;p&gt;Ein Binary statt zweier Daemons: eine Version zum Ausrollen, eine
 Protokolldefinition. Den Speicher selbst übernimmt &lt;a href="https://go-fsctl.github.io/" target="_blank" rel="noopener"&gt;go-fsctl&lt;/a&gt;
 (reines Go, kein &lt;code&gt;zfs&lt;/code&gt;- oder &lt;code&gt;btrfs&lt;/code&gt;-Kommando). Das Design und was sich während
-des Baus geändert hat, stehen im fileshare-Repository unter
-&lt;a href="https://github.com/go-fileshare/fileshare/blob/v0.28.0/docs/volumes.md" target="_blank" rel="noopener"&gt;&lt;code&gt;docs/volumes.md&lt;/code&gt;&lt;/a&gt;.&lt;/p&gt;
+des Baus geändert hat, stehen im fileshare-Repository unter&lt;a href="https://github.com/go-fileshare/fileshare/blob/v0.28.0/docs/volumes.md" target="_blank" rel="noopener"&gt;&lt;code&gt;docs/volumes.md&lt;/code&gt;&lt;/a&gt;.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="both-processes-configured"&gt;Beide Prozesse, konfiguriert&lt;span class="hx:absolute hx:-mt-20" id="both-processes-configured"&gt;&lt;/span&gt;
 &lt;a href="#both-processes-configured" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;fileshare serve&lt;/code&gt;, als Benutzer &lt;code&gt;fileshare&lt;/code&gt; (uid 990):&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
@@ -154,10 +151,8 @@ data-copied-label="Kopiert!"
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;Die Datei des Provisioners enthält nichts außer ihrem &lt;code&gt;provisioner&lt;/code&gt;-Block: Die eigene Datei von fileshare,
-ihm versehentlich übergeben, wird abgelehnt statt halb gelesen.&lt;/p&gt;
-&lt;p&gt;Ein Volume ist immer &lt;code&gt;&amp;lt;parent root&amp;gt;/&amp;lt;name&amp;gt;&lt;/code&gt;: das Dataset &lt;code&gt;tank/fileshare/&amp;lt;name&amp;gt;&lt;/code&gt;,
-eingehängt unter &lt;code&gt;/srv/fileshare/volumes/tank/&amp;lt;name&amp;gt;&lt;/code&gt; (mit &lt;code&gt;refquota&lt;/code&gt;), ein
+&lt;p&gt;Die Datei des Provisioners enthält nichts außer ihrem &lt;code&gt;provisioner&lt;/code&gt;-Block: Die eigene Datei von fileshare,ihm versehentlich übergeben, wird abgelehnt statt halb gelesen.&lt;/p&gt;
+&lt;p&gt;Ein Volume ist immer &lt;code&gt;&amp;lt;parent root&amp;gt;/&amp;lt;name&amp;gt;&lt;/code&gt;: das Dataset &lt;code&gt;tank/fileshare/&amp;lt;name&amp;gt;&lt;/code&gt;,eingehängt unter &lt;code&gt;/srv/fileshare/volumes/tank/&amp;lt;name&amp;gt;&lt;/code&gt; (mit &lt;code&gt;refquota&lt;/code&gt;), ein
 btrfs-Subvolume, begrenzt durch seine qgroup, ein XFS- oder ext4-Verzeichnis mit einer Projekt-ID
 aus dem Bereich und einem harten Blocklimit. XFS und ext4 brauchen die Mount-Option &lt;code&gt;prjquota&lt;/code&gt;
 (ext4 zusätzlich die Features &lt;code&gt;project,quota&lt;/code&gt;).&lt;/p&gt;
@@ -225,8 +220,7 @@ data-copied-label="Kopiert!"
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;p&gt;&lt;code&gt;ProtectSystem=&lt;/code&gt; ist für den Server in Ordnung: Es ist der Provisioner, der einhängt, und
-Mounts propagieren in den Namespace des Servers hinein, nicht aus ihm heraus, sodass ein ZFS-Volume,
-das nach dem Start des Servers eingehängt wurde, für ihn sichtbar ist.&lt;/p&gt;
+Mounts propagieren in den Namespace des Servers hinein, nicht aus ihm heraus, sodass ein ZFS-Volume,das nach dem Start des Servers eingehängt wurde, für ihn sichtbar ist.&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
@@ -241,14 +235,12 @@ unter &lt;code&gt;sudo&lt;/code&gt;.&lt;/p&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Aktualisieren Sie zuerst den Provisioner&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;Der Provisioner lehnt eine Nachricht ab, die ein Feld enthält, das seine Version nicht
-definiert – er schließt die Verbindung –, also laufen &lt;code&gt;fileshare serve&lt;/code&gt; und
-&lt;code&gt;fileshare provisioner&lt;/code&gt; in derselben Version.&lt;/p&gt;
+definiert – er schließt die Verbindung –, also laufen &lt;code&gt;fileshare serve&lt;/code&gt; und&lt;code&gt;fileshare provisioner&lt;/code&gt; in derselben Version.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="the-admin-apis-volume-calls"&gt;Die Volume-Aufrufe der Admin-API&lt;span class="hx:absolute hx:-mt-20" id="the-admin-apis-volume-calls"&gt;&lt;/span&gt;
-&lt;a href="#the-admin-apis-volume-calls" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;fileshare serve&lt;/code&gt; leitet diese an den Provisioner weiter
-(&lt;a href="https://github.com/go-fileshare/fileshare/blob/v0.28.0/proto/fileshare/admin/v1/admin.proto" target="_blank" rel="noopener"&gt;&lt;code&gt;admin.proto&lt;/code&gt;&lt;/a&gt;):&lt;/p&gt;
+&lt;a href="#the-admin-apis-volume-calls" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;fileshare serve&lt;/code&gt; leitet diese an den Provisioner weiter(&lt;a href="https://github.com/go-fileshare/fileshare/blob/v0.28.0/proto/fileshare/admin/v1/admin.proto" target="_blank" rel="noopener"&gt;&lt;code&gt;admin.proto&lt;/code&gt;&lt;/a&gt;):&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
@@ -288,12 +280,10 @@ definiert – er schließt die Verbindung –, also laufen &lt;code&gt;fileshare
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;&lt;code&gt;DeleteShare&lt;/code&gt; löscht nie ein Volume. „Die Freigaben, die es nutzen&amp;quot; sind die daraus
-erstellten Freigaben &lt;strong&gt;und&lt;/strong&gt; jede Freigabe – auch aus den Konfigurationsdateien, bereitgestellt,
-deaktiviert oder nicht verfügbar –, deren Image oder Verzeichnis darin liegt.&lt;/p&gt;
+erstellten Freigaben &lt;strong&gt;und&lt;/strong&gt; jede Freigabe – auch aus den Konfigurationsdateien, bereitgestellt,deaktiviert oder nicht verfügbar –, deren Image oder Verzeichnis darin liegt.&lt;/p&gt;
 &lt;p&gt;Ein Name entspricht &lt;code&gt;^[a-z0-9][a-z0-9_-]{0,62}$&lt;/code&gt;, und eine Anfrage trägt nie einen
 Pfad: Sie nennt einen &lt;code&gt;parent&lt;/code&gt; aus der eigenen Konfiguration des Provisioners.&lt;/p&gt;
-&lt;p&gt;Mit &lt;code&gt;reflection = true&lt;/code&gt; im &lt;code&gt;admin&lt;/code&gt;-Block kann &lt;code&gt;grpcurl&lt;/code&gt; die Aufrufe ausführen.
-Der Socket hat 0600, und &lt;code&gt;allowed_uids&lt;/code&gt; oben nennt nur die uid von fileshare, also führen Sie
+&lt;p&gt;Mit &lt;code&gt;reflection = true&lt;/code&gt; im &lt;code&gt;admin&lt;/code&gt;-Block kann &lt;code&gt;grpcurl&lt;/code&gt; die Aufrufe ausführen.Der Socket hat 0600, und &lt;code&gt;allowed_uids&lt;/code&gt; oben nennt nur die uid von fileshare, also führen Sie
 es als dieser Benutzer aus:&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nv"&gt;S&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/run/fileshare/admin.sock
@@ -330,10 +320,7 @@ data-copied-label="Kopiert!"
 &lt;/div&gt;
 &lt;h3 data-hextra-search-id="status-codes"&gt;Statuscodes&lt;span class="hx:absolute hx:-mt-20" id="status-codes"&gt;&lt;/span&gt;
 &lt;a href="#status-codes" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Die Codes des Provisioners kommen so zurück, wie er sie gegeben hat: &lt;code&gt;INVALID_ARGUMENT&lt;/code&gt; (ein Name
-außerhalb der Grammatik, ein unbekannter Parent, eine Quota von 0), &lt;code&gt;OUT_OF_RANGE&lt;/code&gt; (über
-&lt;code&gt;max_volume&lt;/code&gt;), &lt;code&gt;RESOURCE_EXHAUSTED&lt;/code&gt; (die Quota oder der Zuwachs einer Größenänderung ist mehr,
-als der Parent gerade frei hat; oder der Bereich der Projekt-IDs ist aufgebraucht),
-&lt;code&gt;ALREADY_EXISTS&lt;/code&gt;, &lt;code&gt;NOT_FOUND&lt;/code&gt;, &lt;code&gt;FAILED_PRECONDITION&lt;/code&gt;, &lt;code&gt;UNIMPLEMENTED&lt;/code&gt;.&lt;/p&gt;
+außerhalb der Grammatik, ein unbekannter Parent, eine Quota von 0), &lt;code&gt;OUT_OF_RANGE&lt;/code&gt; (über&lt;code&gt;max_volume&lt;/code&gt;), &lt;code&gt;RESOURCE_EXHAUSTED&lt;/code&gt; (die Quota oder der Zuwachs einer Größenänderung ist mehr,als der Parent gerade frei hat; oder der Bereich der Projekt-IDs ist aufgebraucht),&lt;code&gt;ALREADY_EXISTS&lt;/code&gt;, &lt;code&gt;NOT_FOUND&lt;/code&gt;, &lt;code&gt;FAILED_PRECONDITION&lt;/code&gt;, &lt;code&gt;UNIMPLEMENTED&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;Drei sind fileshares eigene:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;kein &lt;code&gt;provisioner&lt;/code&gt; konfiguriert: &lt;code&gt;FAILED_PRECONDITION&lt;/code&gt;;&lt;/li&gt;
@@ -347,8 +334,7 @@ Admin-Aufrufer nicht darf;&lt;/li&gt;
 &lt;ul&gt;
 &lt;li&gt;der Pfad ist sauber, absolut und – aufgelöst – unter &lt;code&gt;source_roots&lt;/code&gt;;&lt;/li&gt;
 &lt;li&gt;es ist ein Verzeichnis;&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;statfs&lt;/code&gt; meldet das Dateisystem der Art (&lt;code&gt;ZFS_SUPER_MAGIC&lt;/code&gt;,
-&lt;code&gt;BTRFS_SUPER_MAGIC&lt;/code&gt;, &lt;code&gt;XFS_SUPER_MAGIC&lt;/code&gt;, &lt;code&gt;EXT4_SUPER_MAGIC&lt;/code&gt;);&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;statfs&lt;/code&gt; meldet das Dateisystem der Art (&lt;code&gt;ZFS_SUPER_MAGIC&lt;/code&gt;,&lt;code&gt;BTRFS_SUPER_MAGIC&lt;/code&gt;, &lt;code&gt;XFS_SUPER_MAGIC&lt;/code&gt;, &lt;code&gt;EXT4_SUPER_MAGIC&lt;/code&gt;);&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;ZFS&lt;/strong&gt;: Es ist ein Einhängepunkt – sein Gerät ist nicht das seines Parents. Das Verzeichnis eines nicht
 eingehängten Datasets nähme Schreibzugriffe ohne Quota an. (Welches Dataset dort
 eingehängt ist, wird nicht geprüft: Die Antwort des Provisioners sagt es nicht.)&lt;/li&gt;
@@ -361,21 +347,15 @@ erben – ein Verzeichnis außerhalb jedes Projekts wird unbegrenzt bereitgestel
 und prüft erneut. Ein Volume, das weg ist, eine Prüfung nicht besteht oder dessen Provisioner
 nicht innerhalb von 10 s antwortet, lässt seine Freigabe &lt;strong&gt;definiert und nicht bereitgestellt&lt;/strong&gt; – gemeldet
 beim Start, von &lt;a href="https://go-fileshare.github.io/docs/0.31/de/configuration/check/"&gt;&lt;code&gt;fileshare check&lt;/code&gt;&lt;/a&gt; und im
-Feld &lt;code&gt;unavailable&lt;/code&gt; der Freigabe –, während der Rest des Servers startet.
-&lt;code&gt;EnableShare&lt;/code&gt; versucht es erneut.&lt;/p&gt;
+Feld &lt;code&gt;unavailable&lt;/code&gt; der Freigabe –, während der Rest des Servers startet.&lt;code&gt;EnableShare&lt;/code&gt; versucht es erneut.&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;fileshare serve&lt;/code&gt; weigert sich, Volumes als root oder mit &lt;code&gt;CAP_SYS_RESOURCE&lt;/code&gt; bereitzustellen&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;ext4 lässt beide über eine Projekt-Quota hinaus schreiben (fs/quota/dquot.c,
-&lt;code&gt;ignore_hardlimit&lt;/code&gt;): root schrieb in der CI von go-fsctl/projquota 16 MiB in ein 8-MiB-Projekt.
-XFS hat keine solche Ausnahme, aber die Regel ist eine einzige
-Regel für den Prozess, für jede Art: fileshare liest seine effektive uid und
-&lt;code&gt;CapEff&lt;/code&gt;/&lt;code&gt;CapPrm&lt;/code&gt; in &lt;code&gt;/proc/self/status&lt;/code&gt; (eine erlaubte Capability ist nur ein
-&lt;code&gt;capset(2)&lt;/code&gt; von einer effektiven entfernt), und ein Status, den es nicht lesen kann, zählt als
+&lt;p&gt;ext4 lässt beide über eine Projekt-Quota hinaus schreiben (fs/quota/dquot.c,&lt;code&gt;ignore_hardlimit&lt;/code&gt;): root schrieb in der CI von go-fsctl/projquota 16 MiB in ein 8-MiB-Projekt.XFS hat keine solche Ausnahme, aber die Regel ist eine einzige
+Regel für den Prozess, für jede Art: fileshare liest seine effektive uid und&lt;code&gt;CapEff&lt;/code&gt;/&lt;code&gt;CapPrm&lt;/code&gt; in &lt;code&gt;/proc/self/status&lt;/code&gt; (eine erlaubte Capability ist nur ein&lt;code&gt;capset(2)&lt;/code&gt; von einer effektiven entfernt), und ein Status, den es nicht lesen kann, zählt als
 deren Besitz. Es verweigert das &lt;strong&gt;Bereitstellen&lt;/strong&gt;, nicht die Volume-Aufrufe – Speicher
-als root anzulegen ist harmlos, als root hineinzuschreiben nicht. &lt;code&gt;fileshare check&lt;/code&gt; sagt,
-was davon vorliegt. Deshalb lehnt der Provisioner &lt;code&gt;client_uid = 0&lt;/code&gt; ab, und die
+als root anzulegen ist harmlos, als root hineinzuschreiben nicht. &lt;code&gt;fileshare check&lt;/code&gt; sagt,was davon vorliegt. Deshalb lehnt der Provisioner &lt;code&gt;client_uid = 0&lt;/code&gt; ab, und die
 Unit des Servers oben hat ein leeres &lt;code&gt;CapabilityBoundingSet=&lt;/code&gt;.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -419,27 +399,21 @@ v0.21.1 antwortet jedes Protokoll mit „voll&amp;quot;:&lt;/p&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;In v0.21.0 antwortete SMB mit &lt;code&gt;STATUS_ACCESS_DENIED&lt;/code&gt;, und NFS beantwortete eine Quota mit
-&lt;code&gt;NFS3ERR_NOSPC&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;In v0.21.0 antwortete SMB mit &lt;code&gt;STATUS_ACCESS_DENIED&lt;/code&gt;, und NFS beantwortete eine Quota mit&lt;code&gt;NFS3ERR_NOSPC&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;Das gilt für jede &lt;a href="https://go-fileshare.github.io/docs/0.31/de/configuration/shares/"&gt;Verzeichnisfreigabe&lt;/a&gt;, nicht nur
 für Volumes – siehe den &lt;a href="https://go-fileshare.github.io/docs/0.31/de/status/"&gt;Upgrade-Hinweis&lt;/a&gt;.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="the-size-a-client-sees"&gt;Die Größe, die ein Client sieht&lt;span class="hx:absolute hx:-mt-20" id="the-size-a-client-sees"&gt;&lt;/span&gt;
-&lt;a href="#the-size-a-client-sees" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Jedes Protokoll fragt den Server bei jeder Abfrage nach der Größe einer Freigabe:
-NFS mit &lt;code&gt;FSSTAT&lt;/code&gt;, SMB mit &lt;code&gt;FileFsFullSizeInformation&lt;/code&gt; und WebDAV mit den
+&lt;a href="#the-size-a-client-sees" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Jedes Protokoll fragt den Server bei jeder Abfrage nach der Größe einer Freigabe:NFS mit &lt;code&gt;FSSTAT&lt;/code&gt;, SMB mit &lt;code&gt;FileFsFullSizeInformation&lt;/code&gt; und WebDAV mit den
 Quota-Eigenschaften aus RFC 4331.&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;ZFS, XFS und ext4&lt;/strong&gt;: Die Größe ist das, was &lt;code&gt;statfs&lt;/code&gt; innerhalb des Volumes sagt;
-der Kernel antwortet dort mit der Quota (&lt;code&gt;refquota&lt;/code&gt; bei ZFS, die Projekt-Quota bei
+&lt;li&gt;&lt;strong&gt;ZFS, XFS und ext4&lt;/strong&gt;: Die Größe ist das, was &lt;code&gt;statfs&lt;/code&gt; innerhalb des Volumes sagt;der Kernel antwortet dort mit der Quota (&lt;code&gt;refquota&lt;/code&gt; bei ZFS, die Projekt-Quota bei
 XFS und ext4).&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;btrfs&lt;/strong&gt; (seit fileshare v0.23.0): &lt;code&gt;statfs&lt;/code&gt; von btrfs ignoriert qgroups und meldet
 das ganze Dateisystem, deshalb nimmt der Server die Zahlen des Provisioners. Die
 Größe ist die Quota des Volumes, der freie Platz ist die Quota abzüglich der
 referenzierten Bytes der qgroup, oder der freie Platz des Dateisystems, wenn der
 kleiner ist. Der Server fragt den Provisioner im Hintergrund, höchstens alle
-5 Sekunden, solange Clients fragen, und antwortet bis dahin mit den letzten Zahlen.
-btrfs aktualisiert den Zähler einer qgroup beim Abschluss einer Transaktion
-(standardmäßig alle 30 Sekunden), daher kann der freie Platz, den ein Client sieht,
-den Schreibvorgängen um so viel hinterherhinken. Vor v0.23.0 zeigte ein btrfs-Volume
+5 Sekunden, solange Clients fragen, und antwortet bis dahin mit den letzten Zahlen.btrfs aktualisiert den Zähler einer qgroup beim Abschluss einer Transaktion(standardmäßig alle 30 Sekunden), daher kann der freie Platz, den ein Client sieht,den Schreibvorgängen um so viel hinterherhinken. Vor v0.23.0 zeigte ein btrfs-Volume
 das ganze Dateisystem; die Quota galt trotzdem.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;Der belegte Platz kommt vom Provisioner (&lt;code&gt;used_bytes&lt;/code&gt;): Die Belegung eines XFS- oder
@@ -447,13 +421,11 @@ ext4-Projekts zu lesen erfordert &lt;code&gt;CAP_SYS_ADMIN&lt;/code&gt;, das fil
 &lt;h2 data-hextra-search-id="what-the-provisioner-promises"&gt;Was der Provisioner zusichert&lt;span class="hx:absolute hx:-mt-20" id="what-the-provisioner-promises"&gt;&lt;/span&gt;
 &lt;a href="#what-the-provisioner-promises" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;Eine uid, vom Kernel gelesen.&lt;/strong&gt; Der Peer wird beim Verbinden mit &lt;code&gt;SO_PEERCRED&lt;/code&gt;
-identifiziert, und jeder außer &lt;code&gt;client_uid&lt;/code&gt; – root eingeschlossen – erhält
-&lt;code&gt;PERMISSION_DENIED&lt;/code&gt;, bevor ein Byte der Anfrage dekodiert wird.&lt;/li&gt;
+identifiziert, und jeder außer &lt;code&gt;client_uid&lt;/code&gt; – root eingeschlossen – erhält&lt;code&gt;PERMISSION_DENIED&lt;/code&gt;, bevor ein Byte der Anfrage dekodiert wird.&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Eine geschlossene Menge von Verben.&lt;/strong&gt; Eine Methode außerhalb seines Dienstes oder eine Nachricht, die
 sich nicht dekodieren lässt oder ein Feld enthält, das er nicht definiert, erhält keine Antwort: Die
 Verbindung wird geschlossen.&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Er fasst nie an, was er nicht angelegt hat.&lt;/strong&gt; ZFS: die eigene
-&lt;code&gt;fileshare:volume&lt;/code&gt;-Eigenschaft des Datasets – am Dataset gesetzt, da Benutzereigenschaften
+&lt;li&gt;&lt;strong&gt;Er fasst nie an, was er nicht angelegt hat.&lt;/strong&gt; ZFS: die eigene&lt;code&gt;fileshare:volume&lt;/code&gt;-Eigenschaft des Datasets – am Dataset gesetzt, da Benutzereigenschaften
 vererbt werden und eine geerbte Markierung nicht seine eigene ist. btrfs: Subvolume-ID und
 UUID, festgehalten in &lt;code&gt;state_file&lt;/code&gt;. XFS/ext4: eine Projekt-ID innerhalb des Bereichs des Parents &lt;em&gt;und&lt;/em&gt;
 festgehalten. Geprüft vor jeder Größenänderung, jedem Snapshot und jedem Löschen.&lt;/li&gt;

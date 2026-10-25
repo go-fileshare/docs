@@ -14,8 +14,7 @@ data-copied-label="Copied!"
 &lt;/div&gt;
 &lt;p&gt;The people come from directories other things change — go-authn/bridge writes
 an application password into a table, and deletes the row when the person is
-disabled. Without a reload the server serves whoever was there when it started.
-Since v0.10.0 it reads them again:&lt;/p&gt;
+disabled. Without a reload the server serves whoever was there when it started.Since v0.10.0 it reads them again:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;every &lt;code&gt;reload&lt;/code&gt; interval, a Go duration of &lt;strong&gt;at least a second&lt;/strong&gt; — a directory
 read many times a second is a load on somebody&amp;rsquo;s database, not a fresher
@@ -26,10 +25,8 @@ was added, removed and changed, whether a new generation started, and notes a
 person should read — a group that no longer exists or has no members, somebody a share names
 who is no longer in the directory.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;Without &lt;code&gt;reload&lt;/code&gt;, the directory is read at the start, on &lt;code&gt;SIGHUP&lt;/code&gt; and on
-&lt;code&gt;ReloadDirectory&lt;/code&gt; only.&lt;/p&gt;
-&lt;p&gt;It is the &lt;code&gt;users&lt;/code&gt; blocks — SQL, LDAP — that are read again. The &lt;code&gt;user&lt;/code&gt; and
-&lt;code&gt;group&lt;/code&gt; blocks of the configuration file &lt;strong&gt;are&lt;/strong&gt; the configuration, read at the
+&lt;p&gt;Without &lt;code&gt;reload&lt;/code&gt;, the directory is read at the start, on &lt;code&gt;SIGHUP&lt;/code&gt; and on&lt;code&gt;ReloadDirectory&lt;/code&gt; only.&lt;/p&gt;
+&lt;p&gt;It is the &lt;code&gt;users&lt;/code&gt; blocks — SQL, LDAP — that are read again. The &lt;code&gt;user&lt;/code&gt; and&lt;code&gt;group&lt;/code&gt; blocks of the configuration file &lt;strong&gt;are&lt;/strong&gt; the configuration, read at the
 start.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="what-a-reload-does-depends-on-what-changed"&gt;What a reload does depends on what changed&lt;span class="hx:absolute hx:-mt-20" id="what-a-reload-does-depends-on-what-changed"&gt;&lt;/span&gt;
 &lt;a href="#what-a-reload-does-depends-on-what-changed" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;The line is drawn at &lt;strong&gt;revocation&lt;/strong&gt;:&lt;/p&gt;
@@ -59,8 +56,7 @@ start.&lt;/p&gt;
 through a new generation like any other change to it: SMB fixes a share&amp;rsquo;s lists
 when it starts.&lt;/p&gt;
 &lt;p&gt;A share naming somebody who is gone, or a group that no longer exists or no
-longer has any members (told apart since v0.29.1), is served
-&lt;strong&gt;without them&lt;/strong&gt; — the safe direction — and said, rather than refused the way a
+longer has any members (told apart since v0.29.1), is served&lt;strong&gt;without them&lt;/strong&gt; — the safe direction — and said, rather than refused the way a
 startup refuses it: refusing would keep the old lists, and the old lists are the
 access that was just taken away.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="an-empty-group-is-not-everyone"&gt;An empty group is not everyone&lt;span class="hx:absolute hx:-mt-20" id="an-empty-group-is-not-everyone"&gt;&lt;/span&gt;
@@ -77,8 +73,7 @@ everyone.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="watching-it"&gt;Watching it&lt;span class="hx:absolute hx:-mt-20" id="watching-it"&gt;&lt;/span&gt;
-&lt;a href="#watching-it" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;fileshare_directory_reloads_total{result}&lt;/code&gt; counts reloads that found nothing
-(&lt;code&gt;unchanged&lt;/code&gt;), added in place (&lt;code&gt;added&lt;/code&gt;), started a generation (&lt;code&gt;swapped&lt;/code&gt;) or
+&lt;a href="#watching-it" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;fileshare_directory_reloads_total{result}&lt;/code&gt; counts reloads that found nothing(&lt;code&gt;unchanged&lt;/code&gt;), added in place (&lt;code&gt;added&lt;/code&gt;), started a generation (&lt;code&gt;swapped&lt;/code&gt;) or
 could not read the directory (&lt;code&gt;failed&lt;/code&gt;); &lt;code&gt;fileshare_directory_people&lt;/code&gt; is how
 many people the last read held. See &lt;a href="https://go-fileshare.github.io/docs/0.31/administration/health/"&gt;health and metrics&lt;/a&gt;.&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;

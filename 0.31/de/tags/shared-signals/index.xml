@@ -1,12 +1,10 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Shared Signals</title><link>https://go-fileshare.github.io/docs/0.31/de/tags/shared-signals/</link><description>Recent content in Shared Signals on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>de</language><atom:link href="https://go-fileshare.github.io/docs/0.31/de/tags/shared-signals/index.xml" rel="self" type="application/rss+xml"/><item><title>Widerrufen, was keine Liste abdeckt: Shared Signals</title><link>https://go-fileshare.github.io/docs/0.31/de/security/shared-signals/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/de/security/shared-signals/</guid><description>
-&lt;p&gt;Ein Zertifikat hat eine Widerrufsliste – die &lt;a href="https://go-fileshare.github.io/docs/0.31/de/security/revocation-lists/"&gt;KRL&lt;/a&gt;, die
-&lt;a href="https://go-fileshare.github.io/docs/0.31/de/security/nfs-certificates/#revocation-the-crl"&gt;CRL&lt;/a&gt;. Ein &lt;strong&gt;Access-Token&lt;/strong&gt;, das fileshare
+&lt;p&gt;Ein Zertifikat hat eine Widerrufsliste – die &lt;a href="https://go-fileshare.github.io/docs/0.31/de/security/revocation-lists/"&gt;KRL&lt;/a&gt;, die&lt;a href="https://go-fileshare.github.io/docs/0.31/de/security/nfs-certificates/#revocation-the-crl"&gt;CRL&lt;/a&gt;. Ein &lt;strong&gt;Access-Token&lt;/strong&gt;, das fileshare
 selbst prüft, und ein &lt;strong&gt;OpenPubkey-Zertifikat&lt;/strong&gt;, das der eigene Schlüssel der Person
 signiert hat, haben keine: Sie sind gültig, bis sie ablaufen, was auch immer der
 Person seitdem widerfahren ist.&lt;/p&gt;
 &lt;p&gt;Seit v0.13.0 schließt das &lt;a href="https://openid.net/specs/openid-sharedsignals-framework-1_0-final.html" target="_blank" rel="noopener"&gt;OpenID Shared Signals Framework&lt;/a&gt;
-diese Lücke, mit einem &lt;a href="https://openid.net/specs/openid-caep-1_0-final.html" target="_blank" rel="noopener"&gt;CAEP&lt;/a&gt;-Ereignis
-&lt;strong&gt;&lt;code&gt;session-revoked&lt;/code&gt;&lt;/strong&gt;:&lt;/p&gt;
+diese Lücke, mit einem &lt;a href="https://openid.net/specs/openid-caep-1_0-final.html" target="_blank" rel="noopener"&gt;CAEP&lt;/a&gt;-Ereignis&lt;strong&gt;&lt;code&gt;session-revoked&lt;/code&gt;&lt;/strong&gt;:&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;ssf&lt;/span&gt; {
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; transmitter&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://bridge.example.org&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # its issuer
@@ -27,8 +25,7 @@ data-copied-label="Kopiert!"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;go-authn/bridge sendet eines, wenn eine Person oder ein IdP deaktiviert wird; fileshare
-&lt;strong&gt;fragt es ab&lt;/strong&gt; (Polling, RFC 8936, der SSF-Standard) und hält pro Person fest, &lt;strong&gt;wann&lt;/strong&gt;
+&lt;p&gt;go-authn/bridge sendet eines, wenn eine Person oder ein IdP deaktiviert wird; fileshare&lt;strong&gt;fragt es ab&lt;/strong&gt; (Polling, RFC 8936, der SSF-Standard) und hält pro Person fest, &lt;strong&gt;wann&lt;/strong&gt;
 es geschah.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="everything-issued-before-is-refused-on-every-protocol"&gt;Alles zuvor Ausgestellte wird abgelehnt, bei jedem Protokoll&lt;span class="hx:absolute hx:-mt-20" id="everything-issued-before-is-refused-on-every-protocol"&gt;&lt;/span&gt;
 &lt;a href="#everything-issued-before-is-refused-on-every-protocol" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Ab diesem Moment werden alle föderierten Zugangsdaten abgelehnt, die &lt;strong&gt;davor ausgestellt&lt;/strong&gt;
@@ -86,12 +83,9 @@ abgelehnt, sobald es irgendeinen Widerruf für diese Person gibt.&lt;/p&gt;
 &lt;a href="#who-an-event-is-about" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Das Subjekt ist &lt;strong&gt;&lt;code&gt;account&lt;/code&gt;&lt;/strong&gt; aus RFC 9493 (&lt;code&gt;acct:user@domain&lt;/code&gt;, der Name, den die
 Freigaben verwenden), &lt;strong&gt;&lt;code&gt;iss_sub&lt;/code&gt;&lt;/strong&gt;, &lt;strong&gt;&lt;code&gt;email&lt;/code&gt;&lt;/strong&gt; oder &lt;strong&gt;&lt;code&gt;aliases&lt;/code&gt;&lt;/strong&gt; davon.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Ein vollständig deaktivierter IdP&lt;/strong&gt; kommt als CAEP-&lt;em&gt;tenant&lt;/em&gt;-Subjekt mit den Scopes des IdP
-im Ereignis an: Alle, deren Name &lt;code&gt;@&lt;/code&gt; einer davon ist – als Ganzes verglichen,
-&lt;code&gt;evil-univ-a.fr&lt;/code&gt; ist nicht &lt;code&gt;univ-a.fr&lt;/code&gt; – und deren Zugangsdaten davor ausgestellt wurden,
-werden abgelehnt, &lt;strong&gt;einschließlich Personen, an die sich der Anbieter nicht mehr erinnert&lt;/strong&gt;.&lt;/p&gt;
+im Ereignis an: Alle, deren Name &lt;code&gt;@&lt;/code&gt; einer davon ist – als Ganzes verglichen,&lt;code&gt;evil-univ-a.fr&lt;/code&gt; ist nicht &lt;code&gt;univ-a.fr&lt;/code&gt; – und deren Zugangsdaten davor ausgestellt wurden,werden abgelehnt, &lt;strong&gt;einschließlich Personen, an die sich der Anbieter nicht mehr erinnert&lt;/strong&gt;.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="how-the-receiver-authenticates"&gt;Wie sich der Receiver authentifiziert&lt;span class="hx:absolute hx:-mt-20" id="how-the-receiver-authenticates"&gt;&lt;/span&gt;
-&lt;a href="#how-the-receiver-authenticates" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Der Receiver (Empfänger) authentifiziert sich mit &lt;strong&gt;OAuth-Client-Credentials&lt;/strong&gt; (RFC 6749 §4.4,
-Scope &lt;code&gt;ssf&lt;/code&gt;): &lt;code&gt;client_id&lt;/code&gt; und &lt;code&gt;client_secret_file&lt;/code&gt;, das Token wird vom eigenen
+&lt;a href="#how-the-receiver-authenticates" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Der Receiver (Empfänger) authentifiziert sich mit &lt;strong&gt;OAuth-Client-Credentials&lt;/strong&gt; (RFC 6749 §4.4,Scope &lt;code&gt;ssf&lt;/code&gt;): &lt;code&gt;client_id&lt;/code&gt; und &lt;code&gt;client_secret_file&lt;/code&gt;, das Token wird vom eigenen
 Token-Endpunkt des Transmitters abgerufen – gefunden in dessen OpenID-Konfiguration oder
 über &lt;code&gt;token_url&lt;/code&gt; – und vor seinem Ablauf erneuert. &lt;code&gt;token_file&lt;/code&gt; gibt es stattdessen für
 Transmitter, die ein langlebiges Bearer-Token ausgeben. Das eine oder das andere: beides
@@ -153,32 +147,20 @@ oder keines wird abgelehnt.&lt;/p&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;Ein Widerruf wird &lt;strong&gt;festgehalten, bevor er bestätigt wird&lt;/strong&gt;, sodass ein bestätigter einen
-Neustart übersteht; und er wird für &lt;code&gt;retain&lt;/code&gt; aufbewahrt – länger als alle Zugangsdaten,
-die er ungültig machen könnte (192h liegt über den am längsten gültigen Zugangsdaten, die
+Neustart übersteht; und er wird für &lt;code&gt;retain&lt;/code&gt; aufbewahrt – länger als alle Zugangsdaten,die er ungültig machen könnte (192h liegt über den am längsten gültigen Zugangsdaten, die
 der Anbieter ausstellt, einem SSH-Zertifikat mit 168h).&lt;/p&gt;
-&lt;p&gt;Ein &lt;code&gt;ssf&lt;/code&gt;-Block ohne etwas Föderiertes zum Widerrufen – kein &lt;code&gt;oidc&lt;/code&gt;-Block, kein NFS mit
-&lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt; – wird abgelehnt.&lt;/p&gt;
-&lt;p&gt;Der Transport ist &lt;a href="https://github.com/hstern/go-ssf" target="_blank" rel="noopener"&gt;github.com/hstern/go-ssf&lt;/a&gt;:
-Discovery, der Poller nach RFC 8936, die JWS-Schicht des SET. Was ein Ereignis
-&lt;strong&gt;bedeutet&lt;/strong&gt;, entscheidet fileshare.&lt;/p&gt;
+&lt;p&gt;Ein &lt;code&gt;ssf&lt;/code&gt;-Block ohne etwas Föderiertes zum Widerrufen – kein &lt;code&gt;oidc&lt;/code&gt;-Block, kein NFS mit&lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt; – wird abgelehnt.&lt;/p&gt;
+&lt;p&gt;Der Transport ist &lt;a href="https://github.com/hstern/go-ssf" target="_blank" rel="noopener"&gt;github.com/hstern/go-ssf&lt;/a&gt;:Discovery, der Poller nach RFC 8936, die JWS-Schicht des SET. Was ein Ereignis&lt;strong&gt;bedeutet&lt;/strong&gt;, entscheidet fileshare.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="it-fails-closed"&gt;Er ist ausfallsicher geschlossen&lt;span class="hx:absolute hx:-mt-20" id="it-fails-closed"&gt;&lt;/span&gt;
 &lt;a href="#it-fails-closed" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Solange der Transmitter schweigt, werden föderierte Zugangsdaten abgelehnt&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;Wie bei der KRL: Solange der Transmitter eine Abfrage nicht innerhalb von
-&lt;code&gt;max_age&lt;/code&gt; beantwortet hat, werden &lt;strong&gt;alle föderierten Zugangsdaten&lt;/strong&gt; abgelehnt (fail closed),
-weil „kein Widerruf ist angekommen“ und „keiner konnte ankommen“ gleich aussehen.
-&lt;code&gt;fileshare_ssf_last_heard_seconds&lt;/code&gt; ist die Metrik, auf die alarmiert werden sollte;
-&lt;code&gt;fileshare_ssf_revoked_subjects&lt;/code&gt; gibt an, wie viele Widerrufe aufbewahrt werden. Siehe
-&lt;a href="https://go-fileshare.github.io/docs/0.31/de/administration/health/#what-to-alert-on"&gt;Health und Metriken&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Wie bei der KRL: Solange der Transmitter eine Abfrage nicht innerhalb von&lt;code&gt;max_age&lt;/code&gt; beantwortet hat, werden &lt;strong&gt;alle föderierten Zugangsdaten&lt;/strong&gt; abgelehnt (fail closed),weil „kein Widerruf ist angekommen“ und „keiner konnte ankommen“ gleich aussehen.&lt;code&gt;fileshare_ssf_last_heard_seconds&lt;/code&gt; ist die Metrik, auf die alarmiert werden sollte;&lt;code&gt;fileshare_ssf_revoked_subjects&lt;/code&gt; gibt an, wie viele Widerrufe aufbewahrt werden. Siehe&lt;a href="https://go-fileshare.github.io/docs/0.31/de/administration/health/#what-to-alert-on"&gt;Health und Metriken&lt;/a&gt;.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="checked-end-to-end"&gt;Durchgängig geprüft&lt;span class="hx:absolute hx:-mt-20" id="checked-end-to-end"&gt;&lt;/span&gt;
-&lt;a href="#checked-end-to-end" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Die Interop-Lane von go-authn/bridge
-(&lt;a href="https://github.com/go-authn/bridge/pull/12" target="_blank" rel="noopener"&gt;#12&lt;/a&gt;,
-&lt;a href="https://github.com/go-authn/bridge/pull/17" target="_blank" rel="noopener"&gt;#17&lt;/a&gt;) prüft fileshare v0.13.0
-gegen die echte Bridge: die KRL, die CRL über NFS, über SSF widerrufene WebDAV-Tokens,
-einen per Scope deaktivierten IdP und opkssh über SSF – den Fall, den keine Widerrufsliste
+&lt;a href="#checked-end-to-end" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Die Interop-Lane von go-authn/bridge(&lt;a href="https://github.com/go-authn/bridge/pull/12" target="_blank" rel="noopener"&gt;#12&lt;/a&gt;,&lt;a href="https://github.com/go-authn/bridge/pull/17" target="_blank" rel="noopener"&gt;#17&lt;/a&gt;) prüft fileshare v0.13.0
+gegen die echte Bridge: die KRL, die CRL über NFS, über SSF widerrufene WebDAV-Tokens,einen per Scope deaktivierten IdP und opkssh über SSF – den Fall, den keine Widerrufsliste
 erreicht.&lt;/p&gt;</description></item></channel></rss>

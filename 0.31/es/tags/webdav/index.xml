@@ -48,8 +48,7 @@ data-copied-label="¡Copiado!"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;Loopback, y un servidor sin nadie a quien autenticar, no se ven afectados.
-Consulte &lt;a href="https://go-fileshare.github.io/docs/0.31/es/security/tls/#webdav-is-not-served-in-the-clear"&gt;TLS&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Loopback, y un servidor sin nadie a quien autenticar, no se ven afectados.Consulte &lt;a href="https://go-fileshare.github.io/docs/0.31/es/security/tls/#webdav-is-not-served-in-the-clear"&gt;TLS&lt;/a&gt;.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -79,11 +78,8 @@ data-copied-label="¡Copiado!"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;Un navegador tiene un token y ninguna contraseña. Por eso WebDAV acepta
-&lt;code&gt;Authorization: Bearer&lt;/code&gt; y, donde también hay personas locales, el desafío que envía
-ofrece &lt;strong&gt;ambos&lt;/strong&gt;: el cliente elige el que puede responder. El token lo verifica
-&lt;a href="https://github.com/go-authn/oidc" target="_blank" rel="noopener"&gt;go-authn/oidc&lt;/a&gt;: firma, emisor, audiencia,
-caducidad.&lt;/p&gt;
+&lt;p&gt;Un navegador tiene un token y ninguna contraseña. Por eso WebDAV acepta&lt;code&gt;Authorization: Bearer&lt;/code&gt; y, donde también hay personas locales, el desafío que envía
+ofrece &lt;strong&gt;ambos&lt;/strong&gt;: el cliente elige el que puede responder. El token lo verifica&lt;a href="https://github.com/go-authn/oidc" target="_blank" rel="noopener"&gt;go-authn/oidc&lt;/a&gt;: firma, emisor, audiencia,caducidad.&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
@@ -92,8 +88,7 @@ caducidad.&lt;/p&gt;
 en absoluto, y S3 con una firma SigV4: ninguno tiene dónde poner una
 cabecera &lt;code&gt;Authorization&lt;/code&gt;. Es un hecho de los protocolos, no un límite de este
 programa.&lt;/p&gt;
-&lt;p&gt;La palabra del proveedor llega en cambio a &lt;strong&gt;SFTP&lt;/strong&gt; dentro de un certificado:
-consulte &lt;a href="https://go-fileshare.github.io/docs/0.31/es/protocols/sftp/#people-the-identity-provider-vouches-for"&gt;SFTP&lt;/a&gt;. Una
+&lt;p&gt;La palabra del proveedor llega en cambio a &lt;strong&gt;SFTP&lt;/strong&gt; dentro de un certificado:consulte &lt;a href="https://go-fileshare.github.io/docs/0.31/es/protocols/sftp/#people-the-identity-provider-vouches-for"&gt;SFTP&lt;/a&gt;. Una
 configuración que nombra un proveedor y no sirve ni WebDAV ni un SFTP de ese
 tipo se &lt;strong&gt;rechaza en lugar de arrancar&lt;/strong&gt;.&lt;/p&gt;
 &lt;/div&gt;
@@ -103,10 +98,8 @@ tipo se &lt;strong&gt;rechaza en lugar de arrancar&lt;/strong&gt;.&lt;/p&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Un token dice quién cree el proveedor que es alguien. No dice que este servidor tenga un recurso compartido para esa persona.&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;Un token válido para un nombre que ningún origen de aquí conoce se rechaza:
-la lectura segura de &lt;em&gt;no le conozco&lt;/em&gt; no es &lt;em&gt;tiene permiso&lt;/em&gt;. Tampoco un nombre
-que también tiene una cuenta local obtiene esa cuenta, salvo que
-&lt;code&gt;local_names = true&lt;/code&gt; indique que los nombres del proveedor son los de este
+&lt;p&gt;Un token válido para un nombre que ningún origen de aquí conoce se rechaza:la lectura segura de &lt;em&gt;no le conozco&lt;/em&gt; no es &lt;em&gt;tiene permiso&lt;/em&gt;. Tampoco un nombre
+que también tiene una cuenta local obtiene esa cuenta, salvo que&lt;code&gt;local_names = true&lt;/code&gt; indique que los nombres del proveedor son los de este
 servidor (desactivado por defecto, desde la v0.20.0); sin ello, ese token
 también se rechaza, salvo que una regla &lt;code&gt;oidc:&lt;/code&gt; nombre a la persona.&lt;/p&gt;
 &lt;/div&gt;
@@ -132,33 +125,27 @@ data-copied-label="¡Copiado!"
 &lt;/div&gt;
 &lt;p&gt;Aquí &lt;strong&gt;no hay flujo de inicio de sesión&lt;/strong&gt;: ni redirección, ni secreto de cliente, ni
 cookies. Esto es el servidor de recursos.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;El nombre&lt;/strong&gt; que da un token es &lt;code&gt;preferred_username&lt;/code&gt;, o el claim que nombre
-&lt;code&gt;username_claim&lt;/code&gt;. Sin &lt;code&gt;preferred_username&lt;/code&gt;, es el correo electrónico solo si el
-proveedor indica &lt;code&gt;email_verified: true&lt;/code&gt;, y si no, &lt;code&gt;sub&lt;/code&gt;. Con
-&lt;code&gt;username_claim = &amp;quot;email&amp;quot;&lt;/code&gt;, un token cuyo correo no está verificado se rechaza, tanto
+&lt;p&gt;&lt;strong&gt;El nombre&lt;/strong&gt; que da un token es &lt;code&gt;preferred_username&lt;/code&gt;, o el claim que nombre&lt;code&gt;username_claim&lt;/code&gt;. Sin &lt;code&gt;preferred_username&lt;/code&gt;, es el correo electrónico solo si el
+proveedor indica &lt;code&gt;email_verified: true&lt;/code&gt;, y si no, &lt;code&gt;sub&lt;/code&gt;. Con&lt;code&gt;username_claim = &amp;quot;email&amp;quot;&lt;/code&gt;, un token cuyo correo no está verificado se rechaza, tanto
 por WebDAV como para un inicio de sesión opkssh por SFTP. Mientras no está
 verificado, el correo es solo lo que la persona escribió, y un token firmado que lo
 llevara quedaría vinculado a una dirección que nadie comprobó (OpenID Connect Core
 5.1; go-authn/oidc v0.2.0, fileshare v0.16.3).&lt;/p&gt;
 &lt;p&gt;Qué personas del proveedor obtienen un recurso compartido —grupos, personas con
-nombre, instituciones enteras— se escribe con reglas &lt;code&gt;oidc:&lt;/code&gt; y &lt;code&gt;domains&lt;/code&gt;; consulte
-&lt;a href="https://go-fileshare.github.io/docs/0.31/es/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;las personas que nombra el proveedor de identidad&lt;/a&gt;.&lt;/p&gt;
+nombre, instituciones enteras— se escribe con reglas &lt;code&gt;oidc:&lt;/code&gt; y &lt;code&gt;domains&lt;/code&gt;; consulte&lt;a href="https://go-fileshare.github.io/docs/0.31/es/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;las personas que nombra el proveedor de identidad&lt;/a&gt;.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="a-token-outlives-the-person-unless-something-says-otherwise"&gt;Un token sobrevive a la persona, salvo que algo diga lo contrario&lt;span class="hx:absolute hx:-mt-20" id="a-token-outlives-the-person-unless-something-says-otherwise"&gt;&lt;/span&gt;
 &lt;a href="#a-token-outlives-the-person-unless-something-says-otherwise" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Un token se verifica aquí, por sí solo, y es válido hasta que caduca, pase lo que
-pase después con la persona. Ninguna lista de revocación puede nombrarlo. Un
-&lt;a href="https://go-fileshare.github.io/docs/0.31/es/security/shared-signals/"&gt;bloque &lt;code&gt;ssf&lt;/code&gt;&lt;/a&gt; hace que un &lt;code&gt;session-revoked&lt;/code&gt; de CAEP
+pase después con la persona. Ninguna lista de revocación puede nombrarlo. Un&lt;a href="https://go-fileshare.github.io/docs/0.31/es/security/shared-signals/"&gt;bloque &lt;code&gt;ssf&lt;/code&gt;&lt;/a&gt; hace que un &lt;code&gt;session-revoked&lt;/code&gt; de CAEP
 procedente del proveedor invalide todos los tokens emitidos (&lt;code&gt;iat&lt;/code&gt;) antes de él.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="the-root-and-uploads-in-pieces"&gt;La raíz, y las subidas por partes&lt;span class="hx:absolute hx:-mt-20" id="the-root-and-uploads-in-pieces"&gt;&lt;/span&gt;
 &lt;a href="#the-root-and-uploads-in-pieces" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;La raíz lista los recursos compartidos&lt;/strong&gt; (desde v0.29.0). Un navegador en &lt;code&gt;/&lt;/code&gt;
 recibe una página con los recursos que puede abrir; un &lt;code&gt;PROPFIND&lt;/code&gt; de &lt;code&gt;/&lt;/code&gt; los
 recibe como colecciones (&lt;code&gt;207&lt;/code&gt;), así que un gestor de archivos puede montar todo
-el servidor en lugar de un solo recurso. La profundidad &lt;code&gt;infinity&lt;/code&gt; se rechaza
-(&lt;code&gt;403&lt;/code&gt;, &lt;code&gt;propfind-finite-depth&lt;/code&gt;, como permite la RFC 4918), igual que todo lo que
+el servidor en lugar de un solo recurso. La profundidad &lt;code&gt;infinity&lt;/code&gt; se rechaza(&lt;code&gt;403&lt;/code&gt;, &lt;code&gt;propfind-finite-depth&lt;/code&gt;, como permite la RFC 4918), igual que todo lo que
 escribiría en la raíz (&lt;code&gt;405&lt;/code&gt;). Hasta v0.28, cualquier método en &lt;code&gt;/&lt;/code&gt; recibía la
 página.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Una subida grande puede hacerse por partes&lt;/strong&gt; (desde v0.29.0). Un &lt;code&gt;PUT&lt;/code&gt; se
 guarda entero en memoria, hasta 1 GiB, así que un cliente que no puede enviar en
-flujo — un navegador, el &lt;a href="https://go-fileshare.github.io/docs/0.31/es/administration/"&gt;explorador de archivos&lt;/a&gt; —
-envía un &lt;code&gt;PUT&lt;/code&gt; vacío, luego cada parte con un &lt;code&gt;Content-Range&lt;/code&gt; que empieza
+flujo — un navegador, el &lt;a href="https://go-fileshare.github.io/docs/0.31/es/administration/"&gt;explorador de archivos&lt;/a&gt; —envía un &lt;code&gt;PUT&lt;/code&gt; vacío, luego cada parte con un &lt;code&gt;Content-Range&lt;/code&gt; que empieza
 exactamente donde terminó la anterior, y luego un &lt;code&gt;MOVE&lt;/code&gt; al nombre real. Un rango
 que empieza después del final sigue siendo &lt;code&gt;416&lt;/code&gt;: dejaría bytes que nadie envió.&lt;/p&gt;</description></item></channel></rss>

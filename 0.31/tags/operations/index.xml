@@ -107,13 +107,9 @@ starts without it does not do what it says.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;&lt;code&gt;nogrpc&lt;/code&gt; leaves out the admin API and, with it, the
-&lt;a href="https://go-fileshare.github.io/docs/0.31/administration/volumes/"&gt;provisioner&lt;/a&gt;. &lt;a href="https://go-fileshare.github.io/docs/0.31/administration/health/"&gt;Health and metrics&lt;/a&gt;
+&lt;p&gt;&lt;code&gt;nogrpc&lt;/code&gt; leaves out the admin API and, with it, the&lt;a href="https://go-fileshare.github.io/docs/0.31/administration/volumes/"&gt;provisioner&lt;/a&gt;. &lt;a href="https://go-fileshare.github.io/docs/0.31/administration/health/"&gt;Health and metrics&lt;/a&gt;
 are plain HTTP and stay.&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;-tags noprovisioner&lt;/code&gt; leaves out only the provisioner, the privileged
-&lt;code&gt;fileshare provisioner&lt;/code&gt; role, and go-fsctl&amp;rsquo;s zfs, btrfs and projquota with it:
-a server that never serves volumes need not carry the code that creates them.
-&lt;code&gt;fileshare provisioner&lt;/code&gt; in such a build says so rather than &amp;ldquo;unknown command&amp;rdquo;.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;-tags noprovisioner&lt;/code&gt; leaves out only the provisioner, the privileged&lt;code&gt;fileshare provisioner&lt;/code&gt; role, and go-fsctl&amp;rsquo;s zfs, btrfs and projquota with it:a server that never serves volumes need not carry the code that creates them.&lt;code&gt;fileshare provisioner&lt;/code&gt; in such a build says so rather than &amp;ldquo;unknown command&amp;rdquo;.&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;nosql&lt;/code&gt; is by a distance the biggest lever: PostgreSQL, MySQL and SQLite
 together weigh &lt;strong&gt;11.7 MB&lt;/strong&gt;, more than every protocol in this program put
 together. A site whose users are in the file wants it. The drivers are imported
@@ -125,8 +121,7 @@ choice a build tag rather than a fork.&lt;/p&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;A protocol this binary was built without&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;A configuration naming one is told &lt;em&gt;that&lt;/em&gt;, rather than &amp;ldquo;there is no such
 protocol&amp;rdquo; — the difference between a typo and a build tag. The same holds
-for &lt;code&gt;opkssh_client_id&lt;/code&gt; under &lt;code&gt;noopenpubkey&lt;/code&gt; and an &lt;code&gt;admin&lt;/code&gt; block under
-&lt;code&gt;nogrpc&lt;/code&gt;.&lt;/p&gt;
+for &lt;code&gt;opkssh_client_id&lt;/code&gt; under &lt;code&gt;noopenpubkey&lt;/code&gt; and an &lt;code&gt;admin&lt;/code&gt; block under&lt;code&gt;nogrpc&lt;/code&gt;.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -140,8 +135,7 @@ again.&lt;/p&gt;
 run: &lt;strong&gt;code that was never compiled cannot be reached&lt;/strong&gt;, sandboxed or not.&lt;/p&gt;
 &lt;p&gt;What tags do &lt;em&gt;not&lt;/em&gt; give is isolation between the protocols you &lt;strong&gt;do&lt;/strong&gt; run, nor
 a way to add a protocol without recompiling. Both are real, and both are
-arguments for a process boundary rather than for a smaller binary — which is
-&lt;a href="https://go-fileshare.github.io/docs/0.31/operations/isolation/"&gt;one process per protocol&lt;/a&gt;, using this same binary, not a plugin
+arguments for a process boundary rather than for a smaller binary — which is&lt;a href="https://go-fileshare.github.io/docs/0.31/operations/isolation/"&gt;one process per protocol&lt;/a&gt;, using this same binary, not a plugin
 framework.&lt;/p&gt;</description></item><item><title>One process per protocol</title><link>https://go-fileshare.github.io/docs/0.31/operations/isolation/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/operations/isolation/</guid><description>
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;fileshare --config /etc/fileshare.d --isolate&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
@@ -171,8 +165,7 @@ data-copied-label="Copied!"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;The parent binds the listeners and then execs &lt;strong&gt;itself&lt;/strong&gt; once per protocol,
-handing each child only the shares that protocol may serve.&lt;/p&gt;
+&lt;p&gt;The parent binds the listeners and then execs &lt;strong&gt;itself&lt;/strong&gt; once per protocol,handing each child only the shares that protocol may serve.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="checked-with-lsof-not-by-reading-the-code"&gt;Checked with &lt;code&gt;lsof&lt;/code&gt;, not by reading the code&lt;span class="hx:absolute hx:-mt-20" id="checked-with-lsof-not-by-reading-the-code"&gt;&lt;/span&gt;
 &lt;a href="#checked-with-lsof-not-by-reading-the-code" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;pre&gt;&lt;code&gt;smb (pid 19810) has open: scratch.img photos.img
@@ -221,19 +214,14 @@ data-copied-label="Copied!"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;&lt;code&gt;protocols = [...]&lt;/code&gt; on a share is useful on its own, not only under
-&lt;code&gt;--isolate&lt;/code&gt;: a share declared SMB-only is a share the WebDAV process is never
-told about. A &lt;code&gt;serve&lt;/code&gt; block that would end up carrying nothing is refused too,
-before any image is opened, naming the shares that were kept from it and why.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;protocols = [...]&lt;/code&gt; on a share is useful on its own, not only under&lt;code&gt;--isolate&lt;/code&gt;: a share declared SMB-only is a share the WebDAV process is never
+told about. A &lt;code&gt;serve&lt;/code&gt; block that would end up carrying nothing is refused too,before any image is opened, naming the shares that were kept from it and why.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="not-with-an-admin-or-a-metrics-block-yet"&gt;Not with an &lt;code&gt;admin&lt;/code&gt; or a &lt;code&gt;metrics&lt;/code&gt; block, yet&lt;span class="hx:absolute hx:-mt-20" id="not-with-an-admin-or-a-metrics-block-yet"&gt;&lt;/span&gt;
-&lt;a href="#not-with-an-admin-or-a-metrics-block-yet" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;--isolate&lt;/code&gt; together with an &lt;a href="https://go-fileshare.github.io/docs/0.31/administration/"&gt;&lt;code&gt;admin&lt;/code&gt;&lt;/a&gt; or a
-&lt;a href="https://go-fileshare.github.io/docs/0.31/administration/health/"&gt;&lt;code&gt;metrics&lt;/code&gt;&lt;/a&gt; block is refused: the children open
+&lt;a href="#not-with-an-admin-or-a-metrics-block-yet" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;--isolate&lt;/code&gt; together with an &lt;a href="https://go-fileshare.github.io/docs/0.31/administration/"&gt;&lt;code&gt;admin&lt;/code&gt;&lt;/a&gt; or a&lt;a href="https://go-fileshare.github.io/docs/0.31/administration/health/"&gt;&lt;code&gt;metrics&lt;/code&gt;&lt;/a&gt; block is refused: the children open
 the images and the parent opens nothing, so there is no one process an API
 change could be applied to, or whose readiness a probe would be asking about.&lt;/p&gt;</description></item><item><title>One image, several protocols, one lock</title><link>https://go-fileshare.github.io/docs/0.31/operations/locking/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/operations/locking/</guid><description>
-&lt;p&gt;Every server in this family serialises the driver itself, because
-&lt;a href="https://github.com/go-filesystems/interface" target="_blank" rel="noopener"&gt;&lt;code&gt;go-filesystems/interface&lt;/code&gt;&lt;/a&gt;
-promises nothing about concurrent path-based calls — and each of them holds
-&lt;strong&gt;its own&lt;/strong&gt; lock, knowing nothing about the others.&lt;/p&gt;
+&lt;p&gt;Every server in this family serialises the driver itself, because&lt;a href="https://github.com/go-filesystems/interface" target="_blank" rel="noopener"&gt;&lt;code&gt;go-filesystems/interface&lt;/code&gt;&lt;/a&gt;
+promises nothing about concurrent path-based calls — and each of them holds&lt;strong&gt;its own&lt;/strong&gt; lock, knowing nothing about the others.&lt;/p&gt;
 &lt;p&gt;Serving one image over three protocols at once would therefore have no common
 lock anywhere. So the image is wrapped &lt;strong&gt;once&lt;/strong&gt;, here, and the same wrapper is
 handed to all of them.&lt;/p&gt;
@@ -249,13 +237,11 @@ re-audit.&lt;/p&gt;
 &lt;li&gt;a driver that answers &lt;code&gt;Opener&lt;/code&gt; gets a &lt;strong&gt;locked &lt;code&gt;File&lt;/code&gt;&lt;/strong&gt; back;&lt;/li&gt;
 &lt;li&gt;one whose &lt;code&gt;File&lt;/code&gt; answers &lt;code&gt;WritableFile&lt;/code&gt; keeps its &lt;strong&gt;positional writes&lt;/strong&gt;.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;The difference between those and the whole-file fallback was measured at
-&lt;strong&gt;~70×&lt;/strong&gt; elsewhere in the family, so a wrapper that erased them would be a
+&lt;p&gt;The difference between those and the whole-file fallback was measured at&lt;strong&gt;~70×&lt;/strong&gt; elsewhere in the family, so a wrapper that erased them would be a
 performance defect disguised as safety.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="under-isolate-the-lock-cannot-help"&gt;Under &lt;code&gt;--isolate&lt;/code&gt; the lock cannot help&lt;span class="hx:absolute hx:-mt-20" id="under-isolate-the-lock-cannot-help"&gt;&lt;/span&gt;
 &lt;a href="#under-isolate-the-lock-cannot-help" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;A child process opens the image itself, so there is no shared wrapper between
-children. That is why an image served writable by two protocols is
-&lt;a href="https://go-fileshare.github.io/docs/0.31/operations/isolation/#the-rule-that-makes-it-honest"&gt;refused&lt;/a&gt; rather than quietly
+children. That is why an image served writable by two protocols is&lt;a href="https://go-fileshare.github.io/docs/0.31/operations/isolation/#the-rule-that-makes-it-honest"&gt;refused&lt;/a&gt; rather than quietly
 served without a lock.&lt;/p&gt;</description></item><item><title>Operations</title><link>https://go-fileshare.github.io/docs/0.31/operations/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/operations/</guid><description>
 &lt;div class="hextra-cards hx:mt-4 hx:gap-4 hx:grid not-prose" style="--hextra-cards-grid-cols: 3;"&gt;
 &lt;a class="hextra-card hx:group hx:flex hx:flex-col hx:justify-start hx:overflow-hidden hx:rounded-lg hx:border hx:border-gray-200 hx:text-current hx:no-underline hx:dark:shadow-none hx:hover:shadow-gray-100 hx:dark:hover:shadow-none hx:shadow-gray-100 hx:active:shadow-sm hx:active:shadow-gray-200 hx:transition-all hx:duration-200 hx:hover:border-gray-300 hx:bg-transparent hx:shadow-xs hx:dark:border-neutral-800 hx:hover:bg-slate-50 hx:hover:shadow-md hx:dark:hover:border-neutral-700 hx:dark:hover:bg-neutral-900" href="build-tags/"&gt;&lt;div&gt;

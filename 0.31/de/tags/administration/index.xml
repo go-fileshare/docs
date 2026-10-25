@@ -1,10 +1,8 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Administration</title><link>https://go-fileshare.github.io/docs/0.31/de/tags/administration/</link><description>Recent content in Administration on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>de</language><atom:link href="https://go-fileshare.github.io/docs/0.31/de/tags/administration/index.xml" rel="self" type="application/rss+xml"/><item><title>Volumes: Speicher, den fileshare anlegt</title><link>https://go-fileshare.github.io/docs/0.31/de/administration/volumes/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/de/administration/volumes/</guid><description>
 &lt;p&gt;Seit v0.21.0 kann die &lt;a href="https://go-fileshare.github.io/docs/0.31/de/administration/"&gt;Admin-API&lt;/a&gt; &lt;strong&gt;den Speicher anlegen, den eine Freigabe
 bereitstellt&lt;/strong&gt; – ein &lt;strong&gt;ZFS-Dataset&lt;/strong&gt;, ein &lt;strong&gt;btrfs-Subvolume&lt;/strong&gt;, ein &lt;strong&gt;XFS- oder ext4-Verzeichnis
-unter einer Projekt-Quota&lt;/strong&gt; –, mit Größe, Eigentümer und Buchführung, und eine Freigabe daraus bereitstellen.
-Nur Linux. Ceph wird noch nicht unterstützt.&lt;/p&gt;
-&lt;p&gt;Diesen Speicher anzulegen erfordert &lt;code&gt;CAP_SYS_ADMIN&lt;/code&gt; (quotactl, die btrfs-Quota-ioctls,
-&lt;code&gt;/dev/zfs&lt;/code&gt;, mount(2)). &lt;code&gt;fileshare serve&lt;/code&gt; parst fünf Netzwerkprotokolle für
+unter einer Projekt-Quota&lt;/strong&gt; –, mit Größe, Eigentümer und Buchführung, und eine Freigabe daraus bereitstellen.Nur Linux. Ceph wird noch nicht unterstützt.&lt;/p&gt;
+&lt;p&gt;Diesen Speicher anzulegen erfordert &lt;code&gt;CAP_SYS_ADMIN&lt;/code&gt; (quotactl, die btrfs-Quota-ioctls,&lt;code&gt;/dev/zfs&lt;/code&gt;, mount(2)). &lt;code&gt;fileshare serve&lt;/code&gt; parst fünf Netzwerkprotokolle für
 Fremde und hält kein Privileg, also ist der Teil, der eines braucht, eine zweite Rolle desselben
 Binarys, &lt;code&gt;fileshare provisioner&lt;/code&gt;, hinter einem Unix-Socket und einem kleinen, geschlossenen
 Protokoll:&lt;/p&gt;
@@ -33,8 +31,7 @@ data-copied-label="Kopiert!"
 &lt;p&gt;Ein Binary statt zweier Daemons: eine Version zum Ausrollen, eine
 Protokolldefinition. Den Speicher selbst übernimmt &lt;a href="https://go-fsctl.github.io/" target="_blank" rel="noopener"&gt;go-fsctl&lt;/a&gt;
 (reines Go, kein &lt;code&gt;zfs&lt;/code&gt;- oder &lt;code&gt;btrfs&lt;/code&gt;-Kommando). Das Design und was sich während
-des Baus geändert hat, stehen im fileshare-Repository unter
-&lt;a href="https://github.com/go-fileshare/fileshare/blob/v0.28.0/docs/volumes.md" target="_blank" rel="noopener"&gt;&lt;code&gt;docs/volumes.md&lt;/code&gt;&lt;/a&gt;.&lt;/p&gt;
+des Baus geändert hat, stehen im fileshare-Repository unter&lt;a href="https://github.com/go-fileshare/fileshare/blob/v0.28.0/docs/volumes.md" target="_blank" rel="noopener"&gt;&lt;code&gt;docs/volumes.md&lt;/code&gt;&lt;/a&gt;.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="both-processes-configured"&gt;Beide Prozesse, konfiguriert&lt;span class="hx:absolute hx:-mt-20" id="both-processes-configured"&gt;&lt;/span&gt;
 &lt;a href="#both-processes-configured" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;fileshare serve&lt;/code&gt;, als Benutzer &lt;code&gt;fileshare&lt;/code&gt; (uid 990):&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
@@ -154,10 +151,8 @@ data-copied-label="Kopiert!"
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;Die Datei des Provisioners enthält nichts außer ihrem &lt;code&gt;provisioner&lt;/code&gt;-Block: Die eigene Datei von fileshare,
-ihm versehentlich übergeben, wird abgelehnt statt halb gelesen.&lt;/p&gt;
-&lt;p&gt;Ein Volume ist immer &lt;code&gt;&amp;lt;parent root&amp;gt;/&amp;lt;name&amp;gt;&lt;/code&gt;: das Dataset &lt;code&gt;tank/fileshare/&amp;lt;name&amp;gt;&lt;/code&gt;,
-eingehängt unter &lt;code&gt;/srv/fileshare/volumes/tank/&amp;lt;name&amp;gt;&lt;/code&gt; (mit &lt;code&gt;refquota&lt;/code&gt;), ein
+&lt;p&gt;Die Datei des Provisioners enthält nichts außer ihrem &lt;code&gt;provisioner&lt;/code&gt;-Block: Die eigene Datei von fileshare,ihm versehentlich übergeben, wird abgelehnt statt halb gelesen.&lt;/p&gt;
+&lt;p&gt;Ein Volume ist immer &lt;code&gt;&amp;lt;parent root&amp;gt;/&amp;lt;name&amp;gt;&lt;/code&gt;: das Dataset &lt;code&gt;tank/fileshare/&amp;lt;name&amp;gt;&lt;/code&gt;,eingehängt unter &lt;code&gt;/srv/fileshare/volumes/tank/&amp;lt;name&amp;gt;&lt;/code&gt; (mit &lt;code&gt;refquota&lt;/code&gt;), ein
 btrfs-Subvolume, begrenzt durch seine qgroup, ein XFS- oder ext4-Verzeichnis mit einer Projekt-ID
 aus dem Bereich und einem harten Blocklimit. XFS und ext4 brauchen die Mount-Option &lt;code&gt;prjquota&lt;/code&gt;
 (ext4 zusätzlich die Features &lt;code&gt;project,quota&lt;/code&gt;).&lt;/p&gt;
@@ -225,8 +220,7 @@ data-copied-label="Kopiert!"
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;p&gt;&lt;code&gt;ProtectSystem=&lt;/code&gt; ist für den Server in Ordnung: Es ist der Provisioner, der einhängt, und
-Mounts propagieren in den Namespace des Servers hinein, nicht aus ihm heraus, sodass ein ZFS-Volume,
-das nach dem Start des Servers eingehängt wurde, für ihn sichtbar ist.&lt;/p&gt;
+Mounts propagieren in den Namespace des Servers hinein, nicht aus ihm heraus, sodass ein ZFS-Volume,das nach dem Start des Servers eingehängt wurde, für ihn sichtbar ist.&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
@@ -241,14 +235,12 @@ unter &lt;code&gt;sudo&lt;/code&gt;.&lt;/p&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Aktualisieren Sie zuerst den Provisioner&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;Der Provisioner lehnt eine Nachricht ab, die ein Feld enthält, das seine Version nicht
-definiert – er schließt die Verbindung –, also laufen &lt;code&gt;fileshare serve&lt;/code&gt; und
-&lt;code&gt;fileshare provisioner&lt;/code&gt; in derselben Version.&lt;/p&gt;
+definiert – er schließt die Verbindung –, also laufen &lt;code&gt;fileshare serve&lt;/code&gt; und&lt;code&gt;fileshare provisioner&lt;/code&gt; in derselben Version.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="the-admin-apis-volume-calls"&gt;Die Volume-Aufrufe der Admin-API&lt;span class="hx:absolute hx:-mt-20" id="the-admin-apis-volume-calls"&gt;&lt;/span&gt;
-&lt;a href="#the-admin-apis-volume-calls" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;fileshare serve&lt;/code&gt; leitet diese an den Provisioner weiter
-(&lt;a href="https://github.com/go-fileshare/fileshare/blob/v0.28.0/proto/fileshare/admin/v1/admin.proto" target="_blank" rel="noopener"&gt;&lt;code&gt;admin.proto&lt;/code&gt;&lt;/a&gt;):&lt;/p&gt;
+&lt;a href="#the-admin-apis-volume-calls" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;fileshare serve&lt;/code&gt; leitet diese an den Provisioner weiter(&lt;a href="https://github.com/go-fileshare/fileshare/blob/v0.28.0/proto/fileshare/admin/v1/admin.proto" target="_blank" rel="noopener"&gt;&lt;code&gt;admin.proto&lt;/code&gt;&lt;/a&gt;):&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
@@ -288,12 +280,10 @@ definiert – er schließt die Verbindung –, also laufen &lt;code&gt;fileshare
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;&lt;code&gt;DeleteShare&lt;/code&gt; löscht nie ein Volume. „Die Freigaben, die es nutzen&amp;quot; sind die daraus
-erstellten Freigaben &lt;strong&gt;und&lt;/strong&gt; jede Freigabe – auch aus den Konfigurationsdateien, bereitgestellt,
-deaktiviert oder nicht verfügbar –, deren Image oder Verzeichnis darin liegt.&lt;/p&gt;
+erstellten Freigaben &lt;strong&gt;und&lt;/strong&gt; jede Freigabe – auch aus den Konfigurationsdateien, bereitgestellt,deaktiviert oder nicht verfügbar –, deren Image oder Verzeichnis darin liegt.&lt;/p&gt;
 &lt;p&gt;Ein Name entspricht &lt;code&gt;^[a-z0-9][a-z0-9_-]{0,62}$&lt;/code&gt;, und eine Anfrage trägt nie einen
 Pfad: Sie nennt einen &lt;code&gt;parent&lt;/code&gt; aus der eigenen Konfiguration des Provisioners.&lt;/p&gt;
-&lt;p&gt;Mit &lt;code&gt;reflection = true&lt;/code&gt; im &lt;code&gt;admin&lt;/code&gt;-Block kann &lt;code&gt;grpcurl&lt;/code&gt; die Aufrufe ausführen.
-Der Socket hat 0600, und &lt;code&gt;allowed_uids&lt;/code&gt; oben nennt nur die uid von fileshare, also führen Sie
+&lt;p&gt;Mit &lt;code&gt;reflection = true&lt;/code&gt; im &lt;code&gt;admin&lt;/code&gt;-Block kann &lt;code&gt;grpcurl&lt;/code&gt; die Aufrufe ausführen.Der Socket hat 0600, und &lt;code&gt;allowed_uids&lt;/code&gt; oben nennt nur die uid von fileshare, also führen Sie
 es als dieser Benutzer aus:&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nv"&gt;S&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/run/fileshare/admin.sock
@@ -330,10 +320,7 @@ data-copied-label="Kopiert!"
 &lt;/div&gt;
 &lt;h3 data-hextra-search-id="status-codes"&gt;Statuscodes&lt;span class="hx:absolute hx:-mt-20" id="status-codes"&gt;&lt;/span&gt;
 &lt;a href="#status-codes" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Die Codes des Provisioners kommen so zurück, wie er sie gegeben hat: &lt;code&gt;INVALID_ARGUMENT&lt;/code&gt; (ein Name
-außerhalb der Grammatik, ein unbekannter Parent, eine Quota von 0), &lt;code&gt;OUT_OF_RANGE&lt;/code&gt; (über
-&lt;code&gt;max_volume&lt;/code&gt;), &lt;code&gt;RESOURCE_EXHAUSTED&lt;/code&gt; (die Quota oder der Zuwachs einer Größenänderung ist mehr,
-als der Parent gerade frei hat; oder der Bereich der Projekt-IDs ist aufgebraucht),
-&lt;code&gt;ALREADY_EXISTS&lt;/code&gt;, &lt;code&gt;NOT_FOUND&lt;/code&gt;, &lt;code&gt;FAILED_PRECONDITION&lt;/code&gt;, &lt;code&gt;UNIMPLEMENTED&lt;/code&gt;.&lt;/p&gt;
+außerhalb der Grammatik, ein unbekannter Parent, eine Quota von 0), &lt;code&gt;OUT_OF_RANGE&lt;/code&gt; (über&lt;code&gt;max_volume&lt;/code&gt;), &lt;code&gt;RESOURCE_EXHAUSTED&lt;/code&gt; (die Quota oder der Zuwachs einer Größenänderung ist mehr,als der Parent gerade frei hat; oder der Bereich der Projekt-IDs ist aufgebraucht),&lt;code&gt;ALREADY_EXISTS&lt;/code&gt;, &lt;code&gt;NOT_FOUND&lt;/code&gt;, &lt;code&gt;FAILED_PRECONDITION&lt;/code&gt;, &lt;code&gt;UNIMPLEMENTED&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;Drei sind fileshares eigene:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;kein &lt;code&gt;provisioner&lt;/code&gt; konfiguriert: &lt;code&gt;FAILED_PRECONDITION&lt;/code&gt;;&lt;/li&gt;
@@ -347,8 +334,7 @@ Admin-Aufrufer nicht darf;&lt;/li&gt;
 &lt;ul&gt;
 &lt;li&gt;der Pfad ist sauber, absolut und – aufgelöst – unter &lt;code&gt;source_roots&lt;/code&gt;;&lt;/li&gt;
 &lt;li&gt;es ist ein Verzeichnis;&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;statfs&lt;/code&gt; meldet das Dateisystem der Art (&lt;code&gt;ZFS_SUPER_MAGIC&lt;/code&gt;,
-&lt;code&gt;BTRFS_SUPER_MAGIC&lt;/code&gt;, &lt;code&gt;XFS_SUPER_MAGIC&lt;/code&gt;, &lt;code&gt;EXT4_SUPER_MAGIC&lt;/code&gt;);&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;statfs&lt;/code&gt; meldet das Dateisystem der Art (&lt;code&gt;ZFS_SUPER_MAGIC&lt;/code&gt;,&lt;code&gt;BTRFS_SUPER_MAGIC&lt;/code&gt;, &lt;code&gt;XFS_SUPER_MAGIC&lt;/code&gt;, &lt;code&gt;EXT4_SUPER_MAGIC&lt;/code&gt;);&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;ZFS&lt;/strong&gt;: Es ist ein Einhängepunkt – sein Gerät ist nicht das seines Parents. Das Verzeichnis eines nicht
 eingehängten Datasets nähme Schreibzugriffe ohne Quota an. (Welches Dataset dort
 eingehängt ist, wird nicht geprüft: Die Antwort des Provisioners sagt es nicht.)&lt;/li&gt;
@@ -361,21 +347,15 @@ erben – ein Verzeichnis außerhalb jedes Projekts wird unbegrenzt bereitgestel
 und prüft erneut. Ein Volume, das weg ist, eine Prüfung nicht besteht oder dessen Provisioner
 nicht innerhalb von 10 s antwortet, lässt seine Freigabe &lt;strong&gt;definiert und nicht bereitgestellt&lt;/strong&gt; – gemeldet
 beim Start, von &lt;a href="https://go-fileshare.github.io/docs/0.31/de/configuration/check/"&gt;&lt;code&gt;fileshare check&lt;/code&gt;&lt;/a&gt; und im
-Feld &lt;code&gt;unavailable&lt;/code&gt; der Freigabe –, während der Rest des Servers startet.
-&lt;code&gt;EnableShare&lt;/code&gt; versucht es erneut.&lt;/p&gt;
+Feld &lt;code&gt;unavailable&lt;/code&gt; der Freigabe –, während der Rest des Servers startet.&lt;code&gt;EnableShare&lt;/code&gt; versucht es erneut.&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;fileshare serve&lt;/code&gt; weigert sich, Volumes als root oder mit &lt;code&gt;CAP_SYS_RESOURCE&lt;/code&gt; bereitzustellen&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;ext4 lässt beide über eine Projekt-Quota hinaus schreiben (fs/quota/dquot.c,
-&lt;code&gt;ignore_hardlimit&lt;/code&gt;): root schrieb in der CI von go-fsctl/projquota 16 MiB in ein 8-MiB-Projekt.
-XFS hat keine solche Ausnahme, aber die Regel ist eine einzige
-Regel für den Prozess, für jede Art: fileshare liest seine effektive uid und
-&lt;code&gt;CapEff&lt;/code&gt;/&lt;code&gt;CapPrm&lt;/code&gt; in &lt;code&gt;/proc/self/status&lt;/code&gt; (eine erlaubte Capability ist nur ein
-&lt;code&gt;capset(2)&lt;/code&gt; von einer effektiven entfernt), und ein Status, den es nicht lesen kann, zählt als
+&lt;p&gt;ext4 lässt beide über eine Projekt-Quota hinaus schreiben (fs/quota/dquot.c,&lt;code&gt;ignore_hardlimit&lt;/code&gt;): root schrieb in der CI von go-fsctl/projquota 16 MiB in ein 8-MiB-Projekt.XFS hat keine solche Ausnahme, aber die Regel ist eine einzige
+Regel für den Prozess, für jede Art: fileshare liest seine effektive uid und&lt;code&gt;CapEff&lt;/code&gt;/&lt;code&gt;CapPrm&lt;/code&gt; in &lt;code&gt;/proc/self/status&lt;/code&gt; (eine erlaubte Capability ist nur ein&lt;code&gt;capset(2)&lt;/code&gt; von einer effektiven entfernt), und ein Status, den es nicht lesen kann, zählt als
 deren Besitz. Es verweigert das &lt;strong&gt;Bereitstellen&lt;/strong&gt;, nicht die Volume-Aufrufe – Speicher
-als root anzulegen ist harmlos, als root hineinzuschreiben nicht. &lt;code&gt;fileshare check&lt;/code&gt; sagt,
-was davon vorliegt. Deshalb lehnt der Provisioner &lt;code&gt;client_uid = 0&lt;/code&gt; ab, und die
+als root anzulegen ist harmlos, als root hineinzuschreiben nicht. &lt;code&gt;fileshare check&lt;/code&gt; sagt,was davon vorliegt. Deshalb lehnt der Provisioner &lt;code&gt;client_uid = 0&lt;/code&gt; ab, und die
 Unit des Servers oben hat ein leeres &lt;code&gt;CapabilityBoundingSet=&lt;/code&gt;.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -419,27 +399,21 @@ v0.21.1 antwortet jedes Protokoll mit „voll&amp;quot;:&lt;/p&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;In v0.21.0 antwortete SMB mit &lt;code&gt;STATUS_ACCESS_DENIED&lt;/code&gt;, und NFS beantwortete eine Quota mit
-&lt;code&gt;NFS3ERR_NOSPC&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;In v0.21.0 antwortete SMB mit &lt;code&gt;STATUS_ACCESS_DENIED&lt;/code&gt;, und NFS beantwortete eine Quota mit&lt;code&gt;NFS3ERR_NOSPC&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;Das gilt für jede &lt;a href="https://go-fileshare.github.io/docs/0.31/de/configuration/shares/"&gt;Verzeichnisfreigabe&lt;/a&gt;, nicht nur
 für Volumes – siehe den &lt;a href="https://go-fileshare.github.io/docs/0.31/de/status/"&gt;Upgrade-Hinweis&lt;/a&gt;.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="the-size-a-client-sees"&gt;Die Größe, die ein Client sieht&lt;span class="hx:absolute hx:-mt-20" id="the-size-a-client-sees"&gt;&lt;/span&gt;
-&lt;a href="#the-size-a-client-sees" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Jedes Protokoll fragt den Server bei jeder Abfrage nach der Größe einer Freigabe:
-NFS mit &lt;code&gt;FSSTAT&lt;/code&gt;, SMB mit &lt;code&gt;FileFsFullSizeInformation&lt;/code&gt; und WebDAV mit den
+&lt;a href="#the-size-a-client-sees" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Jedes Protokoll fragt den Server bei jeder Abfrage nach der Größe einer Freigabe:NFS mit &lt;code&gt;FSSTAT&lt;/code&gt;, SMB mit &lt;code&gt;FileFsFullSizeInformation&lt;/code&gt; und WebDAV mit den
 Quota-Eigenschaften aus RFC 4331.&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;ZFS, XFS und ext4&lt;/strong&gt;: Die Größe ist das, was &lt;code&gt;statfs&lt;/code&gt; innerhalb des Volumes sagt;
-der Kernel antwortet dort mit der Quota (&lt;code&gt;refquota&lt;/code&gt; bei ZFS, die Projekt-Quota bei
+&lt;li&gt;&lt;strong&gt;ZFS, XFS und ext4&lt;/strong&gt;: Die Größe ist das, was &lt;code&gt;statfs&lt;/code&gt; innerhalb des Volumes sagt;der Kernel antwortet dort mit der Quota (&lt;code&gt;refquota&lt;/code&gt; bei ZFS, die Projekt-Quota bei
 XFS und ext4).&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;btrfs&lt;/strong&gt; (seit fileshare v0.23.0): &lt;code&gt;statfs&lt;/code&gt; von btrfs ignoriert qgroups und meldet
 das ganze Dateisystem, deshalb nimmt der Server die Zahlen des Provisioners. Die
 Größe ist die Quota des Volumes, der freie Platz ist die Quota abzüglich der
 referenzierten Bytes der qgroup, oder der freie Platz des Dateisystems, wenn der
 kleiner ist. Der Server fragt den Provisioner im Hintergrund, höchstens alle
-5 Sekunden, solange Clients fragen, und antwortet bis dahin mit den letzten Zahlen.
-btrfs aktualisiert den Zähler einer qgroup beim Abschluss einer Transaktion
-(standardmäßig alle 30 Sekunden), daher kann der freie Platz, den ein Client sieht,
-den Schreibvorgängen um so viel hinterherhinken. Vor v0.23.0 zeigte ein btrfs-Volume
+5 Sekunden, solange Clients fragen, und antwortet bis dahin mit den letzten Zahlen.btrfs aktualisiert den Zähler einer qgroup beim Abschluss einer Transaktion(standardmäßig alle 30 Sekunden), daher kann der freie Platz, den ein Client sieht,den Schreibvorgängen um so viel hinterherhinken. Vor v0.23.0 zeigte ein btrfs-Volume
 das ganze Dateisystem; die Quota galt trotzdem.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;Der belegte Platz kommt vom Provisioner (&lt;code&gt;used_bytes&lt;/code&gt;): Die Belegung eines XFS- oder
@@ -447,13 +421,11 @@ ext4-Projekts zu lesen erfordert &lt;code&gt;CAP_SYS_ADMIN&lt;/code&gt;, das fil
 &lt;h2 data-hextra-search-id="what-the-provisioner-promises"&gt;Was der Provisioner zusichert&lt;span class="hx:absolute hx:-mt-20" id="what-the-provisioner-promises"&gt;&lt;/span&gt;
 &lt;a href="#what-the-provisioner-promises" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;Eine uid, vom Kernel gelesen.&lt;/strong&gt; Der Peer wird beim Verbinden mit &lt;code&gt;SO_PEERCRED&lt;/code&gt;
-identifiziert, und jeder außer &lt;code&gt;client_uid&lt;/code&gt; – root eingeschlossen – erhält
-&lt;code&gt;PERMISSION_DENIED&lt;/code&gt;, bevor ein Byte der Anfrage dekodiert wird.&lt;/li&gt;
+identifiziert, und jeder außer &lt;code&gt;client_uid&lt;/code&gt; – root eingeschlossen – erhält&lt;code&gt;PERMISSION_DENIED&lt;/code&gt;, bevor ein Byte der Anfrage dekodiert wird.&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Eine geschlossene Menge von Verben.&lt;/strong&gt; Eine Methode außerhalb seines Dienstes oder eine Nachricht, die
 sich nicht dekodieren lässt oder ein Feld enthält, das er nicht definiert, erhält keine Antwort: Die
 Verbindung wird geschlossen.&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Er fasst nie an, was er nicht angelegt hat.&lt;/strong&gt; ZFS: die eigene
-&lt;code&gt;fileshare:volume&lt;/code&gt;-Eigenschaft des Datasets – am Dataset gesetzt, da Benutzereigenschaften
+&lt;li&gt;&lt;strong&gt;Er fasst nie an, was er nicht angelegt hat.&lt;/strong&gt; ZFS: die eigene&lt;code&gt;fileshare:volume&lt;/code&gt;-Eigenschaft des Datasets – am Dataset gesetzt, da Benutzereigenschaften
 vererbt werden und eine geerbte Markierung nicht seine eigene ist. btrfs: Subvolume-ID und
 UUID, festgehalten in &lt;code&gt;state_file&lt;/code&gt;. XFS/ext4: eine Projekt-ID innerhalb des Bereichs des Parents &lt;em&gt;und&lt;/em&gt;
 festgehalten. Geprüft vor jeder Größenänderung, jedem Snapshot und jedem Löschen.&lt;/li&gt;
@@ -480,8 +452,7 @@ data-copied-label="Kopiert!"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;Drei Endpunkte, bereitgestellt von
-&lt;a href="https://github.com/go-net-health/endpoint" target="_blank" rel="noopener"&gt;go-net-health/endpoint&lt;/a&gt; auf einem
+&lt;p&gt;Drei Endpunkte, bereitgestellt von&lt;a href="https://github.com/go-net-health/endpoint" target="_blank" rel="noopener"&gt;go-net-health/endpoint&lt;/a&gt; auf einem
 eigenen Listener – &lt;strong&gt;nie ein Port, den ein Protokoll bedient&lt;/strong&gt;, sodass die Welt, die
 WebDAV erreicht, sie nicht erreicht:&lt;/p&gt;
 &lt;table&gt;
@@ -594,14 +565,11 @@ Protokolle, Herkünfte, Ergebnisse und Methodennamen, nie eine Freigabe oder ein
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="what-to-alert-on"&gt;Worauf Sie alarmieren sollten&lt;span class="hx:absolute hx:-mt-20" id="what-to-alert-on"&gt;&lt;/span&gt;
-&lt;a href="#what-to-alert-on" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Die Widerrufsprüfungen &lt;a href="https://go-fileshare.github.io/docs/0.31/de/security/#every-one-of-them-fails-closed"&gt;sind ausfallsicher geschlossen (fail closed)&lt;/a&gt;:
-Eine zu alte Liste oder ein Transmitter, von dem nichts zu hören ist, lässt den Server
+&lt;a href="#what-to-alert-on" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Die Widerrufsprüfungen &lt;a href="https://go-fileshare.github.io/docs/0.31/de/security/#every-one-of-them-fails-closed"&gt;sind ausfallsicher geschlossen (fail closed)&lt;/a&gt;:Eine zu alte Liste oder ein Transmitter, von dem nichts zu hören ist, lässt den Server
 die Zugangsdaten &lt;strong&gt;ablehnen&lt;/strong&gt;, über die sie entscheiden. Alarmieren Sie, bevor das geschieht, nicht danach:&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;code&gt;fileshare_revocation_list_age_seconds&lt;/code&gt; nähert sich &lt;code&gt;ssh_krl_max_age&lt;/code&gt; oder
-&lt;code&gt;crl_max_age&lt;/code&gt; (standardmäßig 1h);&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;fileshare_ssf_last_heard_seconds&lt;/code&gt; nähert sich &lt;code&gt;max_age&lt;/code&gt; des &lt;code&gt;ssf&lt;/code&gt;-Blocks
-(standardmäßig 10m);&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;fileshare_revocation_list_age_seconds&lt;/code&gt; nähert sich &lt;code&gt;ssh_krl_max_age&lt;/code&gt; oder&lt;code&gt;crl_max_age&lt;/code&gt; (standardmäßig 1h);&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;fileshare_ssf_last_heard_seconds&lt;/code&gt; nähert sich &lt;code&gt;max_age&lt;/code&gt; des &lt;code&gt;ssf&lt;/code&gt;-Blocks(standardmäßig 10m);&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;fileshare_directory_reloads_total{result=&amp;quot;failed&amp;quot;}&lt;/code&gt; steigt: Das Verzeichnis
 kann nicht gelesen werden, also &lt;a href="https://go-fileshare.github.io/docs/0.31/de/administration/reload/"&gt;ändert sich nichts&lt;/a&gt; – auch keine Entfernungen.&lt;/li&gt;
 &lt;/ul&gt;
@@ -636,8 +604,7 @@ data-copied-label="Kopiert!"
 &lt;/div&gt;
 &lt;p&gt;Nichts lauscht, solange der Block nicht geschrieben ist.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="what-it-does"&gt;Was sie tut&lt;span class="hx:absolute hx:-mt-20" id="what-it-does"&gt;&lt;/span&gt;
-&lt;a href="#what-it-does" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Der Dienst ist
-&lt;a href="https://github.com/go-fileshare/fileshare/blob/v0.28.0/proto/fileshare/admin/v1/admin.proto" target="_blank" rel="noopener"&gt;&lt;code&gt;fileshare.admin.v1.AdminService&lt;/code&gt;&lt;/a&gt;:&lt;/p&gt;
+&lt;a href="#what-it-does" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Der Dienst ist&lt;a href="https://github.com/go-fileshare/fileshare/blob/v0.28.0/proto/fileshare/admin/v1/admin.proto" target="_blank" rel="noopener"&gt;&lt;code&gt;fileshare.admin.v1.AdminService&lt;/code&gt;&lt;/a&gt;:&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
@@ -680,10 +647,8 @@ data-copied-label="Kopiert!"
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;Eine Berechtigung nennt einen &lt;strong&gt;Benutzer&lt;/strong&gt;, eine &lt;strong&gt;Gruppe&lt;/strong&gt; (&lt;code&gt;@group&lt;/code&gt; in einer Konfigurationsdatei), einen
-&lt;strong&gt;&lt;code&gt;oidc:groups:&lt;/code&gt;-Wert&lt;/strong&gt; oder einen &lt;strong&gt;&lt;code&gt;oidc:user:&lt;/code&gt;-Namen&lt;/strong&gt; – das Vokabular, das die
-Konfigurationsdatei verwendet, siehe
-&lt;a href="https://go-fileshare.github.io/docs/0.31/de/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;Personen, die der Identitätsanbieter nennt&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Eine Berechtigung nennt einen &lt;strong&gt;Benutzer&lt;/strong&gt;, eine &lt;strong&gt;Gruppe&lt;/strong&gt; (&lt;code&gt;@group&lt;/code&gt; in einer Konfigurationsdatei), einen&lt;strong&gt;&lt;code&gt;oidc:groups:&lt;/code&gt;-Wert&lt;/strong&gt; oder einen &lt;strong&gt;&lt;code&gt;oidc:user:&lt;/code&gt;-Namen&lt;/strong&gt; – das Vokabular, das die
+Konfigurationsdatei verwendet, siehe&lt;a href="https://go-fileshare.github.io/docs/0.31/de/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;Personen, die der Identitätsanbieter nennt&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;grpc.health.v1&lt;/code&gt; antwortet auf demselben Listener. &lt;code&gt;reflection = true&lt;/code&gt; im Block
 schaltet gRPC-Server-Reflection ein, für &lt;code&gt;grpcurl&lt;/code&gt;.&lt;/p&gt;
 &lt;h3 data-hextra-search-id="every-change-says-what-serving-it-did"&gt;Jede Änderung sagt, was sie mit der Bereitstellung gemacht hat&lt;span class="hx:absolute hx:-mt-20" id="every-change-says-what-serving-it-did"&gt;&lt;/span&gt;
@@ -705,16 +670,13 @@ data-copied-label="Kopiert!"
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;p&gt;Deshalb hat jeder RPC eine eigene Antwortnachricht, statt
-die Freigabe selbst zurückzugeben: Die &lt;code&gt;.proto&lt;/code&gt; folgt den &lt;code&gt;STANDARD&lt;/code&gt;-Lint-Regeln von
-&lt;a href="https://buf.build" target="_blank" rel="noopener"&gt;buf&lt;/a&gt;, geprüft durch &lt;code&gt;buf lint&lt;/code&gt; in der CI von fileshare, vor dem
-„return the resource&amp;quot; von AIP-131 – die Hülle ist das, was &lt;code&gt;Applied&lt;/code&gt; transportiert.&lt;/p&gt;
+die Freigabe selbst zurückzugeben: Die &lt;code&gt;.proto&lt;/code&gt; folgt den &lt;code&gt;STANDARD&lt;/code&gt;-Lint-Regeln von&lt;a href="https://buf.build" target="_blank" rel="noopener"&gt;buf&lt;/a&gt;, geprüft durch &lt;code&gt;buf lint&lt;/code&gt; in der CI von fileshare, vor dem„return the resource&amp;quot; von AIP-131 – die Hülle ist das, was &lt;code&gt;Applied&lt;/code&gt; transportiert.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="where-it-listens-and-who-may-call-it"&gt;Wo sie lauscht und wer sie aufrufen darf&lt;span class="hx:absolute hx:-mt-20" id="where-it-listens-and-who-may-call-it"&gt;&lt;/span&gt;
 &lt;a href="#where-it-listens-and-who-may-call-it" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Über TCP gilt gegenseitiges TLS oder gar nichts&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;tls_cert_file&lt;/code&gt;, &lt;code&gt;tls_key_file&lt;/code&gt; und &lt;code&gt;client_ca_file&lt;/code&gt;, alle drei,
-&lt;strong&gt;Loopback eingeschlossen&lt;/strong&gt;: Jeder lokale Benutzer kann Loopback erreichen, und diese API
+&lt;p&gt;&lt;code&gt;tls_cert_file&lt;/code&gt;, &lt;code&gt;tls_key_file&lt;/code&gt; und &lt;code&gt;client_ca_file&lt;/code&gt;, alle drei,&lt;strong&gt;Loopback eingeschlossen&lt;/strong&gt;: Jeder lokale Benutzer kann Loopback erreichen, und diese API
 entscheidet, wer wessen Dateien liest. Ein Unix-Socket wird mit &lt;strong&gt;0600&lt;/strong&gt; angelegt, und seine
 Berechtigungen sind seine Zugriffskontrolle.&lt;/p&gt;
 &lt;/div&gt;
@@ -740,15 +702,12 @@ data-copied-label="Kopiert!"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;Der Listener ist
-&lt;a href="https://github.com/grpc-transports/control" target="_blank" rel="noopener"&gt;grpc-transports/control&lt;/a&gt;. Jede
+&lt;p&gt;Der Listener ist&lt;a href="https://github.com/grpc-transports/control" target="_blank" rel="noopener"&gt;grpc-transports/control&lt;/a&gt;. Jede
 Änderung wird mit ihrem Urheber protokolliert: dem CN des Client-Zertifikats oder der uid des
 Socket-Peers.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="over-https-for-oidc-tokens"&gt;Über HTTPS, für OIDC-Tokens&lt;span class="hx:absolute hx:-mt-20" id="over-https-for-oidc-tokens"&gt;&lt;/span&gt;
 &lt;a href="#over-https-for-oidc-tokens" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Seit v0.28.0 wird dieselbe API – derselbe Zustand, dasselbe Audit – auch über
-HTTPS angeboten, wenn der &lt;code&gt;admin&lt;/code&gt;-Block einen &lt;code&gt;web&lt;/code&gt;-Block hat: &lt;strong&gt;Connect,
-gRPC-Web und gRPC auf einem Listener&lt;/strong&gt;, mit dem Zertifikat des
-&lt;a href="https://go-fileshare.github.io/docs/0.31/de/security/tls/"&gt;&lt;code&gt;tls&lt;/code&gt;-Blocks&lt;/a&gt;. Mit ihr sprechen die Web- und
+HTTPS angeboten, wenn der &lt;code&gt;admin&lt;/code&gt;-Block einen &lt;code&gt;web&lt;/code&gt;-Block hat: &lt;strong&gt;Connect,gRPC-Web und gRPC auf einem Listener&lt;/strong&gt;, mit dem Zertifikat des&lt;a href="https://go-fileshare.github.io/docs/0.31/de/security/tls/"&gt;&lt;code&gt;tls&lt;/code&gt;-Blocks&lt;/a&gt;. Mit ihr sprechen die Web- und
 die nativen Oberflächen.&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;admin&lt;/span&gt; {
@@ -815,28 +774,20 @@ data-copied-label="Kopiert!"
 eines Ausstellers sein Bearer-Token annimmt – Signatur, &lt;code&gt;iss&lt;/code&gt;, eine &lt;code&gt;aud&lt;/code&gt;, die
 diesen Server nennt, Zeiten – &lt;strong&gt;und&lt;/strong&gt; der Block dieses Ausstellers das Subject
 des Tokens oder eine seiner Gruppen nennt. Ein bei einem Aussteller
-eingetragenes Subject ist bei einem anderen niemand: Eine Person ist
-(Aussteller, &lt;code&gt;sub&lt;/code&gt;). Geprüft wird allein anhand der Header, bevor ein Byte der
+eingetragenes Subject ist bei einem anderen niemand: Eine Person ist(Aussteller, &lt;code&gt;sub&lt;/code&gt;). Geprüft wird allein anhand der Header, bevor ein Byte der
 Nachricht dekodiert wird.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Eine Audience je Server.&lt;/strong&gt; Ein an mehrere Server adressiertes Token könnte
-von jedem von ihnen bei den anderen wiederverwendet werden (RFC 8707,
-RFC 9068); daher hat jeder Server seine eigene, und eine Oberfläche, die
+von jedem von ihnen bei den anderen wiederverwendet werden (RFC 8707,RFC 9068); daher hat jeder Server seine eigene, und eine Oberfläche, die
 mehrere Server steuert, holt ein Token je Server.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Was ein abgewiesener Aufrufer erfährt.&lt;/strong&gt; „Abgelehnt“, mehr nicht. Der Grund
 und jede vorgenommene Änderung gehen ins Audit, als &lt;code&gt;oidc=&amp;lt;Aussteller&amp;gt; &amp;lt;sub&amp;gt;&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Kein CORS.&lt;/strong&gt; Browser rufen sie nicht direkt auf: Sie erreichen sie über den
-Server der Oberflächen, der die Tokens hält. Anfragen sind auf 1 MiB begrenzt,
-und jede Phase einer Verbindung hat ein Zeitlimit. Jeder Aussteller wird &lt;strong&gt;beim
-Start&lt;/strong&gt; kontaktiert, um seine Schlüssel zu lesen; ist einer nicht erreichbar,
-bricht der Start ab und nennt ihn.&lt;/p&gt;
+Server der Oberflächen, der die Tokens hält. Anfragen sind auf 1 MiB begrenzt,und jede Phase einer Verbindung hat ein Zeitlimit. Jeder Aussteller wird &lt;strong&gt;beim
+Start&lt;/strong&gt; kontaktiert, um seine Schlüssel zu lesen; ist einer nicht erreichbar,bricht der Start ab und nennt ihn.&lt;/p&gt;
 &lt;h3 data-hextra-search-id="in-a-browser-the-console"&gt;Im Browser: die Konsole&lt;span class="hx:absolute hx:-mt-20" id="in-a-browser-the-console"&gt;&lt;/span&gt;
 &lt;a href="#in-a-browser-the-console" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;&lt;a href="https://github.com/go-fileshare/console" target="_blank" rel="noopener"&gt;go-fileshare/console&lt;/a&gt; ist die
-Admin-Konsole, die diese API aufruft: Freigaben, Details, Berechtigungen,
-Anlegen, Aktivieren, Deaktivieren, Löschen, Gewähren und Entziehen, und
-&lt;a href="https://go-fileshare.github.io/docs/0.31/de/administration/volumes/"&gt;Volumes&lt;/a&gt; (anlegen, vergrößern,
-Snapshot, freigeben, löschen &amp;ndash; ohne je Daten zu vernichten), über alle Server
-zugleich. Sie läuft im Browser hinter
-&lt;a href="https://github.com/go-fileshare/portal" target="_blank" rel="noopener"&gt;go-fileshare/portal&lt;/a&gt;, das Personen per
+Admin-Konsole, die diese API aufruft: Freigaben, Details, Berechtigungen,Anlegen, Aktivieren, Deaktivieren, Löschen, Gewähren und Entziehen, und&lt;a href="https://go-fileshare.github.io/docs/0.31/de/administration/volumes/"&gt;Volumes&lt;/a&gt; (anlegen, vergrößern,Snapshot, freigeben, löschen &amp;ndash; ohne je Daten zu vernichten), über alle Server
+zugleich. Sie läuft im Browser hinter&lt;a href="https://github.com/go-fileshare/portal" target="_blank" rel="noopener"&gt;go-fileshare/portal&lt;/a&gt;, das Personen per
 OpenID Connect anmeldet und ihre Tokens verwahrt: eines je Server, an diesen
 Server allein adressiert. Der Browser hält nie eines.&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
@@ -859,15 +810,10 @@ data-copied-label="Kopiert!"
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;p&gt;Dieselbe Konsole läuft auch &lt;strong&gt;nativ&lt;/strong&gt;, ohne Portal. Sie meldet sich über den
-Systembrowser und einen lokalen Listener an, als öffentlicher Client
-(&lt;a href="https://github.com/go-authn/rp" target="_blank" rel="noopener"&gt;go-authn/rp&lt;/a&gt;, RFC 8252), und ruft jeden Server
-mit einem Token nur für ihn auf. Die Server stehen in ihrer eigenen
-&lt;code&gt;console.hcl&lt;/code&gt;, mit denselben &lt;code&gt;url&lt;/code&gt; und &lt;code&gt;resource&lt;/code&gt; wie hier.&lt;/p&gt;
-&lt;p&gt;Der &lt;strong&gt;Datei-Explorer&lt;/strong&gt;, &lt;a href="https://github.com/go-fileshare/explorer" target="_blank" rel="noopener"&gt;go-fileshare/explorer&lt;/a&gt;,
-läuft hinter demselben Portal: durchsuchen, hochladen, herunterladen,
-umbenennen, kopieren und löschen, auf jeder Freigabe, die eine Person nutzen
-darf. Er erreicht das WebDAV jedes Servers über das Portal (&lt;code&gt;/dav/&amp;lt;server&amp;gt;/...&lt;/code&gt;)
-mit einem Token für diesen Server, und das Portal liefert die Antwort &lt;strong&gt;inert&lt;/strong&gt;
+Systembrowser und einen lokalen Listener an, als öffentlicher Client(&lt;a href="https://github.com/go-authn/rp" target="_blank" rel="noopener"&gt;go-authn/rp&lt;/a&gt;, RFC 8252), und ruft jeden Server
+mit einem Token nur für ihn auf. Die Server stehen in ihrer eigenen&lt;code&gt;console.hcl&lt;/code&gt;, mit denselben &lt;code&gt;url&lt;/code&gt; und &lt;code&gt;resource&lt;/code&gt; wie hier.&lt;/p&gt;
+&lt;p&gt;Der &lt;strong&gt;Datei-Explorer&lt;/strong&gt;, &lt;a href="https://github.com/go-fileshare/explorer" target="_blank" rel="noopener"&gt;go-fileshare/explorer&lt;/a&gt;,läuft hinter demselben Portal: durchsuchen, hochladen, herunterladen,umbenennen, kopieren und löschen, auf jeder Freigabe, die eine Person nutzen
+darf. Er erreicht das WebDAV jedes Servers über das Portal (&lt;code&gt;/dav/&amp;lt;server&amp;gt;/...&lt;/code&gt;)mit einem Token für diesen Server, und das Portal liefert die Antwort &lt;strong&gt;inert&lt;/strong&gt;
 aus (&lt;code&gt;Content-Security-Policy: sandbox&lt;/code&gt;, als Anhang): Eine Seite auf einer
 Freigabe läuft nie im Namen des Portals. Er braucht fileshare &lt;strong&gt;v0.29.0&lt;/strong&gt; oder
 neuer, dessen &lt;a href="https://go-fileshare.github.io/docs/0.31/de/protocols/webdav/#the-root-and-uploads-in-pieces"&gt;WebDAV&lt;/a&gt;
@@ -893,17 +839,14 @@ data-copied-label="Kopiert!"
 &lt;p&gt;Der Explorer läuft auch &lt;strong&gt;nativ&lt;/strong&gt; (explorer v0.2.0), ohne Portal, wie die
 Konsole: Er meldet sich über den Systembrowser als öffentlicher Client an und
 ruft das WebDAV jedes Servers mit einem Token nur für ihn auf. Seine Server
-stehen in &lt;code&gt;explorer.hcl&lt;/code&gt;, jeder mit seiner &lt;code&gt;dav_url&lt;/code&gt; (nur https) und der
-&lt;code&gt;resource&lt;/code&gt; seines &lt;code&gt;oidc&lt;/code&gt;-Blocks. Keiner der beiden nativen Clients folgt mit
+stehen in &lt;code&gt;explorer.hcl&lt;/code&gt;, jeder mit seiner &lt;code&gt;dav_url&lt;/code&gt; (nur https) und der&lt;code&gt;resource&lt;/code&gt; seines &lt;code&gt;oidc&lt;/code&gt;-Blocks. Keiner der beiden nativen Clients folgt mit
 einem Token einer Umleitung: Der HTTP-Client von Go behält &lt;code&gt;Authorization&lt;/code&gt; bei
 einer Umleitung auf denselben Host mit jedem Schema, was ein falsch
 konfigurierter Proxy mit einem &lt;code&gt;307&lt;/code&gt; auf eine einfache &lt;code&gt;http&lt;/code&gt;-Adresse in ein im Klartext gesendetes Token
 verwandeln würde.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Ein fehlgeschlagener Upload wird fortgesetzt&lt;/strong&gt; (explorer v0.3.0). Die
 Teildatei ist nach der Datei benannt &amp;ndash; Name, Größe und Änderungszeit &amp;ndash;, sodass
-ein erneuter Upload derselben Datei dort weitermacht, wo die Teildatei endet,
-nachdem ihre letzten 64 KiB zurückgelesen und als die der Datei erkannt wurden.
-Eine andere Datei wird nie fortgesetzt. Ein Ausfall des Netzes oder des Servers
+ein erneuter Upload derselben Datei dort weitermacht, wo die Teildatei endet,nachdem ihre letzten 64 KiB zurückgelesen und als die der Datei erkannt wurden.Eine andere Datei wird nie fortgesetzt. Ein Ausfall des Netzes oder des Servers
 behält die Teildatei; eine Ablehnung (403, eine volle Freigabe: 507) entfernt
 sie.&lt;/p&gt;
 &lt;p&gt;Die &lt;code&gt;audience&lt;/code&gt; jedes Servers ist die &lt;code&gt;resource&lt;/code&gt;, die das Portal für ihn
@@ -911,16 +854,12 @@ verwendet. Eine eigene Konsole braucht es nicht, um die API zu nutzen: Jeder
 Connect-, gRPC-Web- oder gRPC-Client mit einem Token für diesen Server genügt.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="what-it-will-and-will-not-touch"&gt;Was sie anfasst und was nicht&lt;span class="hx:absolute hx:-mt-20" id="what-it-will-and-will-not-touch"&gt;&lt;/span&gt;
 &lt;a href="#what-it-will-and-will-not-touch" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;Sie verwaltet die Freigaben, die sie angelegt hat.&lt;/strong&gt; Eine in der Konfiguration geschriebene Freigabe wird
-mit denselben Feldern aufgelistet, und eine Änderung ihrer Definition wird mit
-&lt;code&gt;FAILED_PRECONDITION&lt;/code&gt; abgelehnt: Eine an zwei Stellen definierte Freigabe ist eine Frage, die niemand
-beantworten will, und die Datei ist der Ort, an dem diese definiert ist. Die Freigaben der API liegen in
-&lt;code&gt;state_file&lt;/code&gt;, atomar geschrieben, und werden beim nächsten Start wieder bereitgestellt – deshalb
+mit denselben Feldern aufgelistet, und eine Änderung ihrer Definition wird mit&lt;code&gt;FAILED_PRECONDITION&lt;/code&gt; abgelehnt: Eine an zwei Stellen definierte Freigabe ist eine Frage, die niemand
+beantworten will, und die Datei ist der Ort, an dem diese definiert ist. Die Freigaben der API liegen in&lt;code&gt;state_file&lt;/code&gt;, atomar geschrieben, und werden beim nächsten Start wieder bereitgestellt – deshalb
 wird ein Block ohne &lt;code&gt;state_file&lt;/code&gt; abgelehnt.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Eine Quelle muss unter &lt;code&gt;source_roots&lt;/code&gt; liegen&lt;/strong&gt;, aufgelöst – Links verfolgt, &lt;code&gt;..&lt;/code&gt;
 entfernt –, und es ist der aufgelöste Pfad, der gespeichert wird. Ohne &lt;code&gt;source_roots&lt;/code&gt; kann die
-API &lt;strong&gt;überhaupt keine Freigaben anlegen&lt;/strong&gt;: Der Prozess kann &lt;code&gt;/dev&lt;/code&gt; und &lt;code&gt;/etc&lt;/code&gt; lesen,
-und niemand wollte diese einem Aufrufer übergeben. Das wird bei jedem Start erneut geprüft,
-und eine Freigabe in &lt;code&gt;state_file&lt;/code&gt;, die nicht mehr unter einer Wurzel liegt, verhindert den Start
+API &lt;strong&gt;überhaupt keine Freigaben anlegen&lt;/strong&gt;: Der Prozess kann &lt;code&gt;/dev&lt;/code&gt; und &lt;code&gt;/etc&lt;/code&gt; lesen,und niemand wollte diese einem Aufrufer übergeben. Das wird bei jedem Start erneut geprüft,und eine Freigabe in &lt;code&gt;state_file&lt;/code&gt;, die nicht mehr unter einer Wurzel liegt, verhindert den Start
 und wird dabei genannt.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Jede Freigabe hat mindestens eine Berechtigung.&lt;/strong&gt; Eine Freigabe ohne ist für jeden offen, der sich
 authentifiziert. Die Datei darf das absichtlich sagen; ein API-Aufruf sollte es nicht
@@ -928,17 +867,12 @@ durch Weglassen sagen. Also braucht &lt;code&gt;CreateShare&lt;/code&gt; eine Be
 abgelehnt – löschen Sie stattdessen die Freigabe.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Namen, die ein Protokoll transportieren kann.&lt;/strong&gt; Ein Freigabename hat höchstens 80 Zeichen, beginnt
 und endet nicht mit einem Leerzeichen, ist nicht &lt;code&gt;.&lt;/code&gt; oder &lt;code&gt;..&lt;/code&gt; und enthält kein nicht druckbares
-Zeichen und keines von &lt;code&gt;:*?&amp;quot;&amp;lt;&amp;gt;|{}%&lt;/code&gt;. Subjekte enthalten ebenfalls kein nicht druckbares Zeichen,
-und eine Freigabe nimmt höchstens 1000 Berechtigungen auf – lange vorher eine Aufgabe für eine Gruppe.
-Jedes davon wurde vor v0.14.0 akzeptiert, in &lt;code&gt;state_file&lt;/code&gt; geschrieben und war dann
+Zeichen und keines von &lt;code&gt;:*?&amp;quot;&amp;lt;&amp;gt;|{}%&lt;/code&gt;. Subjekte enthalten ebenfalls kein nicht druckbares Zeichen,und eine Freigabe nimmt höchstens 1000 Berechtigungen auf – lange vorher eine Aufgabe für eine Gruppe.Jedes davon wurde vor v0.14.0 akzeptiert, in &lt;code&gt;state_file&lt;/code&gt; geschrieben und war dann
 bei jedem Start fatal.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Keine Freigabe darf enthalten:&lt;/strong&gt; die Konfiguration, die Zustandsdatei oder die Geheimnisse,
-die sie nennen: Wer hineinschreibt, würde umschreiben, wer was darf. Seit v0.17.0
-gehören dazu &lt;code&gt;authorized_keys_file&lt;/code&gt;, &lt;code&gt;dsn_file&lt;/code&gt; und
-&lt;code&gt;bind_password_file&lt;/code&gt; eines &lt;code&gt;users&lt;/code&gt;-Blocks, die &lt;code&gt;ca_file&lt;/code&gt; des &lt;code&gt;ssf&lt;/code&gt;-Blocks und eine SQLite-Datenbank, die ein DSN
+&lt;p&gt;&lt;strong&gt;Keine Freigabe darf enthalten:&lt;/strong&gt; die Konfiguration, die Zustandsdatei oder die Geheimnisse,die sie nennen: Wer hineinschreibt, würde umschreiben, wer was darf. Seit v0.17.0
+gehören dazu &lt;code&gt;authorized_keys_file&lt;/code&gt;, &lt;code&gt;dsn_file&lt;/code&gt; und&lt;code&gt;bind_password_file&lt;/code&gt; eines &lt;code&gt;users&lt;/code&gt;-Blocks, die &lt;code&gt;ca_file&lt;/code&gt; des &lt;code&gt;ssf&lt;/code&gt;-Blocks und eine SQLite-Datenbank, die ein DSN
 nennt: Wer schreiben darf und seinen Schlüssel zu den &lt;code&gt;authorized_keys&lt;/code&gt; eines anderen hinzufügen könnte, würde
-sich als dieser anmelden. &lt;strong&gt;Ebenso wenig darf eine Freigabe eine andere enthalten&lt;/strong&gt; (siehe
-&lt;a href="https://go-fileshare.github.io/docs/0.31/de/configuration/shares/#a-directory-not-only-an-image"&gt;Verzeichnisse&lt;/a&gt;).&lt;/p&gt;
+sich als dieser anmelden. &lt;strong&gt;Ebenso wenig darf eine Freigabe eine andere enthalten&lt;/strong&gt; (siehe&lt;a href="https://go-fileshare.github.io/docs/0.31/de/configuration/shares/#a-directory-not-only-an-image"&gt;Verzeichnisse&lt;/a&gt;).&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Eine Änderung wird wie eine Konfiguration geprüft, geöffnet, festgeschrieben und dann
 bereitgestellt.&lt;/strong&gt; Eine Änderung, die der Server nicht einhalten kann – ein Image, das sich nicht öffnen lässt, ein
 Name, den niemand im Verzeichnis hat –, wird abgelehnt, wobei das Bereitgestellte und das
@@ -946,11 +880,9 @@ Geschriebene unverändert bleiben.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="disabling-a-share"&gt;Eine Freigabe deaktivieren&lt;span class="hx:absolute hx:-mt-20" id="disabling-a-share"&gt;&lt;/span&gt;
 &lt;a href="#disabling-a-share" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;Deaktivieren entspricht Sambas &lt;code&gt;available = no&lt;/code&gt;&lt;/strong&gt;: Die Freigabe bleibt definiert, und jeder
 Verbindungsversuch schlägt fehl; ihre offenen Verbindungen werden geschlossen, und ihr Image oder
-Verzeichnis wird &lt;strong&gt;losgelassen&lt;/strong&gt;, sodass die Datei ersetzt werden kann, während sie offline ist.
-&lt;code&gt;EnableShare&lt;/code&gt; stellt sie wieder bereit und wird abgelehnt, wenn ihre Quelle sich nicht mehr
+Verzeichnis wird &lt;strong&gt;losgelassen&lt;/strong&gt;, sodass die Datei ersetzt werden kann, während sie offline ist.&lt;code&gt;EnableShare&lt;/code&gt; stellt sie wieder bereit und wird abgelehnt, wenn ihre Quelle sich nicht mehr
 öffnen lässt. &lt;code&gt;CreateShare&lt;/code&gt; kann eine Freigabe auch bereits deaktiviert anlegen.&lt;/p&gt;
-&lt;p&gt;Anders als jede andere Änderung gilt sie auch für eine Freigabe &lt;strong&gt;der Konfiguration&lt;/strong&gt; –
-eine Freigabe offline zu nehmen ist ein Vorgang, keine Definition –, und sie übersteht einen
+&lt;p&gt;Anders als jede andere Änderung gilt sie auch für eine Freigabe &lt;strong&gt;der Konfiguration&lt;/strong&gt; –eine Freigabe offline zu nehmen ist ein Vorgang, keine Definition –, und sie übersteht einen
 Neustart: Sie wird in der Zustandsdatei gespeichert. &lt;a href="https://go-fileshare.github.io/docs/0.31/de/configuration/check/"&gt;&lt;code&gt;fileshare check&lt;/code&gt;&lt;/a&gt;
 listet auf, was offline ist.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="a-change-is-a-new-generation"&gt;Eine Änderung ist eine neue Generation&lt;span class="hx:absolute hx:-mt-20" id="a-change-is-a-new-generation"&gt;&lt;/span&gt;
@@ -959,17 +891,13 @@ listet auf, was offline ist.&lt;/p&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Eine Änderung startet die Protokollserver neu und schließt ihre Verbindungen&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;SMB prüft einmal pro Tree Connect, wer sich verbinden darf, und SFTP baut den
-Baum einer Person einmal pro Anmeldung auf, sodass eine Sitzung, die einen Widerruf überdauert,
-den gerade entzogenen Zugriff behielte. „Widerrufen, außer für alle, die schon
+Baum einer Person einmal pro Anmeldung auf, sodass eine Sitzung, die einen Widerruf überdauert,den gerade entzogenen Zugriff behielte. „Widerrufen, außer für alle, die schon
 verbunden waren&amp;quot; ist kein Widerruf.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;p&gt;Eine Änderung wird also nicht &lt;em&gt;auf&lt;/em&gt; die laufenden Server angewendet: Sie werden durch neue
-ersetzt, die aus der neuen Liste gebaut werden – eine &lt;strong&gt;Generation&lt;/strong&gt; –, so wie es ein Neustart täte,
-ohne die Ports aufzugeben. Die Bibliotheken könnten es nicht anders:
-go-filesystems/smb hat &lt;code&gt;Share&lt;/code&gt; und kein &lt;code&gt;Unshare&lt;/code&gt;, nfs hat &lt;code&gt;Export&lt;/code&gt; und kein
-&lt;code&gt;Unexport&lt;/code&gt;.&lt;/p&gt;
+ersetzt, die aus der neuen Liste gebaut werden – eine &lt;strong&gt;Generation&lt;/strong&gt; –, so wie es ein Neustart täte,ohne die Ports aufzugeben. Die Bibliotheken könnten es nicht anders:go-filesystems/smb hat &lt;code&gt;Share&lt;/code&gt; und kein &lt;code&gt;Unshare&lt;/code&gt;, nfs hat &lt;code&gt;Export&lt;/code&gt; und kein&lt;code&gt;Unexport&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;Die Ports bleiben gebunden, sodass ein Client, der sich während einer Änderung verbindet, &lt;strong&gt;wartet&lt;/strong&gt;, statt
 abgelehnt zu werden. Images, deren Freigabe sich nicht geändert hat, behalten ihren Treiber und werden nie
 ein zweites Mal geöffnet. Clients verbinden sich neu; das ist der Preis, gezahlt bei jeder
@@ -977,19 +905,15 @@ ein zweites Mal geöffnet. Clients verbinden sich neu; das ist der Preis, gezahl
 Feld.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="limits"&gt;Grenzen&lt;span class="hx:absolute hx:-mt-20" id="limits"&gt;&lt;/span&gt;
 &lt;a href="#limits" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;--isolate&lt;/code&gt; passt noch nicht zu einem &lt;code&gt;admin&lt;/code&gt;-Block – ebenso wenig zu einem &lt;code&gt;metrics&lt;/code&gt;-Block –:
-Es gibt keinen einzelnen Prozess, auf den eine Änderung angewendet werden könnte. Die Kombination wird
+&lt;li&gt;&lt;code&gt;--isolate&lt;/code&gt; passt noch nicht zu einem &lt;code&gt;admin&lt;/code&gt;-Block – ebenso wenig zu einem &lt;code&gt;metrics&lt;/code&gt;-Block –:Es gibt keinen einzelnen Prozess, auf den eine Änderung angewendet werden könnte. Die Kombination wird
 abgelehnt.&lt;/li&gt;
 &lt;li&gt;Ein mit &lt;code&gt;-tags nogrpc&lt;/code&gt; gebautes Binary hat keine Admin-API, und eine Konfiguration mit
 einem &lt;code&gt;admin&lt;/code&gt;-Block wird &lt;strong&gt;abgelehnt&lt;/strong&gt;, statt ohne sie bereitgestellt zu werden. Dieses Tag spart
 11,7 MB; siehe &lt;a href="https://go-fileshare.github.io/docs/0.31/de/operations/build-tags/#the-admin-api-and-nogrpc"&gt;nur bauen, was Sie brauchen&lt;/a&gt;.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h2 data-hextra-search-id="changing-the-proto"&gt;Die &lt;code&gt;.proto&lt;/code&gt; ändern&lt;span class="hx:absolute hx:-mt-20" id="changing-the-proto"&gt;&lt;/span&gt;
-&lt;a href="#changing-the-proto" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Der Go-Code unter &lt;code&gt;proto/&lt;/code&gt; wird generiert und committet, sodass &lt;code&gt;go install&lt;/code&gt; kein
-&lt;code&gt;protoc&lt;/code&gt; braucht. Nach einer Änderung an einer &lt;code&gt;.proto&lt;/code&gt; – der der Admin-API oder der des Provisioners,
-&lt;code&gt;proto/fileshare/provision/v1/provision.proto&lt;/code&gt; – generieren Sie beide mit den
-Versionen neu, die die CI von fileshare pinnt (protoc 34.1, protoc-gen-go v1.36.12,
-protoc-gen-go-grpc v1.6.2). Die CI generiert sie neu und schlägt fehl, wenn der committete
+&lt;a href="#changing-the-proto" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Der Go-Code unter &lt;code&gt;proto/&lt;/code&gt; wird generiert und committet, sodass &lt;code&gt;go install&lt;/code&gt; kein&lt;code&gt;protoc&lt;/code&gt; braucht. Nach einer Änderung an einer &lt;code&gt;.proto&lt;/code&gt; – der der Admin-API oder der des Provisioners,&lt;code&gt;proto/fileshare/provision/v1/provision.proto&lt;/code&gt; – generieren Sie beide mit den
+Versionen neu, die die CI von fileshare pinnt (protoc 34.1, protoc-gen-go v1.36.12,protoc-gen-go-grpc v1.6.2). Die CI generiert sie neu und schlägt fehl, wenn der committete
 Code abweicht oder wenn generierter Code nicht committet wurde:&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;protoc -I proto --go_out&lt;span class="o"&gt;=&lt;/span&gt;. --go_opt&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;module&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;github.com/go-fileshare/fileshare &lt;span class="se"&gt;\
@@ -1021,22 +945,17 @@ data-copied-label="Kopiert!"
 &lt;/div&gt;
 &lt;p&gt;Die Personen kommen aus Verzeichnissen, die andere verändern – go-authn/bridge schreibt
 ein Anwendungspasswort in eine Tabelle und löscht die Zeile, wenn die Person
-deaktiviert wird. Ohne Neuladen bedient der Server, wer beim Start da war.
-Seit v0.10.0 liest er sie erneut ein:&lt;/p&gt;
+deaktiviert wird. Ohne Neuladen bedient der Server, wer beim Start da war.Seit v0.10.0 liest er sie erneut ein:&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;in jedem &lt;code&gt;reload&lt;/code&gt;-Intervall, einer Go-Dauer von &lt;strong&gt;mindestens einer Sekunde&lt;/strong&gt; – ein Verzeichnis,
-das viele Male pro Sekunde gelesen wird, ist eine Last für die Datenbank von jemandem, kein aktuellerer
+&lt;li&gt;in jedem &lt;code&gt;reload&lt;/code&gt;-Intervall, einer Go-Dauer von &lt;strong&gt;mindestens einer Sekunde&lt;/strong&gt; – ein Verzeichnis,das viele Male pro Sekunde gelesen wird, ist eine Last für die Datenbank von jemandem, kein aktuellerer
 Server;&lt;/li&gt;
 &lt;li&gt;bei &lt;strong&gt;&lt;code&gt;SIGHUP&lt;/code&gt;&lt;/strong&gt; (Unix);&lt;/li&gt;
 &lt;li&gt;bei &lt;strong&gt;&lt;code&gt;ReloadDirectory&lt;/code&gt;&lt;/strong&gt; der &lt;a href="https://go-fileshare.github.io/docs/0.31/de/administration/"&gt;Admin-API&lt;/a&gt;, das antwortet, wer
 hinzugefügt, entfernt und geändert wurde, ob eine neue Generation gestartet ist, und Hinweise gibt, die
-man lesen sollte – eine Gruppe, die es nicht mehr gibt oder die keine Mitglieder hat, jemand, den eine Freigabe nennt,
-der nicht mehr im Verzeichnis steht.&lt;/li&gt;
+man lesen sollte – eine Gruppe, die es nicht mehr gibt oder die keine Mitglieder hat, jemand, den eine Freigabe nennt,der nicht mehr im Verzeichnis steht.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;Ohne &lt;code&gt;reload&lt;/code&gt; wird das Verzeichnis nur beim Start, bei &lt;code&gt;SIGHUP&lt;/code&gt; und bei
-&lt;code&gt;ReloadDirectory&lt;/code&gt; gelesen.&lt;/p&gt;
-&lt;p&gt;Es sind die &lt;code&gt;users&lt;/code&gt;-Blöcke – SQL, LDAP –, die erneut gelesen werden. Die &lt;code&gt;user&lt;/code&gt;- und
-&lt;code&gt;group&lt;/code&gt;-Blöcke der Konfigurationsdatei &lt;strong&gt;sind&lt;/strong&gt; die Konfiguration und werden beim
+&lt;p&gt;Ohne &lt;code&gt;reload&lt;/code&gt; wird das Verzeichnis nur beim Start, bei &lt;code&gt;SIGHUP&lt;/code&gt; und bei&lt;code&gt;ReloadDirectory&lt;/code&gt; gelesen.&lt;/p&gt;
+&lt;p&gt;Es sind die &lt;code&gt;users&lt;/code&gt;-Blöcke – SQL, LDAP –, die erneut gelesen werden. Die &lt;code&gt;user&lt;/code&gt;- und&lt;code&gt;group&lt;/code&gt;-Blöcke der Konfigurationsdatei &lt;strong&gt;sind&lt;/strong&gt; die Konfiguration und werden beim
 Start gelesen.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="what-a-reload-does-depends-on-what-changed"&gt;Was ein Neuladen tut, hängt davon ab, was sich geändert hat&lt;span class="hx:absolute hx:-mt-20" id="what-a-reload-does-depends-on-what-changed"&gt;&lt;/span&gt;
 &lt;a href="#what-a-reload-does-depends-on-what-changed" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Die Grenze verläuft beim &lt;strong&gt;Widerruf&lt;/strong&gt;:&lt;/p&gt;
@@ -1066,8 +985,7 @@ Start gelesen.&lt;/p&gt;
 eine neue Generation wie jede andere Änderung an ihr: SMB legt die Listen einer Freigabe
 bei deren Start fest.&lt;/p&gt;
 &lt;p&gt;Eine Freigabe, die jemanden nennt, der weg ist, oder eine Gruppe, die es nicht mehr gibt oder
-die keine Mitglieder mehr hat (seit v0.29.1 unterschieden), wird
-&lt;strong&gt;ohne sie&lt;/strong&gt; bereitgestellt – die sichere Richtung – und das wird gemeldet, statt sie abzulehnen, wie es
+die keine Mitglieder mehr hat (seit v0.29.1 unterschieden), wird&lt;strong&gt;ohne sie&lt;/strong&gt; bereitgestellt – die sichere Richtung – und das wird gemeldet, statt sie abzulehnen, wie es
 der Start tut: Ablehnen würde die alten Listen behalten, und die alten Listen sind der
 Zugriff, der gerade entzogen wurde.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="an-empty-group-is-not-everyone"&gt;Eine leere Gruppe ist nicht jeder&lt;span class="hx:absolute hx:-mt-20" id="an-empty-group-is-not-everyone"&gt;&lt;/span&gt;
@@ -1084,16 +1002,14 @@ jeder gelesen würde.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="watching-it"&gt;Es beobachten&lt;span class="hx:absolute hx:-mt-20" id="watching-it"&gt;&lt;/span&gt;
-&lt;a href="#watching-it" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;fileshare_directory_reloads_total{result}&lt;/code&gt; zählt Neuladevorgänge, die nichts gefunden haben
-(&lt;code&gt;unchanged&lt;/code&gt;), an Ort und Stelle hinzugefügt haben (&lt;code&gt;added&lt;/code&gt;), eine Generation gestartet haben (&lt;code&gt;swapped&lt;/code&gt;) oder
+&lt;a href="#watching-it" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;fileshare_directory_reloads_total{result}&lt;/code&gt; zählt Neuladevorgänge, die nichts gefunden haben(&lt;code&gt;unchanged&lt;/code&gt;), an Ort und Stelle hinzugefügt haben (&lt;code&gt;added&lt;/code&gt;), eine Generation gestartet haben (&lt;code&gt;swapped&lt;/code&gt;) oder
 das Verzeichnis nicht lesen konnten (&lt;code&gt;failed&lt;/code&gt;); &lt;code&gt;fileshare_directory_people&lt;/code&gt; ist die Anzahl
 der Personen beim letzten Lesen. Siehe &lt;a href="https://go-fileshare.github.io/docs/0.31/de/administration/health/"&gt;Health und Metriken&lt;/a&gt;.&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Was ein Neuladen nicht erreicht&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;Personen, für die der Identitätsanbieter über ein Token oder ein Zertifikat bürgt,
-stehen nicht im Verzeichnis, also betrifft sie kein Neuladen. &lt;strong&gt;Sie&lt;/strong&gt; zurückzunehmen
+&lt;p&gt;Personen, für die der Identitätsanbieter über ein Token oder ein Zertifikat bürgt,stehen nicht im Verzeichnis, also betrifft sie kein Neuladen. &lt;strong&gt;Sie&lt;/strong&gt; zurückzunehmen
 ist die Aufgabe von &lt;a href="https://go-fileshare.github.io/docs/0.31/de/security/"&gt;Sperrlisten und Shared Signals&lt;/a&gt;.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;

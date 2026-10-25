@@ -38,8 +38,7 @@ data-copied-label="복사됨!"
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;유닉스 소켓은 &lt;code&gt;unix:///like/this&lt;/code&gt;처럼 절대 경로로 지정합니다. 그 외에는 모두
-&lt;code&gt;host:port&lt;/code&gt;여야 하며, 그렇지 않으면 블록이 거부됩니다.&lt;/p&gt;
+&lt;p&gt;유닉스 소켓은 &lt;code&gt;unix:///like/this&lt;/code&gt;처럼 절대 경로로 지정합니다. 그 외에는 모두&lt;code&gt;host:port&lt;/code&gt;여야 하며, 그렇지 않으면 블록이 거부됩니다.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="what-is-measured"&gt;측정 항목&lt;span class="hx:absolute hx:-mt-20" id="what-is-measured"&gt;&lt;/span&gt;
 &lt;a href="#what-is-measured" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
 &lt;thead&gt;
@@ -119,20 +118,17 @@ data-copied-label="복사됨!"
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;어떤 메트릭도 공유나 사용자의 이름을 담지 않습니다&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;WebDAV는 누군가 사용할 수 없는 공유에 &lt;strong&gt;404&lt;/strong&gt;로 응답하여 그 공유의 존재가
-확인되지 않도록 하며, 메트릭 수집(scrape)도 이를 확인해 주어서는 안 됩니다.
-레이블은 프로토콜, 출처, 결과, 메서드 이름이며 공유나 사용자는 절대 쓰이지
+확인되지 않도록 하며, 메트릭 수집(scrape)도 이를 확인해 주어서는 안 됩니다.레이블은 프로토콜, 출처, 결과, 메서드 이름이며 공유나 사용자는 절대 쓰이지
 않습니다.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="what-to-alert-on"&gt;알림을 설정할 대상&lt;span class="hx:absolute hx:-mt-20" id="what-to-alert-on"&gt;&lt;/span&gt;
-&lt;a href="#what-to-alert-on" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;폐기 검사는 &lt;a href="https://go-fileshare.github.io/docs/0.31/ko/security/#every-one-of-them-fails-closed"&gt;안전하게 차단됩니다(fail closed)&lt;/a&gt;.
-너무 오래된 목록이나 응답이 없는 전송자가 있으면 서버는 그 목록이 관할하는
+&lt;a href="#what-to-alert-on" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;폐기 검사는 &lt;a href="https://go-fileshare.github.io/docs/0.31/ko/security/#every-one-of-them-fails-closed"&gt;안전하게 차단됩니다(fail closed)&lt;/a&gt;.너무 오래된 목록이나 응답이 없는 전송자가 있으면 서버는 그 목록이 관할하는
 자격 증명을 &lt;strong&gt;거부합니다&lt;/strong&gt;. 그 일이 일어난 뒤가 아니라 일어나기 전에 알림을
 받으십시오.&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;code&gt;fileshare_revocation_list_age_seconds&lt;/code&gt;가 &lt;code&gt;ssh_krl_max_age&lt;/code&gt; 또는
-&lt;code&gt;crl_max_age&lt;/code&gt;(기본값 1h)에 근접할 때&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;fileshare_revocation_list_age_seconds&lt;/code&gt;가 &lt;code&gt;ssh_krl_max_age&lt;/code&gt; 또는&lt;code&gt;crl_max_age&lt;/code&gt;(기본값 1h)에 근접할 때&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;fileshare_ssf_last_heard_seconds&lt;/code&gt;가 &lt;code&gt;ssf&lt;/code&gt; 블록의 &lt;code&gt;max_age&lt;/code&gt;(기본값 10m)에
 근접할 때&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;fileshare_directory_reloads_total{result=&amp;quot;failed&amp;quot;}&lt;/code&gt;가 증가할 때: 디렉터리를

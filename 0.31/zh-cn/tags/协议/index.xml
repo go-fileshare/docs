@@ -12,37 +12,19 @@ data-copied-label="已复制！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;密码&lt;strong&gt;从不在网络上传输&lt;/strong&gt;：客户端发送的是由密码计算出的证明。
-共享会在读者尝试之前，通过访问掩码告知读者其权限，
-而不是让其稍后因写入失败才发现。&lt;/p&gt;
+&lt;p&gt;密码&lt;strong&gt;从不在网络上传输&lt;/strong&gt;：客户端发送的是由密码计算出的证明。共享会在读者尝试之前，通过访问掩码告知读者其权限，而不是让其稍后因写入失败才发现。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="what-a-directory-must-hold"&gt;目录服务必须持有什么&lt;span class="hx:absolute hx:-mt-20" id="what-a-directory-must-hold"&gt;&lt;/span&gt;
 &lt;a href="#what-a-directory-must-hold" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;NTLMv2 需要密码本身或其 MD4（&lt;code&gt;sambaNTPassword&lt;/code&gt;，即 &lt;code&gt;nt_hash&lt;/code&gt;
 列）。&lt;strong&gt;其他任何东西都不行。&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;只能&lt;em&gt;检查&lt;/em&gt;密码的目录服务，例如 LDAP 绑定或 bcrypt 列，
-无法应答 SMB，无论检查有多好，因为服务器必须计算出
-与客户端相同的证明。这是协议的属性，而不是本程序的
-限制。&lt;/p&gt;
-&lt;p&gt;对于这样的人员，&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt;会在配置阶段于 SMB 列中打印 &lt;code&gt;-&lt;/code&gt;，
-而不是让其在挂载时才发现。&lt;/p&gt;
+&lt;p&gt;只能&lt;em&gt;检查&lt;/em&gt;密码的目录服务，例如 LDAP 绑定或 bcrypt 列，无法应答 SMB，无论检查有多好，因为服务器必须计算出与客户端相同的证明。这是协议的属性，而不是本程序的限制。&lt;/p&gt;
+&lt;p&gt;对于这样的人员，&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt;会在配置阶段于 SMB 列中打印 &lt;code&gt;-&lt;/code&gt;，而不是让其在挂载时才发现。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="a-privileged-port-without-a-privileged-server"&gt;无需特权服务器的特权端口&lt;span class="hx:absolute hx:-mt-20" id="a-privileged-port-without-a-privileged-server"&gt;&lt;/span&gt;
-&lt;a href="#a-privileged-port-without-a-privileged-server" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;在 Unix 上使用 &lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/operations/isolation/"&gt;&lt;code&gt;--isolate&lt;/code&gt;&lt;/a&gt; 时，父进程绑定 445，
-并把监听器传给子进程，因此真正使用 SMB 的进程
-从不需要该特权。Windows 没有 &lt;code&gt;ExtraFiles&lt;/code&gt;，因此在那里由子进程
-自行绑定地址；隔离效果相同，但特权端口这一半则不然。&lt;/p&gt;
+&lt;a href="#a-privileged-port-without-a-privileged-server" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;在 Unix 上使用 &lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/operations/isolation/"&gt;&lt;code&gt;--isolate&lt;/code&gt;&lt;/a&gt; 时，父进程绑定 445，并把监听器传给子进程，因此真正使用 SMB 的进程从不需要该特权。Windows 没有 &lt;code&gt;ExtraFiles&lt;/code&gt;，因此在那里由子进程自行绑定地址；隔离效果相同，但特权端口这一半则不然。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="verified-against-a-client-this-project-did-not-write"&gt;已对照本项目未编写的客户端进行验证&lt;span class="hx:absolute hx:-mt-20" id="verified-against-a-client-this-project-did-not-write"&gt;&lt;/span&gt;
-&lt;a href="#verified-against-a-client-this-project-did-not-write" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;a href="https://github.com/cloudsoda/go-smb2" target="_blank" rel="noopener"&gt;go-smb2&lt;/a&gt; 在 CI 中的 &lt;code&gt;-race&lt;/code&gt; 下，
-通过 SMB 驱动二十个并发读取，同时有二十个通过 WebDAV 进行。macOS
-通过 SMB 挂载共享，同时 &lt;code&gt;curl&lt;/code&gt; 通过 WebDAV 向同一个映像写入，
-并读回 WebDAV 所写的内容。&lt;/p&gt;
+&lt;a href="#verified-against-a-client-this-project-did-not-write" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;a href="https://github.com/cloudsoda/go-smb2" target="_blank" rel="noopener"&gt;go-smb2&lt;/a&gt; 在 CI 中的 &lt;code&gt;-race&lt;/code&gt; 下，通过 SMB 驱动二十个并发读取，同时有二十个通过 WebDAV 进行。macOS通过 SMB 挂载共享，同时 &lt;code&gt;curl&lt;/code&gt; 通过 WebDAV 向同一个映像写入，并读回 WebDAV 所写的内容。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="when-the-people-change"&gt;当人员发生变化时&lt;span class="hx:absolute hx:-mt-20" id="when-the-people-change"&gt;&lt;/span&gt;
-&lt;a href="#when-the-people-change" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;SMB 在&lt;strong&gt;共享添加时&lt;/strong&gt;就固定了谁可以连接到该共享，并在每次树连接时
-检查一次。因此，&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/administration/reload/"&gt;目录服务重新加载&lt;/a&gt;
-发现的新人会原地添加，包括 SMB 正在运行的服务器，不触及任何连接；
-但任何被收回的内容，无论是人员、凭据还是共享的展开
-列表，都会产生新的世代，SMB 已打开的连接会被关闭，因此
-撤销会触及已经打开的会话。&lt;code&gt;allow&lt;/code&gt; 组已
-清空的共享&lt;strong&gt;根本不会通过 SMB 提供&lt;/strong&gt;：其空的 &lt;code&gt;AllowUsers&lt;/code&gt; 会被理解为
-所有人。&lt;/p&gt;</description></item><item><title>WebDAV：Basic 或持有者令牌</title><link>https://go-fileshare.github.io/docs/0.31/zh-cn/protocols/webdav/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/zh-cn/protocols/webdav/</guid><description>
+&lt;a href="#when-the-people-change" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;SMB 在&lt;strong&gt;共享添加时&lt;/strong&gt;就固定了谁可以连接到该共享，并在每次树连接时检查一次。因此，&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/administration/reload/"&gt;目录服务重新加载&lt;/a&gt;
+发现的新人会原地添加，包括 SMB 正在运行的服务器，不触及任何连接；但任何被收回的内容，无论是人员、凭据还是共享的展开列表，都会产生新的世代，SMB 已打开的连接会被关闭，因此撤销会触及已经打开的会话。&lt;code&gt;allow&lt;/code&gt; 组已清空的共享&lt;strong&gt;根本不会通过 SMB 提供&lt;/strong&gt;：其空的 &lt;code&gt;AllowUsers&lt;/code&gt; 会被理解为所有人。&lt;/p&gt;</description></item><item><title>WebDAV：Basic 或持有者令牌</title><link>https://go-fileshare.github.io/docs/0.31/zh-cn/protocols/webdav/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/zh-cn/protocols/webdav/</guid><description>
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;tls&lt;/span&gt; {
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; cert_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/tls/fullchain.pem&amp;#34;&lt;/span&gt;
@@ -64,17 +46,12 @@ data-copied-label="已复制！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;HTTP Basic 或持有者令牌，都基于 &lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/tls/"&gt;TLS&lt;/a&gt;，证书来自文件或
-ACME。&lt;/p&gt;
+&lt;p&gt;HTTP Basic 或持有者令牌，都基于 &lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/tls/"&gt;TLS&lt;/a&gt;，证书来自文件或ACME。&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;自 v0.9.0 起不再允许明文&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;HTTP Basic 在每个请求中就是密码本身，而持有者令牌与密码
-等效。其他机器可以访问的地址上&lt;strong&gt;没有 TLS&lt;/strong&gt; 的 WebDAV，
-只要有人需要身份验证，就会&lt;strong&gt;在启动时被拒绝&lt;/strong&gt;，
-&lt;code&gt;serve &amp;quot;webdav&amp;quot; { addr = &amp;quot;0.0.0.0:8080&amp;quot; }&lt;/code&gt;，即本页曾经
-展示的示例，不再能够启动。如果有代理在前端终结 TLS，请明确说明：&lt;/p&gt;
+&lt;p&gt;HTTP Basic 在每个请求中就是密码本身，而持有者令牌与密码等效。其他机器可以访问的地址上&lt;strong&gt;没有 TLS&lt;/strong&gt; 的 WebDAV，只要有人需要身份验证，就会&lt;strong&gt;在启动时被拒绝&lt;/strong&gt;，&lt;code&gt;serve &amp;quot;webdav&amp;quot; { addr = &amp;quot;0.0.0.0:8080&amp;quot; }&lt;/code&gt;，即本页曾经展示的示例，不再能够启动。如果有代理在前端终结 TLS，请明确说明：&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;webdav&amp;#34;&lt;/span&gt; {
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;10.0.0.5:8080&amp;#34;&lt;/span&gt;
@@ -91,8 +68,7 @@ data-copied-label="已复制！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;回环地址，以及没有任何人需要身份验证的服务器，不受影响。参见
-&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/tls/#webdav-is-not-served-in-the-clear"&gt;TLS&lt;/a&gt;。&lt;/p&gt;
+&lt;p&gt;回环地址，以及没有任何人需要身份验证的服务器，不受影响。参见&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/tls/#webdav-is-not-served-in-the-clear"&gt;TLS&lt;/a&gt;。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -121,21 +97,13 @@ data-copied-label="已复制！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;浏览器有令牌而没有密码。因此 WebDAV 接受 &lt;code&gt;Authorization: Bearer&lt;/code&gt;，并且在也有本地人员的情况下，它发出的质询会同时提供
-&lt;strong&gt;两种&lt;/strong&gt;方式，由客户端选择它能够应答的那一种。令牌由
-&lt;a href="https://github.com/go-authn/oidc" target="_blank" rel="noopener"&gt;go-authn/oidc&lt;/a&gt; 验证：签名、颁发者、受众、
-有效期。&lt;/p&gt;
+&lt;p&gt;浏览器有令牌而没有密码。因此 WebDAV 接受 &lt;code&gt;Authorization: Bearer&lt;/code&gt;，并且在也有本地人员的情况下，它发出的质询会同时提供&lt;strong&gt;两种&lt;/strong&gt;方式，由客户端选择它能够应答的那一种。令牌由&lt;a href="https://github.com/go-authn/oidc" target="_blank" rel="noopener"&gt;go-authn/oidc&lt;/a&gt; 验证：签名、颁发者、受众、有效期。&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;持有者令牌：仅限 WebDAV&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;SMB 使用 NTLMv2 进行身份验证，SFTP 使用密钥或证书，NFS 什么都
-没有，S3 使用 SigV4 签名：它们都没有地方放置
-&lt;code&gt;Authorization&lt;/code&gt; 标头。这是关于协议的事实，而不是本程序的
-限制。&lt;/p&gt;
-&lt;p&gt;提供方的凭证改为通过证书到达 &lt;strong&gt;SFTP&lt;/strong&gt;，参见
-&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/protocols/sftp/#people-the-identity-provider-vouches-for"&gt;SFTP&lt;/a&gt;。指明了提供方、却既不提供 WebDAV 也不提供此类 SFTP 的配置，
-会&lt;strong&gt;被拒绝，而不是启动&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;SMB 使用 NTLMv2 进行身份验证，SFTP 使用密钥或证书，NFS 什么都没有，S3 使用 SigV4 签名：它们都没有地方放置&lt;code&gt;Authorization&lt;/code&gt; 标头。这是关于协议的事实，而不是本程序的限制。&lt;/p&gt;
+&lt;p&gt;提供方的凭证改为通过证书到达 &lt;strong&gt;SFTP&lt;/strong&gt;，参见&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/protocols/sftp/#people-the-identity-provider-vouches-for"&gt;SFTP&lt;/a&gt;。指明了提供方、却既不提供 WebDAV 也不提供此类 SFTP 的配置，会&lt;strong&gt;被拒绝，而不是启动&lt;/strong&gt;。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -143,11 +111,7 @@ data-copied-label="已复制！"
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;令牌说明的是提供方认为某人是谁，并不说明本服务器有属于此人的共享。&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;对于这里没有任何来源认识的名称，即使令牌有效也会被拒绝：对
-&lt;em&gt;我不认识你&lt;/em&gt;的安全理解，不是&lt;em&gt;你被允许&lt;/em&gt;。本地
-账户同样拥有的名称，也不会因此获得该账户，除非 &lt;code&gt;local_names = true&lt;/code&gt; 表示
-提供方的名称就是本服务器的名称（自 v0.20.0 起默认关闭）；没有
-该设置时，这样的令牌同样会被拒绝，除非有 &lt;code&gt;oidc:&lt;/code&gt; 规则指明此人。&lt;/p&gt;
+&lt;p&gt;对于这里没有任何来源认识的名称，即使令牌有效也会被拒绝：对&lt;em&gt;我不认识你&lt;/em&gt;的安全理解，不是&lt;em&gt;你被允许&lt;/em&gt;。本地账户同样拥有的名称，也不会因此获得该账户，除非 &lt;code&gt;local_names = true&lt;/code&gt; 表示提供方的名称就是本服务器的名称（自 v0.20.0 起默认关闭）；没有该设置时，这样的令牌同样会被拒绝，除非有 &lt;code&gt;oidc:&lt;/code&gt; 规则指明此人。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -169,39 +133,16 @@ data-copied-label="已复制！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;这里&lt;strong&gt;没有登录流程&lt;/strong&gt;：没有重定向，没有客户端机密，没有 cookie。
-这是资源服务器。&lt;/p&gt;
-&lt;p&gt;令牌给出的&lt;strong&gt;名称&lt;/strong&gt;是 &lt;code&gt;preferred_username&lt;/code&gt;，或 &lt;code&gt;username_claim&lt;/code&gt; 所指明的
-声明。没有 &lt;code&gt;preferred_username&lt;/code&gt; 时，只有在提供方声明 &lt;code&gt;email_verified: true&lt;/code&gt; 的情况下
-才使用电子邮件，否则使用 &lt;code&gt;sub&lt;/code&gt;。设置 &lt;code&gt;username_claim = &amp;quot;email&amp;quot;&lt;/code&gt; 时，
-电子邮件未经验证的令牌会被拒绝，WebDAV 如此，
-通过 SFTP 的 opkssh 登录也是如此。在验证之前，
-电子邮件只是此人键入的内容，而携带它的已签名令牌
-会绑定到一个无人核实过的地址（OpenID Connect Core 5.1；
-go-authn/oidc v0.2.0，fileshare v0.16.3）。&lt;/p&gt;
-&lt;p&gt;提供方的哪些人可以获得共享（组、指明的个人、
-整个机构）通过 &lt;code&gt;oidc:&lt;/code&gt; 规则和 &lt;code&gt;domains&lt;/code&gt; 来写；参见
-&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;由身份提供方指明的人员&lt;/a&gt;。&lt;/p&gt;
+&lt;p&gt;这里&lt;strong&gt;没有登录流程&lt;/strong&gt;：没有重定向，没有客户端机密，没有 cookie。这是资源服务器。&lt;/p&gt;
+&lt;p&gt;令牌给出的&lt;strong&gt;名称&lt;/strong&gt;是 &lt;code&gt;preferred_username&lt;/code&gt;，或 &lt;code&gt;username_claim&lt;/code&gt; 所指明的声明。没有 &lt;code&gt;preferred_username&lt;/code&gt; 时，只有在提供方声明 &lt;code&gt;email_verified: true&lt;/code&gt; 的情况下才使用电子邮件，否则使用 &lt;code&gt;sub&lt;/code&gt;。设置 &lt;code&gt;username_claim = &amp;quot;email&amp;quot;&lt;/code&gt; 时，电子邮件未经验证的令牌会被拒绝，WebDAV 如此，通过 SFTP 的 opkssh 登录也是如此。在验证之前，电子邮件只是此人键入的内容，而携带它的已签名令牌会绑定到一个无人核实过的地址（OpenID Connect Core 5.1；go-authn/oidc v0.2.0，fileshare v0.16.3）。&lt;/p&gt;
+&lt;p&gt;提供方的哪些人可以获得共享（组、指明的个人、整个机构）通过 &lt;code&gt;oidc:&lt;/code&gt; 规则和 &lt;code&gt;domains&lt;/code&gt; 来写；参见&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;由身份提供方指明的人员&lt;/a&gt;。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="a-token-outlives-the-person-unless-something-says-otherwise"&gt;令牌比人更长寿，除非有东西另作说明&lt;span class="hx:absolute hx:-mt-20" id="a-token-outlives-the-person-unless-something-says-otherwise"&gt;&lt;/span&gt;
-&lt;a href="#a-token-outlives-the-person-unless-something-says-otherwise" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;令牌在这里独立验证，并在到期之前一直有效，无论
-此人之后发生了什么。没有任何撤销列表可以指明它。
-&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/shared-signals/"&gt;&lt;code&gt;ssf&lt;/code&gt; 块&lt;/a&gt;会使提供方发出的 CAEP &lt;code&gt;session-revoked&lt;/code&gt;
+&lt;a href="#a-token-outlives-the-person-unless-something-says-otherwise" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;令牌在这里独立验证，并在到期之前一直有效，无论此人之后发生了什么。没有任何撤销列表可以指明它。&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/shared-signals/"&gt;&lt;code&gt;ssf&lt;/code&gt; 块&lt;/a&gt;会使提供方发出的 CAEP &lt;code&gt;session-revoked&lt;/code&gt;
 让此前（&lt;code&gt;iat&lt;/code&gt;）签发的每个令牌失效。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="the-root-and-uploads-in-pieces"&gt;根目录，以及分块上传&lt;span class="hx:absolute hx:-mt-20" id="the-root-and-uploads-in-pieces"&gt;&lt;/span&gt;
-&lt;a href="#the-root-and-uploads-in-pieces" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;根目录会列出各共享&lt;/strong&gt;（自 v0.29.0 起）。浏览器访问 &lt;code&gt;/&lt;/code&gt; 会得到一个包含
-其可打开的共享的页面；对 &lt;code&gt;/&lt;/code&gt; 的 &lt;code&gt;PROPFIND&lt;/code&gt; 会将它们作为集合返回（&lt;code&gt;207&lt;/code&gt;），
-因此文件管理器可以挂载整个服务器，而不是单个共享。深度
-&lt;code&gt;infinity&lt;/code&gt; 会被拒绝（&lt;code&gt;403&lt;/code&gt;，&lt;code&gt;propfind-finite-depth&lt;/code&gt;，RFC 4918 允许这样做），
-任何会在根目录写入的操作也会被拒绝（&lt;code&gt;405&lt;/code&gt;）。直到 v0.28，
-对 &lt;code&gt;/&lt;/code&gt; 的每种方法都会得到该页面。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;大文件上传可以分块进行&lt;/strong&gt;（自 v0.29.0 起）。一次 &lt;code&gt;PUT&lt;/code&gt; 会整体保存在内存中，
-最大 1 GiB，因此无法流式传输的客户端，例如浏览器或
-&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/administration/"&gt;文件资源管理器&lt;/a&gt;，会先发送一个空的
-&lt;code&gt;PUT&lt;/code&gt;，然后发送每个分块，其 &lt;code&gt;Content-Range&lt;/code&gt; 恰好从上一块结束的位置开始，
-最后用 &lt;code&gt;MOVE&lt;/code&gt; 移到真正的名称。起点超过末尾的范围
-仍然返回 &lt;code&gt;416&lt;/code&gt;：它会留下没有人发送过的字节。&lt;/p&gt;</description></item><item><title>协议能够承诺什么</title><link>https://go-fileshare.github.io/docs/0.31/zh-cn/protocols/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/zh-cn/protocols/</guid><description>
-&lt;p&gt;各协议在访问控制所需要的一件事上并不一致：服务器能否分辨
-&lt;strong&gt;是谁&lt;/strong&gt;在请求。&lt;/p&gt;
+&lt;a href="#the-root-and-uploads-in-pieces" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;根目录会列出各共享&lt;/strong&gt;（自 v0.29.0 起）。浏览器访问 &lt;code&gt;/&lt;/code&gt; 会得到一个包含其可打开的共享的页面；对 &lt;code&gt;/&lt;/code&gt; 的 &lt;code&gt;PROPFIND&lt;/code&gt; 会将它们作为集合返回（&lt;code&gt;207&lt;/code&gt;），因此文件管理器可以挂载整个服务器，而不是单个共享。深度&lt;code&gt;infinity&lt;/code&gt; 会被拒绝（&lt;code&gt;403&lt;/code&gt;，&lt;code&gt;propfind-finite-depth&lt;/code&gt;，RFC 4918 允许这样做），任何会在根目录写入的操作也会被拒绝（&lt;code&gt;405&lt;/code&gt;）。直到 v0.28，对 &lt;code&gt;/&lt;/code&gt; 的每种方法都会得到该页面。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;大文件上传可以分块进行&lt;/strong&gt;（自 v0.29.0 起）。一次 &lt;code&gt;PUT&lt;/code&gt; 会整体保存在内存中，最大 1 GiB，因此无法流式传输的客户端，例如浏览器或&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/administration/"&gt;文件资源管理器&lt;/a&gt;，会先发送一个空的&lt;code&gt;PUT&lt;/code&gt;，然后发送每个分块，其 &lt;code&gt;Content-Range&lt;/code&gt; 恰好从上一块结束的位置开始，最后用 &lt;code&gt;MOVE&lt;/code&gt; 移到真正的名称。起点超过末尾的范围仍然返回 &lt;code&gt;416&lt;/code&gt;：它会留下没有人发送过的字节。&lt;/p&gt;</description></item><item><title>协议能够承诺什么</title><link>https://go-fileshare.github.io/docs/0.31/zh-cn/protocols/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/zh-cn/protocols/</guid><description>
+&lt;p&gt;各协议在访问控制所需要的一件事上并不一致：服务器能否分辨&lt;strong&gt;是谁&lt;/strong&gt;在请求。&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
@@ -237,23 +178,13 @@ go-authn/oidc v0.2.0，fileshare v0.16.3）。&lt;/p&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;h2 data-hextra-search-id="the-consequence-stated-once"&gt;一次性说明后果&lt;span class="hx:absolute hx:-mt-20" id="the-consequence-stated-once"&gt;&lt;/span&gt;
-&lt;a href="#the-consequence-stated-once" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;指明了谁可以使用的共享不会通过 NFS 导出&lt;/strong&gt;，除非
-配置了 Kerberos，或者 NFS 采用
-&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/nfs-certificates/"&gt;基于证书的身份&lt;/a&gt;。&lt;/p&gt;
-&lt;p&gt;这不是警告，也不是选项：一个声明 &lt;em&gt;photos 属于 alice&lt;/em&gt; 的配置，
-和一个把 photos 交给任何连接者的协议，不可能同时得到遵守，
-而悄悄地扩大访问范围是两种失败中更糟的那一种。拒绝信息会
-在启动时以及 &lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt;中打印，并附上原因。&lt;/p&gt;
+&lt;a href="#the-consequence-stated-once" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;指明了谁可以使用的共享不会通过 NFS 导出&lt;/strong&gt;，除非配置了 Kerberos，或者 NFS 采用&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/nfs-certificates/"&gt;基于证书的身份&lt;/a&gt;。&lt;/p&gt;
+&lt;p&gt;这不是警告，也不是选项：一个声明 &lt;em&gt;photos 属于 alice&lt;/em&gt; 的配置，和一个把 photos 交给任何连接者的协议，不可能同时得到遵守，而悄悄地扩大访问范围是两种失败中更糟的那一种。拒绝信息会在启动时以及 &lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt;中打印，并附上原因。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="what-each-one-needs-from-a-directory"&gt;每个协议对目录服务有什么要求&lt;span class="hx:absolute hx:-mt-20" id="what-each-one-needs-from-a-directory"&gt;&lt;/span&gt;
-&lt;a href="#what-each-one-needs-from-a-directory" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;哪些协议可以为某个人提供服务，取决于其来源能够证明什么，
-而不是仅由配置决定。参见
-&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/configuration/identity/#what-a-source-can-prove-and-what-each-protocol-needs"&gt;来源能够证明什么&lt;/a&gt;。&lt;/p&gt;
+&lt;a href="#what-each-one-needs-from-a-directory" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;哪些协议可以为某个人提供服务，取决于其来源能够证明什么，而不是仅由配置决定。参见&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/configuration/identity/#what-a-source-can-prove-and-what-each-protocol-needs"&gt;来源能够证明什么&lt;/a&gt;。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="what-is-encrypted"&gt;哪些是加密的&lt;span class="hx:absolute hx:-mt-20" id="what-is-encrypted"&gt;&lt;/span&gt;
-&lt;a href="#what-is-encrypted" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;WebDAV、S3 和 NFS 接受 &lt;code&gt;tls = true&lt;/code&gt;；SMB 3 使用自己的密钥加密，而 SFTP
-本身就是 SSH。参见 &lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/tls/"&gt;TLS 与来自 ACME 的证书&lt;/a&gt;。&lt;/p&gt;</description></item><item><title>SFTP：密钥或证书</title><link>https://go-fileshare.github.io/docs/0.31/zh-cn/protocols/sftp/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/zh-cn/protocols/sftp/</guid><description>
-&lt;p&gt;每个客户端都已经具备它：&lt;code&gt;sftp&lt;/code&gt; 随 OpenSSH 一起提供，Finder 和 GNOME
-可以挂载它，编辑器也支持它。它也是这里唯一形态并不契合的协议：
-一个人登录后进入的是&lt;strong&gt;一个&lt;/strong&gt;文件系统，而不是一个共享列表。&lt;/p&gt;
+&lt;a href="#what-is-encrypted" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;WebDAV、S3 和 NFS 接受 &lt;code&gt;tls = true&lt;/code&gt;；SMB 3 使用自己的密钥加密，而 SFTP本身就是 SSH。参见 &lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/tls/"&gt;TLS 与来自 ACME 的证书&lt;/a&gt;。&lt;/p&gt;</description></item><item><title>SFTP：密钥或证书</title><link>https://go-fileshare.github.io/docs/0.31/zh-cn/protocols/sftp/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/zh-cn/protocols/sftp/</guid><description>
+&lt;p&gt;每个客户端都已经具备它：&lt;code&gt;sftp&lt;/code&gt; 随 OpenSSH 一起提供，Finder 和 GNOME可以挂载它，编辑器也支持它。它也是这里唯一形态并不契合的协议：一个人登录后进入的是&lt;strong&gt;一个&lt;/strong&gt;文件系统，而不是一个共享列表。&lt;/p&gt;
 &lt;p&gt;因此，共享成为为刚刚通过身份验证的人构建的目录树的顶层目录：&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;pre&gt;&lt;code&gt;$ sftp -i ~/.ssh/id_ed25519 -P 2222 alice@attic
@@ -272,15 +203,12 @@ data-copied-label="已复制！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;alice 无权使用的共享&lt;strong&gt;不是 alice 能看到的目录&lt;/strong&gt;，而 alice
-只能读取的共享，会在&lt;em&gt;目录树中&lt;/em&gt;就拒绝 alice 的写入，
-而不是交给本来会允许写入的驱动。&lt;/p&gt;
+&lt;p&gt;alice 无权使用的共享&lt;strong&gt;不是 alice 能看到的目录&lt;/strong&gt;，而 alice只能读取的共享，会在&lt;em&gt;目录树中&lt;/em&gt;就拒绝 alice 的写入，而不是交给本来会允许写入的驱动。&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;跨两个共享的重命名会被拒绝&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;那将是在两个映像之间进行一次复制和一次删除，而这在任何地方
-都不是重命名所承诺的行为。&lt;/p&gt;
+&lt;p&gt;那将是在两个映像之间进行一次复制和一次删除，而这在任何地方都不是重命名所承诺的行为。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -305,31 +233,19 @@ data-copied-label="已复制！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;配置了 &lt;code&gt;trusted_user_ca_file&lt;/code&gt; 后，由该颁发机构签发、并在其主体中包含
-该用户的证书就已足够，因此一个人的访问权限是在&lt;strong&gt;别处签发并在别处到期&lt;/strong&gt;的，
-有人加入或离开时，这里无需编辑任何文件。&lt;/p&gt;
-&lt;p&gt;签名、有效期和主体由
-&lt;code&gt;x/crypto/ssh&lt;/code&gt; 的 &lt;code&gt;CertChecker&lt;/code&gt; 检查；并已对照 &lt;strong&gt;OpenSSH 自己的客户端&lt;/strong&gt;验证，
-当其证书被移开后，该客户端同样会拒绝这把密钥。&lt;/p&gt;
+&lt;p&gt;配置了 &lt;code&gt;trusted_user_ca_file&lt;/code&gt; 后，由该颁发机构签发、并在其主体中包含该用户的证书就已足够，因此一个人的访问权限是在&lt;strong&gt;别处签发并在别处到期&lt;/strong&gt;的，有人加入或离开时，这里无需编辑任何文件。&lt;/p&gt;
+&lt;p&gt;签名、有效期和主体由&lt;code&gt;x/crypto/ssh&lt;/code&gt; 的 &lt;code&gt;CertChecker&lt;/code&gt; 检查；并已对照 &lt;strong&gt;OpenSSH 自己的客户端&lt;/strong&gt;验证，当其证书被移开后，该客户端同样会拒绝这把密钥。&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;没有 &lt;code&gt;host_key_file&lt;/code&gt; 时，每次启动都会生成新的身份&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;服务器会说明这一点，而所有以前见过它的客户端都会就
-密钥变更发出警告，这正是客户端在履行其职责。&lt;/p&gt;
+&lt;p&gt;服务器会说明这一点，而所有以前见过它的客户端都会就密钥变更发出警告，这正是客户端在履行其职责。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="certificates-meant-for-this-host-the-domain-grant"&gt;针对本主机的证书：域授权&lt;span class="hx:absolute hx:-mt-20" id="certificates-meant-for-this-host-the-domain-grant"&gt;&lt;/span&gt;
 &lt;a href="#certificates-meant-for-this-host-the-domain-grant" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;自 v0.22.0 起。&lt;a href="https://integration.docs.my-eurohpc.eu/aai/ssh-ca-overview/" target="_blank" rel="noopener"&gt;EuroHPC 联合平台的 SSH CA&lt;/a&gt;
-（GÉANT / MyAccessID）签发联盟中每个站点
-都信任的证书。每个证书都在
-&lt;code&gt;ssh-domain-grant@core.aai.geant.org&lt;/code&gt; 扩展中说明它适用于哪些主机。sshd 会忽略该扩展，
-fileshare 在 v0.22.0 之前也是如此：为他人
-机器签发的证书在这里同样有效。设置 &lt;code&gt;ssh_domains&lt;/code&gt; 后，授权会由
-&lt;a href="https://github.com/go-authn/sshcert" target="_blank" rel="noopener"&gt;go-authn/sshcert&lt;/a&gt; 按规范读取、解析
-和匹配。授权中没有包含本主机任何名称的证书
-会被拒绝。&lt;/p&gt;
+（GÉANT / MyAccessID）签发联盟中每个站点都信任的证书。每个证书都在&lt;code&gt;ssh-domain-grant@core.aai.geant.org&lt;/code&gt; 扩展中说明它适用于哪些主机。sshd 会忽略该扩展，fileshare 在 v0.22.0 之前也是如此：为他人机器签发的证书在这里同样有效。设置 &lt;code&gt;ssh_domains&lt;/code&gt; 后，授权会由&lt;a href="https://github.com/go-authn/sshcert" target="_blank" rel="noopener"&gt;go-authn/sshcert&lt;/a&gt; 按规范读取、解析和匹配。授权中没有包含本主机任何名称的证书会被拒绝。&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;trusted_user_ca_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/efp-ssh-ca.pub&amp;#34;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;ssh_domains&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;files.example.org&amp;#34;, &amp;#34;sftp.example.org&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
@@ -399,11 +315,7 @@ data-copied-label="已复制！"
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;没有 &lt;code&gt;ssh_domains&lt;/code&gt; 时，不会读取任何内容，也不会有任何变化。授权是在
-&lt;strong&gt;颁发机构&lt;/strong&gt;签发的证书上读取的：即 &lt;code&gt;trusted_user_ca_file&lt;/code&gt; 的证书，以及
-提供方的证书（&lt;code&gt;ssh_ca_file&lt;/code&gt;）。OpenPubkey 证书由用户自己的
-密钥签名，因此其中的授权只是用户对自己的说法。它的受众
-是 &lt;code&gt;opkssh_client_id&lt;/code&gt;。普通密钥不携带授权，也不在此规则范围内。&lt;/p&gt;
+&lt;p&gt;没有 &lt;code&gt;ssh_domains&lt;/code&gt; 时，不会读取任何内容，也不会有任何变化。授权是在&lt;strong&gt;颁发机构&lt;/strong&gt;签发的证书上读取的：即 &lt;code&gt;trusted_user_ca_file&lt;/code&gt; 的证书，以及提供方的证书（&lt;code&gt;ssh_ca_file&lt;/code&gt;）。OpenPubkey 证书由用户自己的密钥签名，因此其中的授权只是用户对自己的说法。它的受众是 &lt;code&gt;opkssh_client_id&lt;/code&gt;。普通密钥不携带授权，也不在此规则范围内。&lt;/p&gt;
 &lt;p&gt;每次拒绝都会连同证书的序列号、密钥 ID 和原因一起记入日志：&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;pre&gt;&lt;code&gt;sftp: alice: certificate 42 (&amp;#34;alice@efp&amp;#34;) refused: its domain grant [login.example.eu] names none of this host&amp;#39;s names [files.example.org sftp.example.org]
@@ -419,31 +331,19 @@ data-copied-label="已复制！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;每项决定也会计入 &lt;code&gt;fileshare_sftp_domain_grant_total{result}&lt;/code&gt;，
-结果为 &lt;code&gt;granted&lt;/code&gt;、&lt;code&gt;accepted_ungranted&lt;/code&gt;、&lt;code&gt;refused_not_granted&lt;/code&gt;、
-&lt;code&gt;refused_absent&lt;/code&gt; 或 &lt;code&gt;refused_malformed&lt;/code&gt;。客户端在证明自己持有密钥之前就会出示证书，
-因此这里统计的是尝试次数，而不是人数。&lt;/p&gt;
+&lt;p&gt;每项决定也会计入 &lt;code&gt;fileshare_sftp_domain_grant_total{result}&lt;/code&gt;，结果为 &lt;code&gt;granted&lt;/code&gt;、&lt;code&gt;accepted_ungranted&lt;/code&gt;、&lt;code&gt;refused_not_granted&lt;/code&gt;、&lt;code&gt;refused_absent&lt;/code&gt; 或 &lt;code&gt;refused_malformed&lt;/code&gt;。客户端在证明自己持有密钥之前就会出示证书，因此这里统计的是尝试次数，而不是人数。&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;为什么以拒绝为默认&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;设想一台信任第二个颁发机构的主机：它自己用于员工的 CA、测试
-CA、附加到同一文件中的 EFP 预发布 CA，或没有授权的 go-authn/bridge
-客户端。该颁发机构的证书不携带授权。如果缺少
-授权意味着“没有限制”，那么这个过滤器在该主机上就什么都过滤不掉。&lt;/p&gt;
+&lt;p&gt;设想一台信任第二个颁发机构的主机：它自己用于员工的 CA、测试CA、附加到同一文件中的 EFP 预发布 CA，或没有授权的 go-authn/bridge客户端。该颁发机构的证书不携带授权。如果缺少授权意味着“没有限制”，那么这个过滤器在该主机上就什么都过滤不掉。&lt;/p&gt;
 &lt;p&gt;在这里，没有授权的证书会被拒绝，除非 &lt;code&gt;ssh_accept_ungranted&lt;/code&gt;
-另有说明。存在但无法解析的授权无论内容如何都会被拒绝：写入授权的
-颁发机构本意就是限制该证书。go-authn/sshcert 演示了
-&lt;a href="https://github.com/go-authn/sshcert#why-fail-closed-the-multi-ca-scenario" target="_blank" rel="noopener"&gt;多 CA 场景&lt;/a&gt;。&lt;/p&gt;
+另有说明。存在但无法解析的授权无论内容如何都会被拒绝：写入授权的颁发机构本意就是限制该证书。go-authn/sshcert 演示了&lt;a href="https://github.com/go-authn/sshcert#why-fail-closed-the-multi-ca-scenario" target="_blank" rel="noopener"&gt;多 CA 场景&lt;/a&gt;。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h3 data-hextra-search-id="with-efps-ca"&gt;使用 EFP 的 CA&lt;span class="hx:absolute hx:-mt-20" id="with-efps-ca"&gt;&lt;/span&gt;
-&lt;a href="#with-efps-ca" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;&lt;code&gt;trusted_user_ca_file&lt;/code&gt; 即 OpenSSH 的 &lt;code&gt;TrustedUserCAKeys&lt;/code&gt;。按照 EFP 的
-&lt;a href="https://integration.docs.my-eurohpc.eu/aai/ssh-ca-trust/" target="_blank" rel="noopener"&gt;信任页面&lt;/a&gt;所述，将 EFP
-发布于 &lt;a href="https://sshca.my-eurohpc.eu/config" target="_blank" rel="noopener"&gt;https://sshca.my-eurohpc.eu/config&lt;/a&gt; 的密钥放入其中。
-该 URL 返回 &lt;code&gt;{&amp;quot;PublicKey&amp;quot;: &amp;quot;ssh-ed25519 ...&amp;quot;}&lt;/code&gt;；文件中单独一行保存
-&lt;code&gt;PublicKey&lt;/code&gt; 的值：&lt;/p&gt;
+&lt;a href="#with-efps-ca" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;&lt;code&gt;trusted_user_ca_file&lt;/code&gt; 即 OpenSSH 的 &lt;code&gt;TrustedUserCAKeys&lt;/code&gt;。按照 EFP 的&lt;a href="https://integration.docs.my-eurohpc.eu/aai/ssh-ca-trust/" target="_blank" rel="noopener"&gt;信任页面&lt;/a&gt;所述，将 EFP发布于 &lt;a href="https://sshca.my-eurohpc.eu/config" target="_blank" rel="noopener"&gt;https://sshca.my-eurohpc.eu/config&lt;/a&gt; 的密钥放入其中。该 URL 返回 &lt;code&gt;{&amp;quot;PublicKey&amp;quot;: &amp;quot;ssh-ed25519 ...&amp;quot;}&lt;/code&gt;；文件中单独一行保存&lt;code&gt;PublicKey&lt;/code&gt; 的值：&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;curl -s https://sshca.my-eurohpc.eu/config &lt;span class="p"&gt;|&lt;/span&gt; jq -r &lt;span class="s1"&gt;&amp;#39;.PublicKey&amp;#39;&lt;/span&gt; &amp;gt; /etc/fileshare/efp-ssh-ca.pub&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
 &lt;button
@@ -457,10 +357,7 @@ data-copied-label="已复制！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;然后将 &lt;code&gt;ssh_domains&lt;/code&gt; 设置为你的托管实体的授权所使用的名称。EFP
-证书的唯一主体是 MyAccessID 标识符
-（&lt;code&gt;&amp;lt;id&amp;gt;@myaccessid.org&lt;/code&gt;），因此这就是它登录时使用的用户名。同名且
-没有自己凭据的 &lt;code&gt;user&lt;/code&gt; 块会接收它：&lt;/p&gt;
+&lt;p&gt;然后将 &lt;code&gt;ssh_domains&lt;/code&gt; 设置为你的托管实体的授权所使用的名称。EFP证书的唯一主体是 MyAccessID 标识符（&lt;code&gt;&amp;lt;id&amp;gt;@myaccessid.org&lt;/code&gt;），因此这就是它登录时使用的用户名。同名且没有自己凭据的 &lt;code&gt;user&lt;/code&gt; 块会接收它：&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;user&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;u1234@myaccessid.org&amp;#34;&lt;/span&gt; {}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
 &lt;button
@@ -475,29 +372,15 @@ data-copied-label="已复制！"
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h3 data-hextra-search-id="with-go-authnbridge"&gt;使用 go-authn/bridge&lt;span class="hx:absolute hx:-mt-20" id="with-go-authnbridge"&gt;&lt;/span&gt;
-&lt;a href="#with-go-authnbridge" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;设置了 &lt;code&gt;ssh_certificates = true&lt;/code&gt; 和
-&lt;code&gt;ssh_domain_grants = [&amp;quot;files.example.org&amp;quot;]&lt;/code&gt; 的
-&lt;a href="https://github.com/go-authn/bridge" target="_blank" rel="noopener"&gt;go-authn/bridge&lt;/a&gt; 客户端（v0.19.0 或更高版本）会签发针对
-本主机授权的证书。设置 &lt;code&gt;ssh_principal_claim = &amp;quot;voperson_id&amp;quot;&lt;/code&gt; 后，其唯一主体是
-此人的 &lt;code&gt;voperson_id&lt;/code&gt;，与 EFP 配置一致，这就是要在此处
-编写的 &lt;code&gt;user&lt;/code&gt; 块。信任 bridge 的 CA，与本服务器信任其他任何 CA 的方式相同：&lt;/p&gt;
+&lt;a href="#with-go-authnbridge" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;设置了 &lt;code&gt;ssh_certificates = true&lt;/code&gt; 和&lt;code&gt;ssh_domain_grants = [&amp;quot;files.example.org&amp;quot;]&lt;/code&gt; 的&lt;a href="https://github.com/go-authn/bridge" target="_blank" rel="noopener"&gt;go-authn/bridge&lt;/a&gt; 客户端（v0.19.0 或更高版本）会签发针对本主机授权的证书。设置 &lt;code&gt;ssh_principal_claim = &amp;quot;voperson_id&amp;quot;&lt;/code&gt; 后，其唯一主体是此人的 &lt;code&gt;voperson_id&lt;/code&gt;，与 EFP 配置一致，这就是要在此处编写的 &lt;code&gt;user&lt;/code&gt; 块。信任 bridge 的 CA，与本服务器信任其他任何 CA 的方式相同：&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;作为 &lt;code&gt;trusted_user_ca_file&lt;/code&gt;，用于本地账户。bridge 在 &lt;code&gt;/ssh/config&lt;/code&gt; 以 EFP
-的格式提供其密钥，因此上面的 &lt;code&gt;curl | jq&lt;/code&gt; 命令配合 bridge 的 URL 同样有效；&lt;/li&gt;
-&lt;li&gt;或作为 &lt;code&gt;oidc&lt;/code&gt; 块的 &lt;code&gt;ssh_ca_file&lt;/code&gt;，用于
-&lt;a href="#people-the-identity-provider-vouches-for"&gt;由提供方担保的人员&lt;/a&gt;。&lt;/li&gt;
+&lt;li&gt;作为 &lt;code&gt;trusted_user_ca_file&lt;/code&gt;，用于本地账户。bridge 在 &lt;code&gt;/ssh/config&lt;/code&gt; 以 EFP的格式提供其密钥，因此上面的 &lt;code&gt;curl | jq&lt;/code&gt; 命令配合 bridge 的 URL 同样有效；&lt;/li&gt;
+&lt;li&gt;或作为 &lt;code&gt;oidc&lt;/code&gt; 块的 &lt;code&gt;ssh_ca_file&lt;/code&gt;，用于&lt;a href="#people-the-identity-provider-vouches-for"&gt;由提供方担保的人员&lt;/a&gt;。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;bridge 的其他客户端不写入授权。如果它们的证书必须在此
-继续有效，这正是 &lt;code&gt;ssh_accept_ungranted&lt;/code&gt; 的用途。但它会放行每个受信任颁发机构的&lt;strong&gt;所有&lt;/strong&gt;
-无授权证书，所以最好还是为这些
-客户端提供授权。&lt;/p&gt;
+&lt;p&gt;bridge 的其他客户端不写入授权。如果它们的证书必须在此继续有效，这正是 &lt;code&gt;ssh_accept_ungranted&lt;/code&gt; 的用途。但它会放行每个受信任颁发机构的&lt;strong&gt;所有&lt;/strong&gt;
+无授权证书，所以最好还是为这些客户端提供授权。&lt;/p&gt;
 &lt;h3 data-hextra-search-id="a-certificate-pinned-to-an-address"&gt;绑定到某个地址的证书&lt;span class="hx:absolute hx:-mt-20" id="a-certificate-pinned-to-an-address"&gt;&lt;/span&gt;
-&lt;a href="#a-certificate-pinned-to-an-address" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;bridge 的 &lt;code&gt;ssh_source_address&lt;/code&gt; 会写入 &lt;code&gt;source-address&lt;/code&gt; 关键选项，与
-&lt;code&gt;ssh-keygen -O source-address=...&lt;/code&gt; 的效果相同。携带该选项的证书
-&lt;strong&gt;只接受来自这些地址的登录&lt;/strong&gt;，无论是否设置了 &lt;code&gt;ssh_domains&lt;/code&gt;。来自
-证书所允许地址的登录会被放行，前提是在设置了 &lt;code&gt;ssh_domains&lt;/code&gt; 时，
-其授权也包含本主机。来自任何其他地址的登录会
-被拒绝。&lt;/p&gt;
+&lt;a href="#a-certificate-pinned-to-an-address" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;bridge 的 &lt;code&gt;ssh_source_address&lt;/code&gt; 会写入 &lt;code&gt;source-address&lt;/code&gt; 关键选项，与&lt;code&gt;ssh-keygen -O source-address=...&lt;/code&gt; 的效果相同。携带该选项的证书&lt;strong&gt;只接受来自这些地址的登录&lt;/strong&gt;，无论是否设置了 &lt;code&gt;ssh_domains&lt;/code&gt;。来自证书所允许地址的登录会被放行，前提是在设置了 &lt;code&gt;ssh_domains&lt;/code&gt; 时，其授权也包含本主机。来自任何其他地址的登录会被拒绝。&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
@@ -529,18 +412,10 @@ data-copied-label="已复制！"
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;“所有地址均被拒绝”是以拒绝为默认的：证书的限制从未
-放宽，只是登录丢失了。在 v0.22.1 之前，go-filesystems/sftp 的
-sshd 会拒绝它交给 fileshare 决定的证书上的任何关键选项；
-这涵盖提供方的证书、OpenPubkey 证书，以及在设置 &lt;code&gt;ssh_domains&lt;/code&gt; 时的
-所有证书。v0.22.1 构建于 go-filesystems/sftp v0.5.1 之上，其 sshd
-在那里接受 &lt;code&gt;source-address&lt;/code&gt;，并在每条证书路径上依据连接来源的
-地址（IPv4 或 IPv6）强制执行。&lt;/p&gt;
-&lt;p&gt;其他任何关键选项（&lt;code&gt;force-command&lt;/code&gt;、&lt;code&gt;verify-required&lt;/code&gt; 等）都会被拒绝，
-因为本服务器不会对其采取任何动作。&lt;/p&gt;
+&lt;p&gt;“所有地址均被拒绝”是以拒绝为默认的：证书的限制从未放宽，只是登录丢失了。在 v0.22.1 之前，go-filesystems/sftp 的sshd 会拒绝它交给 fileshare 决定的证书上的任何关键选项；这涵盖提供方的证书、OpenPubkey 证书，以及在设置 &lt;code&gt;ssh_domains&lt;/code&gt; 时的所有证书。v0.22.1 构建于 go-filesystems/sftp v0.5.1 之上，其 sshd在那里接受 &lt;code&gt;source-address&lt;/code&gt;，并在每条证书路径上依据连接来源的地址（IPv4 或 IPv6）强制执行。&lt;/p&gt;
+&lt;p&gt;其他任何关键选项（&lt;code&gt;force-command&lt;/code&gt;、&lt;code&gt;verify-required&lt;/code&gt; 等）都会被拒绝，因为本服务器不会对其采取任何动作。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="people-the-identity-provider-vouches-for"&gt;由身份提供方担保的人员&lt;span class="hx:absolute hx:-mt-20" id="people-the-identity-provider-vouches-for"&gt;&lt;/span&gt;
-&lt;a href="#people-the-identity-provider-vouches-for" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;自 v0.11.0 起，&lt;code&gt;oidc&lt;/code&gt; 块也可用于 SFTP，但使用的不是令牌（SSH
-没有地方放置令牌），而是&lt;strong&gt;证书&lt;/strong&gt;：&lt;/p&gt;
+&lt;a href="#people-the-identity-provider-vouches-for" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;自 v0.11.0 起，&lt;code&gt;oidc&lt;/code&gt; 块也可用于 SFTP，但使用的不是令牌（SSH没有地方放置令牌），而是&lt;strong&gt;证书&lt;/strong&gt;：&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;oidc&lt;/span&gt; {
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; issuer&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://login.example.org&amp;#34;&lt;/span&gt;
@@ -561,23 +436,9 @@ data-copied-label="已复制！"
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;由提供方的 SSH CA 签发的证书&lt;/strong&gt;：&lt;code&gt;authn-bridge ssh-cert&lt;/code&gt; 会在通过联盟登录之后
-写入一份。其主体是此人，其
-&lt;code&gt;groups@go-authn.org&lt;/code&gt; 扩展是此人所属的组，因此
-&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;&lt;code&gt;oidc:groups:&lt;/code&gt; 规则&lt;/a&gt;
-适用。它&lt;strong&gt;不是&lt;/strong&gt; &lt;code&gt;trusted_user_ca_file&lt;/code&gt;，后者的证书针对
-本地账户：本地颁发机构的证书若声称拥有提供方的组，
-则会被视为它所指明的本地账户。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;OpenPubkey 证书&lt;/strong&gt;，由 &lt;code&gt;opkssh login&lt;/code&gt; 写入：由用户自己的
-密钥签名，并带有承诺该密钥的 ID 令牌。检查方式与
-&lt;code&gt;opkssh verify&lt;/code&gt; 相同：先由
-&lt;a href="https://github.com/openpubkey/openpubkey" target="_blank" rel="noopener"&gt;openpubkey&lt;/a&gt; 验证器检查（对照提供方已发布的密钥检查
-其签名、nonce 承诺、
-客户端 ID 和有效期），再将证书的密钥与令牌中的密钥比对；并且
-SSH 用户名必须是令牌的用户名，因为这里没有 &lt;code&gt;auth_id&lt;/code&gt; 文件
-可以把二者对应起来：&lt;code&gt;sftp alice@univ-example.fr@files.example.org&lt;/code&gt;。
-&lt;code&gt;opkssh_client_id&lt;/code&gt; 应当是专属的客户端 ID，绝不能是其他
-应用的：ID 令牌会传送到此人登录的每个服务器。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;由提供方的 SSH CA 签发的证书&lt;/strong&gt;：&lt;code&gt;authn-bridge ssh-cert&lt;/code&gt; 会在通过联盟登录之后写入一份。其主体是此人，其&lt;code&gt;groups@go-authn.org&lt;/code&gt; 扩展是此人所属的组，因此&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;&lt;code&gt;oidc:groups:&lt;/code&gt; 规则&lt;/a&gt;
+适用。它&lt;strong&gt;不是&lt;/strong&gt; &lt;code&gt;trusted_user_ca_file&lt;/code&gt;，后者的证书针对本地账户：本地颁发机构的证书若声称拥有提供方的组，则会被视为它所指明的本地账户。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;OpenPubkey 证书&lt;/strong&gt;，由 &lt;code&gt;opkssh login&lt;/code&gt; 写入：由用户自己的密钥签名，并带有承诺该密钥的 ID 令牌。检查方式与&lt;code&gt;opkssh verify&lt;/code&gt; 相同：先由&lt;a href="https://github.com/openpubkey/openpubkey" target="_blank" rel="noopener"&gt;openpubkey&lt;/a&gt; 验证器检查（对照提供方已发布的密钥检查其签名、nonce 承诺、客户端 ID 和有效期），再将证书的密钥与令牌中的密钥比对；并且SSH 用户名必须是令牌的用户名，因为这里没有 &lt;code&gt;auth_id&lt;/code&gt; 文件可以把二者对应起来：&lt;code&gt;sftp alice@univ-example.fr@files.example.org&lt;/code&gt;。&lt;code&gt;opkssh_client_id&lt;/code&gt; 应当是专属的客户端 ID，绝不能是其他应用的：ID 令牌会传送到此人登录的每个服务器。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;要查看证书所携带的组：&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
@@ -593,58 +454,35 @@ data-copied-label="已复制！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;并且服务器会在每次联盟登录时说明
-&lt;code&gt;sftp: alice@univ-a.fr, vouched for by the provider, in groups [...]&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;并且服务器会在每次联盟登录时说明&lt;code&gt;sftp: alice@univ-a.fr, vouched for by the provider, in groups [...]&lt;/code&gt;。&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;被担保不等于被准入&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;除非有规则指明某人、&lt;code&gt;trust_all&lt;/code&gt; 表示提供方就是目录服务，或者
-&lt;code&gt;local_names = true&lt;/code&gt; 表示提供方的名称就是本服务器的名称且本地
-账户拥有该名称，否则提供方所担保的人在这里仍然是陌生人，这与令牌在 WebDAV 上
-所通过的测试相同。&lt;strong&gt;没有主体&lt;/strong&gt;的提供方证书，
-按格式自身的定义对&lt;em&gt;任何人&lt;/em&gt;都有效，因此会被拒绝。&lt;/p&gt;
+&lt;p&gt;除非有规则指明某人、&lt;code&gt;trust_all&lt;/code&gt; 表示提供方就是目录服务，或者&lt;code&gt;local_names = true&lt;/code&gt; 表示提供方的名称就是本服务器的名称且本地账户拥有该名称，否则提供方所担保的人在这里仍然是陌生人，这与令牌在 WebDAV 上所通过的测试相同。&lt;strong&gt;没有主体&lt;/strong&gt;的提供方证书，按格式自身的定义对&lt;em&gt;任何人&lt;/em&gt;都有效，因此会被拒绝。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;&lt;code&gt;-tags noopenpubkey&lt;/code&gt; 会排除 OpenPubkey 验证器（约 2 MB）；
-此类构建中带有 &lt;code&gt;opkssh_client_id&lt;/code&gt; 的配置会被拒绝。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;-tags noopenpubkey&lt;/code&gt; 会排除 OpenPubkey 验证器（约 2 MB）；此类构建中带有 &lt;code&gt;opkssh_client_id&lt;/code&gt; 的配置会被拒绝。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="taking-a-certificate-back"&gt;收回证书&lt;span class="hx:absolute hx:-mt-20" id="taking-a-certificate-back"&gt;&lt;/span&gt;
 &lt;a href="#taking-a-certificate-back" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;证书在登录时检查&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;在提供方处撤销某人，本身并不会撤销已经签发的
-证书：该证书在到期之前仍可打开 SFTP，而已经打开的 SFTP
-会话在那之前也保持打开，因为这些人不在目录服务中，所以
-&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/administration/reload/"&gt;重新加载&lt;/a&gt;与这些人员无关。窗口期就是
-证书的有效期：bridge 的 &lt;code&gt;ssh_ca { validity }&lt;/code&gt;（默认 12h，最长
-168h，且不超过 IdP 会话的结束时间）以及这里的 &lt;code&gt;opkssh_max_age&lt;/code&gt;。请在客户端重新登录
-允许的范围内尽可能缩短。自 v0.17.0 起，已经打开的 opkssh
-会话也会在 &lt;code&gt;opkssh_max_age&lt;/code&gt; 时结束，无论
-证书（由用户自己签名）怎么说。&lt;/p&gt;
+&lt;p&gt;在提供方处撤销某人，本身并不会撤销已经签发的证书：该证书在到期之前仍可打开 SFTP，而已经打开的 SFTP会话在那之前也保持打开，因为这些人不在目录服务中，所以&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/administration/reload/"&gt;重新加载&lt;/a&gt;与这些人员无关。窗口期就是证书的有效期：bridge 的 &lt;code&gt;ssh_ca { validity }&lt;/code&gt;（默认 12h，最长168h，且不超过 IdP 会话的结束时间）以及这里的 &lt;code&gt;opkssh_max_age&lt;/code&gt;。请在客户端重新登录允许的范围内尽可能缩短。自 v0.17.0 起，已经打开的 opkssh会话也会在 &lt;code&gt;opkssh_max_age&lt;/code&gt; 时结束，无论证书（由用户自己签名）怎么说。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;p&gt;有两种机制可以关闭该窗口期：&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;提供方的 &lt;strong&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/revocation-lists/"&gt;KRL&lt;/a&gt;&lt;/strong&gt;（&lt;code&gt;ssh_krl_url&lt;/code&gt;）：
-被撤销的证书在登录时被拒绝，而由它打开的会话的每个操作
-都会再次查询该列表，包括已打开的文件；&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/shared-signals/"&gt;共享信号&lt;/a&gt;&lt;/strong&gt;（&lt;code&gt;ssf&lt;/code&gt;）：在 CAEP &lt;code&gt;session-revoked&lt;/code&gt; 之前，提供方为此人
-签发的一切内容都会被拒绝，
-这是处理不在任何列表中的 OpenPubkey 证书的唯一途径。&lt;/li&gt;
+&lt;li&gt;提供方的 &lt;strong&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/revocation-lists/"&gt;KRL&lt;/a&gt;&lt;/strong&gt;（&lt;code&gt;ssh_krl_url&lt;/code&gt;）：被撤销的证书在登录时被拒绝，而由它打开的会话的每个操作都会再次查询该列表，包括已打开的文件；&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/shared-signals/"&gt;共享信号&lt;/a&gt;&lt;/strong&gt;（&lt;code&gt;ssf&lt;/code&gt;）：在 CAEP &lt;code&gt;session-revoked&lt;/code&gt; 之前，提供方为此人签发的一切内容都会被拒绝，这是处理不在任何列表中的 OpenPubkey 证书的唯一途径。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;两者都以拒绝为默认。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="no-password"&gt;没有密码&lt;span class="hx:absolute hx:-mt-20" id="no-password"&gt;&lt;/span&gt;
 &lt;a href="#no-password" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;提示输入密码的客户端正在做密钥本来要避免的事情。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="transfer-size-and-open-files"&gt;传输大小与打开的文件&lt;span class="hx:absolute hx:-mt-20" id="transfer-size-and-open-files"&gt;&lt;/span&gt;
-&lt;a href="#transfer-size-and-open-files" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;fileshare 会应答 OpenSSH 的 &lt;code&gt;limits@openssh.com&lt;/code&gt;（自 v0.25.0 起），因此
-OpenSSH 的 &lt;code&gt;sftp&lt;/code&gt; 每个请求最多读写 255 KiB，而不是
-32 KiB：使用 OpenSSH 10.3 实测约提升 25%。一个会话最多可同时持有
-1024 个打开的文件和目录；在目录共享上，每一个都是主机的
-一个描述符，这个上限可防止单个用户耗尽
-所有描述符。&lt;/p&gt;</description></item><item><title>S3：共享就是存储桶</title><link>https://go-fileshare.github.io/docs/0.31/zh-cn/protocols/s3/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/zh-cn/protocols/s3/</guid><description>
+&lt;a href="#transfer-size-and-open-files" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;fileshare 会应答 OpenSSH 的 &lt;code&gt;limits@openssh.com&lt;/code&gt;（自 v0.25.0 起），因此OpenSSH 的 &lt;code&gt;sftp&lt;/code&gt; 每个请求最多读写 255 KiB，而不是32 KiB：使用 OpenSSH 10.3 实测约提升 25%。一个会话最多可同时持有1024 个打开的文件和目录；在目录共享上，每一个都是主机的一个描述符，这个上限可防止单个用户耗尽所有描述符。&lt;/p&gt;</description></item><item><title>S3：共享就是存储桶</title><link>https://go-fileshare.github.io/docs/0.31/zh-cn/protocols/s3/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/zh-cn/protocols/s3/</guid><description>
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;serve &amp;#34;s3&amp;#34; { addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:9000&amp;#34;&lt;/span&gt; }&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
 &lt;button
@@ -658,8 +496,7 @@ data-copied-label="已复制！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;或者自 v0.9.0 起通过 HTTPS，使用 &lt;code&gt;tls = true&lt;/code&gt; 和
-&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/tls/"&gt;&lt;code&gt;tls&lt;/code&gt; 块&lt;/a&gt;：&lt;/p&gt;
+&lt;p&gt;或者自 v0.9.0 起通过 HTTPS，使用 &lt;code&gt;tls = true&lt;/code&gt; 和&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/tls/"&gt;&lt;code&gt;tls&lt;/code&gt; 块&lt;/a&gt;：&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;s3&amp;#34;&lt;/span&gt; {
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:9000&amp;#34;&lt;/span&gt;
@@ -676,8 +513,7 @@ data-copied-label="已复制！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;这是第五个协议，它使映像可以被任何使用对象存储的工具访问，
-例如备份工具、数据管道、&lt;code&gt;rclone&lt;/code&gt;、浏览器的 &lt;code&gt;fetch()&lt;/code&gt;。&lt;strong&gt;无需挂载任何东西。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;这是第五个协议，它使映像可以被任何使用对象存储的工具访问，例如备份工具、数据管道、&lt;code&gt;rclone&lt;/code&gt;、浏览器的 &lt;code&gt;fetch()&lt;/code&gt;。&lt;strong&gt;无需挂载任何东西。&lt;/strong&gt;&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;pre&gt;&lt;code&gt;GET / the shares this person may use, as buckets
 GET /photos?list-type=2 the files in that share, as keys
@@ -694,17 +530,12 @@ data-copied-label="已复制！"
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="a-share-is-a-bucket"&gt;共享就是存储桶&lt;span class="hx:absolute hx:-mt-20" id="a-share-is-a-bucket"&gt;&lt;/span&gt;
-&lt;a href="#a-share-is-a-bucket" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;它基于 &lt;strong&gt;SFTP 使用的同一棵每用户目录树&lt;/strong&gt;提供：这是一个顶层
-为此人可以使用的各个共享的文件系统。因此 alice 无权使用的共享，
-就不是 alice 能看到的存储桶，访问规则只在一处应用，而不是
-复制到第二个协议中。&lt;/p&gt;
+&lt;a href="#a-share-is-a-bucket" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;它基于 &lt;strong&gt;SFTP 使用的同一棵每用户目录树&lt;/strong&gt;提供：这是一个顶层为此人可以使用的各个共享的文件系统。因此 alice 无权使用的共享，就不是 alice 能看到的存储桶，访问规则只在一处应用，而不是复制到第二个协议中。&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;共享内的目录是前缀，而不是对象&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;这正是 S3 客户端已有的认识：它们把以分隔符结尾的前缀显示为
-文件夹。对目录执行 &lt;code&gt;GET&lt;/code&gt; 会返回 &lt;code&gt;NoSuchKey&lt;/code&gt;，因为
-返回 200 会让客户端以为可以获取文件夹的字节。&lt;/p&gt;
+&lt;p&gt;这正是 S3 客户端已有的认识：它们把以分隔符结尾的前缀显示为文件夹。对目录执行 &lt;code&gt;GET&lt;/code&gt; 会返回 &lt;code&gt;NoSuchKey&lt;/code&gt;，因为返回 200 会让客户端以为可以获取文件夹的字节。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -724,42 +555,27 @@ data-copied-label="已复制！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;SigV4 通过由机密计算 HMAC 来证明持有该机密，密码
-从不在网络上传输，与 NTLMv2 完全一样。&lt;/p&gt;
+&lt;p&gt;SigV4 通过由机密计算 HMAC 来证明持有该机密，密码从不在网络上传输，与 NTLMv2 完全一样。&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;因此目录服务必须持有密码，而不仅仅是检查密码&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;只能&lt;em&gt;验证&lt;/em&gt;密码的来源，例如 LDAP 绑定或 bcrypt 列，
-可以应答 WebDAV，但&lt;strong&gt;无法&lt;/strong&gt;应答 S3。&lt;/p&gt;
-&lt;p&gt;NT 哈希同样不行：它是 SMB 可以使用的 MD4，而无法
-由它计算出 HMAC。&lt;strong&gt;只持有 NT 哈希的身份可以通过
-SMB 获得服务，而不能通过 S3&lt;/strong&gt;，二者相近但并不是同一个答案。
-&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt;会打印出对应的列。&lt;/p&gt;
+&lt;p&gt;只能&lt;em&gt;验证&lt;/em&gt;密码的来源，例如 LDAP 绑定或 bcrypt 列，可以应答 WebDAV，但&lt;strong&gt;无法&lt;/strong&gt;应答 S3。&lt;/p&gt;
+&lt;p&gt;NT 哈希同样不行：它是 SMB 可以使用的 MD4，而无法由它计算出 HMAC。&lt;strong&gt;只持有 NT 哈希的身份可以通过SMB 获得服务，而不能通过 S3&lt;/strong&gt;，二者相近但并不是同一个答案。&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt;会打印出对应的列。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;⛔ 程序中的任何地方都没有 &lt;code&gt;Password()&lt;/code&gt; 访问器：密码
-只能通过 &lt;code&gt;Identity.Derive&lt;/code&gt; 获得，它接受一个派生函数并返回
-其结果。对于 S3，派生函数就是恒等函数，因为 SigV4 的密钥
-调度位于 go-filesystems/s3 中；机密只会送到那次签名检查中，
-仅为那一个用户，不会去往别处。&lt;/p&gt;
+&lt;p&gt;⛔ 程序中的任何地方都没有 &lt;code&gt;Password()&lt;/code&gt; 访问器：密码只能通过 &lt;code&gt;Identity.Derive&lt;/code&gt; 获得，它接受一个派生函数并返回其结果。对于 S3，派生函数就是恒等函数，因为 SigV4 的密钥调度位于 go-filesystems/s3 中；机密只会送到那次签名检查中，仅为那一个用户，不会去往别处。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="what-is-served"&gt;提供什么&lt;span class="hx:absolute hx:-mt-20" id="what-is-served"&gt;&lt;/span&gt;
-&lt;a href="#what-is-served" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;ListBuckets&lt;/code&gt;、&lt;code&gt;HeadBucket&lt;/code&gt;、带有前缀、分隔符、max-keys
-和续页的 &lt;code&gt;ListObjectsV2&lt;/code&gt;、&lt;code&gt;HeadObject&lt;/code&gt;，以及带 &lt;code&gt;Range&lt;/code&gt; 的 &lt;code&gt;GetObject&lt;/code&gt;。
-SigV4 的两种形式，标头和预签名，均受支持。&lt;/p&gt;
-&lt;p&gt;对象 API 本身是
-&lt;a href="https://github.com/go-filesystems/s3" target="_blank" rel="noopener"&gt;&lt;code&gt;go-filesystems/s3&lt;/code&gt;&lt;/a&gt;。&lt;/p&gt;
+&lt;a href="#what-is-served" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;ListBuckets&lt;/code&gt;、&lt;code&gt;HeadBucket&lt;/code&gt;、带有前缀、分隔符、max-keys和续页的 &lt;code&gt;ListObjectsV2&lt;/code&gt;、&lt;code&gt;HeadObject&lt;/code&gt;，以及带 &lt;code&gt;Range&lt;/code&gt; 的 &lt;code&gt;GetObject&lt;/code&gt;。SigV4 的两种形式，标头和预签名，均受支持。&lt;/p&gt;
+&lt;p&gt;对象 API 本身是&lt;a href="https://github.com/go-filesystems/s3" target="_blank" rel="noopener"&gt;&lt;code&gt;go-filesystems/s3&lt;/code&gt;&lt;/a&gt;。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="what-is-refused-and-why"&gt;拒绝什么，以及原因&lt;span class="hx:absolute hx:-mt-20" id="what-is-refused-and-why"&gt;&lt;/span&gt;
 &lt;a href="#what-is-refused-and-why" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;写入返回 403&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;PUT&lt;/code&gt;、&lt;code&gt;POST&lt;/code&gt; 和 &lt;code&gt;DELETE&lt;/code&gt; 会被拒绝，返回 &lt;code&gt;AccessDenied&lt;/code&gt;（“this export is
-read-only”）。fileshare 让 S3 服务器保持只读，因为对于某人
-只能读取的共享，必须在与 SFTP 相同的位置拒绝，而这一点尚未
-接入；本版本所基于的 go-filesystems/s3 v0.3.0 无论如何都会拒绝
-所有写入。拒绝胜过写了一半的对象。&lt;/p&gt;
+read-only”）。fileshare 让 S3 服务器保持只读，因为对于某人只能读取的共享，必须在与 SFTP 相同的位置拒绝，而这一点尚未接入；本版本所基于的 go-filesystems/s3 v0.3.0 无论如何都会拒绝所有写入。拒绝胜过写了一半的对象。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -767,32 +583,15 @@ read-only”）。fileshare 让 S3 服务器保持只读，因为对于某人
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;这里不接受持有者令牌&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/protocols/webdav/"&gt;OIDC&lt;/a&gt;只在 WebDAV 上有效，其他地方都不行。S3 使用
-SigV4 签名进行身份验证，这是对请求的 HMAC，没有可容纳持有者令牌的
-字段。&lt;/p&gt;
-&lt;p&gt;通常的做法是 STS &lt;code&gt;AssumeRoleWithWebIdentity&lt;/code&gt;，它把 OIDC
-令牌换成临时凭据，客户端随后用这些凭据签名。那是
-另一种机制，并且&lt;strong&gt;尚未实现&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/protocols/webdav/"&gt;OIDC&lt;/a&gt;只在 WebDAV 上有效，其他地方都不行。S3 使用SigV4 签名进行身份验证，这是对请求的 HMAC，没有可容纳持有者令牌的字段。&lt;/p&gt;
+&lt;p&gt;通常的做法是 STS &lt;code&gt;AssumeRoleWithWebIdentity&lt;/code&gt;，它把 OIDC令牌换成临时凭据，客户端随后用这些凭据签名。那是另一种机制，并且&lt;strong&gt;尚未实现&lt;/strong&gt;。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;分段上传、版本控制、ACL、策略、生命周期规则、复制和
-标签均未实现。设置其中任何一项以及开始分段
-上传，都属于写入，和其他写入一样返回 &lt;code&gt;AccessDenied&lt;/code&gt;。请求其中某一项的
-&lt;code&gt;GET&lt;/code&gt;（&lt;code&gt;?versioning&lt;/code&gt;、&lt;code&gt;?acl&lt;/code&gt;、&lt;code&gt;?tagging&lt;/code&gt;……）不会被区分出来：
-查询参数被忽略，返回存储桶的列表或对象。
-对于 &lt;code&gt;list-type=2&lt;/code&gt; 以外的列表、在 &lt;code&gt;/&lt;/code&gt; 上除 &lt;code&gt;GET&lt;/code&gt; 之外的任何方法，
-以及这里没有任何操作使用的方法，返回 &lt;code&gt;NotImplemented&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;分段上传、版本控制、ACL、策略、生命周期规则、复制和标签均未实现。设置其中任何一项以及开始分段上传，都属于写入，和其他写入一样返回 &lt;code&gt;AccessDenied&lt;/code&gt;。请求其中某一项的&lt;code&gt;GET&lt;/code&gt;（&lt;code&gt;?versioning&lt;/code&gt;、&lt;code&gt;?acl&lt;/code&gt;、&lt;code&gt;?tagging&lt;/code&gt;……）不会被区分出来：查询参数被忽略，返回存储桶的列表或对象。对于 &lt;code&gt;list-type=2&lt;/code&gt; 以外的列表、在 &lt;code&gt;/&lt;/code&gt; 上除 &lt;code&gt;GET&lt;/code&gt; 之外的任何方法，以及这里没有任何操作使用的方法，返回 &lt;code&gt;NotImplemented&lt;/code&gt;。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="two-limits-worth-knowing-before-pointing-it-at-something-large"&gt;在指向大对象之前值得了解的两个限制&lt;span class="hx:absolute hx:-mt-20" id="two-limits-worth-knowing-before-pointing-it-at-something-large"&gt;&lt;/span&gt;
-&lt;a href="#two-limits-worth-knowing-before-pointing-it-at-something-large" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;GetObject&lt;/code&gt; 会把整个对象读入内存。&lt;/strong&gt; 驱动接口只提供
-&lt;code&gt;ReadFile&lt;/code&gt;，没有别的，没有 opener，也没有 reader，因此没有可用的
-流式读取。256 MiB 的上限会返回 &lt;code&gt;EntityTooLarge&lt;/code&gt;，而不是让
-进程崩溃。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;&lt;code&gt;LastModified&lt;/code&gt; 是纪元时间。&lt;/strong&gt; &lt;code&gt;filesystem.Stat&lt;/code&gt; 携带 &lt;code&gt;Mode&lt;/code&gt;、&lt;code&gt;Size&lt;/code&gt; 和
-&lt;code&gt;Inode&lt;/code&gt;，完全没有修改时间。该字段在 S3
-模式中不是可选的，因此必须发送一个值；纪元时间显然不是真实时间，
-而 &lt;code&gt;time.Now()&lt;/code&gt; 则会像是刚刚更改的文件，使每个同步
-工具在每次运行时都复制所有内容。&lt;/p&gt;</description></item><item><title>NFS：什么都没有，除非有 Kerberos 或证书</title><link>https://go-fileshare.github.io/docs/0.31/zh-cn/protocols/nfs/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/zh-cn/protocols/nfs/</guid><description>
+&lt;a href="#two-limits-worth-knowing-before-pointing-it-at-something-large" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;GetObject&lt;/code&gt; 会把整个对象读入内存。&lt;/strong&gt; 驱动接口只提供&lt;code&gt;ReadFile&lt;/code&gt;，没有别的，没有 opener，也没有 reader，因此没有可用的流式读取。256 MiB 的上限会返回 &lt;code&gt;EntityTooLarge&lt;/code&gt;，而不是让进程崩溃。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;&lt;code&gt;LastModified&lt;/code&gt; 是纪元时间。&lt;/strong&gt; &lt;code&gt;filesystem.Stat&lt;/code&gt; 携带 &lt;code&gt;Mode&lt;/code&gt;、&lt;code&gt;Size&lt;/code&gt; 和&lt;code&gt;Inode&lt;/code&gt;，完全没有修改时间。该字段在 S3模式中不是可选的，因此必须发送一个值；纪元时间显然不是真实时间，而 &lt;code&gt;time.Now()&lt;/code&gt; 则会像是刚刚更改的文件，使每个同步工具在每次运行时都复制所有内容。&lt;/p&gt;</description></item><item><title>NFS：什么都没有，除非有 Kerberos 或证书</title><link>https://go-fileshare.github.io/docs/0.31/zh-cn/protocols/nfs/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/zh-cn/protocols/nfs/</guid><description>
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;serve &amp;#34;nfs&amp;#34; { addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:2049&amp;#34;&lt;/span&gt; }&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
 &lt;button
@@ -810,14 +609,11 @@ data-copied-label="已复制！"
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;NFSv3 自身不对任何人进行身份验证&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;AUTH_UNIX&lt;/code&gt; 是一种&lt;strong&gt;声明&lt;/strong&gt;：客户端说“uid 501”，而网络无法
-反驳。也没有任何加密。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;AUTH_UNIX&lt;/code&gt; 是一种&lt;strong&gt;声明&lt;/strong&gt;：客户端说“uid 501”，而网络无法反驳。也没有任何加密。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;因此，&lt;strong&gt;指明了谁可以使用的共享不会通过 NFS 导出&lt;/strong&gt;。拒绝信息
-会在启动时以及 &lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt;中打印，并附上
-原因：&lt;/p&gt;
+&lt;p&gt;因此，&lt;strong&gt;指明了谁可以使用的共享不会通过 NFS 导出&lt;/strong&gt;。拒绝信息会在启动时以及 &lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt;中打印，并附上原因：&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;pre&gt;&lt;code&gt;nfs on 0.0.0.0:2049 — scratch
 photos is not served over nfs: it is restricted to alice and bob, and
@@ -837,12 +633,9 @@ data-copied-label="已复制！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;没有 &lt;code&gt;allow&lt;/code&gt; 也没有 &lt;code&gt;writers&lt;/code&gt; 的共享（任何连接者都可读写）会
-通过 NFS 导出，因为那里没有协议无法
-遵守的规则。&lt;/p&gt;
+&lt;p&gt;没有 &lt;code&gt;allow&lt;/code&gt; 也没有 &lt;code&gt;writers&lt;/code&gt; 的共享（任何连接者都可读写）会通过 NFS 导出，因为那里没有协议无法遵守的规则。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="the-refusal-that-used-to-be-permanent"&gt;曾经永久存在的拒绝&lt;span class="hx:absolute hx:-mt-20" id="the-refusal-that-used-to-be-permanent"&gt;&lt;/span&gt;
-&lt;a href="#the-refusal-that-used-to-be-permanent" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;kerberos&lt;/code&gt; 块让 NFS 能够区分不同的人，受限共享随后
-便可像在其他地方一样通过它提供服务：&lt;/p&gt;
+&lt;a href="#the-refusal-that-used-to-be-permanent" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;kerberos&lt;/code&gt; 块让 NFS 能够区分不同的人，受限共享随后便可像在其他地方一样通过它提供服务：&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;kerberos&lt;/span&gt; {
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; realm&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;EXAMPLE.ORG&amp;#34;&lt;/span&gt;
@@ -859,8 +652,7 @@ data-copied-label="已复制！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;&lt;code&gt;sec=krb5&lt;/code&gt; 携带的是由&lt;strong&gt;票据证明&lt;/strong&gt;的主体，而不是
-客户端自行断言的 uid。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;sec=krb5&lt;/code&gt; 携带的是由&lt;strong&gt;票据证明&lt;/strong&gt;的主体，而不是客户端自行断言的 uid。&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
@@ -886,16 +678,9 @@ data-copied-label="已复制！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;自 v0.9.0 起，配合 &lt;code&gt;tls = true&lt;/code&gt; 和 &lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/tls/"&gt;&lt;code&gt;tls&lt;/code&gt; 块&lt;/a&gt;，NFS 可通过
-RPC-with-TLS（RFC 9289）提供服务。它提供加密；配合 &lt;code&gt;client_ca_file&lt;/code&gt; 时，它会要求
-客户端出示由该颁发机构签发的证书，由此得知是哪台&lt;strong&gt;主机&lt;/strong&gt;在挂载。
-其中的 uid 仍然是 &lt;code&gt;AUTH_SYS&lt;/code&gt; 所声明的那个，因此受限共享
-通过它&lt;strong&gt;仍然会被拒绝&lt;/strong&gt;。TLS 是可选提供的，而不是强制的：从不
-请求 TLS 的客户端仍然可以使用开放的共享。&lt;/p&gt;
+&lt;p&gt;自 v0.9.0 起，配合 &lt;code&gt;tls = true&lt;/code&gt; 和 &lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/tls/"&gt;&lt;code&gt;tls&lt;/code&gt; 块&lt;/a&gt;，NFS 可通过RPC-with-TLS（RFC 9289）提供服务。它提供加密；配合 &lt;code&gt;client_ca_file&lt;/code&gt; 时，它会要求客户端出示由该颁发机构签发的证书，由此得知是哪台&lt;strong&gt;主机&lt;/strong&gt;在挂载。其中的 uid 仍然是 &lt;code&gt;AUTH_SYS&lt;/code&gt; 所声明的那个，因此受限共享通过它&lt;strong&gt;仍然会被拒绝&lt;/strong&gt;。TLS 是可选提供的，而不是强制的：从不请求 TLS 的客户端仍然可以使用开放的共享。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="a-person-from-their-certificate"&gt;凭证书识别个人&lt;span class="hx:absolute hx:-mt-20" id="a-person-from-their-certificate"&gt;&lt;/span&gt;
-&lt;a href="#a-person-from-their-certificate" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;自 v0.12.0 起，证书可以指明&lt;strong&gt;个人&lt;/strong&gt;，就像 go-authn/bridge 在
-身份提供方登录之后签发的那样，此后指明了人员的共享
-无需 kerberos 就可以通过 NFS 提供服务：&lt;/p&gt;
+&lt;a href="#a-person-from-their-certificate" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;自 v0.12.0 起，证书可以指明&lt;strong&gt;个人&lt;/strong&gt;，就像 go-authn/bridge 在身份提供方登录之后签发的那样，此后指明了人员的共享无需 kerberos 就可以通过 NFS 提供服务：&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;nfs&amp;#34;&lt;/span&gt; {
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; tls&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;
@@ -918,12 +703,8 @@ data-copied-label="已复制！"
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Linux 客户端的证书属于一次挂载&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;该挂载的每个用户都以证书所指明的那个人的身份行事。对于
-一个人使用的工作站，这是正确的；对于多人登录的机器则是错误的，
-请在那里使用 &lt;code&gt;sec=krb5&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;该挂载的每个用户都以证书所指明的那个人的身份行事。对于一个人使用的工作站，这是正确的；对于多人登录的机器则是错误的，请在那里使用 &lt;code&gt;sec=krb5&lt;/code&gt;。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;证书携带什么、必需的 CRL，以及用真实 Linux 客户端实测
-得到的结果（明文的 &lt;code&gt;MNT&lt;/code&gt;、&lt;code&gt;tlshd&lt;/code&gt; 的陷阱），见
-&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/nfs-certificates/"&gt;NFS 与基于证书的身份&lt;/a&gt;。&lt;/p&gt;</description></item></channel></rss>
+&lt;p&gt;证书携带什么、必需的 CRL，以及用真实 Linux 客户端实测得到的结果（明文的 &lt;code&gt;MNT&lt;/code&gt;、&lt;code&gt;tlshd&lt;/code&gt; 的陷阱），见&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/nfs-certificates/"&gt;NFS 与基于证书的身份&lt;/a&gt;。&lt;/p&gt;</description></item></channel></rss>

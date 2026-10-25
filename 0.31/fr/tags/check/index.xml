@@ -28,8 +28,7 @@ servi. Cela signifie &lt;strong&gt;en lecture-écriture&lt;/strong&gt; pour un p
 — seul un périphérique est toujours ouvert en lecture seule, et en exclusivité : un périphérique que
 détient le serveur en cours d&amp;rsquo;exécution peut donc être refusé ici comme occupé.&lt;/p&gt;
 &lt;p&gt;Il affiche &lt;strong&gt;d&amp;rsquo;où vient un identifiant, jamais ce qu&amp;rsquo;il contient&lt;/strong&gt; — et les
-colonnes par personne sont la raison d&amp;rsquo;être de
-&lt;a href="https://github.com/go-authn/directory" target="_blank" rel="noopener"&gt;&lt;code&gt;Identity.Can&lt;/code&gt;&lt;/a&gt; : eli est dans le
+colonnes par personne sont la raison d&amp;rsquo;être de&lt;a href="https://github.com/go-authn/directory" target="_blank" rel="noopener"&gt;&lt;code&gt;Identity.Can&lt;/code&gt;&lt;/a&gt; : eli est dans le
 même groupe que dora et SMB ne peut toujours pas le servir, parce que LDAP détient son
 mot de passe et ne le donne à personne.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="reading-the-columns"&gt;Lire les colonnes&lt;span class="hx:absolute hx:-mt-20" id="reading-the-columns"&gt;&lt;/span&gt;
@@ -64,17 +63,14 @@ mot de passe et ne le donne à personne.&lt;/p&gt;
 la configuration, quand c&amp;rsquo;est pertinent :&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;avec un bloc &lt;code&gt;oidc&lt;/code&gt;, que ses jetons ne sont acceptés qu&amp;rsquo;en WebDAV, et
-si les noms du fournisseur sont des noms locaux (&lt;code&gt;local_names&lt;/code&gt;) — voir
-&lt;a href="https://go-fileshare.github.io/docs/0.31/fr/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;identité&lt;/a&gt; ;&lt;/li&gt;
+si les noms du fournisseur sont des noms locaux (&lt;code&gt;local_names&lt;/code&gt;) — voir&lt;a href="https://go-fileshare.github.io/docs/0.31/fr/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;identité&lt;/a&gt; ;&lt;/li&gt;
 &lt;li&gt;par protocole, ce qui est &lt;strong&gt;chiffré&lt;/strong&gt; et ce qui est &lt;strong&gt;en clair délibérément&lt;/strong&gt;
 — voir &lt;a href="https://go-fileshare.github.io/docs/0.31/fr/security/tls/#what-check-says"&gt;TLS&lt;/a&gt; ;&lt;/li&gt;
 &lt;li&gt;d&amp;rsquo;où vient une &lt;strong&gt;liste de révocation&lt;/strong&gt;, et ce qui se passe tant qu&amp;rsquo;elle ne peut pas être
 récupérée — voir &lt;a href="https://go-fileshare.github.io/docs/0.31/fr/security/"&gt;ce qui révoque quoi&lt;/a&gt; ;&lt;/li&gt;
-&lt;li&gt;quels partages ont été &lt;strong&gt;mis hors ligne&lt;/strong&gt; par le &lt;code&gt;DisableShare&lt;/code&gt; de l&amp;rsquo;API d&amp;rsquo;administration,
-et ne sont pas servis — voir &lt;a href="https://go-fileshare.github.io/docs/0.31/fr/administration/#disabling-a-share"&gt;l&amp;rsquo;API d&amp;rsquo;administration&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;quels partages ont été &lt;strong&gt;mis hors ligne&lt;/strong&gt; par le &lt;code&gt;DisableShare&lt;/code&gt; de l&amp;rsquo;API d&amp;rsquo;administration,et ne sont pas servis — voir &lt;a href="https://go-fileshare.github.io/docs/0.31/fr/administration/#disabling-a-share"&gt;l&amp;rsquo;API d&amp;rsquo;administration&lt;/a&gt;.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;Pour un serveur avec une KRL, des identités NFS issues de certificats et des signaux partagés,
-cette partie se lit ainsi :&lt;/p&gt;
+&lt;p&gt;Pour un serveur avec une KRL, des identités NFS issues de certificats et des signaux partagés,cette partie se lit ainsi :&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;pre&gt;&lt;code&gt;sftp: the provider&amp;#39;s SSH certificates are checked against the KRL at https://bridge.example.org/ssh/krl, at login and on every operation; while it is unknown or older than 1h0m0s they are refused
 federated people: revocations come from the shared signals transmitter https://bridge.example.org (CAEP session-revoked, polled); whatever the provider issued them before a revocation is refused -- tokens, SSH and OpenPubkey certificates, NFS certificates -- and open sessions stop. Refused while it is not heard from within 10m0s; revocations kept 192h0m0s in /var/lib/fileshare/revocations.json

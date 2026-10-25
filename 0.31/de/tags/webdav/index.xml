@@ -27,9 +27,7 @@ data-copied-label="Kopiert!"
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Nicht unverschlüsselt, seit v0.9.0&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;HTTP Basic ist das Passwort bei jeder Anfrage, und ein Bearer-Token ist so gut
-wie eines. WebDAV &lt;strong&gt;ohne TLS&lt;/strong&gt;, auf einer Adresse, die andere Maschinen erreichen können,
-während sich irgendjemand authentifiziert, wird &lt;strong&gt;beim Start abgelehnt&lt;/strong&gt; –
-&lt;code&gt;serve &amp;quot;webdav&amp;quot; { addr = &amp;quot;0.0.0.0:8080&amp;quot; }&lt;/code&gt;, das Beispiel, das diese Seite früher
+wie eines. WebDAV &lt;strong&gt;ohne TLS&lt;/strong&gt;, auf einer Adresse, die andere Maschinen erreichen können,während sich irgendjemand authentifiziert, wird &lt;strong&gt;beim Start abgelehnt&lt;/strong&gt; –&lt;code&gt;serve &amp;quot;webdav&amp;quot; { addr = &amp;quot;0.0.0.0:8080&amp;quot; }&lt;/code&gt;, das Beispiel, das diese Seite früher
 zeigte, startet nicht mehr. Wenn ein Proxy davor TLS terminiert, geben Sie das an:&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;webdav&amp;#34;&lt;/span&gt; {
@@ -47,8 +45,7 @@ data-copied-label="Kopiert!"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;Loopback und ein Server, bei dem sich niemand authentifiziert, sind nicht betroffen. Siehe
-&lt;a href="https://go-fileshare.github.io/docs/0.31/de/security/tls/#webdav-is-not-served-in-the-clear"&gt;TLS&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Loopback und ein Server, bei dem sich niemand authentifiziert, sind nicht betroffen. Siehe&lt;a href="https://go-fileshare.github.io/docs/0.31/de/security/tls/#webdav-is-not-served-in-the-clear"&gt;TLS&lt;/a&gt;.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -77,10 +74,7 @@ data-copied-label="Kopiert!"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;Ein Browser hat ein Token und kein Passwort. Daher akzeptiert WebDAV &lt;code&gt;Authorization: Bearer&lt;/code&gt;, und wo es auch lokale Personen gibt, bietet die gesendete Challenge
-&lt;strong&gt;beides&lt;/strong&gt; an – ein Client wählt das, worauf er antworten kann. Das Token wird von
-&lt;a href="https://github.com/go-authn/oidc" target="_blank" rel="noopener"&gt;go-authn/oidc&lt;/a&gt; geprüft: Signatur, Aussteller, Zielgruppe,
-Ablauf.&lt;/p&gt;
+&lt;p&gt;Ein Browser hat ein Token und kein Passwort. Daher akzeptiert WebDAV &lt;code&gt;Authorization: Bearer&lt;/code&gt;, und wo es auch lokale Personen gibt, bietet die gesendete Challenge&lt;strong&gt;beides&lt;/strong&gt; an – ein Client wählt das, worauf er antworten kann. Das Token wird von&lt;a href="https://github.com/go-authn/oidc" target="_blank" rel="noopener"&gt;go-authn/oidc&lt;/a&gt; geprüft: Signatur, Aussteller, Zielgruppe,Ablauf.&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
@@ -89,9 +83,7 @@ Ablauf.&lt;/p&gt;
 gar nichts und S3 mit einer SigV4-Signatur: Keines davon hat einen Platz für
 einen &lt;code&gt;Authorization&lt;/code&gt;-Header. Das ist eine Tatsache der Protokolle, keine
 Grenze dieses Programms.&lt;/p&gt;
-&lt;p&gt;Das Wort des Anbieters erreicht &lt;strong&gt;SFTP&lt;/strong&gt; stattdessen in einem Zertifikat – siehe
-&lt;a href="https://go-fileshare.github.io/docs/0.31/de/protocols/sftp/#people-the-identity-provider-vouches-for"&gt;SFTP&lt;/a&gt;. Eine Konfiguration,
-die einen Anbieter nennt und weder WebDAV noch ein solches SFTP bereitstellt, wird &lt;strong&gt;abgelehnt
+&lt;p&gt;Das Wort des Anbieters erreicht &lt;strong&gt;SFTP&lt;/strong&gt; stattdessen in einem Zertifikat – siehe&lt;a href="https://go-fileshare.github.io/docs/0.31/de/protocols/sftp/#people-the-identity-provider-vouches-for"&gt;SFTP&lt;/a&gt;. Eine Konfiguration,die einen Anbieter nennt und weder WebDAV noch ein solches SFTP bereitstellt, wird &lt;strong&gt;abgelehnt
 statt gestartet&lt;/strong&gt;.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -126,35 +118,24 @@ data-copied-label="Kopiert!"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;Hier gibt es &lt;strong&gt;keinen Anmeldeablauf&lt;/strong&gt;: keine Weiterleitung, kein Client-Secret, keine Cookies.
-Dies ist der Ressourcenserver.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Der Name&lt;/strong&gt;, den ein Token liefert, ist &lt;code&gt;preferred_username&lt;/code&gt; oder der Claim, den
-&lt;code&gt;username_claim&lt;/code&gt; nennt. Ohne &lt;code&gt;preferred_username&lt;/code&gt; ist es die E-Mail-Adresse nur, wenn
-der Anbieter &lt;code&gt;email_verified: true&lt;/code&gt; angibt, und andernfalls &lt;code&gt;sub&lt;/code&gt;. Mit
-&lt;code&gt;username_claim = &amp;quot;email&amp;quot;&lt;/code&gt; wird ein Token, dessen E-Mail-Adresse nicht verifiziert ist, abgelehnt –
-über WebDAV ebenso wie für eine opkssh-Anmeldung über SFTP. Bis sie verifiziert ist,
-ist die E-Mail-Adresse nur das, was die Person eingetippt hat, und ein signiertes Token, das sie trüge,
-würde an eine Adresse binden, die niemand geprüft hat (OpenID Connect Core 5.1;
-go-authn/oidc v0.2.0, fileshare v0.16.3).&lt;/p&gt;
+&lt;p&gt;Hier gibt es &lt;strong&gt;keinen Anmeldeablauf&lt;/strong&gt;: keine Weiterleitung, kein Client-Secret, keine Cookies.Dies ist der Ressourcenserver.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Der Name&lt;/strong&gt;, den ein Token liefert, ist &lt;code&gt;preferred_username&lt;/code&gt; oder der Claim, den&lt;code&gt;username_claim&lt;/code&gt; nennt. Ohne &lt;code&gt;preferred_username&lt;/code&gt; ist es die E-Mail-Adresse nur, wenn
+der Anbieter &lt;code&gt;email_verified: true&lt;/code&gt; angibt, und andernfalls &lt;code&gt;sub&lt;/code&gt;. Mit&lt;code&gt;username_claim = &amp;quot;email&amp;quot;&lt;/code&gt; wird ein Token, dessen E-Mail-Adresse nicht verifiziert ist, abgelehnt –über WebDAV ebenso wie für eine opkssh-Anmeldung über SFTP. Bis sie verifiziert ist,ist die E-Mail-Adresse nur das, was die Person eingetippt hat, und ein signiertes Token, das sie trüge,würde an eine Adresse binden, die niemand geprüft hat (OpenID Connect Core 5.1;go-authn/oidc v0.2.0, fileshare v0.16.3).&lt;/p&gt;
 &lt;p&gt;Welche Personen des Anbieters eine Freigabe erhalten – Gruppen, benannte Personen, ganze
-Einrichtungen –, wird mit &lt;code&gt;oidc:&lt;/code&gt;-Regeln und &lt;code&gt;domains&lt;/code&gt; festgelegt; siehe
-&lt;a href="https://go-fileshare.github.io/docs/0.31/de/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;Personen, die der Identitätsanbieter benennt&lt;/a&gt;.&lt;/p&gt;
+Einrichtungen –, wird mit &lt;code&gt;oidc:&lt;/code&gt;-Regeln und &lt;code&gt;domains&lt;/code&gt; festgelegt; siehe&lt;a href="https://go-fileshare.github.io/docs/0.31/de/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;Personen, die der Identitätsanbieter benennt&lt;/a&gt;.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="a-token-outlives-the-person-unless-something-says-otherwise"&gt;Ein Token überdauert die Person, sofern nichts anderes es sagt&lt;span class="hx:absolute hx:-mt-20" id="a-token-outlives-the-person-unless-something-says-otherwise"&gt;&lt;/span&gt;
 &lt;a href="#a-token-outlives-the-person-unless-something-says-otherwise" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Ein Token wird hier für sich allein geprüft und ist gültig, bis es abläuft – was auch immer
-der Person seitdem widerfahren ist. Keine Sperrliste kann es benennen. Ein
-&lt;a href="https://go-fileshare.github.io/docs/0.31/de/security/shared-signals/"&gt;&lt;code&gt;ssf&lt;/code&gt;-Block&lt;/a&gt; sorgt dafür, dass ein CAEP-&lt;code&gt;session-revoked&lt;/code&gt;
+der Person seitdem widerfahren ist. Keine Sperrliste kann es benennen. Ein&lt;a href="https://go-fileshare.github.io/docs/0.31/de/security/shared-signals/"&gt;&lt;code&gt;ssf&lt;/code&gt;-Block&lt;/a&gt; sorgt dafür, dass ein CAEP-&lt;code&gt;session-revoked&lt;/code&gt;
 vom Anbieter jedes zuvor (&lt;code&gt;iat&lt;/code&gt;) ausgestellte Token ungültig macht.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="the-root-and-uploads-in-pieces"&gt;Die Wurzel, und Uploads in Stücken&lt;span class="hx:absolute hx:-mt-20" id="the-root-and-uploads-in-pieces"&gt;&lt;/span&gt;
 &lt;a href="#the-root-and-uploads-in-pieces" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;Die Wurzel listet die Freigaben&lt;/strong&gt; (seit v0.29.0). Ein Browser auf &lt;code&gt;/&lt;/code&gt; bekommt
 eine Seite mit den Freigaben, die er öffnen darf; ein &lt;code&gt;PROPFIND&lt;/code&gt; auf &lt;code&gt;/&lt;/code&gt; bekommt
 sie als Collections (&lt;code&gt;207&lt;/code&gt;), sodass ein Dateimanager den ganzen Server statt
-einer Freigabe einbinden kann. Tiefe &lt;code&gt;infinity&lt;/code&gt; wird abgelehnt (&lt;code&gt;403&lt;/code&gt;,
-&lt;code&gt;propfind-finite-depth&lt;/code&gt;, wie RFC 4918 es erlaubt), ebenso alles, was an der
+einer Freigabe einbinden kann. Tiefe &lt;code&gt;infinity&lt;/code&gt; wird abgelehnt (&lt;code&gt;403&lt;/code&gt;,&lt;code&gt;propfind-finite-depth&lt;/code&gt;, wie RFC 4918 es erlaubt), ebenso alles, was an der
 Wurzel schreiben würde (&lt;code&gt;405&lt;/code&gt;). Bis v0.28 bekam jede Methode auf &lt;code&gt;/&lt;/code&gt; die Seite.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Ein großer Upload kann in Stücken erfolgen&lt;/strong&gt; (seit v0.29.0). Ein &lt;code&gt;PUT&lt;/code&gt; wird
 vollständig im Speicher gehalten, bis 1 GiB; ein Client, der nicht streamen
-kann — ein Browser, der &lt;a href="https://go-fileshare.github.io/docs/0.31/de/administration/"&gt;Datei-Explorer&lt;/a&gt; —
-sendet daher ein leeres &lt;code&gt;PUT&lt;/code&gt;, dann jedes Stück mit einem &lt;code&gt;Content-Range&lt;/code&gt;, das
+kann — ein Browser, der &lt;a href="https://go-fileshare.github.io/docs/0.31/de/administration/"&gt;Datei-Explorer&lt;/a&gt; —sendet daher ein leeres &lt;code&gt;PUT&lt;/code&gt;, dann jedes Stück mit einem &lt;code&gt;Content-Range&lt;/code&gt;, das
 genau dort beginnt, wo das vorige endete, dann ein &lt;code&gt;MOVE&lt;/code&gt; auf den richtigen
 Namen. Ein Bereich, der hinter dem Ende beginnt, bleibt &lt;code&gt;416&lt;/code&gt;: Er hinterließe
 Bytes, die niemand gesendet hat.&lt;/p&gt;</description></item></channel></rss>

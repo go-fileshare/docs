@@ -31,8 +31,7 @@ lit :&lt;/p&gt;
 UTF8String &lt;code&gt;user@domain&lt;/code&gt;
 (&lt;a href="https://www.ietf.org/archive/id/draft-cel-nfsv4-rpc-tls-othername-04.html" target="_blank" rel="noopener"&gt;draft-cel-nfsv4-rpc-tls-othername&lt;/a&gt;
 la décrit ; ses OID ne sont pas encore attribués) ;&lt;/li&gt;
-&lt;li&gt;ses groupes : une URI SubjectAltName chacun,
-&lt;code&gt;tag:go-authn.github.io,2026:group:&amp;lt;group&amp;gt;&lt;/code&gt; — une &lt;strong&gt;URI tag&lt;/strong&gt; (RFC 4151 : sans
+&lt;li&gt;ses groupes : une URI SubjectAltName chacun,&lt;code&gt;tag:go-authn.github.io,2026:group:&amp;lt;group&amp;gt;&lt;/code&gt; — une &lt;strong&gt;URI tag&lt;/strong&gt; (RFC 4151 : sans
 enregistrement, faite précisément pour cela). &lt;code&gt;rpc.tlsservd&lt;/code&gt; de FreeBSD lit le premier
 otherName d&amp;rsquo;identité et ignore toutes les autres entrées SAN.&lt;/li&gt;
 &lt;/ul&gt;
@@ -40,26 +39,19 @@ otherName d&amp;rsquo;identité et ignore toutes les autres entrées SAN.&lt;/li
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Pourquoi une URI tag, et pas une extension propre&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;Une extension a été conçue, sous un arc dérivé d&amp;rsquo;un UUID (&lt;code&gt;2.25.&amp;lt;128-bit number&amp;gt;&lt;/code&gt;), et
-&lt;strong&gt;mesurée&lt;/strong&gt; : &lt;code&gt;x509.ParseCertificate&lt;/code&gt; de Go refuse le certificat entier —
-&lt;em&gt;malformed extension OID field&lt;/em&gt; — parce qu&amp;rsquo;un arc d&amp;rsquo;identifiant d&amp;rsquo;objet ASN.1 y est
-un &lt;code&gt;int&lt;/code&gt;. Tous les serveurs TLS écrits en Go auraient rejeté le certificat.
-Un SAN de type URI n&amp;rsquo;a besoin d&amp;rsquo;aucun OID, et tous les analyseurs le lisent. Pas &lt;code&gt;urn:x-…&lt;/code&gt; non plus :
-RFC 8141 a supprimé les espaces de noms URN expérimentaux, et un analyseur strict
+&lt;p&gt;Une extension a été conçue, sous un arc dérivé d&amp;rsquo;un UUID (&lt;code&gt;2.25.&amp;lt;128-bit number&amp;gt;&lt;/code&gt;), et&lt;strong&gt;mesurée&lt;/strong&gt; : &lt;code&gt;x509.ParseCertificate&lt;/code&gt; de Go refuse le certificat entier —&lt;em&gt;malformed extension OID field&lt;/em&gt; — parce qu&amp;rsquo;un arc d&amp;rsquo;identifiant d&amp;rsquo;objet ASN.1 y est
+un &lt;code&gt;int&lt;/code&gt;. Tous les serveurs TLS écrits en Go auraient rejeté le certificat.Un SAN de type URI n&amp;rsquo;a besoin d&amp;rsquo;aucun OID, et tous les analyseurs le lisent. Pas &lt;code&gt;urn:x-…&lt;/code&gt; non plus :RFC 8141 a supprimé les espaces de noms URN expérimentaux, et un analyseur strict
 en refuse un.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="what-every-call-is-asked"&gt;Ce que l&amp;rsquo;on demande à chaque appel&lt;span class="hx:absolute hx:-mt-20" id="what-every-call-is-asked"&gt;&lt;/span&gt;
-&lt;a href="#what-every-call-is-asked" class="subheading-anchor" aria-label="Lien permanent vers cette section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Avec &lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt;, un partage qui nomme des personnes est servi en NFS
-&lt;strong&gt;sans kerberos&lt;/strong&gt;. Chaque appel sur ce partage doit arriver sur TLS, avec un certificat
+&lt;a href="#what-every-call-is-asked" class="subheading-anchor" aria-label="Lien permanent vers cette section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Avec &lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt;, un partage qui nomme des personnes est servi en NFS&lt;strong&gt;sans kerberos&lt;/strong&gt;. Chaque appel sur ce partage doit arriver sur TLS, avec un certificat
 qui :&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;&lt;strong&gt;ne figure pas dans la CRL&lt;/strong&gt; ;&lt;/li&gt;
 &lt;li&gt;nomme &lt;strong&gt;exactement une&lt;/strong&gt; personne ;&lt;/li&gt;
-&lt;li&gt;nomme quelqu&amp;rsquo;un que ce serveur admet &lt;strong&gt;de la même façon qu&amp;rsquo;il admet un jeton&lt;/strong&gt; — une règle,
-&lt;code&gt;trust_all&lt;/code&gt;, &lt;code&gt;domains&lt;/code&gt;, voir
-&lt;a href="https://go-fileshare.github.io/docs/0.31/fr/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;les personnes que nomme le fournisseur d&amp;rsquo;identité&lt;/a&gt; ;&lt;/li&gt;
+&lt;li&gt;nomme quelqu&amp;rsquo;un que ce serveur admet &lt;strong&gt;de la même façon qu&amp;rsquo;il admet un jeton&lt;/strong&gt; — une règle,&lt;code&gt;trust_all&lt;/code&gt;, &lt;code&gt;domains&lt;/code&gt;, voir&lt;a href="https://go-fileshare.github.io/docs/0.31/fr/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;les personnes que nomme le fournisseur d&amp;rsquo;identité&lt;/a&gt; ;&lt;/li&gt;
 &lt;li&gt;nomme quelqu&amp;rsquo;un que &lt;strong&gt;le partage autorise&lt;/strong&gt;.&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;Et, avec un &lt;a href="https://go-fileshare.github.io/docs/0.31/fr/security/shared-signals/"&gt;bloc &lt;code&gt;ssf&lt;/code&gt;&lt;/a&gt;, le certificat doit avoir été
@@ -115,15 +107,12 @@ aurait pu écrire révoque ce qui lui plaît et, pire, le dé-révoque. Avec
 la CRL joignable, &lt;strong&gt;l&amp;rsquo;appel qui suit sa modification est refusé&lt;/strong&gt; ; la
 durée de vie du certificat ne borne une révocation que lorsque la CRL est injoignable.&lt;/p&gt;
 &lt;p&gt;Depuis la v0.16.2, la signature est vérifiée sur les octets bruts &lt;strong&gt;avant&lt;/strong&gt; que la CRL ne soit
-analysée, par &lt;a href="https://github.com/go-authn/revocation" target="_blank" rel="noopener"&gt;go-authn/revocation&lt;/a&gt; :
-analysée d&amp;rsquo;abord, une CRL volumineuse signée par n&amp;rsquo;importe qui coûtait de la mémoire et des secondes avant
+analysée, par &lt;a href="https://github.com/go-authn/revocation" target="_blank" rel="noopener"&gt;go-authn/revocation&lt;/a&gt; :analysée d&amp;rsquo;abord, une CRL volumineuse signée par n&amp;rsquo;importe qui coûtait de la mémoire et des secondes avant
 d&amp;rsquo;être refusée. Ce que ce serveur ne peut pas lire comme une liste complète est refusé
 aussi : une CRL delta, une extension critique ou une extension d&amp;rsquo;entrée inconnue, l&amp;rsquo;absence de numéro de
 CRL, l&amp;rsquo;absence de &lt;code&gt;NextUpdate&lt;/code&gt;. Une CRL dont le numéro est inférieur à celui qu&amp;rsquo;il détient, ou de
-même numéro mais émise plus tôt, est refusée comme une
-&lt;a href="https://go-fileshare.github.io/docs/0.31/fr/security/revocation-lists/#never-backwards-across-a-restart-too"&gt;KRL&lt;/a&gt; plus ancienne.&lt;/p&gt;
-&lt;p&gt;Un champ de CRL sans &lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt; est refusé, de même que
-&lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt; sans &lt;code&gt;tls = true&lt;/code&gt; ni &lt;code&gt;client_ca_file&lt;/code&gt; : l&amp;rsquo;identité
+même numéro mais émise plus tôt, est refusée comme une&lt;a href="https://go-fileshare.github.io/docs/0.31/fr/security/revocation-lists/#never-backwards-across-a-restart-too"&gt;KRL&lt;/a&gt; plus ancienne.&lt;/p&gt;
+&lt;p&gt;Un champ de CRL sans &lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt; est refusé, de même que&lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt; sans &lt;code&gt;tls = true&lt;/code&gt; ni &lt;code&gt;client_ca_file&lt;/code&gt; : l&amp;rsquo;identité
 se trouve dans le certificat que présente le client.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="what-it-cannot-promise"&gt;Ce qu&amp;rsquo;elle ne peut pas promettre&lt;span class="hx:absolute hx:-mt-20" id="what-it-cannot-promise"&gt;&lt;/span&gt;
 &lt;a href="#what-it-cannot-promise" class="subheading-anchor" aria-label="Lien permanent vers cette section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
@@ -131,11 +120,9 @@ se trouve dans le certificat que présente le client.&lt;/p&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Le certificat d&amp;rsquo;un client Linux appartient à un MONTAGE, pas à une personne&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;Le serveur voit le certificat d&amp;rsquo;une &lt;strong&gt;connexion&lt;/strong&gt;, et un client Linux en attache
-un à un montage (&lt;code&gt;tlshd&lt;/code&gt;, le numéro de série du trousseau dans
-&lt;code&gt;mount -o xprtsec=mtls,...&lt;/code&gt;). &lt;strong&gt;Chaque utilisateur de ce montage agit en tant que la personne
+un à un montage (&lt;code&gt;tlshd&lt;/code&gt;, le numéro de série du trousseau dans&lt;code&gt;mount -o xprtsec=mtls,...&lt;/code&gt;). &lt;strong&gt;Chaque utilisateur de ce montage agit en tant que la personne
 que nomme le certificat.&lt;/strong&gt; Sur un poste de travail utilisé par une seule personne, c&amp;rsquo;est exactement
-elle ; sur une machine où plusieurs personnes se connectent, c&amp;rsquo;est celle qui a monté — utilisez
-&lt;code&gt;sec=krb5&lt;/code&gt; dans ce cas.&lt;/p&gt;
+elle ; sur une machine où plusieurs personnes se connectent, c&amp;rsquo;est celle qui a monté — utilisez&lt;code&gt;sec=krb5&lt;/code&gt; dans ce cas.&lt;/p&gt;
 &lt;p&gt;C&amp;rsquo;est pourquoi RFC 9289 à elle seule refuse de promettre l&amp;rsquo;authentification des utilisateurs, et pourquoi
 le simple &lt;a href="https://go-fileshare.github.io/docs/0.31/fr/security/tls/#nfs-over-tls-proves-the-machine-not-the-person"&gt;NFS sur TLS&lt;/a&gt;
 ne prouve toujours que la machine.&lt;/p&gt;
@@ -147,13 +134,10 @@ ne prouve toujours que la machine.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;Le &lt;code&gt;MNT&lt;/code&gt; de MOUNT arrive en clair&lt;/strong&gt;, quoi que dise &lt;code&gt;xprtsec=&lt;/code&gt; : le
 client de montage du noyau n&amp;rsquo;a pas de TLS. Il reçoit une réponse, et tout appel NFS fait
-sans TLS est ensuite refusé — si bien qu&amp;rsquo;une personne que le partage n&amp;rsquo;autorise pas voit
-&lt;em&gt;accès refusé&lt;/em&gt; au premier accès plutôt qu&amp;rsquo;au &lt;code&gt;mount&lt;/code&gt;. &lt;strong&gt;Rien d&amp;rsquo;un
+sans TLS est ensuite refusé — si bien qu&amp;rsquo;une personne que le partage n&amp;rsquo;autorise pas voit&lt;em&gt;accès refusé&lt;/em&gt; au premier accès plutôt qu&amp;rsquo;au &lt;code&gt;mount&lt;/code&gt;. &lt;strong&gt;Rien d&amp;rsquo;un
 partage ne traverse en clair.&lt;/strong&gt;&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;tlshd&lt;/code&gt; vérifie le certificat de ce serveur face au magasin de confiance du &lt;strong&gt;système&lt;/strong&gt;
-seulement — il ignore &lt;code&gt;x509.truststore&lt;/code&gt; — et veut que le certificat et la clé du client
-&lt;strong&gt;appartiennent à root, la clé en mode 600&lt;/strong&gt;. Sinon il échoue avec
-&lt;em&gt;gnutls: Error in the certificate (-43)&lt;/em&gt;, sans nommer ni l&amp;rsquo;un ni l&amp;rsquo;autre.&lt;/li&gt;
+seulement — il ignore &lt;code&gt;x509.truststore&lt;/code&gt; — et veut que le certificat et la clé du client&lt;strong&gt;appartiennent à root, la clé en mode 600&lt;/strong&gt;. Sinon il échoue avec&lt;em&gt;gnutls: Error in the certificate (-43)&lt;/em&gt;, sans nommer ni l&amp;rsquo;un ni l&amp;rsquo;autre.&lt;/li&gt;
 &lt;/ul&gt;</description></item><item><title>NFS — rien, sauf Kerberos ou un certificat</title><link>https://go-fileshare.github.io/docs/0.31/fr/protocols/nfs/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/fr/protocols/nfs/</guid><description>
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;serve &amp;#34;nfs&amp;#34; { addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:2049&amp;#34;&lt;/span&gt; }&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
@@ -248,11 +232,8 @@ data-copied-label="Copié !"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;Depuis la v0.9.0, NFS est servi en RPC-with-TLS (RFC 9289) avec &lt;code&gt;tls = true&lt;/code&gt; et un
-&lt;a href="https://go-fileshare.github.io/docs/0.31/fr/security/tls/"&gt;bloc &lt;code&gt;tls&lt;/code&gt;&lt;/a&gt;. Il chiffre ; avec &lt;code&gt;client_ca_file&lt;/code&gt;, il oblige un
-client à présenter un certificat de cette autorité — c&amp;rsquo;est-à-dire quel &lt;strong&gt;hôte&lt;/strong&gt; monte.
-L&amp;rsquo;uid à l&amp;rsquo;intérieur reste celui qu&amp;rsquo;affirme &lt;code&gt;AUTH_SYS&lt;/code&gt; : un partage restreint est donc
-&lt;strong&gt;toujours refusé&lt;/strong&gt; par ce biais. TLS est proposé, pas exigé : un client qui ne le
+&lt;p&gt;Depuis la v0.9.0, NFS est servi en RPC-with-TLS (RFC 9289) avec &lt;code&gt;tls = true&lt;/code&gt; et un&lt;a href="https://go-fileshare.github.io/docs/0.31/fr/security/tls/"&gt;bloc &lt;code&gt;tls&lt;/code&gt;&lt;/a&gt;. Il chiffre ; avec &lt;code&gt;client_ca_file&lt;/code&gt;, il oblige un
+client à présenter un certificat de cette autorité — c&amp;rsquo;est-à-dire quel &lt;strong&gt;hôte&lt;/strong&gt; monte.L&amp;rsquo;uid à l&amp;rsquo;intérieur reste celui qu&amp;rsquo;affirme &lt;code&gt;AUTH_SYS&lt;/code&gt; : un partage restreint est donc&lt;strong&gt;toujours refusé&lt;/strong&gt; par ce biais. TLS est proposé, pas exigé : un client qui ne le
 demande jamais se voit toujours servir les partages ouverts.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="a-person-from-their-certificate"&gt;Une personne, d&amp;rsquo;après son certificat&lt;span class="hx:absolute hx:-mt-20" id="a-person-from-their-certificate"&gt;&lt;/span&gt;
 &lt;a href="#a-person-from-their-certificate" class="subheading-anchor" aria-label="Lien permanent vers cette section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Depuis la v0.12.0, un certificat peut nommer une &lt;strong&gt;personne&lt;/strong&gt; — tel que go-authn/bridge en émet
@@ -281,11 +262,9 @@ data-copied-label="Copié !"
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Le certificat d&amp;rsquo;un client Linux appartient à un montage&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;Chaque utilisateur de ce montage agit en tant que la personne que nomme le certificat. Juste sur
-un poste de travail utilisé par une seule personne ; faux sur une machine où plusieurs personnes se connectent —
-utilisez &lt;code&gt;sec=krb5&lt;/code&gt; dans ce cas.&lt;/p&gt;
+un poste de travail utilisé par une seule personne ; faux sur une machine où plusieurs personnes se connectent —utilisez &lt;code&gt;sec=krb5&lt;/code&gt; dans ce cas.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;p&gt;Ce que transporte le certificat, la CRL exigée, et ce qui a été mesuré
-avec un vrai client Linux (&lt;code&gt;MNT&lt;/code&gt; en clair, les pièges de &lt;code&gt;tlshd&lt;/code&gt;) se trouvent dans
-&lt;a href="https://go-fileshare.github.io/docs/0.31/fr/security/nfs-certificates/"&gt;NFS, avec des identités issues de certificats&lt;/a&gt;.&lt;/p&gt;</description></item></channel></rss>
+avec un vrai client Linux (&lt;code&gt;MNT&lt;/code&gt; en clair, les pièges de &lt;code&gt;tlshd&lt;/code&gt;) se trouvent dans&lt;a href="https://go-fileshare.github.io/docs/0.31/fr/security/nfs-certificates/"&gt;NFS, avec des identités issues de certificats&lt;/a&gt;.&lt;/p&gt;</description></item></channel></rss>

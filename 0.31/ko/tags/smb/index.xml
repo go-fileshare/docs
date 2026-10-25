@@ -39,5 +39,4 @@ SMB로 마운트하고 &lt;code&gt;curl&lt;/code&gt;은 같은 이미지에 WebD
 찾아낸 새 사용자는 SMB의 실행 중인 서버를 포함해 제자리에서 추가되며 어떤 연결도
 건드리지 않습니다. 그러나 사용자, 자격 증명, 공유의 확장된 목록 등 무엇이든
 제거되는 것은 새 세대이며 SMB의 열린 연결은 닫히므로, 폐기가 이미 열린 세션에도
-미칩니다. &lt;code&gt;allow&lt;/code&gt; 그룹이 비어 버린 공유는 &lt;strong&gt;SMB로 아예 제공되지 않습니다&lt;/strong&gt;. 빈
-&lt;code&gt;AllowUsers&lt;/code&gt;는 모든 사람으로 해석되기 때문입니다.&lt;/p&gt;</description></item></channel></rss>
+미칩니다. &lt;code&gt;allow&lt;/code&gt; 그룹이 비어 버린 공유는 &lt;strong&gt;SMB로 아예 제공되지 않습니다&lt;/strong&gt;. 빈&lt;code&gt;AllowUsers&lt;/code&gt;는 모든 사람으로 해석되기 때문입니다.&lt;/p&gt;</description></item></channel></rss>

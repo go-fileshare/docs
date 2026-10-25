@@ -1,7 +1,6 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Tls</title><link>https://go-fileshare.github.io/docs/0.31/tags/tls/</link><description>Recent content in Tls on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>en</language><atom:link href="https://go-fileshare.github.io/docs/0.31/tags/tls/index.xml" rel="self" type="application/rss+xml"/><item><title>TLS, and certificates from ACME</title><link>https://go-fileshare.github.io/docs/0.31/security/tls/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/security/tls/</guid><description>
 &lt;p&gt;Since v0.9.0, &lt;strong&gt;WebDAV and S3 are served over HTTPS, and NFS over
-RPC-with-TLS&lt;/strong&gt; (RFC 9289), with &lt;code&gt;tls = true&lt;/code&gt; on their &lt;code&gt;serve&lt;/code&gt; block and one
-&lt;code&gt;tls&lt;/code&gt; block saying where the certificate comes from.&lt;/p&gt;
+RPC-with-TLS&lt;/strong&gt; (RFC 9289), with &lt;code&gt;tls = true&lt;/code&gt; on their &lt;code&gt;serve&lt;/code&gt; block and one&lt;code&gt;tls&lt;/code&gt; block saying where the certificate comes from.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="from-files"&gt;From files&lt;span class="hx:absolute hx:-mt-20" id="from-files"&gt;&lt;/span&gt;
 &lt;a href="#from-files" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;tls&lt;/span&gt; {
@@ -25,8 +24,7 @@ data-copied-label="Copied!"
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;p&gt;The files are &lt;strong&gt;reloaded when they change&lt;/strong&gt;, so a renewal written by another
-tool is picked up without a restart. The certificate is
-&lt;a href="https://github.com/go-authn/servercert" target="_blank" rel="noopener"&gt;go-authn/servercert&lt;/a&gt;&amp;rsquo;s.&lt;/p&gt;
+tool is picked up without a restart. The certificate is&lt;a href="https://github.com/go-authn/servercert" target="_blank" rel="noopener"&gt;go-authn/servercert&lt;/a&gt;&amp;rsquo;s.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="from-an-acme-ca"&gt;From an ACME CA&lt;span class="hx:absolute hx:-mt-20" id="from-an-acme-ca"&gt;&lt;/span&gt;
 &lt;a href="#from-an-acme-ca" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Let&amp;rsquo;s Encrypt by default; or a CA that knows you through &lt;strong&gt;external account
 binding&lt;/strong&gt;, such as GÉANT TCS through HARICA:&lt;/p&gt;
@@ -112,8 +110,7 @@ data-copied-label="Copied!"
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;The last row is the one that matters for a file server inside a campus network:
-with a GÉANT TCS account whose domain the institution has already validated at
+&lt;p&gt;The last row is the one that matters for a file server inside a campus network:with a GÉANT TCS account whose domain the institution has already validated at
 HARICA, no port has to be opened to the Internet at all.&lt;/p&gt;
 &lt;h4 data-hextra-search-id="harica-gant-tcs-which-account-and-caa"&gt;HARICA (GÉANT TCS): which account, and CAA&lt;span class="hx:absolute hx:-mt-20" id="harica-gant-tcs-which-account-and-caa"&gt;&lt;/span&gt;
 &lt;a href="#harica-gant-tcs-which-account-and-caa" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h4&gt;&lt;p&gt;HARICA&amp;rsquo;s ACME accounts come in two kinds, and only one of them skips the
@@ -125,8 +122,7 @@ nobody outside can reach;&lt;/li&gt;
 &lt;li&gt;an &lt;strong&gt;Enterprise User&lt;/strong&gt; account issues &lt;strong&gt;DV&lt;/strong&gt; certificates, and DV means the
 CA checks the name at every order, with tls-alpn-01 or http-01 as above.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;Either way the domain&amp;rsquo;s &lt;strong&gt;CAA&lt;/strong&gt; record, if there is one, must allow
-&lt;code&gt;harica.gr&lt;/code&gt;, or the order is refused.&lt;/p&gt;
+&lt;p&gt;Either way the domain&amp;rsquo;s &lt;strong&gt;CAA&lt;/strong&gt; record, if there is one, must allow&lt;code&gt;harica.gr&lt;/code&gt;, or the order is refused.&lt;/p&gt;
 &lt;h4 data-hextra-search-id="when-the-certificate-is-asked-for"&gt;When the certificate is asked for&lt;span class="hx:absolute hx:-mt-20" id="when-the-certificate-is-asked-for"&gt;&lt;/span&gt;
 &lt;a href="#when-the-certificate-is-asked-for" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h4&gt;&lt;p&gt;&lt;strong&gt;At start&lt;/strong&gt; (since v0.27.0): once the listeners are up, the certificate of
 every configured domain is fetched, or read back from the cache directory. A
@@ -134,20 +130,14 @@ failure does not stop the server — it keeps serving and tries again after
 1 minute, doubling up to 1 hour — and the first TLS connection that names the
 host asks again in any case. It is renewed 30 days before it expires, or at the
 last third of its lifetime when that is shorter.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;A client that sends no SNI&lt;/strong&gt; — one connecting by IP address — is given the
-&lt;strong&gt;first&lt;/strong&gt; domain&amp;rsquo;s certificate (since v0.27.0); before, the handshake failed.
-The client still checks that certificate against the address it dialled, so it
+&lt;p&gt;&lt;strong&gt;A client that sends no SNI&lt;/strong&gt; — one connecting by IP address — is given the&lt;strong&gt;first&lt;/strong&gt; domain&amp;rsquo;s certificate (since v0.27.0); before, the handshake failed.The client still checks that certificate against the address it dialled, so it
 helps a client that was told to trust that name, and fools nobody.&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;ALPN&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;With ACME, the server&amp;rsquo;s ALPN list holds &lt;code&gt;acme-tls/1&lt;/code&gt;, and a Go server
-refuses a client whose list shares nothing with its own. So &lt;code&gt;http/1.1&lt;/code&gt; is
-&lt;strong&gt;appended&lt;/strong&gt; for WebDAV and S3 — every browser and WebDAV client offers it —
-and &lt;code&gt;sunrpc&lt;/code&gt; for NFS, as RFC 9289 §5.2 identifies RPC-with-TLS. Not &lt;code&gt;h2&lt;/code&gt;:
-HTTP/2 is not offered over these listeners, and offering it would be a lie.
-&lt;code&gt;acme-tls/1&lt;/code&gt; stays on every listener, so tls-alpn-01 is answered wherever
+refuses a client whose list shares nothing with its own. So &lt;code&gt;http/1.1&lt;/code&gt; is&lt;strong&gt;appended&lt;/strong&gt; for WebDAV and S3 — every browser and WebDAV client offers it —and &lt;code&gt;sunrpc&lt;/code&gt; for NFS, as RFC 9289 §5.2 identifies RPC-with-TLS. Not &lt;code&gt;h2&lt;/code&gt;:HTTP/2 is not offered over these listeners, and offering it would be a lie.&lt;code&gt;acme-tls/1&lt;/code&gt; stays on every listener, so tls-alpn-01 is answered wherever
 the CA reaches.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -159,8 +149,7 @@ the CA reaches.&lt;/p&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;BREAKING in v0.9.0: WebDAV with passwords on a reachable address is refused&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;HTTP Basic is the password, base64&amp;rsquo;d, on every request, and a bearer token
 is as good as one. So a configuration serving WebDAV &lt;strong&gt;without TLS&lt;/strong&gt; on an
-address other machines can reach, while anybody authenticates, is
-&lt;strong&gt;refused, not warned about&lt;/strong&gt; — a warning scrolls by, and the password does
+address other machines can reach, while anybody authenticates, is&lt;strong&gt;refused, not warned about&lt;/strong&gt; — a warning scrolls by, and the password does
 not come back:&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;pre&gt;&lt;code&gt;webdav on 0.0.0.0:8080 would carry passwords in the clear: serve it with
@@ -180,8 +169,7 @@ data-copied-label="Copied!"
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;A configuration that started before v0.9.0 with
-&lt;code&gt;serve &amp;quot;webdav&amp;quot; { addr = &amp;quot;0.0.0.0:8080&amp;quot; }&lt;/code&gt; does not start after it. Two ways
+&lt;p&gt;A configuration that started before v0.9.0 with&lt;code&gt;serve &amp;quot;webdav&amp;quot; { addr = &amp;quot;0.0.0.0:8080&amp;quot; }&lt;/code&gt; does not start after it. Two ways
 out:&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;webdav&amp;#34;&lt;/span&gt; {
@@ -216,12 +204,10 @@ data-copied-label="Copied!"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;&lt;strong&gt;Loopback&lt;/strong&gt; addresses (&lt;code&gt;127.0.0.1&lt;/code&gt;, &lt;code&gt;::1&lt;/code&gt;, &lt;code&gt;localhost&lt;/code&gt;) and a server with
-&lt;strong&gt;nobody to authenticate&lt;/strong&gt; — no &lt;code&gt;user&lt;/code&gt;, no &lt;code&gt;users&lt;/code&gt;, no &lt;code&gt;oidc&lt;/code&gt; block — are
+&lt;p&gt;&lt;strong&gt;Loopback&lt;/strong&gt; addresses (&lt;code&gt;127.0.0.1&lt;/code&gt;, &lt;code&gt;::1&lt;/code&gt;, &lt;code&gt;localhost&lt;/code&gt;) and a server with&lt;strong&gt;nobody to authenticate&lt;/strong&gt; — no &lt;code&gt;user&lt;/code&gt;, no &lt;code&gt;users&lt;/code&gt;, no &lt;code&gt;oidc&lt;/code&gt; block — are
 unaffected. A &lt;code&gt;serve&lt;/code&gt; block with no &lt;code&gt;addr&lt;/code&gt; lands on loopback, and is unaffected
 too.&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;plaintext&lt;/code&gt; is for WebDAV only, the protocol that sends a password, and
-&lt;code&gt;plaintext&lt;/code&gt; together with &lt;code&gt;tls&lt;/code&gt; is refused: one or the other.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;plaintext&lt;/code&gt; is for WebDAV only, the protocol that sends a password, and&lt;code&gt;plaintext&lt;/code&gt; together with &lt;code&gt;tls&lt;/code&gt; is refused: one or the other.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="what-check-says"&gt;What &lt;code&gt;check&lt;/code&gt; says&lt;span class="hx:absolute hx:-mt-20" id="what-check-says"&gt;&lt;/span&gt;
 &lt;a href="#what-check-says" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/configuration/check/"&gt;&lt;code&gt;fileshare check&lt;/code&gt;&lt;/a&gt; prints, per protocol, what is
 encrypted and what is in the clear &lt;strong&gt;on purpose&lt;/strong&gt;:&lt;/p&gt;
@@ -307,11 +293,8 @@ data-copied-label="Copied!"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;&lt;code&gt;client_ca_file&lt;/code&gt; makes a client present a certificate from that authority —
-&lt;strong&gt;which host is mounting&lt;/strong&gt; — and RFC 9289 leaves user authentication as it was:
-the uid inside is still the one &lt;code&gt;AUTH_SYS&lt;/code&gt; claims. So a share that names who may
-use it is &lt;strong&gt;still refused over NFS&lt;/strong&gt; without a &lt;code&gt;kerberos&lt;/code&gt; block — or without
-&lt;a href="https://go-fileshare.github.io/docs/0.31/security/nfs-certificates/"&gt;identities from certificates&lt;/a&gt;, which is a different use of
+&lt;p&gt;&lt;code&gt;client_ca_file&lt;/code&gt; makes a client present a certificate from that authority —&lt;strong&gt;which host is mounting&lt;/strong&gt; — and RFC 9289 leaves user authentication as it was:the uid inside is still the one &lt;code&gt;AUTH_SYS&lt;/code&gt; claims. So a share that names who may
+use it is &lt;strong&gt;still refused over NFS&lt;/strong&gt; without a &lt;code&gt;kerberos&lt;/code&gt; block — or without&lt;a href="https://go-fileshare.github.io/docs/0.31/security/nfs-certificates/"&gt;identities from certificates&lt;/a&gt;, which is a different use of
 the same certificate.&lt;/p&gt;
 &lt;p&gt;TLS is &lt;strong&gt;offered, not required&lt;/strong&gt;: a client that never asks for it is still
 served the open shares. &lt;code&gt;client_ca_file&lt;/code&gt; without &lt;code&gt;tls = true&lt;/code&gt; is refused — it
@@ -355,8 +338,7 @@ it:&lt;/p&gt;
 UTF8String &lt;code&gt;user@domain&lt;/code&gt;
 (&lt;a href="https://www.ietf.org/archive/id/draft-cel-nfsv4-rpc-tls-othername-04.html" target="_blank" rel="noopener"&gt;draft-cel-nfsv4-rpc-tls-othername&lt;/a&gt;
 describes it; its OIDs are not assigned yet);&lt;/li&gt;
-&lt;li&gt;their groups: one SubjectAltName URI each,
-&lt;code&gt;tag:go-authn.github.io,2026:group:&amp;lt;group&amp;gt;&lt;/code&gt; — a &lt;strong&gt;tag URI&lt;/strong&gt; (RFC 4151: no
+&lt;li&gt;their groups: one SubjectAltName URI each,&lt;code&gt;tag:go-authn.github.io,2026:group:&amp;lt;group&amp;gt;&lt;/code&gt; — a &lt;strong&gt;tag URI&lt;/strong&gt; (RFC 4151: no
 registration, made for exactly this). FreeBSD&amp;rsquo;s &lt;code&gt;rpc.tlsservd&lt;/code&gt; reads the first
 identity otherName and skips every other SAN entry.&lt;/li&gt;
 &lt;/ul&gt;
@@ -364,26 +346,19 @@ identity otherName and skips every other SAN entry.&lt;/li&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Why a tag URI, and not an extension of its own&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;One was designed, under a UUID-derived arc (&lt;code&gt;2.25.&amp;lt;128-bit number&amp;gt;&lt;/code&gt;), and
-&lt;strong&gt;measured&lt;/strong&gt;: Go&amp;rsquo;s &lt;code&gt;x509.ParseCertificate&lt;/code&gt; refuses the whole certificate —
-&lt;em&gt;malformed extension OID field&lt;/em&gt; — because an ASN.1 object identifier arc is
-an &lt;code&gt;int&lt;/code&gt; there. Every Go TLS server would have turned the certificate away.
-A URI SAN needs no OID, and every parser reads it. Not &lt;code&gt;urn:x-…&lt;/code&gt; either:
-RFC 8141 took the experimental URN namespaces away, and a strict parser
+&lt;p&gt;One was designed, under a UUID-derived arc (&lt;code&gt;2.25.&amp;lt;128-bit number&amp;gt;&lt;/code&gt;), and&lt;strong&gt;measured&lt;/strong&gt;: Go&amp;rsquo;s &lt;code&gt;x509.ParseCertificate&lt;/code&gt; refuses the whole certificate —&lt;em&gt;malformed extension OID field&lt;/em&gt; — because an ASN.1 object identifier arc is
+an &lt;code&gt;int&lt;/code&gt; there. Every Go TLS server would have turned the certificate away.A URI SAN needs no OID, and every parser reads it. Not &lt;code&gt;urn:x-…&lt;/code&gt; either:RFC 8141 took the experimental URN namespaces away, and a strict parser
 refuses one.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="what-every-call-is-asked"&gt;What every call is asked&lt;span class="hx:absolute hx:-mt-20" id="what-every-call-is-asked"&gt;&lt;/span&gt;
-&lt;a href="#what-every-call-is-asked" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;With &lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt;, a share that names people is served over NFS
-&lt;strong&gt;without kerberos&lt;/strong&gt;. Every call on it must arrive over TLS, with a certificate
+&lt;a href="#what-every-call-is-asked" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;With &lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt;, a share that names people is served over NFS&lt;strong&gt;without kerberos&lt;/strong&gt;. Every call on it must arrive over TLS, with a certificate
 that:&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;is &lt;strong&gt;not in the CRL&lt;/strong&gt;;&lt;/li&gt;
 &lt;li&gt;names &lt;strong&gt;exactly one&lt;/strong&gt; person;&lt;/li&gt;
-&lt;li&gt;names somebody this server admits &lt;strong&gt;the way it admits a token&lt;/strong&gt; — a rule,
-&lt;code&gt;trust_all&lt;/code&gt;, &lt;code&gt;domains&lt;/code&gt;, see
-&lt;a href="https://go-fileshare.github.io/docs/0.31/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;people the identity provider names&lt;/a&gt;;&lt;/li&gt;
+&lt;li&gt;names somebody this server admits &lt;strong&gt;the way it admits a token&lt;/strong&gt; — a rule,&lt;code&gt;trust_all&lt;/code&gt;, &lt;code&gt;domains&lt;/code&gt;, see&lt;a href="https://go-fileshare.github.io/docs/0.31/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;people the identity provider names&lt;/a&gt;;&lt;/li&gt;
 &lt;li&gt;names somebody &lt;strong&gt;the share allows&lt;/strong&gt;.&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;And, with an &lt;a href="https://go-fileshare.github.io/docs/0.31/security/shared-signals/"&gt;&lt;code&gt;ssf&lt;/code&gt; block&lt;/a&gt;, the certificate must have been
@@ -433,21 +408,17 @@ nothing can revoke outlives their removal by its whole lifetime.&lt;/p&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;It is fetched and kept like the &lt;a href="https://go-fileshare.github.io/docs/0.31/security/revocation-lists/"&gt;KRL&lt;/a&gt;, and &lt;strong&gt;fails closed&lt;/strong&gt;
-the same way; a CRL past its own &lt;strong&gt;&lt;code&gt;NextUpdate&lt;/code&gt;&lt;/strong&gt; counts as unknown whatever
-&lt;code&gt;crl_max_age&lt;/code&gt; allows. A CRL must be signed by the client CA — a CRL anybody
+the same way; a CRL past its own &lt;strong&gt;&lt;code&gt;NextUpdate&lt;/code&gt;&lt;/strong&gt; counts as unknown whatever&lt;code&gt;crl_max_age&lt;/code&gt; allows. A CRL must be signed by the client CA — a CRL anybody
 could have written revokes whatever they like, and, worse, un-revokes it. With
 the CRL reachable, &lt;strong&gt;the next call after it changes is refused&lt;/strong&gt;; the
 certificate&amp;rsquo;s lifetime bounds a revocation only when the CRL is not reachable.&lt;/p&gt;
 &lt;p&gt;Since v0.16.2 the signature is checked on the raw bytes &lt;strong&gt;before&lt;/strong&gt; the CRL is
-parsed, through &lt;a href="https://github.com/go-authn/revocation" target="_blank" rel="noopener"&gt;go-authn/revocation&lt;/a&gt;:
-parsed first, a large CRL signed by anybody cost memory and seconds before
+parsed, through &lt;a href="https://github.com/go-authn/revocation" target="_blank" rel="noopener"&gt;go-authn/revocation&lt;/a&gt;:parsed first, a large CRL signed by anybody cost memory and seconds before
 being refused. What this server cannot read as a complete list is refused
 too: a delta CRL, an unknown critical extension or entry extension, no CRL
 number, no &lt;code&gt;NextUpdate&lt;/code&gt;. A CRL with a lower number than the one held, or the
-same number issued earlier, is refused like an older
-&lt;a href="https://go-fileshare.github.io/docs/0.31/security/revocation-lists/#never-backwards-across-a-restart-too"&gt;KRL&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;A CRL field without &lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt; is refused, and so is
-&lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt; without &lt;code&gt;tls = true&lt;/code&gt; and &lt;code&gt;client_ca_file&lt;/code&gt;: the
+same number issued earlier, is refused like an older&lt;a href="https://go-fileshare.github.io/docs/0.31/security/revocation-lists/#never-backwards-across-a-restart-too"&gt;KRL&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;A CRL field without &lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt; is refused, and so is&lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt; without &lt;code&gt;tls = true&lt;/code&gt; and &lt;code&gt;client_ca_file&lt;/code&gt;: the
 identity is in the certificate the client presents.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="what-it-cannot-promise"&gt;What it cannot promise&lt;span class="hx:absolute hx:-mt-20" id="what-it-cannot-promise"&gt;&lt;/span&gt;
 &lt;a href="#what-it-cannot-promise" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
@@ -455,11 +426,9 @@ identity is in the certificate the client presents.&lt;/p&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;A Linux client&amp;rsquo;s certificate belongs to a MOUNT, not a person&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;The server sees a &lt;strong&gt;connection&amp;rsquo;s&lt;/strong&gt; certificate, and a Linux client attaches
-one to a mount (&lt;code&gt;tlshd&lt;/code&gt;, the keyring serial on
-&lt;code&gt;mount -o xprtsec=mtls,...&lt;/code&gt;). &lt;strong&gt;Every user of that mount acts as the person
+one to a mount (&lt;code&gt;tlshd&lt;/code&gt;, the keyring serial on&lt;code&gt;mount -o xprtsec=mtls,...&lt;/code&gt;). &lt;strong&gt;Every user of that mount acts as the person
 the certificate names.&lt;/strong&gt; On a workstation one person uses, that is exactly
-them; on a machine several people log into, it is whoever mounted — use
-&lt;code&gt;sec=krb5&lt;/code&gt; there.&lt;/p&gt;
+them; on a machine several people log into, it is whoever mounted — use&lt;code&gt;sec=krb5&lt;/code&gt; there.&lt;/p&gt;
 &lt;p&gt;This is why RFC 9289 alone refuses to promise user authentication, and why
 plain &lt;a href="https://go-fileshare.github.io/docs/0.31/security/tls/#nfs-over-tls-proves-the-machine-not-the-person"&gt;NFS over TLS&lt;/a&gt;
 still proves only the machine.&lt;/p&gt;
@@ -471,11 +440,9 @@ still proves only the machine.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;MOUNT&amp;rsquo;s &lt;code&gt;MNT&lt;/code&gt; arrives in the clear&lt;/strong&gt;, whatever &lt;code&gt;xprtsec=&lt;/code&gt; says: the
 kernel&amp;rsquo;s mount client has no TLS. It is answered, and every NFS call made
-without TLS is then refused — so a person the share does not allow sees
-&lt;em&gt;access denied&lt;/em&gt; at the first access rather than at &lt;code&gt;mount&lt;/code&gt;. &lt;strong&gt;Nothing of a
+without TLS is then refused — so a person the share does not allow sees&lt;em&gt;access denied&lt;/em&gt; at the first access rather than at &lt;code&gt;mount&lt;/code&gt;. &lt;strong&gt;Nothing of a
 share crosses in the clear.&lt;/strong&gt;&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;tlshd&lt;/code&gt; checks this server&amp;rsquo;s certificate against the &lt;strong&gt;system&lt;/strong&gt; trust store
 only — it ignores &lt;code&gt;x509.truststore&lt;/code&gt; — and wants the client&amp;rsquo;s certificate and
-key &lt;strong&gt;owned by root, the key mode 600&lt;/strong&gt;. Otherwise it fails with
-&lt;em&gt;gnutls: Error in the certificate (-43)&lt;/em&gt;, naming neither.&lt;/li&gt;
+key &lt;strong&gt;owned by root, the key mode 600&lt;/strong&gt;. Otherwise it fails with&lt;em&gt;gnutls: Error in the certificate (-43)&lt;/em&gt;, naming neither.&lt;/li&gt;
 &lt;/ul&gt;</description></item></channel></rss>

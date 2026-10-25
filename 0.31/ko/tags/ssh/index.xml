@@ -1,10 +1,7 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Ssh</title><link>https://go-fileshare.github.io/docs/0.31/ko/tags/ssh/</link><description>Recent content in Ssh on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>ko</language><atom:link href="https://go-fileshare.github.io/docs/0.31/ko/tags/ssh/index.xml" rel="self" type="application/rss+xml"/><item><title>SSH 인증서 폐기: KRL</title><link>https://go-fileshare.github.io/docs/0.31/ko/security/revocation-lists/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/ko/security/revocation-lists/</guid><description>
-&lt;p&gt;ID 공급자의 SSH CA가 서명한 인증서
-(&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/protocols/sftp/#people-the-identity-provider-vouches-for"&gt;공급자가 보증하는 사용자를 위한 SFTP&lt;/a&gt; 참고)는
+&lt;p&gt;ID 공급자의 SSH CA가 서명한 인증서(&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/protocols/sftp/#people-the-identity-provider-vouches-for"&gt;공급자가 보증하는 사용자를 위한 SFTP&lt;/a&gt; 참고)는
 로그인할 때 검사됩니다. go-authn/bridge에서 누군가를 비활성화하면 그 사용자의
-토큰이 폐기되고 애플리케이션 비밀번호가 삭제되며, 이는
-&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/administration/reload/"&gt;디렉터리 다시 불러오기&lt;/a&gt;로 여기에 반영됩니다.
-그러나 목록이 없으면 이미 발급된 인증서는 만료될 때까지 SFTP를 열 수 있고, 이미
+토큰이 폐기되고 애플리케이션 비밀번호가 삭제되며, 이는&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/administration/reload/"&gt;디렉터리 다시 불러오기&lt;/a&gt;로 여기에 반영됩니다.그러나 목록이 없으면 이미 발급된 인증서는 만료될 때까지 SFTP를 열 수 있고, 이미
 열린 SFTP 세션은 열린 채로 남습니다.&lt;/p&gt;
 &lt;p&gt;v0.12.0부터 목록이 이를 막습니다.&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
@@ -27,8 +24,7 @@ data-copied-label="복사됨!"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;go-authn/bridge는 폐기한 SSH 인증서(비활성화된 사용자, 비활성화된 IdP)를 OpenSSH
-&lt;strong&gt;KRL&lt;/strong&gt;(&lt;code&gt;PROTOCOL.krl&lt;/code&gt;, &lt;code&gt;sshd&lt;/code&gt;의 &lt;code&gt;RevokedKeys&lt;/code&gt;가 읽는 목록)로 게시하며, fileshare는
+&lt;p&gt;go-authn/bridge는 폐기한 SSH 인증서(비활성화된 사용자, 비활성화된 IdP)를 OpenSSH&lt;strong&gt;KRL&lt;/strong&gt;(&lt;code&gt;PROTOCOL.krl&lt;/code&gt;, &lt;code&gt;sshd&lt;/code&gt;의 &lt;code&gt;RevokedKeys&lt;/code&gt;가 읽는 목록)로 게시하며, fileshare는
 그 사본을 보관하고 &lt;a href="https://github.com/go-authn/krl" target="_blank" rel="noopener"&gt;go-authn/krl&lt;/a&gt;로 읽습니다.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="refused-at-login-and-in-the-middle-of-a-session"&gt;로그인 시와 세션 도중의 거부&lt;span class="hx:absolute hx:-mt-20" id="refused-at-login-and-in-the-middle-of-a-session"&gt;&lt;/span&gt;
 &lt;a href="#refused-at-login-and-in-the-middle-of-a-session" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;폐기된 인증서는 로그인할 때 거부되며, &lt;strong&gt;그 인증서로 이미 연 세션은 더 이상
@@ -85,24 +81,19 @@ data-copied-label="복사됨!"
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;KRL을 가져올 수 없는 동안 공급자의 인증서는 거부됩니다&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;목록을 가져올 수 없거나 마지막 정상 사본이 &lt;code&gt;ssh_krl_max_age&lt;/code&gt;보다 오래되면,
-공급자의 CA가 서명한 &lt;strong&gt;모든&lt;/strong&gt; 인증서가 거부됩니다. 목록에 접근할 수 없을 때 모든
+&lt;p&gt;목록을 가져올 수 없거나 마지막 정상 사본이 &lt;code&gt;ssh_krl_max_age&lt;/code&gt;보다 오래되면,공급자의 CA가 서명한 &lt;strong&gt;모든&lt;/strong&gt; 인증서가 거부됩니다. 목록에 접근할 수 없을 때 모든
 것을 통과시키는 폐기 검사는 목록을 막을 수 있는 공격자에게 무력화되는 검사이기
 때문입니다. 그러면 목록은 그것이 관할하는 로그인만큼 안정적으로 제공되어야
-합니다. &lt;code&gt;max_age&lt;/code&gt;에 도달하기 전에 알림을 설정할 메트릭은
-&lt;code&gt;fileshare_revocation_list_age_seconds{list=&amp;quot;ssh_krl&amp;quot;}&lt;/code&gt;입니다.
-&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/administration/health/#what-to-alert-on"&gt;상태 점검과 메트릭&lt;/a&gt;을
+합니다. &lt;code&gt;max_age&lt;/code&gt;에 도달하기 전에 알림을 설정할 메트릭은&lt;code&gt;fileshare_revocation_list_age_seconds{list=&amp;quot;ssh_krl&amp;quot;}&lt;/code&gt;입니다.&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/administration/health/#what-to-alert-on"&gt;상태 점검과 메트릭&lt;/a&gt;을
 참고하십시오.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="signed-and-dated-from-ssh_krl_url"&gt;서명되고 날짜가 기록됨, &lt;code&gt;ssh_krl_url&lt;/code&gt;에서&lt;span class="hx:absolute hx:-mt-20" id="signed-and-dated-from-ssh_krl_url"&gt;&lt;/span&gt;
-&lt;a href="#signed-and-dated-from-ssh_krl_url" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;v0.15.0부터 &lt;strong&gt;&lt;code&gt;ssh_krl_url&lt;/code&gt;의 KRL은 서명되어 있고 만료 시점을 명시해야 합니다&lt;/strong&gt;.
-&lt;a href="https://github.com/go-authn/revocation" target="_blank" rel="noopener"&gt;go-authn/revocation&lt;/a&gt;이 설명하고
+&lt;a href="#signed-and-dated-from-ssh_krl_url" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;v0.15.0부터 &lt;strong&gt;&lt;code&gt;ssh_krl_url&lt;/code&gt;의 KRL은 서명되어 있고 만료 시점을 명시해야 합니다&lt;/strong&gt;.&lt;a href="https://github.com/go-authn/revocation" target="_blank" rel="noopener"&gt;go-authn/revocation&lt;/a&gt;이 설명하고
 go-authn/bridge가 v0.10.0부터 제공하는 방식입니다.&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;서명:&lt;/strong&gt; &lt;code&gt;&amp;lt;url&amp;gt;.sig&lt;/code&gt;는 공급자의 SSH CA(&lt;code&gt;ssh_ca_file&lt;/code&gt;이며, 따라서
-&lt;code&gt;ssh_krl_url&lt;/code&gt;에는 필수)가 &lt;code&gt;krl@go-authn.github.io&lt;/code&gt; 네임스페이스로 만든 분리형
+&lt;li&gt;&lt;strong&gt;서명:&lt;/strong&gt; &lt;code&gt;&amp;lt;url&amp;gt;.sig&lt;/code&gt;는 공급자의 SSH CA(&lt;code&gt;ssh_ca_file&lt;/code&gt;이며, 따라서&lt;code&gt;ssh_krl_url&lt;/code&gt;에는 필수)가 &lt;code&gt;krl@go-authn.github.io&lt;/code&gt; 네임스페이스로 만든 분리형
 SSHSIG 서명입니다. 목록의 ETag에 대한 &lt;code&gt;If-Match&lt;/code&gt;와 함께 가져오며, 그사이에
 목록이 재발급되었으면 즉시 다시 가져옵니다.&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;만료:&lt;/strong&gt; &lt;code&gt;expires@go-authn.github.io&lt;/code&gt; 확장. 이를 넘기면 &lt;code&gt;304&lt;/code&gt;가 아무리 최근에
@@ -124,31 +115,23 @@ SSHSIG 서명입니다. 목록의 ETag에 대한 &lt;code&gt;If-Match&lt;/code&g
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="never-backwards-across-a-restart-too"&gt;재시작해도 결코 거꾸로 가지 않음&lt;span class="hx:absolute hx:-mt-20" id="never-backwards-across-a-restart-too"&gt;&lt;/span&gt;
-&lt;a href="#never-backwards-across-a-restart-too" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;v0.16.0부터 보유한 목록보다 오래된 목록은 거부됩니다. 더 낮은 버전(KRL의 버전,
-CRL의 번호), 또는 같은 버전이지만 더 일찍 발급된 목록입니다. &lt;code&gt;ssh_krl_state_file&lt;/code&gt;
-(&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/security/nfs-certificates/#revocation-the-crl"&gt;NFS&lt;/a&gt;에서는
-&lt;code&gt;crl_state_file&lt;/code&gt;)이 있으면 검증된 마지막 목록이 디스크에 보관되고, 시작할 때
+&lt;a href="#never-backwards-across-a-restart-too" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;v0.16.0부터 보유한 목록보다 오래된 목록은 거부됩니다. 더 낮은 버전(KRL의 버전,CRL의 번호), 또는 같은 버전이지만 더 일찍 발급된 목록입니다. &lt;code&gt;ssh_krl_state_file&lt;/code&gt;
+(&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/security/nfs-certificates/#revocation-the-crl"&gt;NFS&lt;/a&gt;에서는&lt;code&gt;crl_state_file&lt;/code&gt;)이 있으면 검증된 마지막 목록이 디스크에 보관되고, 시작할 때
 다시 검증되며, 다음 목록의 순서를 정합니다. 이것만으로는 목록을 가져오기 전까지
-최신으로 간주되지 않습니다. 이것이 없으면 재시작할 때 순서를 잊어버리며,
-fileshare는 시작할 때 이를 알립니다. 여전히 서명되어 있고 만료되지 않은 더 오래된
+최신으로 간주되지 않습니다. 이것이 없으면 재시작할 때 순서를 잊어버리며,fileshare는 시작할 때 이를 알립니다. 여전히 서명되어 있고 만료되지 않은 더 오래된
 목록이 수락될 수 있기 때문입니다.&lt;/p&gt;
-&lt;p&gt;이 파일들은 &lt;code&gt;ssh_ca_file&lt;/code&gt;, CA 파일, 목록 파일, 그리고 (v0.17.0부터)
-&lt;code&gt;authorized_keys_file&lt;/code&gt;, &lt;code&gt;dsn_file&lt;/code&gt;, &lt;code&gt;bind_password_file&lt;/code&gt;, &lt;code&gt;ssf&lt;/code&gt;의 &lt;code&gt;ca_file&lt;/code&gt;과
+&lt;p&gt;이 파일들은 &lt;code&gt;ssh_ca_file&lt;/code&gt;, CA 파일, 목록 파일, 그리고 (v0.17.0부터)&lt;code&gt;authorized_keys_file&lt;/code&gt;, &lt;code&gt;dsn_file&lt;/code&gt;, &lt;code&gt;bind_password_file&lt;/code&gt;, &lt;code&gt;ssf&lt;/code&gt;의 &lt;code&gt;ca_file&lt;/code&gt;과
 마찬가지로 &lt;strong&gt;공유 안에 있어서는 안 됩니다&lt;/strong&gt;. 그곳에 쓸 수 있는 사람이 누가 들어올
 수 있는지를 결정하게 되기 때문입니다.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="a-plain-sshd-next-to-fileshare"&gt;fileshare 옆의 일반 &lt;code&gt;sshd&lt;/code&gt;&lt;span class="hx:absolute hx:-mt-20" id="a-plain-sshd-next-to-fileshare"&gt;&lt;/span&gt;
-&lt;a href="#a-plain-sshd-next-to-fileshare" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;같은 검증은 fileshare 없이도 사용할 수 있습니다. go-authn/revocation의
-&lt;code&gt;authn-revokd&lt;/code&gt;는 목록을 가져와 검증되는 것만 보관하고, 그 순서를 디스크에
+&lt;a href="#a-plain-sshd-next-to-fileshare" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;같은 검증은 fileshare 없이도 사용할 수 있습니다. go-authn/revocation의&lt;code&gt;authn-revokd&lt;/code&gt;는 목록을 가져와 검증되는 것만 보관하고, 그 순서를 디스크에
 유지하며, &lt;code&gt;sshd&lt;/code&gt;를 위한 &lt;code&gt;RevokedKeys&lt;/code&gt;를 작성합니다. 목록이 만료되면 CA 자체를
 폐기하는 목록을 작성하므로 &lt;code&gt;sshd&lt;/code&gt;도 fail closed가 됩니다.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="what-it-does-not-cover"&gt;다루지 않는 것&lt;span class="hx:absolute hx:-mt-20" id="what-it-does-not-cover"&gt;&lt;/span&gt;
 &lt;a href="#what-it-does-not-cover" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;OpenPubkey(opkssh) 인증서는 어떤 KRL에도 없습니다&lt;/strong&gt;. 사용자 자신의 키 외에는
 그것을 발급한 주체가 없기 때문입니다. 이 인증서는 &lt;code&gt;opkssh_max_age&lt;/code&gt;로 한도가
-정해지고 &lt;a href="https://go-fileshare.github.io/docs/0.31/ko/security/shared-signals/"&gt;공유 신호&lt;/a&gt;로 회수됩니다.
-WebDAV의 액세스 토큰도 마찬가지입니다.&lt;/p&gt;
-&lt;p&gt;같은 메커니즘, 곧 가져오고 보관하며 fail closed인 방식이
-&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/security/nfs-certificates/#revocation-the-crl"&gt;인증서 기반 NFS ID&lt;/a&gt;의
-&lt;strong&gt;X.509 CRL&lt;/strong&gt;을 실어 나릅니다.&lt;/p&gt;</description></item><item><title>SFTP — 키 또는 인증서</title><link>https://go-fileshare.github.io/docs/0.31/ko/protocols/sftp/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/ko/protocols/sftp/</guid><description>
+정해지고 &lt;a href="https://go-fileshare.github.io/docs/0.31/ko/security/shared-signals/"&gt;공유 신호&lt;/a&gt;로 회수됩니다.WebDAV의 액세스 토큰도 마찬가지입니다.&lt;/p&gt;
+&lt;p&gt;같은 메커니즘, 곧 가져오고 보관하며 fail closed인 방식이&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/security/nfs-certificates/#revocation-the-crl"&gt;인증서 기반 NFS ID&lt;/a&gt;의&lt;strong&gt;X.509 CRL&lt;/strong&gt;을 실어 나릅니다.&lt;/p&gt;</description></item><item><title>SFTP — 키 또는 인증서</title><link>https://go-fileshare.github.io/docs/0.31/ko/protocols/sftp/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/ko/protocols/sftp/</guid><description>
 &lt;p&gt;모든 클라이언트에 이미 있습니다. &lt;code&gt;sftp&lt;/code&gt;는 OpenSSH와 함께 제공되고, Finder와
 GNOME이 마운트하며, 편집기들도 사용합니다. 그러나 여기서 형태가 맞지 않는 유일한
 프로토콜이기도 합니다. 사용자는 공유 목록이 아니라 &lt;strong&gt;하나의&lt;/strong&gt; 파일 시스템에
@@ -208,8 +191,7 @@ data-copied-label="복사됨!"
 지정하는 인증서만으로 충분합니다. 따라서 사용자의 접근 권한은 &lt;strong&gt;다른 곳에서
 발급되고 만료되며&lt;/strong&gt;, 누군가 들어오거나 떠날 때 여기의 어떤 파일도 편집되지
 않습니다.&lt;/p&gt;
-&lt;p&gt;서명, 유효 기간, 프린시펄은 &lt;code&gt;x/crypto/ssh&lt;/code&gt;의 &lt;code&gt;CertChecker&lt;/code&gt;가 검사하며,
-&lt;strong&gt;OpenSSH 자체 클라이언트&lt;/strong&gt;로 검증되었습니다. OpenSSH 클라이언트도 인증서를 치워
+&lt;p&gt;서명, 유효 기간, 프린시펄은 &lt;code&gt;x/crypto/ssh&lt;/code&gt;의 &lt;code&gt;CertChecker&lt;/code&gt;가 검사하며,&lt;strong&gt;OpenSSH 자체 클라이언트&lt;/strong&gt;로 검증되었습니다. OpenSSH 클라이언트도 인증서를 치워
 두면 같은 키를 거부합니다.&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
@@ -224,9 +206,7 @@ data-copied-label="복사됨!"
 &lt;a href="#certificates-meant-for-this-host-the-domain-grant" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;v0.22.0부터 해당됩니다. &lt;a href="https://integration.docs.my-eurohpc.eu/aai/ssh-ca-overview/" target="_blank" rel="noopener"&gt;EuroHPC Federation Platform의 SSH CA&lt;/a&gt;
 (GÉANT / MyAccessID)는 연합의 모든 사이트가 신뢰하는 인증서를 서명합니다. 각
 인증서는 &lt;code&gt;ssh-domain-grant@core.aai.geant.org&lt;/code&gt; 확장에 자신이 어느 호스트를 위한
-것인지 기록합니다. sshd는 이 확장을 무시하며, fileshare도 v0.22.0까지는 그랬습니다.
-다른 누군가의 머신에 부여된 인증서가 여기서도 똑같이 통했습니다.
-&lt;code&gt;ssh_domains&lt;/code&gt;를 쓰면 &lt;a href="https://github.com/go-authn/sshcert" target="_blank" rel="noopener"&gt;go-authn/sshcert&lt;/a&gt;가
+것인지 기록합니다. sshd는 이 확장을 무시하며, fileshare도 v0.22.0까지는 그랬습니다.다른 누군가의 머신에 부여된 인증서가 여기서도 똑같이 통했습니다.&lt;code&gt;ssh_domains&lt;/code&gt;를 쓰면 &lt;a href="https://github.com/go-authn/sshcert" target="_blank" rel="noopener"&gt;go-authn/sshcert&lt;/a&gt;가
 명세대로 부여를 읽고, 파싱하고, 일치 여부를 확인합니다. 부여가 이 호스트의 이름을
 하나도 지정하지 않는 인증서는 거부됩니다.&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
@@ -298,8 +278,7 @@ data-copied-label="복사됨!"
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;&lt;code&gt;ssh_domains&lt;/code&gt;가 없으면 아무것도 읽지 않으며 아무것도 바뀌지 않습니다. 부여는
-&lt;strong&gt;기관&lt;/strong&gt;이 서명한 인증서, 곧 &lt;code&gt;trusted_user_ca_file&lt;/code&gt;의 인증서와 공급자의
+&lt;p&gt;&lt;code&gt;ssh_domains&lt;/code&gt;가 없으면 아무것도 읽지 않으며 아무것도 바뀌지 않습니다. 부여는&lt;strong&gt;기관&lt;/strong&gt;이 서명한 인증서, 곧 &lt;code&gt;trusted_user_ca_file&lt;/code&gt;의 인증서와 공급자의
 인증서(&lt;code&gt;ssh_ca_file&lt;/code&gt;)에서 읽습니다. OpenPubkey 인증서는 사용자 자신의 키로
 서명되므로 그 안의 부여는 사용자가 자신에 대해 하는 말일 뿐입니다. 이 인증서의
 audience는 대신 &lt;code&gt;opkssh_client_id&lt;/code&gt;입니다. 일반 키에는 부여가 없으며 해당 사항이
@@ -319,9 +298,7 @@ data-copied-label="복사됨!"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;각 결정은 결과 &lt;code&gt;granted&lt;/code&gt;, &lt;code&gt;accepted_ungranted&lt;/code&gt;, &lt;code&gt;refused_not_granted&lt;/code&gt;,
-&lt;code&gt;refused_absent&lt;/code&gt;, &lt;code&gt;refused_malformed&lt;/code&gt;와 함께
-&lt;code&gt;fileshare_sftp_domain_grant_total{result}&lt;/code&gt;에도 집계됩니다. 클라이언트는 키를
+&lt;p&gt;각 결정은 결과 &lt;code&gt;granted&lt;/code&gt;, &lt;code&gt;accepted_ungranted&lt;/code&gt;, &lt;code&gt;refused_not_granted&lt;/code&gt;,&lt;code&gt;refused_absent&lt;/code&gt;, &lt;code&gt;refused_malformed&lt;/code&gt;와 함께&lt;code&gt;fileshare_sftp_domain_grant_total{result}&lt;/code&gt;에도 집계됩니다. 클라이언트는 키를
 가지고 있음을 증명하기 전에 인증서를 제시하므로, 이 집계는 사용자가 아니라
 시도의 수입니다.&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
@@ -334,17 +311,13 @@ data-copied-label="복사됨!"
 뜻한다면, 그 호스트에서 이 필터는 아무것도 걸러 내지 못합니다.&lt;/p&gt;
 &lt;p&gt;여기서는 부여가 없는 인증서는 &lt;code&gt;ssh_accept_ungranted&lt;/code&gt;가 달리 지정하지 않는 한
 거부됩니다. 부여가 있지만 파싱되지 않으면 내용과 관계없이 거부됩니다. 부여를
-기록한 기관은 그 인증서를 제한하려는 의도였기 때문입니다. go-authn/sshcert가
-&lt;a href="https://github.com/go-authn/sshcert#why-fail-closed-the-multi-ca-scenario" target="_blank" rel="noopener"&gt;다중 CA 시나리오&lt;/a&gt;를
+기록한 기관은 그 인증서를 제한하려는 의도였기 때문입니다. go-authn/sshcert가&lt;a href="https://github.com/go-authn/sshcert#why-fail-closed-the-multi-ca-scenario" target="_blank" rel="noopener"&gt;다중 CA 시나리오&lt;/a&gt;를
 설명합니다.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h3 data-hextra-search-id="with-efps-ca"&gt;EFP의 CA를 쓰는 경우&lt;span class="hx:absolute hx:-mt-20" id="with-efps-ca"&gt;&lt;/span&gt;
-&lt;a href="#with-efps-ca" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;&lt;code&gt;trusted_user_ca_file&lt;/code&gt;은 OpenSSH의 &lt;code&gt;TrustedUserCAKeys&lt;/code&gt;입니다. EFP의
-&lt;a href="https://integration.docs.my-eurohpc.eu/aai/ssh-ca-trust/" target="_blank" rel="noopener"&gt;신뢰 페이지&lt;/a&gt;에 나온 대로,
-EFP가 &lt;a href="https://sshca.my-eurohpc.eu/config" target="_blank" rel="noopener"&gt;https://sshca.my-eurohpc.eu/config&lt;/a&gt;에 게시하는 키를 넣으십시오. 이 URL은
-&lt;code&gt;{&amp;quot;PublicKey&amp;quot;: &amp;quot;ssh-ed25519 ...&amp;quot;}&lt;/code&gt;를 반환하며, 파일에는 &lt;code&gt;PublicKey&lt;/code&gt;의 값이
+&lt;a href="#with-efps-ca" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;&lt;code&gt;trusted_user_ca_file&lt;/code&gt;은 OpenSSH의 &lt;code&gt;TrustedUserCAKeys&lt;/code&gt;입니다. EFP의&lt;a href="https://integration.docs.my-eurohpc.eu/aai/ssh-ca-trust/" target="_blank" rel="noopener"&gt;신뢰 페이지&lt;/a&gt;에 나온 대로,EFP가 &lt;a href="https://sshca.my-eurohpc.eu/config" target="_blank" rel="noopener"&gt;https://sshca.my-eurohpc.eu/config&lt;/a&gt;에 게시하는 키를 넣으십시오. 이 URL은&lt;code&gt;{&amp;quot;PublicKey&amp;quot;: &amp;quot;ssh-ed25519 ...&amp;quot;}&lt;/code&gt;를 반환하며, 파일에는 &lt;code&gt;PublicKey&lt;/code&gt;의 값이
 한 줄로 들어갑니다.&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;curl -s https://sshca.my-eurohpc.eu/config &lt;span class="p"&gt;|&lt;/span&gt; jq -r &lt;span class="s1"&gt;&amp;#39;.PublicKey&amp;#39;&lt;/span&gt; &amp;gt; /etc/fileshare/efp-ssh-ca.pub&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
@@ -359,9 +332,7 @@ data-copied-label="복사됨!"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;그런 다음 &lt;code&gt;ssh_domains&lt;/code&gt;를 호스팅 기관의 부여가 사용하는 이름으로 설정하십시오.
-EFP 인증서의 유일한 프린시펄은 MyAccessID 식별자(&lt;code&gt;&amp;lt;id&amp;gt;@myaccessid.org&lt;/code&gt;)이며,
-이것이 로그인에 쓰이는 사용자 이름입니다. 그 이름의 &lt;code&gt;user&lt;/code&gt; 블록은 자체 자격
+&lt;p&gt;그런 다음 &lt;code&gt;ssh_domains&lt;/code&gt;를 호스팅 기관의 부여가 사용하는 이름으로 설정하십시오.EFP 인증서의 유일한 프린시펄은 MyAccessID 식별자(&lt;code&gt;&amp;lt;id&amp;gt;@myaccessid.org&lt;/code&gt;)이며,이것이 로그인에 쓰이는 사용자 이름입니다. 그 이름의 &lt;code&gt;user&lt;/code&gt; 블록은 자체 자격
 증명이 없어도 이를 받습니다.&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;user&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;u1234@myaccessid.org&amp;#34;&lt;/span&gt; {}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
@@ -377,8 +348,7 @@ data-copied-label="복사됨!"
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h3 data-hextra-search-id="with-go-authnbridge"&gt;go-authn/bridge를 쓰는 경우&lt;span class="hx:absolute hx:-mt-20" id="with-go-authnbridge"&gt;&lt;/span&gt;
-&lt;a href="#with-go-authnbridge" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;&lt;code&gt;ssh_certificates = true&lt;/code&gt;와 &lt;code&gt;ssh_domain_grants = [&amp;quot;files.example.org&amp;quot;]&lt;/code&gt;를 지정한
-&lt;a href="https://github.com/go-authn/bridge" target="_blank" rel="noopener"&gt;go-authn/bridge&lt;/a&gt; 클라이언트(v0.19.0 이상)는
+&lt;a href="#with-go-authnbridge" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;&lt;code&gt;ssh_certificates = true&lt;/code&gt;와 &lt;code&gt;ssh_domain_grants = [&amp;quot;files.example.org&amp;quot;]&lt;/code&gt;를 지정한&lt;a href="https://github.com/go-authn/bridge" target="_blank" rel="noopener"&gt;go-authn/bridge&lt;/a&gt; 클라이언트(v0.19.0 이상)는
 이 호스트에 부여된 인증서를 발급합니다. &lt;code&gt;ssh_principal_claim = &amp;quot;voperson_id&amp;quot;&lt;/code&gt;로
 하면 유일한 프린시펄은 EFP 프로필과 같이 사용자의 &lt;code&gt;voperson_id&lt;/code&gt;이며, 여기에
 작성할 &lt;code&gt;user&lt;/code&gt; 블록이 바로 그것입니다. bridge의 CA는 이 서버가 다른 CA를 신뢰하는
@@ -386,16 +356,14 @@ data-copied-label="복사됨!"
 &lt;ul&gt;
 &lt;li&gt;로컬 계정용 &lt;code&gt;trusted_user_ca_file&lt;/code&gt;로. bridge는 &lt;code&gt;/ssh/config&lt;/code&gt;에서 EFP 형식으로
 키를 제공하므로, 위의 &lt;code&gt;curl | jq&lt;/code&gt; 행은 bridge의 URL로도 동작합니다.&lt;/li&gt;
-&lt;li&gt;또는 &lt;a href="#people-the-identity-provider-vouches-for"&gt;공급자가 보증하는 사용자&lt;/a&gt;용
-&lt;code&gt;oidc&lt;/code&gt; 블록의 &lt;code&gt;ssh_ca_file&lt;/code&gt;로.&lt;/li&gt;
+&lt;li&gt;또는 &lt;a href="#people-the-identity-provider-vouches-for"&gt;공급자가 보증하는 사용자&lt;/a&gt;용&lt;code&gt;oidc&lt;/code&gt; 블록의 &lt;code&gt;ssh_ca_file&lt;/code&gt;로.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;bridge의 다른 클라이언트는 부여를 기록하지 않습니다. 그 인증서가 여기서 계속
 동작해야 한다면 &lt;code&gt;ssh_accept_ungranted&lt;/code&gt;가 그 용도입니다. 하지만 이는 신뢰하는 모든
 기관의 부여 없는 인증서를 &lt;strong&gt;전부&lt;/strong&gt; 받아들이므로, 해당 클라이언트에 부여를 지급하는
 편이 낫습니다.&lt;/p&gt;
 &lt;h3 data-hextra-search-id="a-certificate-pinned-to-an-address"&gt;주소에 고정된 인증서&lt;span class="hx:absolute hx:-mt-20" id="a-certificate-pinned-to-an-address"&gt;&lt;/span&gt;
-&lt;a href="#a-certificate-pinned-to-an-address" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;bridge의 &lt;code&gt;ssh_source_address&lt;/code&gt;는 &lt;code&gt;ssh-keygen -O source-address=...&lt;/code&gt;와 같이
-&lt;code&gt;source-address&lt;/code&gt; 크리티컬 옵션을 기록합니다. 이를 담은 인증서는 &lt;code&gt;ssh_domains&lt;/code&gt;
+&lt;a href="#a-certificate-pinned-to-an-address" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;bridge의 &lt;code&gt;ssh_source_address&lt;/code&gt;는 &lt;code&gt;ssh-keygen -O source-address=...&lt;/code&gt;와 같이&lt;code&gt;source-address&lt;/code&gt; 크리티컬 옵션을 기록합니다. 이를 담은 인증서는 &lt;code&gt;ssh_domains&lt;/code&gt;
 유무와 관계없이 &lt;strong&gt;그 주소에서만&lt;/strong&gt; 수락됩니다. 인증서가 허용하는 주소에서의
 로그인은 허용되며, &lt;code&gt;ssh_domains&lt;/code&gt;가 설정된 경우 부여가 이 호스트도 지정해야
 합니다. 다른 주소에서의 로그인은 거부됩니다.&lt;/p&gt;
@@ -432,9 +400,7 @@ data-copied-label="복사됨!"
 &lt;/table&gt;
 &lt;p&gt;&amp;ldquo;모든 주소에서 거부&amp;quot;는 fail closed입니다. 인증서의 제한이 완화된 적은 없고
 로그인만 잃었습니다. v0.22.1 이전에는 go-filesystems/sftp의 sshd가 fileshare에
-판단을 넘기는 인증서의 모든 크리티컬 옵션을 거부했으며, 이는 공급자의 인증서,
-OpenPubkey 인증서, 그리고 &lt;code&gt;ssh_domains&lt;/code&gt; 아래에서는 모든 인증서에 해당합니다.
-v0.22.1은 go-filesystems/sftp v0.5.1을 기반으로 하며, 이 sshd는 &lt;code&gt;source-address&lt;/code&gt;를
+판단을 넘기는 인증서의 모든 크리티컬 옵션을 거부했으며, 이는 공급자의 인증서,OpenPubkey 인증서, 그리고 &lt;code&gt;ssh_domains&lt;/code&gt; 아래에서는 모든 인증서에 해당합니다.v0.22.1은 go-filesystems/sftp v0.5.1을 기반으로 하며, 이 sshd는 &lt;code&gt;source-address&lt;/code&gt;를
 받아들이고 모든 인증서 경로에서 연결이 들어오는 주소(IPv4 또는 IPv6)에 대해
 이를 적용합니다.&lt;/p&gt;
 &lt;p&gt;그 밖의 크리티컬 옵션(&lt;code&gt;force-command&lt;/code&gt;, &lt;code&gt;verify-required&lt;/code&gt; 등)은 이 서버가 처리하지
@@ -464,19 +430,15 @@ data-copied-label="복사됨!"
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;공급자의 SSH CA가 서명한 인증서&lt;/strong&gt; — &lt;code&gt;authn-bridge ssh-cert&lt;/code&gt;가 연합을 통한
 로그인 후에 작성합니다. 프린시펄은 사용자이고 &lt;code&gt;groups@go-authn.org&lt;/code&gt; 확장이
-그룹이므로,
-&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;&lt;code&gt;oidc:groups:&lt;/code&gt; 규칙&lt;/a&gt;이
-적용됩니다. 로컬 계정에 관한 인증서를 다루는 &lt;code&gt;trusted_user_ca_file&lt;/code&gt;은 &lt;strong&gt;아닙니다&lt;/strong&gt;.
-로컬 기관의 인증서가 공급자의 그룹을 주장하면 그 인증서가 지정하는 로컬
+그룹이므로,&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;&lt;code&gt;oidc:groups:&lt;/code&gt; 규칙&lt;/a&gt;이
+적용됩니다. 로컬 계정에 관한 인증서를 다루는 &lt;code&gt;trusted_user_ca_file&lt;/code&gt;은 &lt;strong&gt;아닙니다&lt;/strong&gt;.로컬 기관의 인증서가 공급자의 그룹을 주장하면 그 인증서가 지정하는 로컬
 계정으로 해석됩니다.&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;OpenPubkey 인증서&lt;/strong&gt;: &lt;code&gt;opkssh login&lt;/code&gt;이 작성하는 것으로, 사용자 자신의 키로
 서명되며 그 키에 커밋하는 ID 토큰을 가집니다. &lt;code&gt;opkssh verify&lt;/code&gt;가 검사하는
-방식으로 검사합니다.
-&lt;a href="https://github.com/openpubkey/openpubkey" target="_blank" rel="noopener"&gt;openpubkey&lt;/a&gt; 검증기(공급자가 게시한
+방식으로 검사합니다.&lt;a href="https://github.com/openpubkey/openpubkey" target="_blank" rel="noopener"&gt;openpubkey&lt;/a&gt; 검증기(공급자가 게시한
 키에 대한 공급자의 서명, nonce 커밋, 클라이언트 ID, 유효 기간)를 거친 다음
 인증서의 키를 토큰의 키와 대조합니다. SSH 사용자 이름은 토큰의 사용자 이름이어야
-하는데, 둘을 매핑할 &lt;code&gt;auth_id&lt;/code&gt; 파일이 여기에는 없기 때문입니다:
-&lt;code&gt;sftp alice@univ-example.fr@files.example.org&lt;/code&gt;. &lt;code&gt;opkssh_client_id&lt;/code&gt;는 다른
+하는데, 둘을 매핑할 &lt;code&gt;auth_id&lt;/code&gt; 파일이 여기에는 없기 때문입니다:&lt;code&gt;sftp alice@univ-example.fr@files.example.org&lt;/code&gt;. &lt;code&gt;opkssh_client_id&lt;/code&gt;는 다른
 애플리케이션의 것이 아닌 전용 클라이언트 ID여야 합니다. ID 토큰은 사용자가
 로그인하는 모든 서버로 전달되기 때문입니다.&lt;/li&gt;
 &lt;/ul&gt;
@@ -494,8 +456,7 @@ data-copied-label="복사됨!"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;그리고 서버는 연합 로그인이 있을 때마다
-&lt;code&gt;sftp: alice@univ-a.fr, vouched for by the provider, in groups [...]&lt;/code&gt;라고
+&lt;p&gt;그리고 서버는 연합 로그인이 있을 때마다&lt;code&gt;sftp: alice@univ-a.fr, vouched for by the provider, in groups [...]&lt;/code&gt;라고
 알립니다.&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
@@ -503,14 +464,12 @@ data-copied-label="복사됨!"
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;보증받는 것은 허가되는 것이 아닙니다&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;공급자가 보증하는 사용자라도 규칙이 지정하거나, &lt;code&gt;trust_all&lt;/code&gt;이 공급자가 곧
 디렉터리라고 말하거나, &lt;code&gt;local_names = true&lt;/code&gt;가 공급자의 이름이 이 서버의 이름이며
-로컬 계정이 그 이름을 가진다고 말하지 않는 한 여기서는 여전히 낯선 사람입니다.
-WebDAV에서 토큰이 통과하는 것과 같은 검사입니다. &lt;strong&gt;프린시펄이 없는&lt;/strong&gt; 공급자
+로컬 계정이 그 이름을 가진다고 말하지 않는 한 여기서는 여전히 낯선 사람입니다.WebDAV에서 토큰이 통과하는 것과 같은 검사입니다. &lt;strong&gt;프린시펄이 없는&lt;/strong&gt; 공급자
 인증서는 형식 자체의 정의상 &lt;em&gt;누구에게나&lt;/em&gt; 유효하므로 거부됩니다.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;&lt;code&gt;-tags noopenpubkey&lt;/code&gt;는 OpenPubkey 검증기를 제외하며(약 2 MB), 이런 빌드에서
-&lt;code&gt;opkssh_client_id&lt;/code&gt;가 있는 구성은 거부됩니다.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;-tags noopenpubkey&lt;/code&gt;는 OpenPubkey 검증기를 제외하며(약 2 MB), 이런 빌드에서&lt;code&gt;opkssh_client_id&lt;/code&gt;가 있는 구성은 거부됩니다.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="taking-a-certificate-back"&gt;인증서 회수하기&lt;span class="hx:absolute hx:-mt-20" id="taking-a-certificate-back"&gt;&lt;/span&gt;
 &lt;a href="#taking-a-certificate-back" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
@@ -520,8 +479,7 @@ WebDAV에서 토큰이 통과하는 것과 같은 검사입니다. &lt;strong&gt
 않습니다. 인증서는 만료될 때까지 SFTP를 열 수 있고, 이미 열린 SFTP 세션도 그때까지
 열려 있습니다. 이들은 디렉터리에 없으므로 &lt;a href="https://go-fileshare.github.io/docs/0.31/ko/administration/reload/"&gt;다시 불러오기&lt;/a&gt;와
 무관합니다. 그 기간은 인증서의 수명입니다. bridge의 &lt;code&gt;ssh_ca { validity }&lt;/code&gt;(기본값
-12h, 최대 168h, IdP 세션의 종료를 넘지 않음)와 여기의 &lt;code&gt;opkssh_max_age&lt;/code&gt;입니다.
-클라이언트의 재로그인이 허용하는 만큼 짧게 유지하십시오. v0.17.0부터는 이미 열린
+12h, 최대 168h, IdP 세션의 종료를 넘지 않음)와 여기의 &lt;code&gt;opkssh_max_age&lt;/code&gt;입니다.클라이언트의 재로그인이 허용하는 만큼 짧게 유지하십시오. v0.17.0부터는 이미 열린
 opkssh 세션도 인증서(사용자가 직접 서명함)가 무엇이라고 말하든 &lt;code&gt;opkssh_max_age&lt;/code&gt;에
 끝납니다.&lt;/p&gt;
 &lt;/div&gt;
@@ -529,11 +487,9 @@ opkssh 세션도 인증서(사용자가 직접 서명함)가 무엇이라고 말
 &lt;/div&gt;
 &lt;p&gt;그 기간을 닫는 메커니즘은 두 가지입니다.&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;공급자의 &lt;strong&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/security/revocation-lists/"&gt;KRL&lt;/a&gt;&lt;/strong&gt;(&lt;code&gt;ssh_krl_url&lt;/code&gt;):
-폐기된 인증서는 로그인할 때 거부되고, 그 인증서로 연 세션의 모든 작업은 열린
+&lt;li&gt;공급자의 &lt;strong&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/security/revocation-lists/"&gt;KRL&lt;/a&gt;&lt;/strong&gt;(&lt;code&gt;ssh_krl_url&lt;/code&gt;):폐기된 인증서는 로그인할 때 거부되고, 그 인증서로 연 세션의 모든 작업은 열린
 파일을 포함해 목록을 다시 조회합니다.&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/security/shared-signals/"&gt;공유 신호&lt;/a&gt;&lt;/strong&gt;(&lt;code&gt;ssf&lt;/code&gt;): 공급자가 CAEP
-&lt;code&gt;session-revoked&lt;/code&gt; 이전에 해당 사용자에게 발급한 모든 것이 거부됩니다. 어떤
+&lt;li&gt;&lt;strong&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/security/shared-signals/"&gt;공유 신호&lt;/a&gt;&lt;/strong&gt;(&lt;code&gt;ssf&lt;/code&gt;): 공급자가 CAEP&lt;code&gt;session-revoked&lt;/code&gt; 이전에 해당 사용자에게 발급한 모든 것이 거부됩니다. 어떤
 목록에도 없는 OpenPubkey 인증서에 닿는 유일한 방법입니다.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;둘 다 fail closed입니다.&lt;/p&gt;
@@ -541,8 +497,7 @@ opkssh 세션도 인증서(사용자가 직접 서명함)가 무엇이라고 말
 &lt;a href="#no-password" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;비밀번호를 묻는 클라이언트는 키가 피하려고 존재하는 바로 그 일을 하고 있는
 것입니다.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="transfer-size-and-open-files"&gt;전송 크기와 열린 파일&lt;span class="hx:absolute hx:-mt-20" id="transfer-size-and-open-files"&gt;&lt;/span&gt;
-&lt;a href="#transfer-size-and-open-files" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;fileshare는 OpenSSH의 &lt;code&gt;limits@openssh.com&lt;/code&gt;에 응답하므로(v0.25.0부터) OpenSSH의
-&lt;code&gt;sftp&lt;/code&gt;가 요청당 32 KiB 대신 최대 255 KiB를 읽고 씁니다. OpenSSH 10.3으로 측정한
+&lt;a href="#transfer-size-and-open-files" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;fileshare는 OpenSSH의 &lt;code&gt;limits@openssh.com&lt;/code&gt;에 응답하므로(v0.25.0부터) OpenSSH의&lt;code&gt;sftp&lt;/code&gt;가 요청당 32 KiB 대신 최대 255 KiB를 읽고 씁니다. OpenSSH 10.3으로 측정한
 결과 약 +25%입니다. 한 세션은 동시에 최대 1024개의 열린 파일과 디렉터리를 가질 수
 있습니다. 디렉터리 공유에서는 각각이 호스트의 디스크립터이며, 이 상한은 한
 사용자가 모두 소진하는 것을 막습니다.&lt;/p&gt;</description></item></channel></rss>

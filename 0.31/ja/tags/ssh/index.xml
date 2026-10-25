@@ -1,9 +1,5 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Ssh</title><link>https://go-fileshare.github.io/docs/0.31/ja/tags/ssh/</link><description>Recent content in Ssh on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>ja</language><atom:link href="https://go-fileshare.github.io/docs/0.31/ja/tags/ssh/index.xml" rel="self" type="application/rss+xml"/><item><title>SSH 証明書の失効: KRL</title><link>https://go-fileshare.github.io/docs/0.31/ja/security/revocation-lists/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/ja/security/revocation-lists/</guid><description>
-&lt;p&gt;ID プロバイダーの SSH CA が署名した証明書(&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/protocols/sftp/#people-the-identity-provider-vouches-for"&gt;プロバイダーが身元を保証する人のための SFTP&lt;/a&gt;を参照)は、
-ログイン時に検査されます。go-authn/bridge で誰かを無効化すると、そのトークンは失効し、アプリケーション
-パスワードは削除され、それは&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/administration/reload/"&gt;ディレクトリの再読み込み&lt;/a&gt;によってここに
-反映されます。しかしリストがなければ、発行済みの証明書は期限が切れるまで SFTP を開き続け、すでに開いている
-SFTP セッションも開いたままになります。&lt;/p&gt;
+&lt;p&gt;ID プロバイダーの SSH CA が署名した証明書(&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/protocols/sftp/#people-the-identity-provider-vouches-for"&gt;プロバイダーが身元を保証する人のための SFTP&lt;/a&gt;を参照)は、ログイン時に検査されます。go-authn/bridge で誰かを無効化すると、そのトークンは失効し、アプリケーションパスワードは削除され、それは&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/administration/reload/"&gt;ディレクトリの再読み込み&lt;/a&gt;によってここに反映されます。しかしリストがなければ、発行済みの証明書は期限が切れるまで SFTP を開き続け、すでに開いているSFTP セッションも開いたままになります。&lt;/p&gt;
 &lt;p&gt;v0.12.0 以降は、リストがそれを閉じます。&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;oidc&lt;/span&gt; {
@@ -26,13 +22,9 @@ data-copied-label="コピーしました！"
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;p&gt;go-authn/bridge は、失効させた SSH 証明書(無効化された人、無効化された IdP)を OpenSSH の &lt;strong&gt;KRL&lt;/strong&gt;
-(&lt;code&gt;PROTOCOL.krl&lt;/code&gt;、&lt;code&gt;sshd&lt;/code&gt; の &lt;code&gt;RevokedKeys&lt;/code&gt; が読むリスト)として公開し、fileshare はそのコピーを保持して、
-&lt;a href="https://github.com/go-authn/krl" target="_blank" rel="noopener"&gt;go-authn/krl&lt;/a&gt; で読み取ります。&lt;/p&gt;
+(&lt;code&gt;PROTOCOL.krl&lt;/code&gt;、&lt;code&gt;sshd&lt;/code&gt; の &lt;code&gt;RevokedKeys&lt;/code&gt; が読むリスト)として公開し、fileshare はそのコピーを保持して、&lt;a href="https://github.com/go-authn/krl" target="_blank" rel="noopener"&gt;go-authn/krl&lt;/a&gt; で読み取ります。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="refused-at-login-and-in-the-middle-of-a-session"&gt;ログイン時と、セッションの途中で拒否される&lt;span class="hx:absolute hx:-mt-20" id="refused-at-login-and-in-the-middle-of-a-session"&gt;&lt;/span&gt;
-&lt;a href="#refused-at-login-and-in-the-middle-of-a-session" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;失効した証明書はログイン時に拒否され、&lt;strong&gt;それがすでに開いたセッションへの提供も停止されます&lt;/strong&gt;。
-SSH は証明書を、ハンドシェイクで一度だけ検査します。そのため、フェデレーションされた SFTP セッションの
-すべての操作は、&lt;strong&gt;開いているファイルを含めて&lt;/strong&gt;、KRL を再度参照します。このサーバーのリストのコピーが
-変わった後の最初の操作は拒否されます。&lt;/p&gt;
+&lt;a href="#refused-at-login-and-in-the-middle-of-a-session" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;失効した証明書はログイン時に拒否され、&lt;strong&gt;それがすでに開いたセッションへの提供も停止されます&lt;/strong&gt;。SSH は証明書を、ハンドシェイクで一度だけ検査します。そのため、フェデレーションされた SFTP セッションのすべての操作は、&lt;strong&gt;開いているファイルを含めて&lt;/strong&gt;、KRL を再度参照します。このサーバーのリストのコピーが変わった後の最初の操作は拒否されます。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="fields"&gt;フィールド&lt;span class="hx:absolute hx:-mt-20" id="fields"&gt;&lt;/span&gt;
 &lt;a href="#fields" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
 &lt;thead&gt;
@@ -75,72 +67,41 @@ SSH は証明書を、ハンドシェイクで一度だけ検査します。そ�
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;&lt;code&gt;refresh&lt;/code&gt; より短い &lt;code&gt;max_age&lt;/code&gt; は拒否されます。次の取得の前にすべてのコピーが古くなってしまうためです。
-&lt;code&gt;ssh_ca_file&lt;/code&gt; のない KRL も拒否されます。KRL が失効させるのはプロバイダーの証明書であり、その CA がなければ
-証明書が存在しないためです。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;refresh&lt;/code&gt; より短い &lt;code&gt;max_age&lt;/code&gt; は拒否されます。次の取得の前にすべてのコピーが古くなってしまうためです。&lt;code&gt;ssh_ca_file&lt;/code&gt; のない KRL も拒否されます。KRL が失効させるのはプロバイダーの証明書であり、その CA がなければ証明書が存在しないためです。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="it-fails-closed"&gt;フェイルクローズ&lt;span class="hx:absolute hx:-mt-20" id="it-fails-closed"&gt;&lt;/span&gt;
 &lt;a href="#it-fails-closed" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;KRL を取得できない間、プロバイダーの証明書は拒否されます&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;リストを取得できない間、または最後の正常なコピーが &lt;code&gt;ssh_krl_max_age&lt;/code&gt; より古い間は、プロバイダーの CA が署名した
-&lt;strong&gt;すべての&lt;/strong&gt;証明書が拒否されます。リストに到達できないときにすべてを通す失効チェックは、リストを
-ブロックできる攻撃者に破られるものだからです。したがって、リストは、それが管理するログインと同じ信頼性で
-提供されなければなりません。&lt;code&gt;max_age&lt;/code&gt; に達する前にアラートを出す対象のメトリクスは
-&lt;code&gt;fileshare_revocation_list_age_seconds{list=&amp;quot;ssh_krl&amp;quot;}&lt;/code&gt; です。
-&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/administration/health/#what-to-alert-on"&gt;ヘルスチェックとメトリクス&lt;/a&gt;を参照してください。&lt;/p&gt;
+&lt;p&gt;リストを取得できない間、または最後の正常なコピーが &lt;code&gt;ssh_krl_max_age&lt;/code&gt; より古い間は、プロバイダーの CA が署名した&lt;strong&gt;すべての&lt;/strong&gt;証明書が拒否されます。リストに到達できないときにすべてを通す失効チェックは、リストをブロックできる攻撃者に破られるものだからです。したがって、リストは、それが管理するログインと同じ信頼性で提供されなければなりません。&lt;code&gt;max_age&lt;/code&gt; に達する前にアラートを出す対象のメトリクスは&lt;code&gt;fileshare_revocation_list_age_seconds{list=&amp;quot;ssh_krl&amp;quot;}&lt;/code&gt; です。&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/administration/health/#what-to-alert-on"&gt;ヘルスチェックとメトリクス&lt;/a&gt;を参照してください。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="signed-and-dated-from-ssh_krl_url"&gt;署名と日付が必要、&lt;code&gt;ssh_krl_url&lt;/code&gt; から&lt;span class="hx:absolute hx:-mt-20" id="signed-and-dated-from-ssh_krl_url"&gt;&lt;/span&gt;
-&lt;a href="#signed-and-dated-from-ssh_krl_url" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;v0.15.0 以降、&lt;strong&gt;&lt;code&gt;ssh_krl_url&lt;/code&gt; から取得する KRL は、署名されていて、有効期限を示していなければなりません&lt;/strong&gt;。
-これは &lt;a href="https://github.com/go-authn/revocation" target="_blank" rel="noopener"&gt;go-authn/revocation&lt;/a&gt; が説明し、go-authn/bridge が
-v0.10.0 から提供しているものです。&lt;/p&gt;
+&lt;a href="#signed-and-dated-from-ssh_krl_url" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;v0.15.0 以降、&lt;strong&gt;&lt;code&gt;ssh_krl_url&lt;/code&gt; から取得する KRL は、署名されていて、有効期限を示していなければなりません&lt;/strong&gt;。これは &lt;a href="https://github.com/go-authn/revocation" target="_blank" rel="noopener"&gt;go-authn/revocation&lt;/a&gt; が説明し、go-authn/bridge がv0.10.0 から提供しているものです。&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;署名:&lt;/strong&gt; &lt;code&gt;&amp;lt;url&amp;gt;.sig&lt;/code&gt; は、プロバイダーの SSH CA(&lt;code&gt;ssh_ca_file&lt;/code&gt;。そのため &lt;code&gt;ssh_krl_url&lt;/code&gt; にはこれが必須)による、
-名前空間 &lt;code&gt;krl@go-authn.github.io&lt;/code&gt; の分離 SSHSIG 署名です。リストの ETag に対する &lt;code&gt;If-Match&lt;/code&gt; で取得され、
-その間にリストが再発行されていれば、直ちに再取得されます。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;有効期限:&lt;/strong&gt; &lt;code&gt;expires@go-authn.github.io&lt;/code&gt; 拡張。これを過ぎると、&lt;code&gt;304&lt;/code&gt; で直前に確認されていたとしても、
-リストは最新ではありません。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;署名:&lt;/strong&gt; &lt;code&gt;&amp;lt;url&amp;gt;.sig&lt;/code&gt; は、プロバイダーの SSH CA(&lt;code&gt;ssh_ca_file&lt;/code&gt;。そのため &lt;code&gt;ssh_krl_url&lt;/code&gt; にはこれが必須)による、名前空間 &lt;code&gt;krl@go-authn.github.io&lt;/code&gt; の分離 SSHSIG 署名です。リストの ETag に対する &lt;code&gt;If-Match&lt;/code&gt; で取得され、その間にリストが再発行されていれば、直ちに再取得されます。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;有効期限:&lt;/strong&gt; &lt;code&gt;expires@go-authn.github.io&lt;/code&gt; 拡張。これを過ぎると、&lt;code&gt;304&lt;/code&gt; で直前に確認されていたとしても、リストは最新ではありません。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;HTTPS(&lt;code&gt;ssh_krl_ca_file&lt;/code&gt; で認証局を固定)が認証するのは、応答したサーバーであって、リストではありません。
-ミラー、キャッシュ、または侵害された Web サーバーが空のリストを返す可能性があり、KRL だけでは
-それが古いことを示すものは何もありません。検証できないリストは拒否され、最後の正常なコピーが保持されます。
-&lt;code&gt;ssh_krl_file&lt;/code&gt; で手動で置いたリストは、それを保持するファイルシステムと同じだけ信頼され、署名も有効期限も
-不要です。リストが持っているものは尊重されます。&lt;/p&gt;
+&lt;p&gt;HTTPS(&lt;code&gt;ssh_krl_ca_file&lt;/code&gt; で認証局を固定)が認証するのは、応答したサーバーであって、リストではありません。ミラー、キャッシュ、または侵害された Web サーバーが空のリストを返す可能性があり、KRL だけではそれが古いことを示すものは何もありません。検証できないリストは拒否され、最後の正常なコピーが保持されます。&lt;code&gt;ssh_krl_file&lt;/code&gt; で手動で置いたリストは、それを保持するファイルシステムと同じだけ信頼され、署名も有効期限も不要です。リストが持っているものは尊重されます。&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;v0.15.0 へのアップグレード&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;署名なしの KRL、または有効期限のない KRL を提供する &lt;code&gt;ssh_krl_url&lt;/code&gt; は、もう受け付けられません。
-入手できないリストと同様に、プロバイダーの証明書は拒否されます。先に go-authn/bridge v0.10.0 以降を
-実行してください。&lt;/p&gt;
+&lt;p&gt;署名なしの KRL、または有効期限のない KRL を提供する &lt;code&gt;ssh_krl_url&lt;/code&gt; は、もう受け付けられません。入手できないリストと同様に、プロバイダーの証明書は拒否されます。先に go-authn/bridge v0.10.0 以降を実行してください。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="never-backwards-across-a-restart-too"&gt;決して巻き戻らない、再起動をまたいでも&lt;span class="hx:absolute hx:-mt-20" id="never-backwards-across-a-restart-too"&gt;&lt;/span&gt;
-&lt;a href="#never-backwards-across-a-restart-too" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;v0.16.0 以降、保持しているものより古いリスト、つまりバージョン(KRL のバージョン、CRL の番号)が低いもの、
-または同じバージョンでより早く発行されたものは拒否されます。&lt;code&gt;ssh_krl_state_file&lt;/code&gt;
-(&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/security/nfs-certificates/#revocation-the-crl"&gt;NFS&lt;/a&gt;では &lt;code&gt;crl_state_file&lt;/code&gt;)を指定すると、
-検証に成功した最後のリストがディスクに保持され、起動時に再検証されて、次のリストの順序を決めます。
-これだけでは、リストが取得されるまで最新とは見なされません。これがなければ、再起動で順序が忘れられ、
-fileshare は起動時にそのことを伝えます。署名があり期限切れでない古いリストが受け入れられてしまうからです。&lt;/p&gt;
-&lt;p&gt;これらのファイルは、&lt;code&gt;ssh_ca_file&lt;/code&gt;、CA ファイル、リストファイル、そして(v0.17.0 以降)&lt;code&gt;authorized_keys_file&lt;/code&gt;、
-&lt;code&gt;dsn_file&lt;/code&gt;、&lt;code&gt;bind_password_file&lt;/code&gt;、&lt;code&gt;ssf&lt;/code&gt; の &lt;code&gt;ca_file&lt;/code&gt; と同様に、&lt;strong&gt;共有の内側に置いてはいけません&lt;/strong&gt;。そこに書き込める人が、
-誰が入れるかを決めることになるからです。&lt;/p&gt;
+&lt;a href="#never-backwards-across-a-restart-too" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;v0.16.0 以降、保持しているものより古いリスト、つまりバージョン(KRL のバージョン、CRL の番号)が低いもの、または同じバージョンでより早く発行されたものは拒否されます。&lt;code&gt;ssh_krl_state_file&lt;/code&gt;
+(&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/security/nfs-certificates/#revocation-the-crl"&gt;NFS&lt;/a&gt;では &lt;code&gt;crl_state_file&lt;/code&gt;)を指定すると、検証に成功した最後のリストがディスクに保持され、起動時に再検証されて、次のリストの順序を決めます。これだけでは、リストが取得されるまで最新とは見なされません。これがなければ、再起動で順序が忘れられ、fileshare は起動時にそのことを伝えます。署名があり期限切れでない古いリストが受け入れられてしまうからです。&lt;/p&gt;
+&lt;p&gt;これらのファイルは、&lt;code&gt;ssh_ca_file&lt;/code&gt;、CA ファイル、リストファイル、そして(v0.17.0 以降)&lt;code&gt;authorized_keys_file&lt;/code&gt;、&lt;code&gt;dsn_file&lt;/code&gt;、&lt;code&gt;bind_password_file&lt;/code&gt;、&lt;code&gt;ssf&lt;/code&gt; の &lt;code&gt;ca_file&lt;/code&gt; と同様に、&lt;strong&gt;共有の内側に置いてはいけません&lt;/strong&gt;。そこに書き込める人が、誰が入れるかを決めることになるからです。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="a-plain-sshd-next-to-fileshare"&gt;fileshare と並ぶ通常の &lt;code&gt;sshd&lt;/code&gt;&lt;span class="hx:absolute hx:-mt-20" id="a-plain-sshd-next-to-fileshare"&gt;&lt;/span&gt;
-&lt;a href="#a-plain-sshd-next-to-fileshare" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;同じ検証は fileshare なしでも利用できます。go-authn/revocation の &lt;code&gt;authn-revokd&lt;/code&gt; がリストを取得し、検証に成功した
-ものだけを保持し、その順序をディスクに保存し、&lt;code&gt;sshd&lt;/code&gt; 用の &lt;code&gt;RevokedKeys&lt;/code&gt; を書き出します。リストが失効すると、
-CA 自体を失効させるものを書き出すため、&lt;code&gt;sshd&lt;/code&gt; もフェイルクローズになります。&lt;/p&gt;
+&lt;a href="#a-plain-sshd-next-to-fileshare" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;同じ検証は fileshare なしでも利用できます。go-authn/revocation の &lt;code&gt;authn-revokd&lt;/code&gt; がリストを取得し、検証に成功したものだけを保持し、その順序をディスクに保存し、&lt;code&gt;sshd&lt;/code&gt; 用の &lt;code&gt;RevokedKeys&lt;/code&gt; を書き出します。リストが失効すると、CA 自体を失効させるものを書き出すため、&lt;code&gt;sshd&lt;/code&gt; もフェイルクローズになります。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="what-it-does-not-cover"&gt;対象外のもの&lt;span class="hx:absolute hx:-mt-20" id="what-it-does-not-cover"&gt;&lt;/span&gt;
-&lt;a href="#what-it-does-not-cover" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;OpenPubkey(opkssh)証明書は、どの KRL にも載りません。&lt;/strong&gt; 発行したのは本人の鍵だけだからです。
-それらは &lt;code&gt;opkssh_max_age&lt;/code&gt; で制限され、&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/security/shared-signals/"&gt;共有シグナル&lt;/a&gt;で取り消されます。
-WebDAV のアクセストークンも同様です。&lt;/p&gt;
-&lt;p&gt;同じ仕組み(取得し、保持し、フェイルクローズ)が、&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/security/nfs-certificates/#revocation-the-crl"&gt;証明書による NFS の ID&lt;/a&gt;の
-&lt;strong&gt;X.509 CRL&lt;/strong&gt; も運びます。&lt;/p&gt;</description></item><item><title>SFTP — 鍵、または証明書</title><link>https://go-fileshare.github.io/docs/0.31/ja/protocols/sftp/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/ja/protocols/sftp/</guid><description>
-&lt;p&gt;どのクライアントにも最初から備わっています。&lt;code&gt;sftp&lt;/code&gt; は OpenSSH に同梱され、Finder や GNOME はこれを
-マウントでき、エディターもこれを話します。同時に、ここにあるプロトコルのうち唯一、形が合わないものでもあります。
-人はログインすると、共有の一覧ではなく&lt;strong&gt;1 つの&lt;/strong&gt;ファイルシステムに着地するからです。&lt;/p&gt;
+&lt;a href="#what-it-does-not-cover" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;OpenPubkey(opkssh)証明書は、どの KRL にも載りません。&lt;/strong&gt; 発行したのは本人の鍵だけだからです。それらは &lt;code&gt;opkssh_max_age&lt;/code&gt; で制限され、&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/security/shared-signals/"&gt;共有シグナル&lt;/a&gt;で取り消されます。WebDAV のアクセストークンも同様です。&lt;/p&gt;
+&lt;p&gt;同じ仕組み(取得し、保持し、フェイルクローズ)が、&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/security/nfs-certificates/#revocation-the-crl"&gt;証明書による NFS の ID&lt;/a&gt;の&lt;strong&gt;X.509 CRL&lt;/strong&gt; も運びます。&lt;/p&gt;</description></item><item><title>SFTP — 鍵、または証明書</title><link>https://go-fileshare.github.io/docs/0.31/ja/protocols/sftp/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/ja/protocols/sftp/</guid><description>
+&lt;p&gt;どのクライアントにも最初から備わっています。&lt;code&gt;sftp&lt;/code&gt; は OpenSSH に同梱され、Finder や GNOME はこれをマウントでき、エディターもこれを話します。同時に、ここにあるプロトコルのうち唯一、形が合わないものでもあります。人はログインすると、共有の一覧ではなく&lt;strong&gt;1 つの&lt;/strong&gt;ファイルシステムに着地するからです。&lt;/p&gt;
 &lt;p&gt;そこで、共有は、認証したばかりの人のために構築されたツリーのトップレベルのディレクトリになります。&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;pre&gt;&lt;code&gt;$ sftp -i ~/.ssh/id_ed25519 -P 2222 alice@attic
@@ -159,14 +120,12 @@ data-copied-label="コピーしました！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;alice が利用できない共有は、&lt;strong&gt;alice に見えるディレクトリではありません&lt;/strong&gt;。また、読み取りしか
-許されていない共有への書き込みは、それを許してしまうはずのドライバーより手前の、&lt;em&gt;ツリーの中で&lt;/em&gt;拒否されます。&lt;/p&gt;
+&lt;p&gt;alice が利用できない共有は、&lt;strong&gt;alice に見えるディレクトリではありません&lt;/strong&gt;。また、読み取りしか許されていない共有への書き込みは、それを許してしまうはずのドライバーより手前の、&lt;em&gt;ツリーの中で&lt;/em&gt;拒否されます。&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;2 つの共有にまたがる名前変更は拒否されます&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;それは 2 つのイメージにまたがるコピーと削除になりますが、名前変更が約束するのはどこでもそのようなことでは
-ありません。&lt;/p&gt;
+&lt;p&gt;それは 2 つのイメージにまたがるコピーと削除になりますが、名前変更が約束するのはどこでもそのようなことではありません。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -191,27 +150,20 @@ data-copied-label="コピーしました！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;&lt;code&gt;trusted_user_ca_file&lt;/code&gt; を指定すると、その認証局が署名し、プリンシパルにそのユーザーを含む証明書だけで
-十分になります。そのため、人のアクセス権は&lt;strong&gt;別の場所で発行され、別の場所で失効&lt;/strong&gt;し、人が加わったり
-去ったりしても、ここのファイルを編集する必要はありません。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;trusted_user_ca_file&lt;/code&gt; を指定すると、その認証局が署名し、プリンシパルにそのユーザーを含む証明書だけで十分になります。そのため、人のアクセス権は&lt;strong&gt;別の場所で発行され、別の場所で失効&lt;/strong&gt;し、人が加わったり去ったりしても、ここのファイルを編集する必要はありません。&lt;/p&gt;
 &lt;p&gt;署名、有効期間、プリンシパルは &lt;code&gt;x/crypto/ssh&lt;/code&gt; の &lt;code&gt;CertChecker&lt;/code&gt; が検査します。&lt;strong&gt;OpenSSH 自身のクライアント&lt;/strong&gt;
 で検証されており、証明書を脇に移すと、同じ鍵も拒否されることも確認されています。&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;host_key_file&lt;/code&gt; がないと、起動のたびに新しい ID が生成されます&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;サーバーはそのことを伝え、以前にそのサーバーを見たことのあるクライアントはすべて、鍵が変わったと警告します。
-それはクライアントがその役割を果たしているということです。&lt;/p&gt;
+&lt;p&gt;サーバーはそのことを伝え、以前にそのサーバーを見たことのあるクライアントはすべて、鍵が変わったと警告します。それはクライアントがその役割を果たしているということです。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="certificates-meant-for-this-host-the-domain-grant"&gt;このホスト向けの証明書: ドメイン付与&lt;span class="hx:absolute hx:-mt-20" id="certificates-meant-for-this-host-the-domain-grant"&gt;&lt;/span&gt;
 &lt;a href="#certificates-meant-for-this-host-the-domain-grant" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;v0.22.0 以降。&lt;a href="https://integration.docs.my-eurohpc.eu/aai/ssh-ca-overview/" target="_blank" rel="noopener"&gt;EuroHPC Federation Platform の SSH CA&lt;/a&gt;
-(GÉANT / MyAccessID)は、フェデレーションのすべてのサイトが信頼する証明書に署名します。各証明書は、
-どのホスト向けかを &lt;code&gt;ssh-domain-grant@core.aai.geant.org&lt;/code&gt; 拡張で示します。sshd はこの拡張を無視し、
-fileshare も v0.22.0 までは無視していたため、他人のマシン向けに付与された証明書もここで通用していました。
-&lt;code&gt;ssh_domains&lt;/code&gt; を指定すると、付与は仕様どおりに &lt;a href="https://github.com/go-authn/sshcert" target="_blank" rel="noopener"&gt;go-authn/sshcert&lt;/a&gt; が
-読み取り、解析し、照合します。付与がこのホストの名前を 1 つも指していない証明書は拒否されます。&lt;/p&gt;
+(GÉANT / MyAccessID)は、フェデレーションのすべてのサイトが信頼する証明書に署名します。各証明書は、どのホスト向けかを &lt;code&gt;ssh-domain-grant@core.aai.geant.org&lt;/code&gt; 拡張で示します。sshd はこの拡張を無視し、fileshare も v0.22.0 までは無視していたため、他人のマシン向けに付与された証明書もここで通用していました。&lt;code&gt;ssh_domains&lt;/code&gt; を指定すると、付与は仕様どおりに &lt;a href="https://github.com/go-authn/sshcert" target="_blank" rel="noopener"&gt;go-authn/sshcert&lt;/a&gt; が読み取り、解析し、照合します。付与がこのホストの名前を 1 つも指していない証明書は拒否されます。&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;trusted_user_ca_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/efp-ssh-ca.pub&amp;#34;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;ssh_domains&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;files.example.org&amp;#34;, &amp;#34;sftp.example.org&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
@@ -281,11 +233,7 @@ data-copied-label="コピーしました！"
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;&lt;code&gt;ssh_domains&lt;/code&gt; がなければ、何も読み取られず、何も変わりません。付与が読み取られるのは、&lt;strong&gt;認証局&lt;/strong&gt;が
-署名した証明書、つまり &lt;code&gt;trusted_user_ca_file&lt;/code&gt; のものとプロバイダー(&lt;code&gt;ssh_ca_file&lt;/code&gt;)のものです。
-OpenPubkey 証明書はユーザー自身の鍵で署名されているため、その中の付与はユーザー自身についての
-本人の言葉にすぎません。そのオーディエンスは代わりに &lt;code&gt;opkssh_client_id&lt;/code&gt; です。通常の鍵は付与を
-持たないので、対象外です。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;ssh_domains&lt;/code&gt; がなければ、何も読み取られず、何も変わりません。付与が読み取られるのは、&lt;strong&gt;認証局&lt;/strong&gt;が署名した証明書、つまり &lt;code&gt;trusted_user_ca_file&lt;/code&gt; のものとプロバイダー(&lt;code&gt;ssh_ca_file&lt;/code&gt;)のものです。OpenPubkey 証明書はユーザー自身の鍵で署名されているため、その中の付与はユーザー自身についての本人の言葉にすぎません。そのオーディエンスは代わりに &lt;code&gt;opkssh_client_id&lt;/code&gt; です。通常の鍵は付与を持たないので、対象外です。&lt;/p&gt;
 &lt;p&gt;拒否のたびに、証明書のシリアル番号、鍵 ID、理由がログに記録されます。&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;pre&gt;&lt;code&gt;sftp: alice: certificate 42 (&amp;#34;alice@efp&amp;#34;) refused: its domain grant [login.example.eu] names none of this host&amp;#39;s names [files.example.org sftp.example.org]
@@ -301,30 +249,18 @@ data-copied-label="コピーしました！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;各判定は &lt;code&gt;fileshare_sftp_domain_grant_total{result}&lt;/code&gt; にも数えられ、結果は &lt;code&gt;granted&lt;/code&gt;、
-&lt;code&gt;accepted_ungranted&lt;/code&gt;、&lt;code&gt;refused_not_granted&lt;/code&gt;、&lt;code&gt;refused_absent&lt;/code&gt;、&lt;code&gt;refused_malformed&lt;/code&gt; のいずれかです。
-クライアントは、鍵を持っていることを証明する前に証明書を提示するため、これが数えるのは人ではなく
-試行です。&lt;/p&gt;
+&lt;p&gt;各判定は &lt;code&gt;fileshare_sftp_domain_grant_total{result}&lt;/code&gt; にも数えられ、結果は &lt;code&gt;granted&lt;/code&gt;、&lt;code&gt;accepted_ungranted&lt;/code&gt;、&lt;code&gt;refused_not_granted&lt;/code&gt;、&lt;code&gt;refused_absent&lt;/code&gt;、&lt;code&gt;refused_malformed&lt;/code&gt; のいずれかです。クライアントは、鍵を持っていることを証明する前に証明書を提示するため、これが数えるのは人ではなく試行です。&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;フェイルクローズである理由&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;2 つ目の認証局を信頼するホストを考えてみてください。スタッフ用の自前の CA、テスト用の CA、同じファイルに
-追加された EFP のステージング CA、付与のない go-authn/bridge クライアントなどです。これらの認証局の証明書には
-付与がありません。付与がないことが「制限なし」を意味するなら、そのホストではフィルターが何もフィルターしません。&lt;/p&gt;
-&lt;p&gt;ここでは、付与のない証明書は、&lt;code&gt;ssh_accept_ungranted&lt;/code&gt; が別の指定をしない限り拒否されます。付与が存在しても
-解析できない場合は、その内容にかかわらず拒否されます。付与を書いた認証局は、証明書を制限するつもりだった
-からです。go-authn/sshcert は
-&lt;a href="https://github.com/go-authn/sshcert#why-fail-closed-the-multi-ca-scenario" target="_blank" rel="noopener"&gt;複数 CA のシナリオ&lt;/a&gt;を
-詳しく説明しています。&lt;/p&gt;
+&lt;p&gt;2 つ目の認証局を信頼するホストを考えてみてください。スタッフ用の自前の CA、テスト用の CA、同じファイルに追加された EFP のステージング CA、付与のない go-authn/bridge クライアントなどです。これらの認証局の証明書には付与がありません。付与がないことが「制限なし」を意味するなら、そのホストではフィルターが何もフィルターしません。&lt;/p&gt;
+&lt;p&gt;ここでは、付与のない証明書は、&lt;code&gt;ssh_accept_ungranted&lt;/code&gt; が別の指定をしない限り拒否されます。付与が存在しても解析できない場合は、その内容にかかわらず拒否されます。付与を書いた認証局は、証明書を制限するつもりだったからです。go-authn/sshcert は&lt;a href="https://github.com/go-authn/sshcert#why-fail-closed-the-multi-ca-scenario" target="_blank" rel="noopener"&gt;複数 CA のシナリオ&lt;/a&gt;を詳しく説明しています。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h3 data-hextra-search-id="with-efps-ca"&gt;EFP の CA を使う&lt;span class="hx:absolute hx:-mt-20" id="with-efps-ca"&gt;&lt;/span&gt;
-&lt;a href="#with-efps-ca" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;&lt;code&gt;trusted_user_ca_file&lt;/code&gt; は OpenSSH の &lt;code&gt;TrustedUserCAKeys&lt;/code&gt; です。EFP の
-&lt;a href="https://integration.docs.my-eurohpc.eu/aai/ssh-ca-trust/" target="_blank" rel="noopener"&gt;信頼のページ&lt;/a&gt;にあるとおり、
-&lt;a href="https://sshca.my-eurohpc.eu/config" target="_blank" rel="noopener"&gt;https://sshca.my-eurohpc.eu/config&lt;/a&gt; で EFP が公開している鍵を入れます。
-その URL は &lt;code&gt;{&amp;quot;PublicKey&amp;quot;: &amp;quot;ssh-ed25519 ...&amp;quot;}&lt;/code&gt; を返し、ファイルには &lt;code&gt;PublicKey&lt;/code&gt; の値を 1 行に書きます。&lt;/p&gt;
+&lt;a href="#with-efps-ca" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;&lt;code&gt;trusted_user_ca_file&lt;/code&gt; は OpenSSH の &lt;code&gt;TrustedUserCAKeys&lt;/code&gt; です。EFP の&lt;a href="https://integration.docs.my-eurohpc.eu/aai/ssh-ca-trust/" target="_blank" rel="noopener"&gt;信頼のページ&lt;/a&gt;にあるとおり、&lt;a href="https://sshca.my-eurohpc.eu/config" target="_blank" rel="noopener"&gt;https://sshca.my-eurohpc.eu/config&lt;/a&gt; で EFP が公開している鍵を入れます。その URL は &lt;code&gt;{&amp;quot;PublicKey&amp;quot;: &amp;quot;ssh-ed25519 ...&amp;quot;}&lt;/code&gt; を返し、ファイルには &lt;code&gt;PublicKey&lt;/code&gt; の値を 1 行に書きます。&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;curl -s https://sshca.my-eurohpc.eu/config &lt;span class="p"&gt;|&lt;/span&gt; jq -r &lt;span class="s1"&gt;&amp;#39;.PublicKey&amp;#39;&lt;/span&gt; &amp;gt; /etc/fileshare/efp-ssh-ca.pub&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
 &lt;button
@@ -338,9 +274,7 @@ data-copied-label="コピーしました！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;そのうえで、&lt;code&gt;ssh_domains&lt;/code&gt; に、ホスティング機関の付与が使う名前を設定します。EFP 証明書の唯一のプリンシパルは
-MyAccessID の識別子(&lt;code&gt;&amp;lt;id&amp;gt;@myaccessid.org&lt;/code&gt;)であり、それがログインに使うユーザー名になります。
-その名前の &lt;code&gt;user&lt;/code&gt; ブロックが、自前の認証情報を持たなくても、これを受け付けます。&lt;/p&gt;
+&lt;p&gt;そのうえで、&lt;code&gt;ssh_domains&lt;/code&gt; に、ホスティング機関の付与が使う名前を設定します。EFP 証明書の唯一のプリンシパルはMyAccessID の識別子(&lt;code&gt;&amp;lt;id&amp;gt;@myaccessid.org&lt;/code&gt;)であり、それがログインに使うユーザー名になります。その名前の &lt;code&gt;user&lt;/code&gt; ブロックが、自前の認証情報を持たなくても、これを受け付けます。&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;user&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;u1234@myaccessid.org&amp;#34;&lt;/span&gt; {}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
 &lt;button
@@ -355,25 +289,15 @@ data-copied-label="コピーしました！"
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h3 data-hextra-search-id="with-go-authnbridge"&gt;go-authn/bridge を使う&lt;span class="hx:absolute hx:-mt-20" id="with-go-authnbridge"&gt;&lt;/span&gt;
-&lt;a href="#with-go-authnbridge" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;&lt;code&gt;ssh_certificates = true&lt;/code&gt; と &lt;code&gt;ssh_domain_grants = [&amp;quot;files.example.org&amp;quot;]&lt;/code&gt; を指定した
-&lt;a href="https://github.com/go-authn/bridge" target="_blank" rel="noopener"&gt;go-authn/bridge&lt;/a&gt; クライアント(v0.19.0 以降)は、
-このホスト向けに付与された証明書を発行します。&lt;code&gt;ssh_principal_claim = &amp;quot;voperson_id&amp;quot;&lt;/code&gt; を指定すると、
-唯一のプリンシパルは EFP プロファイルと同様に人の &lt;code&gt;voperson_id&lt;/code&gt; になり、それがここに書く &lt;code&gt;user&lt;/code&gt; ブロックです。
-bridge の CA は、このサーバーが他の CA を信頼するのと同じ方法で信頼します。&lt;/p&gt;
+&lt;a href="#with-go-authnbridge" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;&lt;code&gt;ssh_certificates = true&lt;/code&gt; と &lt;code&gt;ssh_domain_grants = [&amp;quot;files.example.org&amp;quot;]&lt;/code&gt; を指定した&lt;a href="https://github.com/go-authn/bridge" target="_blank" rel="noopener"&gt;go-authn/bridge&lt;/a&gt; クライアント(v0.19.0 以降)は、このホスト向けに付与された証明書を発行します。&lt;code&gt;ssh_principal_claim = &amp;quot;voperson_id&amp;quot;&lt;/code&gt; を指定すると、唯一のプリンシパルは EFP プロファイルと同様に人の &lt;code&gt;voperson_id&lt;/code&gt; になり、それがここに書く &lt;code&gt;user&lt;/code&gt; ブロックです。bridge の CA は、このサーバーが他の CA を信頼するのと同じ方法で信頼します。&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;ローカルアカウント向けには &lt;code&gt;trusted_user_ca_file&lt;/code&gt; として。bridge は &lt;code&gt;/ssh/config&lt;/code&gt; で EFP 形式の鍵を提供するので、
-上の &lt;code&gt;curl | jq&lt;/code&gt; の行は bridge の URL でも使えます。&lt;/li&gt;
-&lt;li&gt;または、&lt;a href="#people-the-identity-provider-vouches-for"&gt;プロバイダーが身元を保証する人&lt;/a&gt;向けには、
-&lt;code&gt;oidc&lt;/code&gt; ブロックの &lt;code&gt;ssh_ca_file&lt;/code&gt; として。&lt;/li&gt;
+&lt;li&gt;ローカルアカウント向けには &lt;code&gt;trusted_user_ca_file&lt;/code&gt; として。bridge は &lt;code&gt;/ssh/config&lt;/code&gt; で EFP 形式の鍵を提供するので、上の &lt;code&gt;curl | jq&lt;/code&gt; の行は bridge の URL でも使えます。&lt;/li&gt;
+&lt;li&gt;または、&lt;a href="#people-the-identity-provider-vouches-for"&gt;プロバイダーが身元を保証する人&lt;/a&gt;向けには、&lt;code&gt;oidc&lt;/code&gt; ブロックの &lt;code&gt;ssh_ca_file&lt;/code&gt; として。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;bridge の他のクライアントは付与を書きません。それらの証明書をここで使い続ける必要があるなら、
-そのための設定が &lt;code&gt;ssh_accept_ungranted&lt;/code&gt; です。ただしこれは、信頼されたすべての認証局の付与のない証明書を
-&lt;strong&gt;すべて&lt;/strong&gt;受け入れてしまうため、それらのクライアントに付与を持たせるほうが望ましい方法です。&lt;/p&gt;
+&lt;p&gt;bridge の他のクライアントは付与を書きません。それらの証明書をここで使い続ける必要があるなら、そのための設定が &lt;code&gt;ssh_accept_ungranted&lt;/code&gt; です。ただしこれは、信頼されたすべての認証局の付与のない証明書を&lt;strong&gt;すべて&lt;/strong&gt;受け入れてしまうため、それらのクライアントに付与を持たせるほうが望ましい方法です。&lt;/p&gt;
 &lt;h3 data-hextra-search-id="a-certificate-pinned-to-an-address"&gt;アドレスに固定された証明書&lt;span class="hx:absolute hx:-mt-20" id="a-certificate-pinned-to-an-address"&gt;&lt;/span&gt;
-&lt;a href="#a-certificate-pinned-to-an-address" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;bridge の &lt;code&gt;ssh_source_address&lt;/code&gt; は、&lt;code&gt;ssh-keygen -O source-address=...&lt;/code&gt; と同様に &lt;code&gt;source-address&lt;/code&gt; クリティカル
-オプションを書き込みます。これを持つ証明書は、&lt;code&gt;ssh_domains&lt;/code&gt; の有無にかかわらず、&lt;strong&gt;それらのアドレスからのみ&lt;/strong&gt;
-受け入れられます。証明書が許可するアドレスからのログインは、&lt;code&gt;ssh_domains&lt;/code&gt; が設定されている場合はその付与が
-このホストも名指ししている限り受け入れられます。それ以外のアドレスからのログインは拒否されます。&lt;/p&gt;
+&lt;a href="#a-certificate-pinned-to-an-address" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;bridge の &lt;code&gt;ssh_source_address&lt;/code&gt; は、&lt;code&gt;ssh-keygen -O source-address=...&lt;/code&gt; と同様に &lt;code&gt;source-address&lt;/code&gt; クリティカルオプションを書き込みます。これを持つ証明書は、&lt;code&gt;ssh_domains&lt;/code&gt; の有無にかかわらず、&lt;strong&gt;それらのアドレスからのみ&lt;/strong&gt;
+受け入れられます。証明書が許可するアドレスからのログインは、&lt;code&gt;ssh_domains&lt;/code&gt; が設定されている場合はその付与がこのホストも名指ししている限り受け入れられます。それ以外のアドレスからのログインは拒否されます。&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
@@ -405,17 +329,10 @@ bridge の CA は、このサーバーが他の CA を信頼するのと同じ�
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;「すべてのアドレスから拒否」はフェイルクローズです。証明書の制限が緩められたことはなく、失われたのは
-ログインだけです。v0.22.1 より前、go-filesystems/sftp の sshd は、fileshare に判断を委ねる証明書に
-クリティカルオプションがあるとすべて拒否していました。これはプロバイダーの証明書、OpenPubkey の証明書、
-そして &lt;code&gt;ssh_domains&lt;/code&gt; の下ではすべての証明書に該当します。v0.22.1 は go-filesystems/sftp v0.5.1 を土台に
-しており、その sshd はそこで &lt;code&gt;source-address&lt;/code&gt; を受け入れ、すべての証明書の経路で、接続元のアドレス
-(IPv4 または IPv6)に対して適用します。&lt;/p&gt;
-&lt;p&gt;その他のクリティカルオプション(&lt;code&gt;force-command&lt;/code&gt;、&lt;code&gt;verify-required&lt;/code&gt; など)は、このサーバーが
-対応しないため拒否されます。&lt;/p&gt;
+&lt;p&gt;「すべてのアドレスから拒否」はフェイルクローズです。証明書の制限が緩められたことはなく、失われたのはログインだけです。v0.22.1 より前、go-filesystems/sftp の sshd は、fileshare に判断を委ねる証明書にクリティカルオプションがあるとすべて拒否していました。これはプロバイダーの証明書、OpenPubkey の証明書、そして &lt;code&gt;ssh_domains&lt;/code&gt; の下ではすべての証明書に該当します。v0.22.1 は go-filesystems/sftp v0.5.1 を土台にしており、その sshd はそこで &lt;code&gt;source-address&lt;/code&gt; を受け入れ、すべての証明書の経路で、接続元のアドレス(IPv4 または IPv6)に対して適用します。&lt;/p&gt;
+&lt;p&gt;その他のクリティカルオプション(&lt;code&gt;force-command&lt;/code&gt;、&lt;code&gt;verify-required&lt;/code&gt; など)は、このサーバーが対応しないため拒否されます。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="people-the-identity-provider-vouches-for"&gt;ID プロバイダーが身元を保証する人&lt;span class="hx:absolute hx:-mt-20" id="people-the-identity-provider-vouches-for"&gt;&lt;/span&gt;
-&lt;a href="#people-the-identity-provider-vouches-for" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;v0.11.0 以降、&lt;code&gt;oidc&lt;/code&gt; ブロックは SFTP にも届きます。SSH にはトークンを載せる場所がないため、
-トークンではなく&lt;strong&gt;証明書&lt;/strong&gt;によってです。&lt;/p&gt;
+&lt;a href="#people-the-identity-provider-vouches-for" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;v0.11.0 以降、&lt;code&gt;oidc&lt;/code&gt; ブロックは SFTP にも届きます。SSH にはトークンを載せる場所がないため、トークンではなく&lt;strong&gt;証明書&lt;/strong&gt;によってです。&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;oidc&lt;/span&gt; {
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; issuer&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://login.example.org&amp;#34;&lt;/span&gt;
@@ -436,19 +353,8 @@ data-copied-label="コピーしました！"
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;プロバイダーの SSH CA が署名した証明書&lt;/strong&gt;。&lt;code&gt;authn-bridge ssh-cert&lt;/code&gt; が、フェデレーションでの
-ログイン後に書き込みます。プリンシパルがその人で、&lt;code&gt;groups@go-authn.org&lt;/code&gt; 拡張がそのグループなので、
-&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;&lt;code&gt;oidc:groups:&lt;/code&gt; ルール&lt;/a&gt;が適用されます。
-これはローカルアカウントのための証明書を扱う &lt;code&gt;trusted_user_ca_file&lt;/code&gt; では&lt;strong&gt;ありません&lt;/strong&gt;。ローカルの認証局の
-証明書がプロバイダーのグループを名乗っても、名指ししているローカルアカウントとして読まれます。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;OpenPubkey 証明書&lt;/strong&gt;。&lt;code&gt;opkssh login&lt;/code&gt; が書き込むもので、ユーザー自身の鍵で署名され、その鍵にコミットする
-ID トークンを伴います。&lt;code&gt;opkssh verify&lt;/code&gt; と同じ方法で検査されます。つまり
-&lt;a href="https://github.com/openpubkey/openpubkey" target="_blank" rel="noopener"&gt;openpubkey&lt;/a&gt; の検証器(プロバイダーの署名を公開鍵に対して、
-nonce のコミットメント、クライアント ID、経過時間)、続いて証明書の鍵をトークンに対して検証します。
-SSH のユーザー名はトークンのユーザー名でなければなりません。ここには両者を対応付ける &lt;code&gt;auth_id&lt;/code&gt; ファイルが
-ないためです。&lt;code&gt;sftp alice@univ-example.fr@files.example.org&lt;/code&gt; のようになります。
-&lt;code&gt;opkssh_client_id&lt;/code&gt; は専用のクライアント ID にし、他のアプリケーションのものを使ってはいけません。
-ID トークンは、その人がログインするすべてのサーバーに渡されるためです。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;プロバイダーの SSH CA が署名した証明書&lt;/strong&gt;。&lt;code&gt;authn-bridge ssh-cert&lt;/code&gt; が、フェデレーションでのログイン後に書き込みます。プリンシパルがその人で、&lt;code&gt;groups@go-authn.org&lt;/code&gt; 拡張がそのグループなので、&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;&lt;code&gt;oidc:groups:&lt;/code&gt; ルール&lt;/a&gt;が適用されます。これはローカルアカウントのための証明書を扱う &lt;code&gt;trusted_user_ca_file&lt;/code&gt; では&lt;strong&gt;ありません&lt;/strong&gt;。ローカルの認証局の証明書がプロバイダーのグループを名乗っても、名指ししているローカルアカウントとして読まれます。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;OpenPubkey 証明書&lt;/strong&gt;。&lt;code&gt;opkssh login&lt;/code&gt; が書き込むもので、ユーザー自身の鍵で署名され、その鍵にコミットするID トークンを伴います。&lt;code&gt;opkssh verify&lt;/code&gt; と同じ方法で検査されます。つまり&lt;a href="https://github.com/openpubkey/openpubkey" target="_blank" rel="noopener"&gt;openpubkey&lt;/a&gt; の検証器(プロバイダーの署名を公開鍵に対して、nonce のコミットメント、クライアント ID、経過時間)、続いて証明書の鍵をトークンに対して検証します。SSH のユーザー名はトークンのユーザー名でなければなりません。ここには両者を対応付ける &lt;code&gt;auth_id&lt;/code&gt; ファイルがないためです。&lt;code&gt;sftp alice@univ-example.fr@files.example.org&lt;/code&gt; のようになります。&lt;code&gt;opkssh_client_id&lt;/code&gt; は専用のクライアント ID にし、他のアプリケーションのものを使ってはいけません。ID トークンは、その人がログインするすべてのサーバーに渡されるためです。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;証明書が運ぶグループを確認するには、次のようにします。&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
@@ -464,51 +370,32 @@ data-copied-label="コピーしました！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;また、サーバーはフェデレーションされたログインのたびに
-&lt;code&gt;sftp: alice@univ-a.fr, vouched for by the provider, in groups [...]&lt;/code&gt; と出力します。&lt;/p&gt;
+&lt;p&gt;また、サーバーはフェデレーションされたログインのたびに&lt;code&gt;sftp: alice@univ-a.fr, vouched for by the provider, in groups [...]&lt;/code&gt; と出力します。&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;身元が保証されることは、受け入れられることではありません&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;プロバイダーが身元を保証する人であっても、ルールが名指ししているか、&lt;code&gt;trust_all&lt;/code&gt; でプロバイダーがそのまま
-ディレクトリだと明示しているか、&lt;code&gt;local_names = true&lt;/code&gt; でプロバイダーの名前がこのサーバーの名前であり
-ローカルアカウントが同じ名前を持つと明示していない限り、ここでは依然として部外者です。これは WebDAV で
-トークンが通過するのと同じ検査です。&lt;strong&gt;プリンシパルがない&lt;/strong&gt;プロバイダーの証明書は、形式の定義上
-&lt;em&gt;誰にでも&lt;/em&gt;有効であるため、拒否されます。&lt;/p&gt;
+&lt;p&gt;プロバイダーが身元を保証する人であっても、ルールが名指ししているか、&lt;code&gt;trust_all&lt;/code&gt; でプロバイダーがそのままディレクトリだと明示しているか、&lt;code&gt;local_names = true&lt;/code&gt; でプロバイダーの名前がこのサーバーの名前でありローカルアカウントが同じ名前を持つと明示していない限り、ここでは依然として部外者です。これは WebDAV でトークンが通過するのと同じ検査です。&lt;strong&gt;プリンシパルがない&lt;/strong&gt;プロバイダーの証明書は、形式の定義上&lt;em&gt;誰にでも&lt;/em&gt;有効であるため、拒否されます。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;&lt;code&gt;-tags noopenpubkey&lt;/code&gt; は OpenPubkey の検証器を除外します(約 2 MB)。そのようなビルドで
-&lt;code&gt;opkssh_client_id&lt;/code&gt; を指定した設定は拒否されます。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;-tags noopenpubkey&lt;/code&gt; は OpenPubkey の検証器を除外します(約 2 MB)。そのようなビルドで&lt;code&gt;opkssh_client_id&lt;/code&gt; を指定した設定は拒否されます。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="taking-a-certificate-back"&gt;証明書を取り消す&lt;span class="hx:absolute hx:-mt-20" id="taking-a-certificate-back"&gt;&lt;/span&gt;
 &lt;a href="#taking-a-certificate-back" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;証明書はログイン時に検査されます&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;プロバイダーでその人を失効させても、それだけでは発行済みの証明書は失効しません。証明書は期限が切れるまで
-SFTP を開き、すでに開いている SFTP セッションもそれまで開いたままです。これらの人はディレクトリにいないため、
-&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/administration/reload/"&gt;再読み込み&lt;/a&gt;の対象にはなりません。この期間は証明書の有効期間で、
-bridge の &lt;code&gt;ssh_ca { validity }&lt;/code&gt;(既定では 12h、最大 168h、IdP セッションの終了を超えない)と、
-ここでの &lt;code&gt;opkssh_max_age&lt;/code&gt; です。クライアントの再ログインが許す範囲で、できるだけ短くしてください。
-v0.17.0 以降は、すでに開いている opkssh セッションも、証明書(本人が自分で署名するもの)が何と言おうと、
-&lt;code&gt;opkssh_max_age&lt;/code&gt; で終了します。&lt;/p&gt;
+&lt;p&gt;プロバイダーでその人を失効させても、それだけでは発行済みの証明書は失効しません。証明書は期限が切れるまでSFTP を開き、すでに開いている SFTP セッションもそれまで開いたままです。これらの人はディレクトリにいないため、&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/administration/reload/"&gt;再読み込み&lt;/a&gt;の対象にはなりません。この期間は証明書の有効期間で、bridge の &lt;code&gt;ssh_ca { validity }&lt;/code&gt;(既定では 12h、最大 168h、IdP セッションの終了を超えない)と、ここでの &lt;code&gt;opkssh_max_age&lt;/code&gt; です。クライアントの再ログインが許す範囲で、できるだけ短くしてください。v0.17.0 以降は、すでに開いている opkssh セッションも、証明書(本人が自分で署名するもの)が何と言おうと、&lt;code&gt;opkssh_max_age&lt;/code&gt; で終了します。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;p&gt;この期間を閉じる仕組みが 2 つあります。&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;プロバイダーの &lt;strong&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/security/revocation-lists/"&gt;KRL&lt;/a&gt;&lt;/strong&gt;(&lt;code&gt;ssh_krl_url&lt;/code&gt;):
-失効した証明書はログイン時に拒否され、その証明書が開いたセッションのすべての操作が、開いているファイルを
-含めてリストを再度参照します。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/security/shared-signals/"&gt;共有シグナル&lt;/a&gt;&lt;/strong&gt;(&lt;code&gt;ssf&lt;/code&gt;): CAEP の
-&lt;code&gt;session-revoked&lt;/code&gt; より前にプロバイダーがその人に発行したすべてのものが拒否されます。
-どのリストにも載らない OpenPubkey 証明書に到達できる唯一の方法です。&lt;/li&gt;
+&lt;li&gt;プロバイダーの &lt;strong&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/security/revocation-lists/"&gt;KRL&lt;/a&gt;&lt;/strong&gt;(&lt;code&gt;ssh_krl_url&lt;/code&gt;):失効した証明書はログイン時に拒否され、その証明書が開いたセッションのすべての操作が、開いているファイルを含めてリストを再度参照します。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/security/shared-signals/"&gt;共有シグナル&lt;/a&gt;&lt;/strong&gt;(&lt;code&gt;ssf&lt;/code&gt;): CAEP の&lt;code&gt;session-revoked&lt;/code&gt; より前にプロバイダーがその人に発行したすべてのものが拒否されます。どのリストにも載らない OpenPubkey 証明書に到達できる唯一の方法です。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;どちらもフェイルクローズです。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="no-password"&gt;パスワードなし&lt;span class="hx:absolute hx:-mt-20" id="no-password"&gt;&lt;/span&gt;
 &lt;a href="#no-password" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;パスワードを尋ねるクライアントは、鍵が避けるために存在するものそのものを行っています。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="transfer-size-and-open-files"&gt;転送サイズと開いているファイル&lt;span class="hx:absolute hx:-mt-20" id="transfer-size-and-open-files"&gt;&lt;/span&gt;
-&lt;a href="#transfer-size-and-open-files" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;fileshare は OpenSSH の &lt;code&gt;limits@openssh.com&lt;/code&gt; に応答する(v0.25.0 以降)ため、OpenSSH の &lt;code&gt;sftp&lt;/code&gt; は
-1 リクエストあたり 32 KiB ではなく最大 255 KiB を読み書きします。OpenSSH 10.3 での計測で約 +25% です。
-1 つのセッションが同時に保持できる開いたファイルとディレクトリは最大 1024 で、ディレクトリ共有では
-それぞれがホストのディスクリプターであり、この上限によって 1 人のユーザーがそのすべてを使い切るのを防ぎます。&lt;/p&gt;</description></item></channel></rss>
+&lt;a href="#transfer-size-and-open-files" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;fileshare は OpenSSH の &lt;code&gt;limits@openssh.com&lt;/code&gt; に応答する(v0.25.0 以降)ため、OpenSSH の &lt;code&gt;sftp&lt;/code&gt; は1 リクエストあたり 32 KiB ではなく最大 255 KiB を読み書きします。OpenSSH 10.3 での計測で約 +25% です。1 つのセッションが同時に保持できる開いたファイルとディレクトリは最大 1024 で、ディレクトリ共有ではそれぞれがホストのディスクリプターであり、この上限によって 1 人のユーザーがそのすべてを使い切るのを防ぎます。&lt;/p&gt;</description></item></channel></rss>

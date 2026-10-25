@@ -107,13 +107,9 @@ ohne sie startet, tut nicht, was sie sagt.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;&lt;code&gt;nogrpc&lt;/code&gt; lässt die Admin-API weg und mit ihr den
-&lt;a href="https://go-fileshare.github.io/docs/0.31/de/administration/volumes/"&gt;Provisioner&lt;/a&gt;. &lt;a href="https://go-fileshare.github.io/docs/0.31/de/administration/health/"&gt;Health und Metriken&lt;/a&gt;
+&lt;p&gt;&lt;code&gt;nogrpc&lt;/code&gt; lässt die Admin-API weg und mit ihr den&lt;a href="https://go-fileshare.github.io/docs/0.31/de/administration/volumes/"&gt;Provisioner&lt;/a&gt;. &lt;a href="https://go-fileshare.github.io/docs/0.31/de/administration/health/"&gt;Health und Metriken&lt;/a&gt;
 sind reines HTTP und bleiben.&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;-tags noprovisioner&lt;/code&gt; lässt nur den Provisioner weg, die privilegierte Rolle
-&lt;code&gt;fileshare provisioner&lt;/code&gt;, und mit ihr zfs, btrfs und projquota von go-fsctl:
-Ein Server, der nie Volumes bereitstellt, muss den Code, der sie anlegt, nicht mitschleppen.
-&lt;code&gt;fileshare provisioner&lt;/code&gt; sagt in einem solchen Build genau das, statt „unknown command&amp;quot;.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;-tags noprovisioner&lt;/code&gt; lässt nur den Provisioner weg, die privilegierte Rolle&lt;code&gt;fileshare provisioner&lt;/code&gt;, und mit ihr zfs, btrfs und projquota von go-fsctl:Ein Server, der nie Volumes bereitstellt, muss den Code, der sie anlegt, nicht mitschleppen.&lt;code&gt;fileshare provisioner&lt;/code&gt; sagt in einem solchen Build genau das, statt „unknown command&amp;quot;.&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;nosql&lt;/code&gt; ist mit Abstand der größte Hebel: PostgreSQL, MySQL und SQLite
 wiegen zusammen &lt;strong&gt;11,7 MB&lt;/strong&gt;, mehr als alle Protokolle dieses Programms
 zusammen. Eine Installation, deren Benutzer in der Datei stehen, will es. Die Treiber werden
@@ -125,8 +121,7 @@ Wahl zu einem Build-Tag statt zu einem Fork.&lt;/p&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Ein Protokoll, ohne das dieses Binary gebaut wurde&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;Eine Konfiguration, die eines nennt, erfährt &lt;em&gt;genau das&lt;/em&gt;, statt „es gibt kein solches
 Protokoll&amp;quot; – der Unterschied zwischen einem Tippfehler und einem Build-Tag. Dasselbe gilt
-für &lt;code&gt;opkssh_client_id&lt;/code&gt; unter &lt;code&gt;noopenpubkey&lt;/code&gt; und einen &lt;code&gt;admin&lt;/code&gt;-Block unter
-&lt;code&gt;nogrpc&lt;/code&gt;.&lt;/p&gt;
+für &lt;code&gt;opkssh_client_id&lt;/code&gt; unter &lt;code&gt;noopenpubkey&lt;/code&gt; und einen &lt;code&gt;admin&lt;/code&gt;-Block unter&lt;code&gt;nogrpc&lt;/code&gt;.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -140,5 +135,4 @@ mitbringen.&lt;/p&gt;
 ausführen: &lt;strong&gt;Code, der nie kompiliert wurde, ist nicht erreichbar&lt;/strong&gt;, ob in einer Sandbox oder nicht.&lt;/p&gt;
 &lt;p&gt;Was Tags &lt;em&gt;nicht&lt;/em&gt; bieten, ist Isolierung zwischen den Protokollen, die Sie &lt;strong&gt;tatsächlich&lt;/strong&gt; ausführen, noch
 eine Möglichkeit, ein Protokoll ohne Neukompilieren hinzuzufügen. Beides ist real, und beides sind
-Argumente für eine Prozessgrenze statt für ein kleineres Binary – und das ist
-&lt;a href="https://go-fileshare.github.io/docs/0.31/de/operations/isolation/"&gt;ein Prozess pro Protokoll&lt;/a&gt;, mit genau diesem Binary, kein Plugin-Framework.&lt;/p&gt;</description></item></channel></rss>
+Argumente für eine Prozessgrenze statt für ein kleineres Binary – und das ist&lt;a href="https://go-fileshare.github.io/docs/0.31/de/operations/isolation/"&gt;ein Prozess pro Protokoll&lt;/a&gt;, mit genau diesem Binary, kein Plugin-Framework.&lt;/p&gt;</description></item></channel></rss>

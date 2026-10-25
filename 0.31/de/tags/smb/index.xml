@@ -16,19 +16,15 @@ data-copied-label="Kopiert!"
 Nachweis. Die Freigabe teilt einer lesenden Person mit, dass sie nur liest – in der Zugriffsmaske, bevor sie
 es versucht, statt durch einen später fehlschlagenden Schreibvorgang.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="what-a-directory-must-hold"&gt;Was ein Verzeichnis enthalten muss&lt;span class="hx:absolute hx:-mt-20" id="what-a-directory-must-hold"&gt;&lt;/span&gt;
-&lt;a href="#what-a-directory-must-hold" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;NTLMv2 braucht das Passwort selbst oder seinen MD4-Hash (&lt;code&gt;sambaNTPassword&lt;/code&gt;, eine &lt;code&gt;nt_hash&lt;/code&gt;-Spalte).
-&lt;strong&gt;Nichts anderes genügt.&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;Ein Verzeichnis, das Passwörter nur &lt;em&gt;prüft&lt;/em&gt; – ein LDAP-Bind, eine bcrypt-Spalte –,
-kann SMB nicht beantworten, wie gut die Prüfung auch sein mag, weil der Server denselben
+&lt;a href="#what-a-directory-must-hold" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;NTLMv2 braucht das Passwort selbst oder seinen MD4-Hash (&lt;code&gt;sambaNTPassword&lt;/code&gt;, eine &lt;code&gt;nt_hash&lt;/code&gt;-Spalte).&lt;strong&gt;Nichts anderes genügt.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Ein Verzeichnis, das Passwörter nur &lt;em&gt;prüft&lt;/em&gt; – ein LDAP-Bind, eine bcrypt-Spalte –,kann SMB nicht beantworten, wie gut die Prüfung auch sein mag, weil der Server denselben
 Nachweis berechnen muss wie der Client. Das ist eine Eigenschaft des Protokolls, keine
 Einschränkung dieses Programms.&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/de/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt; gibt für eine solche Person ein &lt;code&gt;-&lt;/code&gt; in der SMB-Spalte aus,
-zum Zeitpunkt der Konfiguration, statt sie es erst beim Einhängen
+&lt;p&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/de/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt; gibt für eine solche Person ein &lt;code&gt;-&lt;/code&gt; in der SMB-Spalte aus,zum Zeitpunkt der Konfiguration, statt sie es erst beim Einhängen
 entdecken zu lassen.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="a-privileged-port-without-a-privileged-server"&gt;Ein privilegierter Port ohne privilegierten Server&lt;span class="hx:absolute hx:-mt-20" id="a-privileged-port-without-a-privileged-server"&gt;&lt;/span&gt;
 &lt;a href="#a-privileged-port-without-a-privileged-server" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Unter &lt;a href="https://go-fileshare.github.io/docs/0.31/de/operations/isolation/"&gt;&lt;code&gt;--isolate&lt;/code&gt;&lt;/a&gt; bindet unter Unix der Elternprozess Port 445
-und übergibt den Listener an den Kindprozess, sodass der Prozess, der tatsächlich SMB spricht,
-das Privileg nie braucht. Windows hat keine &lt;code&gt;ExtraFiles&lt;/code&gt;, daher bindet dort der Kindprozess
+und übergibt den Listener an den Kindprozess, sodass der Prozess, der tatsächlich SMB spricht,das Privileg nie braucht. Windows hat keine &lt;code&gt;ExtraFiles&lt;/code&gt;, daher bindet dort der Kindprozess
 die Adresse selbst; die Isolierung ist dieselbe, die Hälfte mit dem privilegierten Port
 nicht.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="verified-against-a-client-this-project-did-not-write"&gt;Geprüft mit einem Client, den dieses Projekt nicht geschrieben hat&lt;span class="hx:absolute hx:-mt-20" id="verified-against-a-client-this-project-did-not-write"&gt;&lt;/span&gt;
@@ -40,8 +36,6 @@ liest zurück, was WebDAV geschrieben hat.&lt;/p&gt;
 &lt;a href="#when-the-people-change" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;SMB legt fest, wer sich mit einer Freigabe verbinden darf, &lt;strong&gt;wenn die Freigabe hinzugefügt wird&lt;/strong&gt;, und prüft das
 einmal pro Tree Connect. Wer also neu ist und von einem &lt;a href="https://go-fileshare.github.io/docs/0.31/de/administration/reload/"&gt;Neuladen des Verzeichnisses&lt;/a&gt;
 gefunden wird, wird an Ort und Stelle hinzugefügt, einschließlich des laufenden SMB-Servers, ohne dass eine Verbindung
-angetastet wird; alles hingegen, was entzogen wird – eine Person, Zugangsdaten, die expandierten Listen einer Freigabe –,
-ist eine neue Generation, und die offenen SMB-Verbindungen werden geschlossen, sodass ein
+angetastet wird; alles hingegen, was entzogen wird – eine Person, Zugangsdaten, die expandierten Listen einer Freigabe –,ist eine neue Generation, und die offenen SMB-Verbindungen werden geschlossen, sodass ein
 Widerruf die bereits offenen Sitzungen erreicht. Eine Freigabe, deren &lt;code&gt;allow&lt;/code&gt;-Gruppe sich
-geleert hat, wird &lt;strong&gt;überhaupt nicht über SMB angeboten&lt;/strong&gt;: Ihr leeres &lt;code&gt;AllowUsers&lt;/code&gt; würde als
-„alle“ gelesen.&lt;/p&gt;</description></item></channel></rss>
+geleert hat, wird &lt;strong&gt;überhaupt nicht über SMB angeboten&lt;/strong&gt;: Ihr leeres &lt;code&gt;AllowUsers&lt;/code&gt; würde als„alle“ gelesen.&lt;/p&gt;</description></item></channel></rss>

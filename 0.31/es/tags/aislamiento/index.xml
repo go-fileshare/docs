@@ -79,13 +79,11 @@ data-copied-label="¡Copiado!"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;&lt;code&gt;protocols = [...]&lt;/code&gt; en un recurso compartido es útil por sí mismo, no solo con
-&lt;code&gt;--isolate&lt;/code&gt;: un recurso compartido declarado solo SMB es un recurso compartido del
+&lt;p&gt;&lt;code&gt;protocols = [...]&lt;/code&gt; en un recurso compartido es útil por sí mismo, no solo con&lt;code&gt;--isolate&lt;/code&gt;: un recurso compartido declarado solo SMB es un recurso compartido del
 que nunca se informa al proceso WebDAV. Un bloque &lt;code&gt;serve&lt;/code&gt; que acabaría sin servir
 nada también se rechaza, antes de abrir ninguna imagen, nombrando los recursos
 compartidos que se le retiraron y por qué.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="not-with-an-admin-or-a-metrics-block-yet"&gt;Todavía no con un bloque &lt;code&gt;admin&lt;/code&gt; o &lt;code&gt;metrics&lt;/code&gt;&lt;span class="hx:absolute hx:-mt-20" id="not-with-an-admin-or-a-metrics-block-yet"&gt;&lt;/span&gt;
-&lt;a href="#not-with-an-admin-or-a-metrics-block-yet" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;--isolate&lt;/code&gt; junto con un bloque &lt;a href="https://go-fileshare.github.io/docs/0.31/es/administration/"&gt;&lt;code&gt;admin&lt;/code&gt;&lt;/a&gt; o
-&lt;a href="https://go-fileshare.github.io/docs/0.31/es/administration/health/"&gt;&lt;code&gt;metrics&lt;/code&gt;&lt;/a&gt; se rechaza: los hijos abren las
+&lt;a href="#not-with-an-admin-or-a-metrics-block-yet" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;--isolate&lt;/code&gt; junto con un bloque &lt;a href="https://go-fileshare.github.io/docs/0.31/es/administration/"&gt;&lt;code&gt;admin&lt;/code&gt;&lt;/a&gt; o&lt;a href="https://go-fileshare.github.io/docs/0.31/es/administration/health/"&gt;&lt;code&gt;metrics&lt;/code&gt;&lt;/a&gt; se rechaza: los hijos abren las
 imágenes y el padre no abre nada, así que no hay un único proceso al que se pueda
 aplicar un cambio de la API, ni cuya disponibilidad pueda consultar una sonda.&lt;/p&gt;</description></item></channel></rss>

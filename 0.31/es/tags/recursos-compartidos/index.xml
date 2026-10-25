@@ -1,18 +1,12 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Recursos Compartidos</title><link>https://go-fileshare.github.io/docs/0.31/es/tags/recursos-compartidos/</link><description>Recent content in Recursos Compartidos on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>es</language><atom:link href="https://go-fileshare.github.io/docs/0.31/es/tags/recursos-compartidos/index.xml" rel="self" type="application/rss+xml"/><item><title>Recursos compartidos: imágenes, dispositivos, directorios</title><link>https://go-fileshare.github.io/docs/0.31/es/configuration/shares/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/es/configuration/shares/</guid><description>
-&lt;p&gt;Un recurso compartido sirve una de tres cosas: una &lt;strong&gt;imagen de disco&lt;/strong&gt;, un nodo de
-&lt;strong&gt;dispositivo&lt;/strong&gt;, o un &lt;strong&gt;directorio del host&lt;/strong&gt;. Una imagen y un dispositivo contienen
+&lt;p&gt;Un recurso compartido sirve una de tres cosas: una &lt;strong&gt;imagen de disco&lt;/strong&gt;, un nodo de&lt;strong&gt;dispositivo&lt;/strong&gt;, o un &lt;strong&gt;directorio del host&lt;/strong&gt;. Una imagen y un dispositivo contienen
 un sistema de archivos que este programa lee por sí mismo; un directorio es del
 propio host.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="an-image-and-the-filesystem-inside-it"&gt;Una imagen, y el sistema de archivos que contiene&lt;span class="hx:absolute hx:-mt-20" id="an-image-and-the-filesystem-inside-it"&gt;&lt;/span&gt;
-&lt;a href="#an-image-and-the-filesystem-inside-it" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;El sistema de archivos de una imagen &lt;strong&gt;se deduce en lugar de declararse&lt;/strong&gt;.
-&lt;a href="https://github.com/go-filesystems/detect" target="_blank" rel="noopener"&gt;&lt;code&gt;go-filesystems/detect&lt;/code&gt;&lt;/a&gt; lee el número
-mágico y devuelve el controlador que le corresponde: &lt;strong&gt;fat32, exfat, ext4, ntfs, ufs,
-iso9660, squashfs o hfsplus&lt;/strong&gt;, todos los controladores de una misma forma,
-&lt;code&gt;OpenReader(io.ReaderAt, int64)&lt;/code&gt;, un sistema de archivos en el desplazamiento cero.&lt;/p&gt;
+&lt;a href="#an-image-and-the-filesystem-inside-it" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;El sistema de archivos de una imagen &lt;strong&gt;se deduce en lugar de declararse&lt;/strong&gt;.&lt;a href="https://github.com/go-filesystems/detect" target="_blank" rel="noopener"&gt;&lt;code&gt;go-filesystems/detect&lt;/code&gt;&lt;/a&gt; lee el número
+mágico y devuelve el controlador que le corresponde: &lt;strong&gt;fat32, exfat, ext4, ntfs, ufs,iso9660, squashfs o hfsplus&lt;/strong&gt;, todos los controladores de una misma forma,&lt;code&gt;OpenReader(io.ReaderAt, int64)&lt;/code&gt;, un sistema de archivos en el desplazamiento cero.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="the-four-that-cannot-be-sniffed"&gt;Los cuatro que no se pueden detectar&lt;span class="hx:absolute hx:-mt-20" id="the-four-that-cannot-be-sniffed"&gt;&lt;/span&gt;
-&lt;a href="#the-four-that-cannot-be-sniffed" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;apfs, btrfs, xfs y zfs&lt;/strong&gt; abren cada uno una imagen de &lt;em&gt;disco&lt;/em&gt; y eligen una
-&lt;strong&gt;partición&lt;/strong&gt;, así que no hay número mágico que encontrar en el desplazamiento cero.
-El recurso compartido indica cuál:&lt;/p&gt;
+&lt;a href="#the-four-that-cannot-be-sniffed" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;apfs, btrfs, xfs y zfs&lt;/strong&gt; abren cada uno una imagen de &lt;em&gt;disco&lt;/em&gt; y eligen una&lt;strong&gt;partición&lt;/strong&gt;, así que no hay número mágico que encontrar en el desplazamiento cero.El recurso compartido indica cuál:&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;photos&amp;#34;&lt;/span&gt; {
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/disk.img&amp;#34;&lt;/span&gt;
@@ -107,8 +101,7 @@ indica como qué se le pidió abrirla.&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;filesystem&lt;/code&gt; se acepta también para los detectables, y entonces se comparan ambos: un
 recurso compartido que dice &lt;code&gt;ext4&lt;/code&gt; sobre una imagen FAT32 se rechaza con &lt;em&gt;the share
 says ext4 and the image holds fat32&lt;/em&gt;. Así es como un sitio rechaza una detección
-errónea en vez de descubrirla más tarde.
-&lt;a href="https://go-fileshare.github.io/docs/0.31/es/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt; marca con un asterisco un controlador
+errónea en vez de descubrirla más tarde.&lt;a href="https://go-fileshare.github.io/docs/0.31/es/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt; marca con un asterisco un controlador
 nombrado, porque esa fila no se reconoció: se afirmó.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="a-device-not-only-an-image"&gt;Un dispositivo, no solo una imagen&lt;span class="hx:absolute hx:-mt-20" id="a-device-not-only-an-image"&gt;&lt;/span&gt;
 &lt;a href="#a-device-not-only-an-image" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
@@ -126,10 +119,8 @@ data-copied-label="¡Copiado!"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;&lt;strong&gt;No interviene ningún privilegio.&lt;/strong&gt; Aquí no se monta nada —los controladores de
-&lt;a href="https://github.com/go-filesystems" target="_blank" rel="noopener"&gt;&lt;code&gt;go-filesystems&lt;/code&gt;&lt;/a&gt; leen ext4, xfs y los demás en
-espacio de usuario—, así que no hay &lt;code&gt;mount(2)&lt;/code&gt; y, por tanto, tampoco
-&lt;code&gt;CAP_SYS_ADMIN&lt;/code&gt;. Abrir un dispositivo es un &lt;code&gt;open(2)&lt;/code&gt; corriente, regido por los
+&lt;p&gt;&lt;strong&gt;No interviene ningún privilegio.&lt;/strong&gt; Aquí no se monta nada —los controladores de&lt;a href="https://github.com/go-filesystems" target="_blank" rel="noopener"&gt;&lt;code&gt;go-filesystems&lt;/code&gt;&lt;/a&gt; leen ext4, xfs y los demás en
+espacio de usuario—, así que no hay &lt;code&gt;mount(2)&lt;/code&gt; y, por tanto, tampoco&lt;code&gt;CAP_SYS_ADMIN&lt;/code&gt;. Abrir un dispositivo es un &lt;code&gt;open(2)&lt;/code&gt; corriente, regido por los
 permisos del nodo:&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
@@ -155,8 +146,7 @@ permisos del nodo:&lt;/p&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;Un rechazo indica qué grupo, en lugar de &lt;code&gt;permission denied&lt;/code&gt;: la respuesta nunca es
-&lt;code&gt;sudo&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Un rechazo indica qué grupo, en lugar de &lt;code&gt;permission denied&lt;/code&gt;: la respuesta nunca es&lt;code&gt;sudo&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;⛔ &lt;strong&gt;Un recurso compartido de dispositivo es de solo lectura&lt;/strong&gt;, por la misma razón
 que un recurso compartido que eligió una partición: escribir en un disco en uso no es
 una decisión que tomar en su nombre.&lt;/p&gt;
@@ -228,8 +218,7 @@ particiones distintas de una misma imagen de disco.&lt;/p&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Fuera del bloqueo de imagen&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;Un controlador de imagen posee un único archivo y no promete nada sobre dos
-llamadas a la vez, y por eso &lt;a href="https://go-fileshare.github.io/docs/0.31/es/operations/locking/"&gt;cada imagen se envuelve en un bloqueo&lt;/a&gt;.
-Un árbol del host es del núcleo, que serializa lo que hay que serializar en
+llamadas a la vez, y por eso &lt;a href="https://go-fileshare.github.io/docs/0.31/es/operations/locking/"&gt;cada imagen se envuelve en un bloqueo&lt;/a&gt;.Un árbol del host es del núcleo, que serializa lo que hay que serializar en
 cada llamada y nada más; un mutex delante de cada archivo de cada cliente
 sería lo más lento que puede hacer un servidor de archivos.&lt;/p&gt;
 &lt;/div&gt;

@@ -183,12 +183,8 @@
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Upgrading to v0.21.0&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;A &lt;strong&gt;full directory share&lt;/strong&gt; answers differently. &lt;code&gt;EDQUOT&lt;/code&gt; (a quota) and
-&lt;code&gt;ENOSPC&lt;/code&gt; are now one error, &amp;ldquo;no space left on device (the share is full)&amp;rdquo;,
-on every directory share, not only volumes: an &lt;code&gt;EDQUOT&lt;/code&gt; that was WebDAV
-&lt;code&gt;500&lt;/code&gt; and NFS &lt;code&gt;NFS3ERR_IO&lt;/code&gt; is now &lt;code&gt;507&lt;/code&gt; and &lt;code&gt;NFS3ERR_NOSPC&lt;/code&gt;, and SFTP&amp;rsquo;s text
-is that sentence, without the path. SMB still answers access denied. See
-&lt;a href="https://go-fileshare.github.io/docs/0.31/administration/volumes/#a-full-share"&gt;a full share&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;A &lt;strong&gt;full directory share&lt;/strong&gt; answers differently. &lt;code&gt;EDQUOT&lt;/code&gt; (a quota) and&lt;code&gt;ENOSPC&lt;/code&gt; are now one error, &amp;ldquo;no space left on device (the share is full)&amp;rdquo;,on every directory share, not only volumes: an &lt;code&gt;EDQUOT&lt;/code&gt; that was WebDAV&lt;code&gt;500&lt;/code&gt; and NFS &lt;code&gt;NFS3ERR_IO&lt;/code&gt; is now &lt;code&gt;507&lt;/code&gt; and &lt;code&gt;NFS3ERR_NOSPC&lt;/code&gt;, and SFTP&amp;rsquo;s text
+is that sentence, without the path. SMB still answers access denied. See&lt;a href="https://go-fileshare.github.io/docs/0.31/administration/volumes/#a-full-share"&gt;a full share&lt;/a&gt;.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -197,8 +193,7 @@ is that sentence, without the path. SMB still answers access denied. See
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Upgrading to v0.20.0&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;The provider&amp;rsquo;s &lt;code&gt;alice&lt;/code&gt; no longer gets the local &lt;code&gt;alice&lt;/code&gt;&amp;rsquo;s shares. A site
-whose provider&amp;rsquo;s names are its local names adds &lt;code&gt;local_names = true&lt;/code&gt; to the
-&lt;code&gt;oidc&lt;/code&gt; block (and sets &lt;code&gt;domains&lt;/code&gt;); the server logs that line for each name
+whose provider&amp;rsquo;s names are its local names adds &lt;code&gt;local_names = true&lt;/code&gt; to the&lt;code&gt;oidc&lt;/code&gt; block (and sets &lt;code&gt;domains&lt;/code&gt;); the server logs that line for each name
 it refuses for want of it.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -207,8 +202,7 @@ it refuses for want of it.&lt;/p&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Upgrading to v0.19.0&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;A &lt;code&gt;users &amp;quot;ldap&amp;quot;&lt;/code&gt; block pointing at &lt;code&gt;ldap://&lt;/code&gt; on another machine without
-&lt;code&gt;start_tls = true&lt;/code&gt; &lt;strong&gt;no longer starts&lt;/strong&gt;: use &lt;code&gt;ldaps://&lt;/code&gt;, or StartTLS.&lt;/p&gt;
+&lt;p&gt;A &lt;code&gt;users &amp;quot;ldap&amp;quot;&lt;/code&gt; block pointing at &lt;code&gt;ldap://&lt;/code&gt; on another machine without&lt;code&gt;start_tls = true&lt;/code&gt; &lt;strong&gt;no longer starts&lt;/strong&gt;: use &lt;code&gt;ldaps://&lt;/code&gt;, or StartTLS.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -216,9 +210,7 @@ it refuses for want of it.&lt;/p&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Upgrading to v0.17.0&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;A configuration with one share inside another, two shares on one source,
-or an access file (&lt;code&gt;authorized_keys_file&lt;/code&gt;, &lt;code&gt;dsn_file&lt;/code&gt;, &lt;code&gt;bind_password_file&lt;/code&gt;,
-the &lt;code&gt;ssf&lt;/code&gt; &lt;code&gt;ca_file&lt;/code&gt;) inside a share &lt;strong&gt;no longer starts&lt;/strong&gt;; the error names
+&lt;p&gt;A configuration with one share inside another, two shares on one source,or an access file (&lt;code&gt;authorized_keys_file&lt;/code&gt;, &lt;code&gt;dsn_file&lt;/code&gt;, &lt;code&gt;bind_password_file&lt;/code&gt;,the &lt;code&gt;ssf&lt;/code&gt; &lt;code&gt;ca_file&lt;/code&gt;) inside a share &lt;strong&gt;no longer starts&lt;/strong&gt;; the error names
 the share and the path.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -229,8 +221,7 @@ the share and the path.&lt;/p&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Upgrading past v0.9.0&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;A configuration serving WebDAV without TLS on an address other machines can
 reach, with anybody to authenticate, &lt;strong&gt;no longer starts&lt;/strong&gt;. Add &lt;code&gt;tls = true&lt;/code&gt;
-and a &lt;code&gt;tls&lt;/code&gt; block, or &lt;code&gt;plaintext = true&lt;/code&gt; behind a TLS-terminating proxy. See
-&lt;a href="https://go-fileshare.github.io/docs/0.31/security/tls/#webdav-is-not-served-in-the-clear"&gt;TLS&lt;/a&gt;.&lt;/p&gt;
+and a &lt;code&gt;tls&lt;/code&gt; block, or &lt;code&gt;plaintext = true&lt;/code&gt; behind a TLS-terminating proxy. See&lt;a href="https://go-fileshare.github.io/docs/0.31/security/tls/#webdav-is-not-served-in-the-clear"&gt;TLS&lt;/a&gt;.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -244,18 +235,15 @@ he may only read is &lt;code&gt;403&lt;/code&gt;; a wrong password is &lt;code&g
 &lt;li&gt;&lt;strong&gt;go-smb2&lt;/strong&gt; — a client this project did not write — drives twenty concurrent
 reads through SMB while twenty run through WebDAV, under &lt;code&gt;-race&lt;/code&gt;, in CI.&lt;/li&gt;
 &lt;li&gt;The access rules are checked &lt;strong&gt;through every protocol&lt;/strong&gt; rather than in the
-configuration alone: alice writes and bob does not, over SMB and over WebDAV,
-and NFS is not offered the share at all.&lt;/li&gt;
+configuration alone: alice writes and bob does not, over SMB and over WebDAV,and NFS is not offered the share at all.&lt;/li&gt;
 &lt;li&gt;SFTP certificates are verified against &lt;strong&gt;OpenSSH&amp;rsquo;s own client&lt;/strong&gt;, which also
 refuses the same key once its certificate is moved aside.&lt;/li&gt;
 &lt;li&gt;NFS identities from certificates were measured with a &lt;strong&gt;real Linux client&lt;/strong&gt;
-(kernel 6.17, ktls-utils 0.9) in go-filesystems/nfs&amp;rsquo;s CI — which is how
-&lt;a href="https://go-fileshare.github.io/docs/0.31/security/nfs-certificates/#measured-with-a-real-linux-client"&gt;&lt;code&gt;MNT&lt;/code&gt; in the clear and &lt;code&gt;tlshd&lt;/code&gt;&amp;rsquo;s pitfalls&lt;/a&gt;
+(kernel 6.17, ktls-utils 0.9) in go-filesystems/nfs&amp;rsquo;s CI — which is how&lt;a href="https://go-fileshare.github.io/docs/0.31/security/nfs-certificates/#measured-with-a-real-linux-client"&gt;&lt;code&gt;MNT&lt;/code&gt; in the clear and &lt;code&gt;tlshd&lt;/code&gt;&amp;rsquo;s pitfalls&lt;/a&gt;
 were found.&lt;/li&gt;
 &lt;li&gt;The KRL&amp;rsquo;s unsigned form is a measurement: OpenSSH 9.6 and 10.3 read a signed
 KRL and skip the signature (go-authn/krl, against both).&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;go-authn/bridge&amp;rsquo;s interop lane&lt;/strong&gt; (&lt;a href="https://github.com/go-authn/bridge/pull/12" target="_blank" rel="noopener"&gt;#12&lt;/a&gt;,
-&lt;a href="https://github.com/go-authn/bridge/pull/17" target="_blank" rel="noopener"&gt;#17&lt;/a&gt;) judges fileshare v0.13.0
+&lt;li&gt;&lt;strong&gt;go-authn/bridge&amp;rsquo;s interop lane&lt;/strong&gt; (&lt;a href="https://github.com/go-authn/bridge/pull/12" target="_blank" rel="noopener"&gt;#12&lt;/a&gt;,&lt;a href="https://github.com/go-authn/bridge/pull/17" target="_blank" rel="noopener"&gt;#17&lt;/a&gt;) judges fileshare v0.13.0
 against the real bridge: the KRL, the CRL over NFS, WebDAV tokens revoked over
 shared signals, an IdP disabled by scope, and opkssh over shared signals.&lt;/li&gt;
 &lt;/ul&gt;
@@ -264,17 +252,14 @@ shared signals, an IdP disabled by scope, and opkssh over shared signals.&lt;/li
 a share a person may only read has to refuse at the same place SFTP does, and
 that is not wired. Refusing beats a half-written object.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;An OIDC token over S3.&lt;/strong&gt; Tokens work over &lt;a href="https://go-fileshare.github.io/docs/0.31/protocols/webdav/"&gt;WebDAV&lt;/a&gt; and
-nowhere else. The usual route for S3 is STS &lt;code&gt;AssumeRoleWithWebIdentity&lt;/code&gt;,
-which exchanges the token for temporary credentials the client then signs
+nowhere else. The usual route for S3 is STS &lt;code&gt;AssumeRoleWithWebIdentity&lt;/code&gt;,which exchanges the token for temporary credentials the client then signs
 with — a different mechanism from accepting a bearer token, and not
 implemented.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;&lt;code&gt;--isolate&lt;/code&gt; with an &lt;code&gt;admin&lt;/code&gt; or a &lt;code&gt;metrics&lt;/code&gt; block.&lt;/strong&gt; Refused: there is no one
-process an API change could be applied to. See
-&lt;a href="https://go-fileshare.github.io/docs/0.31/operations/isolation/#not-with-an-admin-or-a-metrics-block-yet"&gt;one process per protocol&lt;/a&gt;.&lt;/p&gt;
+process an API change could be applied to. See&lt;a href="https://go-fileshare.github.io/docs/0.31/operations/isolation/#not-with-an-admin-or-a-metrics-block-yet"&gt;one process per protocol&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;A person per user on a shared Linux NFS client, from a certificate.&lt;/strong&gt; A Linux
 client attaches the certificate to a mount, so every user of the mount is the
-person it names. That is a property of the client, and the answer there is
-&lt;code&gt;sec=krb5&lt;/code&gt;. See &lt;a href="https://go-fileshare.github.io/docs/0.31/security/nfs-certificates/#what-it-cannot-promise"&gt;what it cannot promise&lt;/a&gt;.&lt;/p&gt;
+person it names. That is a property of the client, and the answer there is&lt;code&gt;sec=krb5&lt;/code&gt;. See &lt;a href="https://go-fileshare.github.io/docs/0.31/security/nfs-certificates/#what-it-cannot-promise"&gt;what it cannot promise&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/protocols/s3/"&gt;S3 itself&lt;/a&gt; has shipped: a share is a bucket, served over
 the same per-user tree SFTP uses.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="measured-and-stated-as-measured"&gt;Measured, and stated as measured&lt;span class="hx:absolute hx:-mt-20" id="measured-and-stated-as-measured"&gt;&lt;/span&gt;

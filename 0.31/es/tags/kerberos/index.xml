@@ -22,8 +22,7 @@ puede contradecirlo. Tampoco hay cifrado.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;p&gt;Por eso &lt;strong&gt;un recurso compartido que nombra quién puede usarlo no se exporta por
-NFS&lt;/strong&gt;. El rechazo se imprime al arrancar y en &lt;a href="https://go-fileshare.github.io/docs/0.31/es/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt;,
-con el motivo:&lt;/p&gt;
+NFS&lt;/strong&gt;. El rechazo se imprime al arrancar y en &lt;a href="https://go-fileshare.github.io/docs/0.31/es/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt;,con el motivo:&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;pre&gt;&lt;code&gt;nfs on 0.0.0.0:2049 — scratch
 photos is not served over nfs: it is restricted to alice and bob, and
@@ -92,8 +91,7 @@ data-copied-label="¡Copiado!"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;Desde la v0.9.0, NFS se sirve sobre RPC-with-TLS (RFC 9289) con &lt;code&gt;tls = true&lt;/code&gt; y un
-&lt;a href="https://go-fileshare.github.io/docs/0.31/es/security/tls/"&gt;bloque &lt;code&gt;tls&lt;/code&gt;&lt;/a&gt;. Cifra; con &lt;code&gt;client_ca_file&lt;/code&gt; obliga al cliente
+&lt;p&gt;Desde la v0.9.0, NFS se sirve sobre RPC-with-TLS (RFC 9289) con &lt;code&gt;tls = true&lt;/code&gt; y un&lt;a href="https://go-fileshare.github.io/docs/0.31/es/security/tls/"&gt;bloque &lt;code&gt;tls&lt;/code&gt;&lt;/a&gt;. Cifra; con &lt;code&gt;client_ca_file&lt;/code&gt; obliga al cliente
 a presentar un certificado de esa autoridad, que indica qué &lt;strong&gt;máquina&lt;/strong&gt; está
 montando. El uid de dentro sigue siendo el que afirma &lt;code&gt;AUTH_SYS&lt;/code&gt;, así que un recurso
 compartido restringido &lt;strong&gt;sigue rechazándose&lt;/strong&gt; por esta vía. TLS se ofrece, no se
@@ -126,12 +124,9 @@ data-copied-label="¡Copiado!"
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;El certificado de un cliente Linux pertenece a un montaje&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;Todos los usuarios de ese montaje actúan como la persona que nombra el
-certificado. Correcto en una estación de trabajo que usa una sola persona;
-incorrecto en una máquina en la que inician sesión varias personas: use
-&lt;code&gt;sec=krb5&lt;/code&gt; allí.&lt;/p&gt;
+certificado. Correcto en una estación de trabajo que usa una sola persona;incorrecto en una máquina en la que inician sesión varias personas: use&lt;code&gt;sec=krb5&lt;/code&gt; allí.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;p&gt;Lo que transporta el certificado, la CRL que se exige y lo que se midió con un
-cliente Linux real (&lt;code&gt;MNT&lt;/code&gt; sin cifrar, las trampas de &lt;code&gt;tlshd&lt;/code&gt;) se encuentran en
-&lt;a href="https://go-fileshare.github.io/docs/0.31/es/security/nfs-certificates/"&gt;NFS, con identidades a partir de certificados&lt;/a&gt;.&lt;/p&gt;</description></item></channel></rss>
+cliente Linux real (&lt;code&gt;MNT&lt;/code&gt; sin cifrar, las trampas de &lt;code&gt;tlshd&lt;/code&gt;) se encuentran en&lt;a href="https://go-fileshare.github.io/docs/0.31/es/security/nfs-certificates/"&gt;NFS, con identidades a partir de certificados&lt;/a&gt;.&lt;/p&gt;</description></item></channel></rss>

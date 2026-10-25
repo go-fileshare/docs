@@ -12,22 +12,14 @@ data-copied-label="已复制！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;人员来自目录服务，而其他系统会修改这些目录服务：go-authn/bridge 会把
-应用密码写入某张表，并在人员被停用时删除该行。如果不重新加载，服务器只会为
-启动时存在的人员提供服务。自 v0.10.0 起，服务器会重新读取它们：&lt;/p&gt;
+&lt;p&gt;人员来自目录服务，而其他系统会修改这些目录服务：go-authn/bridge 会把应用密码写入某张表，并在人员被停用时删除该行。如果不重新加载，服务器只会为启动时存在的人员提供服务。自 v0.10.0 起，服务器会重新读取它们：&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;每隔一个 &lt;code&gt;reload&lt;/code&gt; 间隔，该间隔是&lt;strong&gt;至少一秒&lt;/strong&gt;的 Go 持续时间，因为一个
-每秒被读取许多次的目录服务只会给别人的数据库增加负载，并不会让服务器更新；&lt;/li&gt;
+&lt;li&gt;每隔一个 &lt;code&gt;reload&lt;/code&gt; 间隔，该间隔是&lt;strong&gt;至少一秒&lt;/strong&gt;的 Go 持续时间，因为一个每秒被读取许多次的目录服务只会给别人的数据库增加负载，并不会让服务器更新；&lt;/li&gt;
 &lt;li&gt;收到 &lt;strong&gt;&lt;code&gt;SIGHUP&lt;/code&gt;&lt;/strong&gt; 时（Unix）；&lt;/li&gt;
-&lt;li&gt;调用&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/administration/"&gt;管理 API&lt;/a&gt; 的 &lt;strong&gt;&lt;code&gt;ReloadDirectory&lt;/code&gt;&lt;/strong&gt; 时，它会应答
-哪些人被添加、移除和更改，是否启动了新的世代，并附上
-值得阅读的提示：不再存在或没有成员的组，以及共享所指明但
-已不在目录服务中的人员。&lt;/li&gt;
+&lt;li&gt;调用&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/administration/"&gt;管理 API&lt;/a&gt; 的 &lt;strong&gt;&lt;code&gt;ReloadDirectory&lt;/code&gt;&lt;/strong&gt; 时，它会应答哪些人被添加、移除和更改，是否启动了新的世代，并附上值得阅读的提示：不再存在或没有成员的组，以及共享所指明但已不在目录服务中的人员。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;未设置 &lt;code&gt;reload&lt;/code&gt; 时，仅在启动时、收到 &lt;code&gt;SIGHUP&lt;/code&gt; 时以及调用
-&lt;code&gt;ReloadDirectory&lt;/code&gt; 时读取目录服务。&lt;/p&gt;
-&lt;p&gt;被重新读取的是 &lt;code&gt;users&lt;/code&gt; 块（SQL、LDAP）。配置文件中的 &lt;code&gt;user&lt;/code&gt; 和
-&lt;code&gt;group&lt;/code&gt; 块&lt;strong&gt;本身就是&lt;/strong&gt;配置，在启动时读取。&lt;/p&gt;
+&lt;p&gt;未设置 &lt;code&gt;reload&lt;/code&gt; 时，仅在启动时、收到 &lt;code&gt;SIGHUP&lt;/code&gt; 时以及调用&lt;code&gt;ReloadDirectory&lt;/code&gt; 时读取目录服务。&lt;/p&gt;
+&lt;p&gt;被重新读取的是 &lt;code&gt;users&lt;/code&gt; 块（SQL、LDAP）。配置文件中的 &lt;code&gt;user&lt;/code&gt; 和&lt;code&gt;group&lt;/code&gt; 块&lt;strong&gt;本身就是&lt;/strong&gt;配置，在启动时读取。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="what-a-reload-does-depends-on-what-changed"&gt;重新加载会做什么，取决于什么发生了变化&lt;span class="hx:absolute hx:-mt-20" id="what-a-reload-does-depends-on-what-changed"&gt;&lt;/span&gt;
 &lt;a href="#what-a-reload-does-depends-on-what-changed" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;界线划在&lt;strong&gt;撤销&lt;/strong&gt;上：&lt;/p&gt;
 &lt;table&gt;
@@ -52,37 +44,24 @@ data-copied-label="已复制！"
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;加入某个共享所指明的组的新人&lt;em&gt;确实&lt;/em&gt;会改变该共享，并像对它的任何其他变更一样
-经历一个新世代：SMB 在启动时就固定了共享的列表。&lt;/p&gt;
-&lt;p&gt;如果共享指明了已经离开的人，或不再存在或不再有任何成员的组（自 v0.29.1 起可区分这两种情况），
-则会&lt;strong&gt;不含这些人员或这些组&lt;/strong&gt;地提供服务（这是安全的方向）并予以说明，而不是像
-启动时那样被拒绝：拒绝会保留旧列表，而旧列表正是
-刚刚被收回的访问权限。&lt;/p&gt;
+&lt;p&gt;加入某个共享所指明的组的新人&lt;em&gt;确实&lt;/em&gt;会改变该共享，并像对它的任何其他变更一样经历一个新世代：SMB 在启动时就固定了共享的列表。&lt;/p&gt;
+&lt;p&gt;如果共享指明了已经离开的人，或不再存在或不再有任何成员的组（自 v0.29.1 起可区分这两种情况），则会&lt;strong&gt;不含这些人员或这些组&lt;/strong&gt;地提供服务（这是安全的方向）并予以说明，而不是像启动时那样被拒绝：拒绝会保留旧列表，而旧列表正是刚刚被收回的访问权限。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="an-empty-group-is-not-everyone"&gt;空组不等于所有人&lt;span class="hx:absolute hx:-mt-20" id="an-empty-group-is-not-everyone"&gt;&lt;/span&gt;
 &lt;a href="#an-empty-group-is-not-everyone" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;为 &lt;code&gt;@engineers&lt;/code&gt; 编写的共享，在最后一位工程师离开后，不会向任何人提供服务&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;空的 &lt;code&gt;allow&lt;/code&gt; 表示“任何通过身份验证的人”。因此决定
-共享是否开放的是&lt;strong&gt;所写的内容&lt;/strong&gt;，而不是它现在展开成什么：为某个组
-编写的共享，在该组清空后仍然保持关闭。这样的共享
-根本不会通过 SMB 提供，因为其空的 &lt;code&gt;AllowUsers&lt;/code&gt; 会被理解为
-所有人。&lt;/p&gt;
+&lt;p&gt;空的 &lt;code&gt;allow&lt;/code&gt; 表示“任何通过身份验证的人”。因此决定共享是否开放的是&lt;strong&gt;所写的内容&lt;/strong&gt;，而不是它现在展开成什么：为某个组编写的共享，在该组清空后仍然保持关闭。这样的共享根本不会通过 SMB 提供，因为其空的 &lt;code&gt;AllowUsers&lt;/code&gt; 会被理解为所有人。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="watching-it"&gt;观察它&lt;span class="hx:absolute hx:-mt-20" id="watching-it"&gt;&lt;/span&gt;
-&lt;a href="#watching-it" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;fileshare_directory_reloads_total{result}&lt;/code&gt; 统计这样的重新加载：未发现任何变化
-（&lt;code&gt;unchanged&lt;/code&gt;）、原地添加（&lt;code&gt;added&lt;/code&gt;）、启动了一个世代（&lt;code&gt;swapped&lt;/code&gt;）或
-无法读取目录服务（&lt;code&gt;failed&lt;/code&gt;）；&lt;code&gt;fileshare_directory_people&lt;/code&gt; 是最近一次读取时
-所含的人数。参见&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/administration/health/"&gt;健康检查与指标&lt;/a&gt;。&lt;/p&gt;
+&lt;a href="#watching-it" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;fileshare_directory_reloads_total{result}&lt;/code&gt; 统计这样的重新加载：未发现任何变化（&lt;code&gt;unchanged&lt;/code&gt;）、原地添加（&lt;code&gt;added&lt;/code&gt;）、启动了一个世代（&lt;code&gt;swapped&lt;/code&gt;）或无法读取目录服务（&lt;code&gt;failed&lt;/code&gt;）；&lt;code&gt;fileshare_directory_people&lt;/code&gt; 是最近一次读取时所含的人数。参见&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/administration/health/"&gt;健康检查与指标&lt;/a&gt;。&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;重新加载触及不到的对象&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;由身份提供方通过令牌或证书担保的人员
-不在目录服务中，因此重新加载与这些人员无关。收回&lt;strong&gt;这些人员&lt;/strong&gt;的访问权限
-是&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/"&gt;撤销列表和共享信号&lt;/a&gt;的工作。&lt;/p&gt;
+&lt;p&gt;由身份提供方通过令牌或证书担保的人员不在目录服务中，因此重新加载与这些人员无关。收回&lt;strong&gt;这些人员&lt;/strong&gt;的访问权限是&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/"&gt;撤销列表和共享信号&lt;/a&gt;的工作。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;</description></item></channel></rss>

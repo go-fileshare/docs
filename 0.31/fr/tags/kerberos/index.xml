@@ -92,11 +92,8 @@ data-copied-label="Copié !"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;Depuis la v0.9.0, NFS est servi en RPC-with-TLS (RFC 9289) avec &lt;code&gt;tls = true&lt;/code&gt; et un
-&lt;a href="https://go-fileshare.github.io/docs/0.31/fr/security/tls/"&gt;bloc &lt;code&gt;tls&lt;/code&gt;&lt;/a&gt;. Il chiffre ; avec &lt;code&gt;client_ca_file&lt;/code&gt;, il oblige un
-client à présenter un certificat de cette autorité — c&amp;rsquo;est-à-dire quel &lt;strong&gt;hôte&lt;/strong&gt; monte.
-L&amp;rsquo;uid à l&amp;rsquo;intérieur reste celui qu&amp;rsquo;affirme &lt;code&gt;AUTH_SYS&lt;/code&gt; : un partage restreint est donc
-&lt;strong&gt;toujours refusé&lt;/strong&gt; par ce biais. TLS est proposé, pas exigé : un client qui ne le
+&lt;p&gt;Depuis la v0.9.0, NFS est servi en RPC-with-TLS (RFC 9289) avec &lt;code&gt;tls = true&lt;/code&gt; et un&lt;a href="https://go-fileshare.github.io/docs/0.31/fr/security/tls/"&gt;bloc &lt;code&gt;tls&lt;/code&gt;&lt;/a&gt;. Il chiffre ; avec &lt;code&gt;client_ca_file&lt;/code&gt;, il oblige un
+client à présenter un certificat de cette autorité — c&amp;rsquo;est-à-dire quel &lt;strong&gt;hôte&lt;/strong&gt; monte.L&amp;rsquo;uid à l&amp;rsquo;intérieur reste celui qu&amp;rsquo;affirme &lt;code&gt;AUTH_SYS&lt;/code&gt; : un partage restreint est donc&lt;strong&gt;toujours refusé&lt;/strong&gt; par ce biais. TLS est proposé, pas exigé : un client qui ne le
 demande jamais se voit toujours servir les partages ouverts.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="a-person-from-their-certificate"&gt;Une personne, d&amp;rsquo;après son certificat&lt;span class="hx:absolute hx:-mt-20" id="a-person-from-their-certificate"&gt;&lt;/span&gt;
 &lt;a href="#a-person-from-their-certificate" class="subheading-anchor" aria-label="Lien permanent vers cette section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Depuis la v0.12.0, un certificat peut nommer une &lt;strong&gt;personne&lt;/strong&gt; — tel que go-authn/bridge en émet
@@ -125,11 +122,9 @@ data-copied-label="Copié !"
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Le certificat d&amp;rsquo;un client Linux appartient à un montage&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;Chaque utilisateur de ce montage agit en tant que la personne que nomme le certificat. Juste sur
-un poste de travail utilisé par une seule personne ; faux sur une machine où plusieurs personnes se connectent —
-utilisez &lt;code&gt;sec=krb5&lt;/code&gt; dans ce cas.&lt;/p&gt;
+un poste de travail utilisé par une seule personne ; faux sur une machine où plusieurs personnes se connectent —utilisez &lt;code&gt;sec=krb5&lt;/code&gt; dans ce cas.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;p&gt;Ce que transporte le certificat, la CRL exigée, et ce qui a été mesuré
-avec un vrai client Linux (&lt;code&gt;MNT&lt;/code&gt; en clair, les pièges de &lt;code&gt;tlshd&lt;/code&gt;) se trouvent dans
-&lt;a href="https://go-fileshare.github.io/docs/0.31/fr/security/nfs-certificates/"&gt;NFS, avec des identités issues de certificats&lt;/a&gt;.&lt;/p&gt;</description></item></channel></rss>
+avec un vrai client Linux (&lt;code&gt;MNT&lt;/code&gt; en clair, les pièges de &lt;code&gt;tlshd&lt;/code&gt;) se trouvent dans&lt;a href="https://go-fileshare.github.io/docs/0.31/fr/security/nfs-certificates/"&gt;NFS, avec des identités issues de certificats&lt;/a&gt;.&lt;/p&gt;</description></item></channel></rss>

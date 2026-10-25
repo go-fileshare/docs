@@ -1,6 +1,5 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – 보안</title><link>https://go-fileshare.github.io/docs/0.31/ko/tags/%EB%B3%B4%EC%95%88/</link><description>Recent content in 보안 on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>ko</language><atom:link href="https://go-fileshare.github.io/docs/0.31/ko/tags/%EB%B3%B4%EC%95%88/index.xml" rel="self" type="application/rss+xml"/><item><title>TLS와 ACME 인증서</title><link>https://go-fileshare.github.io/docs/0.31/ko/security/tls/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/ko/security/tls/</guid><description>
-&lt;p&gt;v0.9.0부터 &lt;strong&gt;WebDAV와 S3는 HTTPS로, NFS는 RPC-with-TLS&lt;/strong&gt;(RFC 9289)로 제공됩니다.
-&lt;code&gt;serve&lt;/code&gt; 블록의 &lt;code&gt;tls = true&lt;/code&gt;와 인증서의 출처를 지정하는 하나의 &lt;code&gt;tls&lt;/code&gt; 블록을
+&lt;p&gt;v0.9.0부터 &lt;strong&gt;WebDAV와 S3는 HTTPS로, NFS는 RPC-with-TLS&lt;/strong&gt;(RFC 9289)로 제공됩니다.&lt;code&gt;serve&lt;/code&gt; 블록의 &lt;code&gt;tls = true&lt;/code&gt;와 인증서의 출처를 지정하는 하나의 &lt;code&gt;tls&lt;/code&gt; 블록을
 사용합니다.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="from-files"&gt;파일에서&lt;span class="hx:absolute hx:-mt-20" id="from-files"&gt;&lt;/span&gt;
 &lt;a href="#from-files" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
@@ -118,8 +117,7 @@ data-copied-label="복사됨!"
 &lt;h4 data-hextra-search-id="harica-gant-tcs-which-account-and-caa"&gt;HARICA (GÉANT TCS): 어느 계정인가, 그리고 CAA&lt;span class="hx:absolute hx:-mt-20" id="harica-gant-tcs-which-account-and-caa"&gt;&lt;/span&gt;
 &lt;a href="#harica-gant-tcs-which-account-and-caa" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h4&gt;&lt;p&gt;HARICA의 ACME 계정은 두 종류이며, 그중 하나만 챌린지를 건너뜁니다.&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;Enterprise Admin&lt;/strong&gt; 계정은 기관이 검증한 도메인에 대해 &lt;strong&gt;OV&lt;/strong&gt; 인증서를 발급합니다.
-&lt;strong&gt;챌린지가 없으며&lt;/strong&gt;, 외부에서 접근할 수 없는 서버를 위한 계정입니다.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Enterprise Admin&lt;/strong&gt; 계정은 기관이 검증한 도메인에 대해 &lt;strong&gt;OV&lt;/strong&gt; 인증서를 발급합니다.&lt;strong&gt;챌린지가 없으며&lt;/strong&gt;, 외부에서 접근할 수 없는 서버를 위한 계정입니다.&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Enterprise User&lt;/strong&gt; 계정은 &lt;strong&gt;DV&lt;/strong&gt; 인증서를 발급하며, DV는 CA가 주문할 때마다
 위의 tls-alpn-01 또는 http-01로 이름을 확인한다는 뜻입니다.&lt;/li&gt;
 &lt;/ul&gt;
@@ -131,20 +129,15 @@ data-copied-label="복사됨!"
 제공하며 1분 후에 다시 시도하고, 최대 1시간까지 두 배씩 늘립니다. 호스트 이름을
 지정하는 첫 TLS 연결도 어쨌든 다시 요청합니다. 인증서는 만료 30일 전에, 또는 그것이
 더 짧다면 수명의 마지막 3분의 1 시점에 갱신됩니다.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;SNI를 보내지 않는 클라이언트&lt;/strong&gt;, 곧 IP 주소로 접속하는 클라이언트에는
-&lt;strong&gt;첫 번째&lt;/strong&gt; 도메인의 인증서가 제공됩니다(v0.27.0부터). 이전에는 핸드셰이크가
-실패했습니다. 클라이언트는 여전히 그 인증서를 자신이 접속한 주소와 대조해 검사하므로,
-그 이름을 신뢰하라고 안내받은 클라이언트에게는 도움이 되고 아무도 속이지 않습니다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;SNI를 보내지 않는 클라이언트&lt;/strong&gt;, 곧 IP 주소로 접속하는 클라이언트에는&lt;strong&gt;첫 번째&lt;/strong&gt; 도메인의 인증서가 제공됩니다(v0.27.0부터). 이전에는 핸드셰이크가
+실패했습니다. 클라이언트는 여전히 그 인증서를 자신이 접속한 주소와 대조해 검사하므로,그 이름을 신뢰하라고 안내받은 클라이언트에게는 도움이 되고 아무도 속이지 않습니다.&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;ALPN&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;ACME를 쓰면 서버의 ALPN 목록에 &lt;code&gt;acme-tls/1&lt;/code&gt;이 있고, Go 서버는 자신의 목록과
-공통점이 없는 클라이언트를 거부합니다. 그래서 WebDAV와 S3에는 &lt;code&gt;http/1.1&lt;/code&gt;을
-&lt;strong&gt;덧붙이고&lt;/strong&gt;(모든 브라우저와 WebDAV 클라이언트가 이를 제시합니다), NFS에는
-RFC 9289 §5.2가 RPC-with-TLS를 식별하는 &lt;code&gt;sunrpc&lt;/code&gt;을 덧붙입니다. &lt;code&gt;h2&lt;/code&gt;는 아닙니다.
-이 리스너에서는 HTTP/2를 제공하지 않으며 제공한다고 하면 거짓이 됩니다.
-&lt;code&gt;acme-tls/1&lt;/code&gt;은 모든 리스너에 남아 있으므로 CA가 도달하는 어디서든 tls-alpn-01에
+공통점이 없는 클라이언트를 거부합니다. 그래서 WebDAV와 S3에는 &lt;code&gt;http/1.1&lt;/code&gt;을&lt;strong&gt;덧붙이고&lt;/strong&gt;(모든 브라우저와 WebDAV 클라이언트가 이를 제시합니다), NFS에는
+RFC 9289 §5.2가 RPC-with-TLS를 식별하는 &lt;code&gt;sunrpc&lt;/code&gt;을 덧붙입니다. &lt;code&gt;h2&lt;/code&gt;는 아닙니다.이 리스너에서는 HTTP/2를 제공하지 않으며 제공한다고 하면 거짓이 됩니다.&lt;code&gt;acme-tls/1&lt;/code&gt;은 모든 리스너에 남아 있으므로 CA가 도달하는 어디서든 tls-alpn-01에
 응답합니다.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -156,8 +149,7 @@ RFC 9289 §5.2가 RPC-with-TLS를 식별하는 &lt;code&gt;sunrpc&lt;/code&gt;�
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;v0.9.0의 호환성 파괴: 접근 가능한 주소에서 비밀번호를 쓰는 WebDAV는 거부됩니다&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;HTTP Basic은 모든 요청에서 base64로 인코딩된 비밀번호 그 자체이며, 베어러 토큰도
 그와 같은 효력을 가집니다. 따라서 누군가 인증하는 상태에서 다른 머신이 접근할 수
-있는 주소에서 &lt;strong&gt;TLS 없이&lt;/strong&gt; WebDAV를 제공하는 구성은 경고가 아니라 &lt;strong&gt;거부됩니다&lt;/strong&gt;.
-경고는 스크롤되어 사라지지만 유출된 비밀번호는 돌아오지 않기 때문입니다.&lt;/p&gt;
+있는 주소에서 &lt;strong&gt;TLS 없이&lt;/strong&gt; WebDAV를 제공하는 구성은 경고가 아니라 &lt;strong&gt;거부됩니다&lt;/strong&gt;.경고는 스크롤되어 사라지지만 유출된 비밀번호는 돌아오지 않기 때문입니다.&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;pre&gt;&lt;code&gt;webdav on 0.0.0.0:8080 would carry passwords in the clear: serve it with
 tls = true, or -- when TLS is terminated in front of it, by a proxy -- say
@@ -212,8 +204,7 @@ data-copied-label="복사됨!"
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;p&gt;&lt;strong&gt;루프백&lt;/strong&gt; 주소(&lt;code&gt;127.0.0.1&lt;/code&gt;, &lt;code&gt;::1&lt;/code&gt;, &lt;code&gt;localhost&lt;/code&gt;)와 &lt;strong&gt;인증할 사용자가 없는&lt;/strong&gt;
-서버(&lt;code&gt;user&lt;/code&gt;, &lt;code&gt;users&lt;/code&gt;, &lt;code&gt;oidc&lt;/code&gt; 블록이 모두 없음)는 영향을 받지 않습니다. &lt;code&gt;addr&lt;/code&gt;이 없는
-&lt;code&gt;serve&lt;/code&gt; 블록은 루프백에 위치하므로 역시 영향을 받지 않습니다.&lt;/p&gt;
+서버(&lt;code&gt;user&lt;/code&gt;, &lt;code&gt;users&lt;/code&gt;, &lt;code&gt;oidc&lt;/code&gt; 블록이 모두 없음)는 영향을 받지 않습니다. &lt;code&gt;addr&lt;/code&gt;이 없는&lt;code&gt;serve&lt;/code&gt; 블록은 루프백에 위치하므로 역시 영향을 받지 않습니다.&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;plaintext&lt;/code&gt;는 비밀번호를 보내는 프로토콜인 WebDAV 전용이며, &lt;code&gt;plaintext&lt;/code&gt;와 &lt;code&gt;tls&lt;/code&gt;를
 함께 쓰면 거부됩니다. 둘 중 하나여야 합니다.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="what-check-says"&gt;&lt;code&gt;check&lt;/code&gt;가 알려 주는 것&lt;span class="hx:absolute hx:-mt-20" id="what-check-says"&gt;&lt;/span&gt;
@@ -302,11 +293,7 @@ data-copied-label="복사됨!"
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;p&gt;&lt;code&gt;client_ca_file&lt;/code&gt;은 클라이언트가 그 기관의 인증서, 곧 &lt;strong&gt;어느 호스트가 마운트하는지&lt;/strong&gt;를
-제시하게 하며, RFC 9289는 사용자 인증을 이전 그대로 둡니다. 그 안의 uid는 여전히
-&lt;code&gt;AUTH_SYS&lt;/code&gt;가 주장하는 값입니다. 따라서 사용 가능한 사용자를 지정한 공유는
-&lt;code&gt;kerberos&lt;/code&gt; 블록이 없으면, 또는 같은 인증서의 다른 용도인
-&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/security/nfs-certificates/"&gt;인증서 기반 ID&lt;/a&gt;가 없으면 NFS에서
-&lt;strong&gt;여전히 거부됩니다&lt;/strong&gt;.&lt;/p&gt;
+제시하게 하며, RFC 9289는 사용자 인증을 이전 그대로 둡니다. 그 안의 uid는 여전히&lt;code&gt;AUTH_SYS&lt;/code&gt;가 주장하는 값입니다. 따라서 사용 가능한 사용자를 지정한 공유는&lt;code&gt;kerberos&lt;/code&gt; 블록이 없으면, 또는 같은 인증서의 다른 용도인&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/security/nfs-certificates/"&gt;인증서 기반 ID&lt;/a&gt;가 없으면 NFS에서&lt;strong&gt;여전히 거부됩니다&lt;/strong&gt;.&lt;/p&gt;
 &lt;p&gt;TLS는 &lt;strong&gt;제공될 뿐 필수가 아닙니다&lt;/strong&gt;. 이를 요청하지 않는 클라이언트에게도 열린
 공유는 계속 제공됩니다. &lt;code&gt;tls = true&lt;/code&gt; 없는 &lt;code&gt;client_ca_file&lt;/code&gt;은 아무것도 검사하지
 않으므로 거부되며, NFS 외의 프로토콜에 쓴 &lt;code&gt;client_ca_file&lt;/code&gt;도 거부됩니다.&lt;/p&gt;
@@ -316,8 +303,7 @@ data-copied-label="복사됨!"
 &lt;li&gt;어떤 &lt;code&gt;serve&lt;/code&gt; 블록도 사용하지 않는 &lt;code&gt;tls&lt;/code&gt; 블록: 아무것도 사용하지 않게 됩니다.&lt;/li&gt;
 &lt;li&gt;수신할 주소가 아닌 &lt;code&gt;http_challenge&lt;/code&gt;.&lt;/li&gt;
 &lt;/ul&gt;</description></item><item><title>각 사용자의 권한으로 제공되는 디렉터리</title><link>https://go-fileshare.github.io/docs/0.31/ko/configuration/as-each-person/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/ko/configuration/as-each-person/</guid><description>
-&lt;p&gt;보통은 하나의 fileshare 프로세스가 모든 사람에게 하나의 계정으로 서비스합니다.
-누가 무엇을 할 수 있는지는 fileshare가 결정하고, 생성하는 모든 파일은 그
+&lt;p&gt;보통은 하나의 fileshare 프로세스가 모든 사람에게 하나의 계정으로 서비스합니다.누가 무엇을 할 수 있는지는 fileshare가 결정하고, 생성하는 모든 파일은 그
 계정의 소유가 됩니다. 디렉터리 공유는 대신 &lt;strong&gt;각 사용자의 권한으로&lt;/strong&gt; 제공될 수
 있습니다. 로그인한 사용자의 파일은 그 사용자의 uid, gid, 그룹으로 실행되는
 프로세스가 열므로, 커널이 트리의 권한을 적용하고 사용자가 만든 것은 그 사용자의
@@ -376,8 +362,7 @@ data-copied-label="복사됨!"
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;워커는 먼저 자신이 정확히 기대된 uid, gid, 그룹으로 실행 중인지, 그리고
-&lt;code&gt;setuid(0)&lt;/code&gt;이 실패하는지 확인합니다. 그런 다음에야 &lt;code&gt;os.Root&lt;/code&gt;를 통해 트리를
+&lt;p&gt;워커는 먼저 자신이 정확히 기대된 uid, gid, 그룹으로 실행 중인지, 그리고&lt;code&gt;setuid(0)&lt;/code&gt;이 실패하는지 확인합니다. 그런 다음에야 &lt;code&gt;os.Root&lt;/code&gt;를 통해 트리를
 엽니다. 워커 하나가 SFTP와 WebDAV를 가리지 않고 그 사용자의 해당 공유에 대한
 모든 연결을 처리하며, &lt;code&gt;idle&lt;/code&gt; 동안 아무도 사용하지 않으면 종료됩니다. 서버가
 중지되면 워커도 함께 중지됩니다.&lt;/p&gt;
@@ -391,9 +376,7 @@ data-copied-label="복사됨!"
 &lt;li&gt;&lt;code&gt;attributes = [&amp;quot;uidNumber&amp;quot;, &amp;quot;gidNumber&amp;quot;]&lt;/code&gt;가 있는 LDAP 소스&lt;/li&gt;
 &lt;li&gt;SQL 소스의 &lt;code&gt;users_attributes&lt;/code&gt; 쿼리&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;보조 그룹은 해당 사용자를 나열하는 그룹(&lt;code&gt;group&lt;/code&gt; 블록의 &lt;code&gt;members&lt;/code&gt;,
-&lt;code&gt;memberUid&lt;/code&gt;)과 해당 사용자가 이름으로 지정한 그룹(&lt;code&gt;memberOf&lt;/code&gt;)이며, 각각
-&lt;code&gt;gidNumber&lt;/code&gt;로 식별합니다. &lt;code&gt;gidNumber&lt;/code&gt;가 없는 그룹은 시스템 그룹이 아닙니다.&lt;/p&gt;
+&lt;p&gt;보조 그룹은 해당 사용자를 나열하는 그룹(&lt;code&gt;group&lt;/code&gt; 블록의 &lt;code&gt;members&lt;/code&gt;,&lt;code&gt;memberUid&lt;/code&gt;)과 해당 사용자가 이름으로 지정한 그룹(&lt;code&gt;memberOf&lt;/code&gt;)이며, 각각&lt;code&gt;gidNumber&lt;/code&gt;로 식별합니다. &lt;code&gt;gidNumber&lt;/code&gt;가 없는 그룹은 시스템 그룹이 아닙니다.&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;이름으로 찾는 &lt;strong&gt;&lt;code&gt;/etc/passwd&lt;/code&gt;와 &lt;code&gt;/etc/group&lt;/code&gt;&lt;/strong&gt;.&lt;/p&gt;
@@ -402,9 +385,7 @@ data-copied-label="복사됨!"
 &lt;p&gt;&lt;strong&gt;거부되는 경우&lt;/strong&gt;: uid 0, gid 0, &lt;code&gt;(uid_t)-1&lt;/code&gt;, &lt;code&gt;min_uid&lt;/code&gt; 미만의 uid, &lt;code&gt;min_gid&lt;/code&gt;
 미만의 기본 gid, &lt;code&gt;deny_uids&lt;/code&gt;에 있는 모든 uid. &lt;code&gt;min_gid&lt;/code&gt; 미만의 보조 그룹은
 제외되며 로그에 그렇게 기록됩니다. 두 곳 어디에서도 찾을 수 없는 사용자도
-거부됩니다. 공유 대체 계정은 없습니다. ID 공급자가 보증하는 사용자는
-&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/configuration/identity/"&gt;&lt;code&gt;local_names&lt;/code&gt;&lt;/a&gt;가 있어야만 워커를 받으며,
-이 옵션이 그들의 이름을 로컬 이름으로 만듭니다.&lt;/p&gt;
+거부됩니다. 공유 대체 계정은 없습니다. ID 공급자가 보증하는 사용자는&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/configuration/identity/"&gt;&lt;code&gt;local_names&lt;/code&gt;&lt;/a&gt;가 있어야만 워커를 받으며,이 옵션이 그들의 이름을 로컬 이름으로 만듭니다.&lt;/p&gt;
 &lt;p&gt;따라서 탈취된 프런트가 요청할 수 있는 것은 존재하고 허용된 사용자와 존재하는
 공유뿐입니다. &lt;strong&gt;누가&lt;/strong&gt; 인증했는지는 여전히 프런트가 결정하며, 런처는 이를
 대신 확인할 수 없습니다.&lt;/p&gt;
@@ -441,8 +422,7 @@ data-copied-label="복사됨!"
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;SMB, NFS, S3에서는 아직 지원하지 않습니다&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;이들은 이런 공유를 거부하며, &lt;a href="https://go-fileshare.github.io/docs/0.31/ko/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt;가 이를
-알려 줍니다. SMB와 NFS는 라이브러리에서 세션마다 파일 시스템이 필요합니다. NFS는
-&lt;code&gt;AUTH_UNIX&lt;/code&gt;가 클라이언트 스스로의 주장이므로(RFC 5531 §14) Kerberos 아래에서만
+알려 줍니다. SMB와 NFS는 라이브러리에서 세션마다 파일 시스템이 필요합니다. NFS는&lt;code&gt;AUTH_UNIX&lt;/code&gt;가 클라이언트 스스로의 주장이므로(RFC 5531 §14) Kerberos 아래에서만
 이를 지원하게 될 것입니다.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -458,15 +438,11 @@ data-copied-label="복사됨!"
 읽으며, 알지 못하는 공유는 프런트가 제공하게 두지 않고 거부합니다.&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;--isolate&lt;/code&gt;와는 함께 쓸 수 없습니다.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;설계와 각 선택의 이유는
-&lt;a href="https://github.com/go-fileshare/fileshare/blob/main/docs/identity.md" target="_blank" rel="noopener"&gt;docs/identity.md&lt;/a&gt;에
+&lt;p&gt;설계와 각 선택의 이유는&lt;a href="https://github.com/go-fileshare/fileshare/blob/main/docs/identity.md" target="_blank" rel="noopener"&gt;docs/identity.md&lt;/a&gt;에
 있습니다.&lt;/p&gt;</description></item><item><title>SSH 인증서 폐기: KRL</title><link>https://go-fileshare.github.io/docs/0.31/ko/security/revocation-lists/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/ko/security/revocation-lists/</guid><description>
-&lt;p&gt;ID 공급자의 SSH CA가 서명한 인증서
-(&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/protocols/sftp/#people-the-identity-provider-vouches-for"&gt;공급자가 보증하는 사용자를 위한 SFTP&lt;/a&gt; 참고)는
+&lt;p&gt;ID 공급자의 SSH CA가 서명한 인증서(&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/protocols/sftp/#people-the-identity-provider-vouches-for"&gt;공급자가 보증하는 사용자를 위한 SFTP&lt;/a&gt; 참고)는
 로그인할 때 검사됩니다. go-authn/bridge에서 누군가를 비활성화하면 그 사용자의
-토큰이 폐기되고 애플리케이션 비밀번호가 삭제되며, 이는
-&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/administration/reload/"&gt;디렉터리 다시 불러오기&lt;/a&gt;로 여기에 반영됩니다.
-그러나 목록이 없으면 이미 발급된 인증서는 만료될 때까지 SFTP를 열 수 있고, 이미
+토큰이 폐기되고 애플리케이션 비밀번호가 삭제되며, 이는&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/administration/reload/"&gt;디렉터리 다시 불러오기&lt;/a&gt;로 여기에 반영됩니다.그러나 목록이 없으면 이미 발급된 인증서는 만료될 때까지 SFTP를 열 수 있고, 이미
 열린 SFTP 세션은 열린 채로 남습니다.&lt;/p&gt;
 &lt;p&gt;v0.12.0부터 목록이 이를 막습니다.&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
@@ -489,8 +465,7 @@ data-copied-label="복사됨!"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;go-authn/bridge는 폐기한 SSH 인증서(비활성화된 사용자, 비활성화된 IdP)를 OpenSSH
-&lt;strong&gt;KRL&lt;/strong&gt;(&lt;code&gt;PROTOCOL.krl&lt;/code&gt;, &lt;code&gt;sshd&lt;/code&gt;의 &lt;code&gt;RevokedKeys&lt;/code&gt;가 읽는 목록)로 게시하며, fileshare는
+&lt;p&gt;go-authn/bridge는 폐기한 SSH 인증서(비활성화된 사용자, 비활성화된 IdP)를 OpenSSH&lt;strong&gt;KRL&lt;/strong&gt;(&lt;code&gt;PROTOCOL.krl&lt;/code&gt;, &lt;code&gt;sshd&lt;/code&gt;의 &lt;code&gt;RevokedKeys&lt;/code&gt;가 읽는 목록)로 게시하며, fileshare는
 그 사본을 보관하고 &lt;a href="https://github.com/go-authn/krl" target="_blank" rel="noopener"&gt;go-authn/krl&lt;/a&gt;로 읽습니다.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="refused-at-login-and-in-the-middle-of-a-session"&gt;로그인 시와 세션 도중의 거부&lt;span class="hx:absolute hx:-mt-20" id="refused-at-login-and-in-the-middle-of-a-session"&gt;&lt;/span&gt;
 &lt;a href="#refused-at-login-and-in-the-middle-of-a-session" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;폐기된 인증서는 로그인할 때 거부되며, &lt;strong&gt;그 인증서로 이미 연 세션은 더 이상
@@ -547,24 +522,19 @@ data-copied-label="복사됨!"
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;KRL을 가져올 수 없는 동안 공급자의 인증서는 거부됩니다&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;목록을 가져올 수 없거나 마지막 정상 사본이 &lt;code&gt;ssh_krl_max_age&lt;/code&gt;보다 오래되면,
-공급자의 CA가 서명한 &lt;strong&gt;모든&lt;/strong&gt; 인증서가 거부됩니다. 목록에 접근할 수 없을 때 모든
+&lt;p&gt;목록을 가져올 수 없거나 마지막 정상 사본이 &lt;code&gt;ssh_krl_max_age&lt;/code&gt;보다 오래되면,공급자의 CA가 서명한 &lt;strong&gt;모든&lt;/strong&gt; 인증서가 거부됩니다. 목록에 접근할 수 없을 때 모든
 것을 통과시키는 폐기 검사는 목록을 막을 수 있는 공격자에게 무력화되는 검사이기
 때문입니다. 그러면 목록은 그것이 관할하는 로그인만큼 안정적으로 제공되어야
-합니다. &lt;code&gt;max_age&lt;/code&gt;에 도달하기 전에 알림을 설정할 메트릭은
-&lt;code&gt;fileshare_revocation_list_age_seconds{list=&amp;quot;ssh_krl&amp;quot;}&lt;/code&gt;입니다.
-&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/administration/health/#what-to-alert-on"&gt;상태 점검과 메트릭&lt;/a&gt;을
+합니다. &lt;code&gt;max_age&lt;/code&gt;에 도달하기 전에 알림을 설정할 메트릭은&lt;code&gt;fileshare_revocation_list_age_seconds{list=&amp;quot;ssh_krl&amp;quot;}&lt;/code&gt;입니다.&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/administration/health/#what-to-alert-on"&gt;상태 점검과 메트릭&lt;/a&gt;을
 참고하십시오.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="signed-and-dated-from-ssh_krl_url"&gt;서명되고 날짜가 기록됨, &lt;code&gt;ssh_krl_url&lt;/code&gt;에서&lt;span class="hx:absolute hx:-mt-20" id="signed-and-dated-from-ssh_krl_url"&gt;&lt;/span&gt;
-&lt;a href="#signed-and-dated-from-ssh_krl_url" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;v0.15.0부터 &lt;strong&gt;&lt;code&gt;ssh_krl_url&lt;/code&gt;의 KRL은 서명되어 있고 만료 시점을 명시해야 합니다&lt;/strong&gt;.
-&lt;a href="https://github.com/go-authn/revocation" target="_blank" rel="noopener"&gt;go-authn/revocation&lt;/a&gt;이 설명하고
+&lt;a href="#signed-and-dated-from-ssh_krl_url" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;v0.15.0부터 &lt;strong&gt;&lt;code&gt;ssh_krl_url&lt;/code&gt;의 KRL은 서명되어 있고 만료 시점을 명시해야 합니다&lt;/strong&gt;.&lt;a href="https://github.com/go-authn/revocation" target="_blank" rel="noopener"&gt;go-authn/revocation&lt;/a&gt;이 설명하고
 go-authn/bridge가 v0.10.0부터 제공하는 방식입니다.&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;서명:&lt;/strong&gt; &lt;code&gt;&amp;lt;url&amp;gt;.sig&lt;/code&gt;는 공급자의 SSH CA(&lt;code&gt;ssh_ca_file&lt;/code&gt;이며, 따라서
-&lt;code&gt;ssh_krl_url&lt;/code&gt;에는 필수)가 &lt;code&gt;krl@go-authn.github.io&lt;/code&gt; 네임스페이스로 만든 분리형
+&lt;li&gt;&lt;strong&gt;서명:&lt;/strong&gt; &lt;code&gt;&amp;lt;url&amp;gt;.sig&lt;/code&gt;는 공급자의 SSH CA(&lt;code&gt;ssh_ca_file&lt;/code&gt;이며, 따라서&lt;code&gt;ssh_krl_url&lt;/code&gt;에는 필수)가 &lt;code&gt;krl@go-authn.github.io&lt;/code&gt; 네임스페이스로 만든 분리형
 SSHSIG 서명입니다. 목록의 ETag에 대한 &lt;code&gt;If-Match&lt;/code&gt;와 함께 가져오며, 그사이에
 목록이 재발급되었으면 즉시 다시 가져옵니다.&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;만료:&lt;/strong&gt; &lt;code&gt;expires@go-authn.github.io&lt;/code&gt; 확장. 이를 넘기면 &lt;code&gt;304&lt;/code&gt;가 아무리 최근에
@@ -586,34 +556,25 @@ SSHSIG 서명입니다. 목록의 ETag에 대한 &lt;code&gt;If-Match&lt;/code&g
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="never-backwards-across-a-restart-too"&gt;재시작해도 결코 거꾸로 가지 않음&lt;span class="hx:absolute hx:-mt-20" id="never-backwards-across-a-restart-too"&gt;&lt;/span&gt;
-&lt;a href="#never-backwards-across-a-restart-too" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;v0.16.0부터 보유한 목록보다 오래된 목록은 거부됩니다. 더 낮은 버전(KRL의 버전,
-CRL의 번호), 또는 같은 버전이지만 더 일찍 발급된 목록입니다. &lt;code&gt;ssh_krl_state_file&lt;/code&gt;
-(&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/security/nfs-certificates/#revocation-the-crl"&gt;NFS&lt;/a&gt;에서는
-&lt;code&gt;crl_state_file&lt;/code&gt;)이 있으면 검증된 마지막 목록이 디스크에 보관되고, 시작할 때
+&lt;a href="#never-backwards-across-a-restart-too" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;v0.16.0부터 보유한 목록보다 오래된 목록은 거부됩니다. 더 낮은 버전(KRL의 버전,CRL의 번호), 또는 같은 버전이지만 더 일찍 발급된 목록입니다. &lt;code&gt;ssh_krl_state_file&lt;/code&gt;
+(&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/security/nfs-certificates/#revocation-the-crl"&gt;NFS&lt;/a&gt;에서는&lt;code&gt;crl_state_file&lt;/code&gt;)이 있으면 검증된 마지막 목록이 디스크에 보관되고, 시작할 때
 다시 검증되며, 다음 목록의 순서를 정합니다. 이것만으로는 목록을 가져오기 전까지
-최신으로 간주되지 않습니다. 이것이 없으면 재시작할 때 순서를 잊어버리며,
-fileshare는 시작할 때 이를 알립니다. 여전히 서명되어 있고 만료되지 않은 더 오래된
+최신으로 간주되지 않습니다. 이것이 없으면 재시작할 때 순서를 잊어버리며,fileshare는 시작할 때 이를 알립니다. 여전히 서명되어 있고 만료되지 않은 더 오래된
 목록이 수락될 수 있기 때문입니다.&lt;/p&gt;
-&lt;p&gt;이 파일들은 &lt;code&gt;ssh_ca_file&lt;/code&gt;, CA 파일, 목록 파일, 그리고 (v0.17.0부터)
-&lt;code&gt;authorized_keys_file&lt;/code&gt;, &lt;code&gt;dsn_file&lt;/code&gt;, &lt;code&gt;bind_password_file&lt;/code&gt;, &lt;code&gt;ssf&lt;/code&gt;의 &lt;code&gt;ca_file&lt;/code&gt;과
+&lt;p&gt;이 파일들은 &lt;code&gt;ssh_ca_file&lt;/code&gt;, CA 파일, 목록 파일, 그리고 (v0.17.0부터)&lt;code&gt;authorized_keys_file&lt;/code&gt;, &lt;code&gt;dsn_file&lt;/code&gt;, &lt;code&gt;bind_password_file&lt;/code&gt;, &lt;code&gt;ssf&lt;/code&gt;의 &lt;code&gt;ca_file&lt;/code&gt;과
 마찬가지로 &lt;strong&gt;공유 안에 있어서는 안 됩니다&lt;/strong&gt;. 그곳에 쓸 수 있는 사람이 누가 들어올
 수 있는지를 결정하게 되기 때문입니다.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="a-plain-sshd-next-to-fileshare"&gt;fileshare 옆의 일반 &lt;code&gt;sshd&lt;/code&gt;&lt;span class="hx:absolute hx:-mt-20" id="a-plain-sshd-next-to-fileshare"&gt;&lt;/span&gt;
-&lt;a href="#a-plain-sshd-next-to-fileshare" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;같은 검증은 fileshare 없이도 사용할 수 있습니다. go-authn/revocation의
-&lt;code&gt;authn-revokd&lt;/code&gt;는 목록을 가져와 검증되는 것만 보관하고, 그 순서를 디스크에
+&lt;a href="#a-plain-sshd-next-to-fileshare" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;같은 검증은 fileshare 없이도 사용할 수 있습니다. go-authn/revocation의&lt;code&gt;authn-revokd&lt;/code&gt;는 목록을 가져와 검증되는 것만 보관하고, 그 순서를 디스크에
 유지하며, &lt;code&gt;sshd&lt;/code&gt;를 위한 &lt;code&gt;RevokedKeys&lt;/code&gt;를 작성합니다. 목록이 만료되면 CA 자체를
 폐기하는 목록을 작성하므로 &lt;code&gt;sshd&lt;/code&gt;도 fail closed가 됩니다.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="what-it-does-not-cover"&gt;다루지 않는 것&lt;span class="hx:absolute hx:-mt-20" id="what-it-does-not-cover"&gt;&lt;/span&gt;
 &lt;a href="#what-it-does-not-cover" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;OpenPubkey(opkssh) 인증서는 어떤 KRL에도 없습니다&lt;/strong&gt;. 사용자 자신의 키 외에는
 그것을 발급한 주체가 없기 때문입니다. 이 인증서는 &lt;code&gt;opkssh_max_age&lt;/code&gt;로 한도가
-정해지고 &lt;a href="https://go-fileshare.github.io/docs/0.31/ko/security/shared-signals/"&gt;공유 신호&lt;/a&gt;로 회수됩니다.
-WebDAV의 액세스 토큰도 마찬가지입니다.&lt;/p&gt;
-&lt;p&gt;같은 메커니즘, 곧 가져오고 보관하며 fail closed인 방식이
-&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/security/nfs-certificates/#revocation-the-crl"&gt;인증서 기반 NFS ID&lt;/a&gt;의
-&lt;strong&gt;X.509 CRL&lt;/strong&gt;을 실어 나릅니다.&lt;/p&gt;</description></item><item><title>인증서 기반 ID를 쓰는 NFS</title><link>https://go-fileshare.github.io/docs/0.31/ko/security/nfs-certificates/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/ko/security/nfs-certificates/</guid><description>
+정해지고 &lt;a href="https://go-fileshare.github.io/docs/0.31/ko/security/shared-signals/"&gt;공유 신호&lt;/a&gt;로 회수됩니다.WebDAV의 액세스 토큰도 마찬가지입니다.&lt;/p&gt;
+&lt;p&gt;같은 메커니즘, 곧 가져오고 보관하며 fail closed인 방식이&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/security/nfs-certificates/#revocation-the-crl"&gt;인증서 기반 NFS ID&lt;/a&gt;의&lt;strong&gt;X.509 CRL&lt;/strong&gt;을 실어 나릅니다.&lt;/p&gt;</description></item><item><title>인증서 기반 ID를 쓰는 NFS</title><link>https://go-fileshare.github.io/docs/0.31/ko/security/nfs-certificates/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/ko/security/nfs-certificates/</guid><description>
 &lt;p&gt;NFSv3는 단독으로는 누구도 인증하지 않으며, 그래서 사용 가능한 사용자를 지정한
-공유는 사용자를 구별할 수 있는 무언가가 없는 한
-&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/protocols/nfs/"&gt;NFS로 내보내지 않습니다&lt;/a&gt;. &lt;code&gt;kerberos&lt;/code&gt; 블록이 그
+공유는 사용자를 구별할 수 있는 무언가가 없는 한&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/protocols/nfs/"&gt;NFS로 내보내지 않습니다&lt;/a&gt;. &lt;code&gt;kerberos&lt;/code&gt; 블록이 그
 해법 중 하나입니다. v0.12.0부터는 &lt;strong&gt;사용자를 지정하는&lt;/strong&gt; 클라이언트 인증서가 또
 다른 해법입니다.&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
@@ -640,21 +601,16 @@ data-copied-label="복사됨!"
 사용자를 지정하는 &lt;strong&gt;단기 X.509 클라이언트 인증서&lt;/strong&gt;를 발급합니다.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;사용자: SubjectAltName &lt;strong&gt;otherName &lt;code&gt;1.3.6.1.4.1.2238.1.1.1&lt;/code&gt;&lt;/strong&gt;, 곧 &lt;code&gt;user@domain&lt;/code&gt;
-형식의 UTF8String
-(&lt;a href="https://www.ietf.org/archive/id/draft-cel-nfsv4-rpc-tls-othername-04.html" target="_blank" rel="noopener"&gt;draft-cel-nfsv4-rpc-tls-othername&lt;/a&gt;이
+형식의 UTF8String(&lt;a href="https://www.ietf.org/archive/id/draft-cel-nfsv4-rpc-tls-othername-04.html" target="_blank" rel="noopener"&gt;draft-cel-nfsv4-rpc-tls-othername&lt;/a&gt;이
 설명하며, 이 OID는 아직 할당되지 않았습니다)&lt;/li&gt;
-&lt;li&gt;그룹: 그룹마다 SubjectAltName URI 하나,
-&lt;code&gt;tag:go-authn.github.io,2026:group:&amp;lt;group&amp;gt;&lt;/code&gt; — 바로 이 용도로 만들어진
-&lt;strong&gt;tag URI&lt;/strong&gt;(RFC 4151: 등록 불필요)입니다. FreeBSD의 &lt;code&gt;rpc.tlsservd&lt;/code&gt;는 첫 번째 ID
+&lt;li&gt;그룹: 그룹마다 SubjectAltName URI 하나,&lt;code&gt;tag:go-authn.github.io,2026:group:&amp;lt;group&amp;gt;&lt;/code&gt; — 바로 이 용도로 만들어진&lt;strong&gt;tag URI&lt;/strong&gt;(RFC 4151: 등록 불필요)입니다. FreeBSD의 &lt;code&gt;rpc.tlsservd&lt;/code&gt;는 첫 번째 ID
 otherName을 읽고 다른 모든 SAN 항목은 건너뜁니다.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;자체 확장이 아니라 tag URI를 쓰는 이유&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;UUID에서 파생한 아크(&lt;code&gt;2.25.&amp;lt;128비트 숫자&amp;gt;&lt;/code&gt;) 아래에 자체 확장을 설계하고
-&lt;strong&gt;측정했습니다&lt;/strong&gt;. Go의 &lt;code&gt;x509.ParseCertificate&lt;/code&gt;는 인증서 전체를 거부합니다
-(&lt;em&gt;malformed extension OID field&lt;/em&gt;). 그곳에서 ASN.1 객체 식별자 아크는 &lt;code&gt;int&lt;/code&gt;이기
+&lt;p&gt;UUID에서 파생한 아크(&lt;code&gt;2.25.&amp;lt;128비트 숫자&amp;gt;&lt;/code&gt;) 아래에 자체 확장을 설계하고&lt;strong&gt;측정했습니다&lt;/strong&gt;. Go의 &lt;code&gt;x509.ParseCertificate&lt;/code&gt;는 인증서 전체를 거부합니다(&lt;em&gt;malformed extension OID field&lt;/em&gt;). 그곳에서 ASN.1 객체 식별자 아크는 &lt;code&gt;int&lt;/code&gt;이기
 때문입니다. 모든 Go TLS 서버가 이 인증서를 돌려보냈을 것입니다. URI SAN은 OID가
 필요 없으며 모든 파서가 읽습니다. &lt;code&gt;urn:x-…&lt;/code&gt;도 아닙니다. RFC 8141이 실험용 URN
 네임스페이스를 폐지했고, 엄격한 파서는 이를 거부하기 때문입니다.&lt;/p&gt;
@@ -668,9 +624,7 @@ otherName을 읽고 다른 모든 SAN 항목은 건너뜁니다.&lt;/li&gt;
 &lt;ol&gt;
 &lt;li&gt;&lt;strong&gt;CRL에 없음&lt;/strong&gt;&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;정확히 한 명&lt;/strong&gt;의 사용자를 지정함&lt;/li&gt;
-&lt;li&gt;이 서버가 &lt;strong&gt;토큰을 허가하는 방식으로&lt;/strong&gt; 허가하는 사용자를 지정함 — 규칙,
-&lt;code&gt;trust_all&lt;/code&gt;, &lt;code&gt;domains&lt;/code&gt;.
-&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;ID 공급자가 지정하는 사용자&lt;/a&gt;를
+&lt;li&gt;이 서버가 &lt;strong&gt;토큰을 허가하는 방식으로&lt;/strong&gt; 허가하는 사용자를 지정함 — 규칙,&lt;code&gt;trust_all&lt;/code&gt;, &lt;code&gt;domains&lt;/code&gt;.&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;ID 공급자가 지정하는 사용자&lt;/a&gt;를
 참고하십시오.&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;공유가 허용하는&lt;/strong&gt; 사용자를 지정함&lt;/li&gt;
 &lt;/ol&gt;
@@ -721,35 +675,26 @@ otherName을 읽고 다른 모든 SAN 항목은 건너뜁니다.&lt;/li&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/security/revocation-lists/"&gt;KRL&lt;/a&gt;과 같은 방식으로 가져와 보관하며
-같은 방식으로 &lt;strong&gt;fail closed&lt;/strong&gt;입니다. 자체 **&lt;code&gt;NextUpdate&lt;/code&gt;**가 지난 CRL은
-&lt;code&gt;crl_max_age&lt;/code&gt;가 허용하는 값과 관계없이 알 수 없는 것으로 간주합니다. CRL은 클라이언트
-CA가 서명해야 합니다. 누구나 쓸 수 있는 CRL은 원하는 것을 마음대로 폐기할 수 있고,
-더 나쁘게는 폐기를 취소할 수도 있습니다. CRL에 접근할 수 있으면 &lt;strong&gt;변경 후 다음
+같은 방식으로 &lt;strong&gt;fail closed&lt;/strong&gt;입니다. 자체 **&lt;code&gt;NextUpdate&lt;/code&gt;**가 지난 CRL은&lt;code&gt;crl_max_age&lt;/code&gt;가 허용하는 값과 관계없이 알 수 없는 것으로 간주합니다. CRL은 클라이언트
+CA가 서명해야 합니다. 누구나 쓸 수 있는 CRL은 원하는 것을 마음대로 폐기할 수 있고,더 나쁘게는 폐기를 취소할 수도 있습니다. CRL에 접근할 수 있으면 &lt;strong&gt;변경 후 다음
 호출이 거부됩니다&lt;/strong&gt;. 인증서의 수명이 폐기의 한계가 되는 것은 CRL에 접근할 수 없을
 때뿐입니다.&lt;/p&gt;
-&lt;p&gt;v0.16.2부터 서명은 CRL을 파싱하기 &lt;strong&gt;전에&lt;/strong&gt; 원시 바이트에 대해
-&lt;a href="https://github.com/go-authn/revocation" target="_blank" rel="noopener"&gt;go-authn/revocation&lt;/a&gt;을 통해 검사합니다.
-먼저 파싱하면 아무나 서명한 큰 CRL이 거부되기 전에 메모리와 시간을 소모했습니다.
-이 서버가 완전한 목록으로 읽을 수 없는 것도 거부됩니다. 델타 CRL, 알 수 없는 크리티컬
+&lt;p&gt;v0.16.2부터 서명은 CRL을 파싱하기 &lt;strong&gt;전에&lt;/strong&gt; 원시 바이트에 대해&lt;a href="https://github.com/go-authn/revocation" target="_blank" rel="noopener"&gt;go-authn/revocation&lt;/a&gt;을 통해 검사합니다.먼저 파싱하면 아무나 서명한 큰 CRL이 거부되기 전에 메모리와 시간을 소모했습니다.이 서버가 완전한 목록으로 읽을 수 없는 것도 거부됩니다. 델타 CRL, 알 수 없는 크리티컬
 확장 또는 항목 확장, CRL 번호 없음, &lt;code&gt;NextUpdate&lt;/code&gt; 없음입니다. 보유한 것보다 번호가
-낮은 CRL, 또는 번호가 같지만 더 일찍 발급된 CRL은 오래된
-&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/security/revocation-lists/#never-backwards-across-a-restart-too"&gt;KRL&lt;/a&gt;과
+낮은 CRL, 또는 번호가 같지만 더 일찍 발급된 CRL은 오래된&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/security/revocation-lists/#never-backwards-across-a-restart-too"&gt;KRL&lt;/a&gt;과
 마찬가지로 거부됩니다.&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt; 없이 CRL 필드를 쓰면 거부되며,
-&lt;code&gt;tls = true&lt;/code&gt;와 &lt;code&gt;client_ca_file&lt;/code&gt; 없이 &lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt;를 쓰는 경우도
+&lt;p&gt;&lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt; 없이 CRL 필드를 쓰면 거부되며,&lt;code&gt;tls = true&lt;/code&gt;와 &lt;code&gt;client_ca_file&lt;/code&gt; 없이 &lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt;를 쓰는 경우도
 마찬가지입니다. ID는 클라이언트가 제시하는 인증서 안에 있기 때문입니다.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="what-it-cannot-promise"&gt;보장할 수 없는 것&lt;span class="hx:absolute hx:-mt-20" id="what-it-cannot-promise"&gt;&lt;/span&gt;
 &lt;a href="#what-it-cannot-promise" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Linux 클라이언트의 인증서는 사용자가 아니라 마운트에 속합니다&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;서버는 &lt;strong&gt;연결의&lt;/strong&gt; 인증서를 보며, Linux 클라이언트는 이를 마운트에 연결합니다
-(&lt;code&gt;tlshd&lt;/code&gt;, &lt;code&gt;mount -o xprtsec=mtls,...&lt;/code&gt;의 키링 일련번호). &lt;strong&gt;해당 마운트의 모든
+&lt;p&gt;서버는 &lt;strong&gt;연결의&lt;/strong&gt; 인증서를 보며, Linux 클라이언트는 이를 마운트에 연결합니다(&lt;code&gt;tlshd&lt;/code&gt;, &lt;code&gt;mount -o xprtsec=mtls,...&lt;/code&gt;의 키링 일련번호). &lt;strong&gt;해당 마운트의 모든
 사용자는 인증서가 지정하는 사용자로 동작합니다.&lt;/strong&gt; 한 사람이 사용하는
 워크스테이션에서는 정확히 그 사람이지만, 여러 사람이 로그인하는 머신에서는
 마운트한 사람입니다. 그런 곳에서는 &lt;code&gt;sec=krb5&lt;/code&gt;를 사용하십시오.&lt;/p&gt;
-&lt;p&gt;RFC 9289만으로는 사용자 인증을 보장한다고 하지 않는 이유가 이것이며, 단순한
-&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/security/tls/#nfs-over-tls-proves-the-machine-not-the-person"&gt;TLS 위의 NFS&lt;/a&gt;가
+&lt;p&gt;RFC 9289만으로는 사용자 인증을 보장한다고 하지 않는 이유가 이것이며, 단순한&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/security/tls/#nfs-over-tls-proves-the-machine-not-the-person"&gt;TLS 위의 NFS&lt;/a&gt;가
 여전히 머신만 증명하는 이유이기도 합니다.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -759,20 +704,15 @@ CA가 서명해야 합니다. 누구나 쓸 수 있는 CRL은 원하는 것을 �
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;MOUNT의 &lt;code&gt;MNT&lt;/code&gt;는 &lt;code&gt;xprtsec=&lt;/code&gt;이 무엇이든 평문으로 도착합니다&lt;/strong&gt;. 커널의 마운트
 클라이언트에는 TLS가 없습니다. 응답은 하되, TLS 없이 이루어진 모든 NFS 호출은
-이후 거부되므로, 공유가 허용하지 않는 사용자는 &lt;code&gt;mount&lt;/code&gt;가 아니라 첫 접근에서
-&lt;em&gt;access denied&lt;/em&gt;를 봅니다. &lt;strong&gt;공유의 어떤 것도 평문으로 건너지 않습니다.&lt;/strong&gt;&lt;/li&gt;
+이후 거부되므로, 공유가 허용하지 않는 사용자는 &lt;code&gt;mount&lt;/code&gt;가 아니라 첫 접근에서&lt;em&gt;access denied&lt;/em&gt;를 봅니다. &lt;strong&gt;공유의 어떤 것도 평문으로 건너지 않습니다.&lt;/strong&gt;&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;tlshd&lt;/code&gt;는 이 서버의 인증서를 &lt;strong&gt;시스템&lt;/strong&gt; 신뢰 저장소로만 검사하고(&lt;code&gt;x509.truststore&lt;/code&gt;는
 무시함), 클라이언트의 인증서와 키가 &lt;strong&gt;root 소유이고 키의 모드가 600&lt;/strong&gt;이기를
 요구합니다. 그렇지 않으면 어느 쪽도 지목하지 않고 *gnutls: Error in the
 certificate (-43)*으로 실패합니다.&lt;/li&gt;
 &lt;/ul&gt;</description></item><item><title>어떤 목록도 다루지 않는 것의 폐기: 공유 신호</title><link>https://go-fileshare.github.io/docs/0.31/ko/security/shared-signals/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/ko/security/shared-signals/</guid><description>
-&lt;p&gt;인증서에는 폐기 목록인 &lt;a href="https://go-fileshare.github.io/docs/0.31/ko/security/revocation-lists/"&gt;KRL&lt;/a&gt;과
-&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/security/nfs-certificates/#revocation-the-crl"&gt;CRL&lt;/a&gt;이 있습니다.
-fileshare가 자체적으로 검증하는 &lt;strong&gt;액세스 토큰&lt;/strong&gt;과 사용자 자신의 키가 서명한
-&lt;strong&gt;OpenPubkey 인증서&lt;/strong&gt;에는 없습니다. 이들은 그 사이에 사용자에게 무슨 일이 있었든
+&lt;p&gt;인증서에는 폐기 목록인 &lt;a href="https://go-fileshare.github.io/docs/0.31/ko/security/revocation-lists/"&gt;KRL&lt;/a&gt;과&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/security/nfs-certificates/#revocation-the-crl"&gt;CRL&lt;/a&gt;이 있습니다.fileshare가 자체적으로 검증하는 &lt;strong&gt;액세스 토큰&lt;/strong&gt;과 사용자 자신의 키가 서명한&lt;strong&gt;OpenPubkey 인증서&lt;/strong&gt;에는 없습니다. 이들은 그 사이에 사용자에게 무슨 일이 있었든
 만료될 때까지 유효합니다.&lt;/p&gt;
-&lt;p&gt;v0.13.0부터 &lt;a href="https://openid.net/specs/openid-sharedsignals-framework-1_0-final.html" target="_blank" rel="noopener"&gt;OpenID Shared Signals Framework&lt;/a&gt;가
-&lt;a href="https://openid.net/specs/openid-caep-1_0-final.html" target="_blank" rel="noopener"&gt;CAEP&lt;/a&gt; &lt;strong&gt;&lt;code&gt;session-revoked&lt;/code&gt;&lt;/strong&gt;
+&lt;p&gt;v0.13.0부터 &lt;a href="https://openid.net/specs/openid-sharedsignals-framework-1_0-final.html" target="_blank" rel="noopener"&gt;OpenID Shared Signals Framework&lt;/a&gt;가&lt;a href="https://openid.net/specs/openid-caep-1_0-final.html" target="_blank" rel="noopener"&gt;CAEP&lt;/a&gt; &lt;strong&gt;&lt;code&gt;session-revoked&lt;/code&gt;&lt;/strong&gt;
 이벤트로 이를 해결합니다.&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;ssf&lt;/span&gt; {
@@ -847,18 +787,13 @@ data-copied-label="복사됨!"
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="who-an-event-is-about"&gt;이벤트가 가리키는 대상&lt;span class="hx:absolute hx:-mt-20" id="who-an-event-is-about"&gt;&lt;/span&gt;
-&lt;a href="#who-an-event-is-about" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;주체는 RFC 9493의 &lt;strong&gt;&lt;code&gt;account&lt;/code&gt;&lt;/strong&gt;(&lt;code&gt;acct:user@domain&lt;/code&gt;, 공유가 사용하는 이름),
-&lt;strong&gt;&lt;code&gt;iss_sub&lt;/code&gt;&lt;/strong&gt;, &lt;strong&gt;&lt;code&gt;email&lt;/code&gt;&lt;/strong&gt;, 또는 이들의 **&lt;code&gt;aliases&lt;/code&gt;**입니다.&lt;/p&gt;
+&lt;a href="#who-an-event-is-about" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;주체는 RFC 9493의 &lt;strong&gt;&lt;code&gt;account&lt;/code&gt;&lt;/strong&gt;(&lt;code&gt;acct:user@domain&lt;/code&gt;, 공유가 사용하는 이름),&lt;strong&gt;&lt;code&gt;iss_sub&lt;/code&gt;&lt;/strong&gt;, &lt;strong&gt;&lt;code&gt;email&lt;/code&gt;&lt;/strong&gt;, 또는 이들의 **&lt;code&gt;aliases&lt;/code&gt;**입니다.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;통째로 비활성화된 IdP&lt;/strong&gt;는 이벤트에 IdP의 스코프를 담은 CAEP &lt;em&gt;tenant&lt;/em&gt; 주체로
-도착합니다. 이름이 그중 하나의 &lt;code&gt;@&lt;/code&gt; 뒤에 오는 모든 사람(전체를 비교하므로
-&lt;code&gt;evil-univ-a.fr&lt;/code&gt;은 &lt;code&gt;univ-a.fr&lt;/code&gt;이 아닙니다)이며 그 자격 증명이 그 이전에 발급된
+도착합니다. 이름이 그중 하나의 &lt;code&gt;@&lt;/code&gt; 뒤에 오는 모든 사람(전체를 비교하므로&lt;code&gt;evil-univ-a.fr&lt;/code&gt;은 &lt;code&gt;univ-a.fr&lt;/code&gt;이 아닙니다)이며 그 자격 증명이 그 이전에 발급된
 경우 거부되고, &lt;strong&gt;공급자가 더 이상 기억하지 못하는 사용자도 포함됩니다&lt;/strong&gt;.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="how-the-receiver-authenticates"&gt;수신자가 인증하는 방법&lt;span class="hx:absolute hx:-mt-20" id="how-the-receiver-authenticates"&gt;&lt;/span&gt;
-&lt;a href="#how-the-receiver-authenticates" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;OAuth 클라이언트 자격 증명&lt;/strong&gt;(RFC 6749 §4.4, 스코프 &lt;code&gt;ssf&lt;/code&gt;)으로 합니다.
-&lt;code&gt;client_id&lt;/code&gt;와 &lt;code&gt;client_secret_file&lt;/code&gt;을 사용하고, 토큰은 전송자 자체의 토큰
-엔드포인트(OpenID 구성에서 찾거나 &lt;code&gt;token_url&lt;/code&gt;)에서 가져와 만료 전에 갱신합니다.
-&lt;code&gt;token_file&lt;/code&gt;은 장기 베어러 토큰을 발급하는 전송자를 위해 대신 쓸 수 있습니다.
-둘 중 하나여야 하며, 둘 다이거나 둘 다 없으면 거부됩니다.&lt;/p&gt;
+&lt;a href="#how-the-receiver-authenticates" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;OAuth 클라이언트 자격 증명&lt;/strong&gt;(RFC 6749 §4.4, 스코프 &lt;code&gt;ssf&lt;/code&gt;)으로 합니다.&lt;code&gt;client_id&lt;/code&gt;와 &lt;code&gt;client_secret_file&lt;/code&gt;을 사용하고, 토큰은 전송자 자체의 토큰
+엔드포인트(OpenID 구성에서 찾거나 &lt;code&gt;token_url&lt;/code&gt;)에서 가져와 만료 전에 갱신합니다.&lt;code&gt;token_file&lt;/code&gt;은 장기 베어러 토큰을 발급하는 전송자를 위해 대신 쓸 수 있습니다.둘 중 하나여야 하며, 둘 다이거나 둘 다 없으면 거부됩니다.&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
@@ -919,10 +854,8 @@ data-copied-label="복사됨!"
 유지됩니다. 또한 &lt;code&gt;retain&lt;/code&gt; 동안 보관되며, 이는 그것이 무효화할 수 있는 어떤
 자격 증명보다 깁니다(192h는 공급자가 발급하는 가장 수명이 긴 자격 증명인 168h SSH
 인증서보다 깁니다).&lt;/p&gt;
-&lt;p&gt;폐기할 연합 대상이 없는 &lt;code&gt;ssf&lt;/code&gt; 블록, 곧 &lt;code&gt;oidc&lt;/code&gt; 블록도 NFS
-&lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt;도 없는 경우는 거부됩니다.&lt;/p&gt;
-&lt;p&gt;전송 계층은 &lt;a href="https://github.com/hstern/go-ssf" target="_blank" rel="noopener"&gt;github.com/hstern/go-ssf&lt;/a&gt;로,
-디스커버리, RFC 8936 폴러, SET의 JWS 계층입니다. 이벤트가 &lt;strong&gt;의미하는&lt;/strong&gt; 바는
+&lt;p&gt;폐기할 연합 대상이 없는 &lt;code&gt;ssf&lt;/code&gt; 블록, 곧 &lt;code&gt;oidc&lt;/code&gt; 블록도 NFS&lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt;도 없는 경우는 거부됩니다.&lt;/p&gt;
+&lt;p&gt;전송 계층은 &lt;a href="https://github.com/hstern/go-ssf" target="_blank" rel="noopener"&gt;github.com/hstern/go-ssf&lt;/a&gt;로,디스커버리, RFC 8936 폴러, SET의 JWS 계층입니다. 이벤트가 &lt;strong&gt;의미하는&lt;/strong&gt; 바는
 fileshare의 몫입니다.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="it-fails-closed"&gt;fail closed입니다&lt;span class="hx:absolute hx:-mt-20" id="it-fails-closed"&gt;&lt;/span&gt;
 &lt;a href="#it-fails-closed" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
@@ -931,23 +864,18 @@ fileshare의 몫입니다.&lt;/p&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;전송자가 침묵하는 동안 연합 자격 증명은 거부됩니다&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;KRL과 마찬가지로, 전송자가 &lt;code&gt;max_age&lt;/code&gt; 안에 폴링에 응답하지 않으면 &lt;strong&gt;모든 연합 자격
 증명&lt;/strong&gt;이 거부됩니다. &amp;ldquo;폐기가 도착하지 않음&amp;quot;과 &amp;ldquo;도착할 수 없었음&amp;quot;은 똑같아 보이기
-때문입니다. 알림을 설정할 메트릭은 &lt;code&gt;fileshare_ssf_last_heard_seconds&lt;/code&gt;이고,
-&lt;code&gt;fileshare_ssf_revoked_subjects&lt;/code&gt;는 보관 중인 폐기의 수입니다.
-&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/administration/health/#what-to-alert-on"&gt;상태 점검과 메트릭&lt;/a&gt;을
+때문입니다. 알림을 설정할 메트릭은 &lt;code&gt;fileshare_ssf_last_heard_seconds&lt;/code&gt;이고,&lt;code&gt;fileshare_ssf_revoked_subjects&lt;/code&gt;는 보관 중인 폐기의 수입니다.&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/administration/health/#what-to-alert-on"&gt;상태 점검과 메트릭&lt;/a&gt;을
 참고하십시오.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="checked-end-to-end"&gt;처음부터 끝까지 검증&lt;span class="hx:absolute hx:-mt-20" id="checked-end-to-end"&gt;&lt;/span&gt;
-&lt;a href="#checked-end-to-end" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;go-authn/bridge의 상호 운용 레인
-(&lt;a href="https://github.com/go-authn/bridge/pull/12" target="_blank" rel="noopener"&gt;#12&lt;/a&gt;,
-&lt;a href="https://github.com/go-authn/bridge/pull/17" target="_blank" rel="noopener"&gt;#17&lt;/a&gt;)이 fileshare v0.13.0을 실제
+&lt;a href="#checked-end-to-end" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;go-authn/bridge의 상호 운용 레인(&lt;a href="https://github.com/go-authn/bridge/pull/12" target="_blank" rel="noopener"&gt;#12&lt;/a&gt;,&lt;a href="https://github.com/go-authn/bridge/pull/17" target="_blank" rel="noopener"&gt;#17&lt;/a&gt;)이 fileshare v0.13.0을 실제
 bridge에 대해 판정합니다. KRL, NFS의 CRL, SSF로 폐기된 WebDAV 토큰, 스코프로
 비활성화된 IdP, 그리고 SSF를 통한 opkssh로, 어떤 폐기 목록도 닿지 않는
 경우입니다.&lt;/p&gt;</description></item><item><title>무엇이 무엇을 폐기하는가</title><link>https://go-fileshare.github.io/docs/0.31/ko/security/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/ko/security/</guid><description>
 &lt;p&gt;자격 증명은 제시되는 시점에 검사됩니다. 이후에 사용자를 회수하는 것(퇴사한
-직원, go-authn/bridge에서 비활성화된 계정, 통째로 꺼진 IdP)은 그에게 발급된
-&lt;strong&gt;모든&lt;/strong&gt; 자격 증명과 그것으로 이미 열린 세션에 미쳐야 합니다. 여기의 자격 증명은
+직원, go-authn/bridge에서 비활성화된 계정, 통째로 꺼진 IdP)은 그에게 발급된&lt;strong&gt;모든&lt;/strong&gt; 자격 증명과 그것으로 이미 열린 세션에 미쳐야 합니다. 여기의 자격 증명은
 종류마다 발급되고 검사되는 방식이 다르므로, 각각 다른 메커니즘으로 회수합니다.&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
@@ -1000,8 +928,7 @@ bridge에 대해 판정합니다. KRL, NFS의 CRL, SSF로 폐기된 WebDAV 토�
 &lt;p&gt;세 번째 열의 메커니즘이 없으면 자격 증명은 만료될 때까지 유효하며, 인증서나
 토큰의 경우 그 기간이 곧 수명입니다.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="every-one-of-them-fails-closed"&gt;그 모두가 안전하게 차단됩니다(fail closed)&lt;span class="hx:absolute hx:-mt-20" id="every-one-of-them-fails-closed"&gt;&lt;/span&gt;
-&lt;a href="#every-one-of-them-fails-closed" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;가져올 수 없는 폐기 목록, &lt;code&gt;max_age&lt;/code&gt;보다 오래된 사본, 자체 &lt;code&gt;NextUpdate&lt;/code&gt;가 지난 CRL,
-&lt;code&gt;max_age&lt;/code&gt; 안에 응답이 없는 공유 신호 전송자. 이 중 어느 것도 &amp;ldquo;폐기된 것이 없음&amp;quot;으로
+&lt;a href="#every-one-of-them-fails-closed" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;가져올 수 없는 폐기 목록, &lt;code&gt;max_age&lt;/code&gt;보다 오래된 사본, 자체 &lt;code&gt;NextUpdate&lt;/code&gt;가 지난 CRL,&lt;code&gt;max_age&lt;/code&gt; 안에 응답이 없는 공유 신호 전송자. 이 중 어느 것도 &amp;ldquo;폐기된 것이 없음&amp;quot;으로
 해석되지 않습니다. &amp;ldquo;이 서버는 알지 못함&amp;quot;이며, 그 메커니즘이 관할하는 자격 증명은
 다시 알게 될 때까지 &lt;strong&gt;거부됩니다&lt;/strong&gt;.&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
@@ -1011,8 +938,7 @@ bridge에 대해 판정합니다. KRL, NFS의 CRL, SSF로 폐기된 WebDAV 토�
 &lt;p&gt;목록에 접근할 수 없을 때 모든 것을 통과시키는 폐기 검사는 목록을 막을 수 있는
 공격자에게 무력화되는 검사입니다. 브라우저의 soft-fail OCSP가 &amp;ldquo;충돌하면 끊어지는
 안전벨트&amp;quot;라고 불린 이유입니다. 그러므로 목록이나 전송자는 그것이 관할하는
-로그인만큼 안정적으로 제공되어야 하며, 목록이 낡아 가고 있음을 알려 주는 메트릭이
-&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/administration/health/#what-to-alert-on"&gt;알림을 설정할 대상&lt;/a&gt;입니다.&lt;/p&gt;
+로그인만큼 안정적으로 제공되어야 하며, 목록이 낡아 가고 있음을 알려 주는 메트릭이&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/administration/health/#what-to-alert-on"&gt;알림을 설정할 대상&lt;/a&gt;입니다.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -1021,7 +947,6 @@ bridge에 대해 판정합니다. KRL, NFS의 CRL, SSF로 폐기된 WebDAV 토�
 산입됩니다. 또한 목록은 &lt;strong&gt;HTTPS로만&lt;/strong&gt; 가져옵니다. 경로상의 공격자가 바꿀 수 있는
 목록은 아무것도 폐기하지 못하므로, 평문 HTTP URL은 시작할 때 거부됩니다.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="transport"&gt;전송&lt;span class="hx:absolute hx:-mt-20" id="transport"&gt;&lt;/span&gt;
-&lt;a href="#transport" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;자격 증명 자체는 네트워크를 평문으로 건너서는 안 됩니다. 그것이
-&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/security/tls/"&gt;TLS&lt;/a&gt;입니다. TLS 위의 WebDAV, S3, NFS, 파일 또는
+&lt;a href="#transport" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;자격 증명 자체는 네트워크를 평문으로 건너서는 안 됩니다. 그것이&lt;a href="https://go-fileshare.github.io/docs/0.31/ko/security/tls/"&gt;TLS&lt;/a&gt;입니다. TLS 위의 WebDAV, S3, NFS, 파일 또는
 ACME에서 가져온 인증서, 그리고 v0.9.0부터는 &lt;strong&gt;비밀번호를 쓰는 WebDAV의 평문
 거부&lt;/strong&gt;입니다.&lt;/p&gt;</description></item></channel></rss>

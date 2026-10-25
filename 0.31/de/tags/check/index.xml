@@ -24,12 +24,10 @@ data-copied-label="Kopiert!"
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;p&gt;Jedes Image wird so geöffnet, wie der Server es öffnet, und wieder geschlossen; nichts wird
-bereitgestellt. Das heißt &lt;strong&gt;lesend und schreibend&lt;/strong&gt; für eine Freigabe, die nicht &lt;code&gt;read_only = true&lt;/code&gt; sagt
-– nur ein Gerät wird immer schreibgeschützt und exklusiv geöffnet, sodass ein Gerät, das der
+bereitgestellt. Das heißt &lt;strong&gt;lesend und schreibend&lt;/strong&gt; für eine Freigabe, die nicht &lt;code&gt;read_only = true&lt;/code&gt; sagt– nur ein Gerät wird immer schreibgeschützt und exklusiv geöffnet, sodass ein Gerät, das der
 laufende Server hält, hier als belegt abgelehnt werden kann.&lt;/p&gt;
 &lt;p&gt;Es gibt aus, &lt;strong&gt;woher Zugangsdaten kommen, und nie, was sie enthalten&lt;/strong&gt; – und die
-Spalten pro Person sind der Grund, warum es
-&lt;a href="https://github.com/go-authn/directory" target="_blank" rel="noopener"&gt;&lt;code&gt;Identity.Can&lt;/code&gt;&lt;/a&gt; gibt: eli ist in
+Spalten pro Person sind der Grund, warum es&lt;a href="https://github.com/go-authn/directory" target="_blank" rel="noopener"&gt;&lt;code&gt;Identity.Can&lt;/code&gt;&lt;/a&gt; gibt: eli ist in
 derselben Gruppe wie dora, und SMB kann ihn trotzdem nicht bedienen, weil LDAP sein
 Passwort hält und es niemandem gibt.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="reading-the-columns"&gt;Die Spalten lesen&lt;span class="hx:absolute hx:-mt-20" id="reading-the-columns"&gt;&lt;/span&gt;
@@ -64,8 +62,7 @@ Passwort hält und es niemandem gibt.&lt;/p&gt;
 die Konfiguration verlässt, sofern es zutrifft:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;bei einem &lt;code&gt;oidc&lt;/code&gt;-Block, dass seine Tokens nur über WebDAV akzeptiert werden, und
-ob die Namen des Anbieters lokale Namen sind (&lt;code&gt;local_names&lt;/code&gt;) – siehe
-&lt;a href="https://go-fileshare.github.io/docs/0.31/de/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;Identität&lt;/a&gt;;&lt;/li&gt;
+ob die Namen des Anbieters lokale Namen sind (&lt;code&gt;local_names&lt;/code&gt;) – siehe&lt;a href="https://go-fileshare.github.io/docs/0.31/de/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;Identität&lt;/a&gt;;&lt;/li&gt;
 &lt;li&gt;pro Protokoll, was &lt;strong&gt;verschlüsselt&lt;/strong&gt; ist und was &lt;strong&gt;absichtlich im Klartext&lt;/strong&gt;
 – siehe &lt;a href="https://go-fileshare.github.io/docs/0.31/de/security/tls/#what-check-says"&gt;TLS&lt;/a&gt;;&lt;/li&gt;
 &lt;li&gt;woher eine &lt;strong&gt;Sperrliste&lt;/strong&gt; kommt und was geschieht, solange sie nicht
@@ -93,5 +90,4 @@ data-copied-label="Kopiert!"
 &lt;/div&gt;
 &lt;p&gt;&lt;code&gt;check&lt;/code&gt; ruft die Listen nicht ab: Es sagt, woher sie kommen und was ihr
 Fehlen bewirken wird. Das Discovery-Dokument und die Schlüssel des Identitätsanbieters
-werden dagegen &lt;strong&gt;sehr wohl&lt;/strong&gt; gelesen – ein &lt;code&gt;oidc&lt;/code&gt;-Block, dessen Aussteller nicht erreichbar ist,
-wird von &lt;code&gt;check&lt;/code&gt; abgelehnt.&lt;/p&gt;</description></item></channel></rss>
+werden dagegen &lt;strong&gt;sehr wohl&lt;/strong&gt; gelesen – ein &lt;code&gt;oidc&lt;/code&gt;-Block, dessen Aussteller nicht erreichbar ist,wird von &lt;code&gt;check&lt;/code&gt; abgelehnt.&lt;/p&gt;</description></item></channel></rss>

@@ -70,8 +70,7 @@ los tres controladores de bases de datos, &lt;code&gt;noldap&lt;/code&gt; el cli
 &lt;p&gt;Son las cifras que da el README de fileshare, medidas antes de que llegara la API de
 administración; la tabla de abajo es la medición posterior.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="the-admin-api-and-nogrpc"&gt;La API de administración, y &lt;code&gt;nogrpc&lt;/code&gt;&lt;span class="hx:absolute hx:-mt-20" id="the-admin-api-and-nogrpc"&gt;&lt;/span&gt;
-&lt;a href="#the-admin-api-and-nogrpc" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;La &lt;a href="https://go-fileshare.github.io/docs/0.31/es/administration/"&gt;API de administración&lt;/a&gt; trajo gRPC y protobuf,
-y están detrás de &lt;code&gt;nogrpc&lt;/code&gt; (linux/amd64, medido el 2026-09-29, cuando las filas de
+&lt;a href="#the-admin-api-and-nogrpc" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;La &lt;a href="https://go-fileshare.github.io/docs/0.31/es/administration/"&gt;API de administración&lt;/a&gt; trajo gRPC y protobuf,y están detrás de &lt;code&gt;nogrpc&lt;/code&gt; (linux/amd64, medido el 2026-09-29, cuando las filas de
 arriba habían crecido hasta 34,1 MB para todo):&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
@@ -107,14 +106,10 @@ sin ella no hace lo que dice.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;&lt;code&gt;nogrpc&lt;/code&gt; deja fuera la API de administración y, con ella, el
-&lt;a href="https://go-fileshare.github.io/docs/0.31/es/administration/volumes/"&gt;aprovisionador&lt;/a&gt;. &lt;a href="https://go-fileshare.github.io/docs/0.31/es/administration/health/"&gt;Salud y métricas&lt;/a&gt;
+&lt;p&gt;&lt;code&gt;nogrpc&lt;/code&gt; deja fuera la API de administración y, con ella, el&lt;a href="https://go-fileshare.github.io/docs/0.31/es/administration/volumes/"&gt;aprovisionador&lt;/a&gt;. &lt;a href="https://go-fileshare.github.io/docs/0.31/es/administration/health/"&gt;Salud y métricas&lt;/a&gt;
 son HTTP simple y se quedan.&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;-tags noprovisioner&lt;/code&gt; deja fuera solo el aprovisionador, el rol privilegiado
-&lt;code&gt;fileshare provisioner&lt;/code&gt;, y con él zfs, btrfs y projquota de go-fsctl: un servidor
-que nunca sirve volúmenes no necesita cargar con el código que los crea.
-&lt;code&gt;fileshare provisioner&lt;/code&gt; en una compilación así lo indica, en lugar de decir
-«comando desconocido».&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;-tags noprovisioner&lt;/code&gt; deja fuera solo el aprovisionador, el rol privilegiado&lt;code&gt;fileshare provisioner&lt;/code&gt;, y con él zfs, btrfs y projquota de go-fsctl: un servidor
+que nunca sirve volúmenes no necesita cargar con el código que los crea.&lt;code&gt;fileshare provisioner&lt;/code&gt; en una compilación así lo indica, en lugar de decir«comando desconocido».&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;nosql&lt;/code&gt; es con diferencia la palanca más grande: PostgreSQL, MySQL y SQLite juntos
 pesan &lt;strong&gt;11,7 MB&lt;/strong&gt;, más que todos los protocolos de este programa juntos. Un sitio
 cuyos usuarios están en el archivo la quiere. Los controladores los importa el
@@ -126,21 +121,18 @@ etiqueta de compilación y no en un fork.&lt;/p&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Un protocolo con el que este binario no se compiló&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;A una configuración que nombra uno se le dice &lt;em&gt;eso&lt;/em&gt;, y no «no existe tal
 protocolo»: la diferencia entre una errata y una etiqueta de compilación. Lo
-mismo vale para &lt;code&gt;opkssh_client_id&lt;/code&gt; con &lt;code&gt;noopenpubkey&lt;/code&gt; y para un bloque
-&lt;code&gt;admin&lt;/code&gt; con &lt;code&gt;nogrpc&lt;/code&gt;.&lt;/p&gt;
+mismo vale para &lt;code&gt;opkssh_client_id&lt;/code&gt; con &lt;code&gt;noopenpubkey&lt;/code&gt; y para un bloque&lt;code&gt;admin&lt;/code&gt; con &lt;code&gt;nogrpc&lt;/code&gt;.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="why-not-subprocess-plugins"&gt;Por qué no plugins en subprocesos&lt;span class="hx:absolute hx:-mt-20" id="why-not-subprocess-plugins"&gt;&lt;/span&gt;
-&lt;a href="#why-not-subprocess-plugins" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Se &lt;strong&gt;midió en lugar de argumentarse&lt;/strong&gt;: &lt;code&gt;hashicorp/go-plugin&lt;/code&gt; trae gRPC y protobuf,
-que cuestan &lt;strong&gt;13,2 MB por sí solos&lt;/strong&gt;, más que todo este binario con los tres
+&lt;a href="#why-not-subprocess-plugins" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Se &lt;strong&gt;midió en lugar de argumentarse&lt;/strong&gt;: &lt;code&gt;hashicorp/go-plugin&lt;/code&gt; trae gRPC y protobuf,que cuestan &lt;strong&gt;13,2 MB por sí solos&lt;/strong&gt;, más que todo este binario con los tres
 protocolos y todos los controladores. Un host de plugins tendría el doble de tamaño
 antes de cargar nada, y cada binario de plugin volvería a llevar gRPC.&lt;/p&gt;
 &lt;p&gt;En cuanto a superficie de ataque, una etiqueta es también la herramienta más sólida
 para todo lo que no ejecuta: &lt;strong&gt;el código que nunca se compiló no se puede
 alcanzar&lt;/strong&gt;, esté aislado o no.&lt;/p&gt;
-&lt;p&gt;Lo que las etiquetas &lt;em&gt;no&lt;/em&gt; dan es aislamiento entre los protocolos que &lt;strong&gt;sí&lt;/strong&gt; ejecuta,
-ni una forma de añadir un protocolo sin recompilar. Ambas cosas son reales, y ambas
+&lt;p&gt;Lo que las etiquetas &lt;em&gt;no&lt;/em&gt; dan es aislamiento entre los protocolos que &lt;strong&gt;sí&lt;/strong&gt; ejecuta,ni una forma de añadir un protocolo sin recompilar. Ambas cosas son reales, y ambas
 son argumentos a favor de una frontera de proceso y no de un binario más pequeño, que
 es &lt;a href="https://go-fileshare.github.io/docs/0.31/es/operations/isolation/"&gt;un proceso por protocolo&lt;/a&gt;, con este mismo binario, no un
 framework de plugins.&lt;/p&gt;</description></item></channel></rss>

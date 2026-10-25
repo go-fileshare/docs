@@ -1,12 +1,6 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – クォータ</title><link>https://go-fileshare.github.io/docs/0.31/ja/tags/%E3%82%AF%E3%82%A9%E3%83%BC%E3%82%BF/</link><description>Recent content in クォータ on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>ja</language><atom:link href="https://go-fileshare.github.io/docs/0.31/ja/tags/%E3%82%AF%E3%82%A9%E3%83%BC%E3%82%BF/index.xml" rel="self" type="application/rss+xml"/><item><title>ボリューム: fileshare が作成するストレージ</title><link>https://go-fileshare.github.io/docs/0.31/ja/administration/volumes/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/ja/administration/volumes/</guid><description>
-&lt;p&gt;v0.21.0 以降、&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/administration/"&gt;管理 API&lt;/a&gt;は、共有が提供する&lt;strong&gt;ストレージを作成&lt;/strong&gt;し、
-そこから共有を提供できます。対象は &lt;strong&gt;ZFS データセット&lt;/strong&gt;、&lt;strong&gt;btrfs サブボリューム&lt;/strong&gt;、
-&lt;strong&gt;プロジェクトクォータ下の XFS または ext4 ディレクトリ&lt;/strong&gt;で、サイズ指定、所有者設定、追跡が行われます。
-Linux のみです。Ceph はまだサポートされていません。&lt;/p&gt;
-&lt;p&gt;そのストレージの作成には &lt;code&gt;CAP_SYS_ADMIN&lt;/code&gt;(quotactl、btrfs クォータの ioctl、&lt;code&gt;/dev/zfs&lt;/code&gt;、mount(2))が必要です。
-&lt;code&gt;fileshare serve&lt;/code&gt; は見知らぬ相手に対して 5 つのネットワークプロトコルを解析するため、特権を持ちません。
-特権を必要とする部分は、同じバイナリの 2 つ目のロールである &lt;code&gt;fileshare provisioner&lt;/code&gt; が担当し、
-Unix ソケットと、小さく閉じたプロトコルの背後で動作します。&lt;/p&gt;
+&lt;p&gt;v0.21.0 以降、&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/administration/"&gt;管理 API&lt;/a&gt;は、共有が提供する&lt;strong&gt;ストレージを作成&lt;/strong&gt;し、そこから共有を提供できます。対象は &lt;strong&gt;ZFS データセット&lt;/strong&gt;、&lt;strong&gt;btrfs サブボリューム&lt;/strong&gt;、&lt;strong&gt;プロジェクトクォータ下の XFS または ext4 ディレクトリ&lt;/strong&gt;で、サイズ指定、所有者設定、追跡が行われます。Linux のみです。Ceph はまだサポートされていません。&lt;/p&gt;
+&lt;p&gt;そのストレージの作成には &lt;code&gt;CAP_SYS_ADMIN&lt;/code&gt;(quotactl、btrfs クォータの ioctl、&lt;code&gt;/dev/zfs&lt;/code&gt;、mount(2))が必要です。&lt;code&gt;fileshare serve&lt;/code&gt; は見知らぬ相手に対して 5 つのネットワークプロトコルを解析するため、特権を持ちません。特権を必要とする部分は、同じバイナリの 2 つ目のロールである &lt;code&gt;fileshare provisioner&lt;/code&gt; が担当し、Unix ソケットと、小さく閉じたプロトコルの背後で動作します。&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;pre&gt;&lt;code&gt; admin gRPC (unix socket 0600 &amp;#43; peer uid, or mTLS)
 operator ─────────────────────────────────────────────▶ fileshare serve
@@ -29,10 +23,7 @@ data-copied-label="コピーしました！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;2 つのデーモンではなく 1 つのバイナリなので、デプロイするバージョンは 1 つ、プロトコル定義も 1 つです。
-ストレージ自体の操作は &lt;a href="https://go-fsctl.github.io/" target="_blank" rel="noopener"&gt;go-fsctl&lt;/a&gt; が行います(純粋な Go で、
-&lt;code&gt;zfs&lt;/code&gt; や &lt;code&gt;btrfs&lt;/code&gt; コマンドは使いません)。設計と、構築中に変わったことは、fileshare リポジトリの
-&lt;a href="https://github.com/go-fileshare/fileshare/blob/v0.28.0/docs/volumes.md" target="_blank" rel="noopener"&gt;&lt;code&gt;docs/volumes.md&lt;/code&gt;&lt;/a&gt;にあります。&lt;/p&gt;
+&lt;p&gt;2 つのデーモンではなく 1 つのバイナリなので、デプロイするバージョンは 1 つ、プロトコル定義も 1 つです。ストレージ自体の操作は &lt;a href="https://go-fsctl.github.io/" target="_blank" rel="noopener"&gt;go-fsctl&lt;/a&gt; が行います(純粋な Go で、&lt;code&gt;zfs&lt;/code&gt; や &lt;code&gt;btrfs&lt;/code&gt; コマンドは使いません)。設計と、構築中に変わったことは、fileshare リポジトリの&lt;a href="https://github.com/go-fileshare/fileshare/blob/v0.28.0/docs/volumes.md" target="_blank" rel="noopener"&gt;&lt;code&gt;docs/volumes.md&lt;/code&gt;&lt;/a&gt;にあります。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="both-processes-configured"&gt;両方のプロセスの設定&lt;span class="hx:absolute hx:-mt-20" id="both-processes-configured"&gt;&lt;/span&gt;
 &lt;a href="#both-processes-configured" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;fileshare serve&lt;/code&gt; を、ユーザー &lt;code&gt;fileshare&lt;/code&gt;(uid 990)として実行する場合:&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
@@ -152,12 +143,8 @@ data-copied-label="コピーしました！"
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;プロビジョナーのファイルには &lt;code&gt;provisioner&lt;/code&gt; ブロックしか含めません。fileshare 自身のファイルを
-誤って渡した場合は、半端に読み込まれるのではなく拒否されます。&lt;/p&gt;
-&lt;p&gt;ボリュームは常に &lt;code&gt;&amp;lt;parent root&amp;gt;/&amp;lt;name&amp;gt;&lt;/code&gt; です。データセット &lt;code&gt;tank/fileshare/&amp;lt;name&amp;gt;&lt;/code&gt; が
-&lt;code&gt;/srv/fileshare/volumes/tank/&amp;lt;name&amp;gt;&lt;/code&gt; にマウントされ(&lt;code&gt;refquota&lt;/code&gt; 付き)、btrfs サブボリュームは qgroup で制限され、
-XFS または ext4 のディレクトリには範囲内のプロジェクト ID とハードのブロック制限が設定されます。
-XFS と ext4 には &lt;code&gt;prjquota&lt;/code&gt; マウントオプションが必要です(ext4 では &lt;code&gt;project,quota&lt;/code&gt; 機能も必要)。&lt;/p&gt;
+&lt;p&gt;プロビジョナーのファイルには &lt;code&gt;provisioner&lt;/code&gt; ブロックしか含めません。fileshare 自身のファイルを誤って渡した場合は、半端に読み込まれるのではなく拒否されます。&lt;/p&gt;
+&lt;p&gt;ボリュームは常に &lt;code&gt;&amp;lt;parent root&amp;gt;/&amp;lt;name&amp;gt;&lt;/code&gt; です。データセット &lt;code&gt;tank/fileshare/&amp;lt;name&amp;gt;&lt;/code&gt; が&lt;code&gt;/srv/fileshare/volumes/tank/&amp;lt;name&amp;gt;&lt;/code&gt; にマウントされ(&lt;code&gt;refquota&lt;/code&gt; 付き)、btrfs サブボリュームは qgroup で制限され、XFS または ext4 のディレクトリには範囲内のプロジェクト ID とハードのブロック制限が設定されます。XFS と ext4 には &lt;code&gt;prjquota&lt;/code&gt; マウントオプションが必要です(ext4 では &lt;code&gt;project,quota&lt;/code&gt; 機能も必要)。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="the-systemd-pair"&gt;systemd のペア&lt;span class="hx:absolute hx:-mt-20" id="the-systemd-pair"&gt;&lt;/span&gt;
 &lt;a href="#the-systemd-pair" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;プロビジョナー:&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
@@ -221,15 +208,12 @@ data-copied-label="コピーしました！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;サーバーでは &lt;code&gt;ProtectSystem=&lt;/code&gt; を使っても問題ありません。マウントを行うのはプロビジョナーであり、
-マウントはサーバーの名前空間の中へ伝播しても外へは伝播しないため、サーバーの起動後にマウントされた
-ZFS ボリュームもサーバーから見えます。&lt;/p&gt;
+&lt;p&gt;サーバーでは &lt;code&gt;ProtectSystem=&lt;/code&gt; を使っても問題ありません。マウントを行うのはプロビジョナーであり、マウントはサーバーの名前空間の中へ伝播しても外へは伝播しないため、サーバーの起動後にマウントされたZFS ボリュームもサーバーから見えます。&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;例であり、テスト済みのユニットではありません&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;どちらのユニットも CI では実行されません。エンドツーエンドのジョブは、両方のプロセスを
-&lt;code&gt;sudo&lt;/code&gt; の下で実行します。&lt;/p&gt;
+&lt;p&gt;どちらのユニットも CI では実行されません。エンドツーエンドのジョブは、両方のプロセスを&lt;code&gt;sudo&lt;/code&gt; の下で実行します。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -237,15 +221,12 @@ ZFS ボリュームもサーバーから見えます。&lt;/p&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;プロビジョナーを先にアップグレードしてください&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;プロビジョナーは、自身のバージョンが定義していないフィールドを持つメッセージを拒否し、
-接続を閉じます。そのため &lt;code&gt;fileshare serve&lt;/code&gt; と &lt;code&gt;fileshare provisioner&lt;/code&gt; は同じバージョンで
-実行します。&lt;/p&gt;
+&lt;p&gt;プロビジョナーは、自身のバージョンが定義していないフィールドを持つメッセージを拒否し、接続を閉じます。そのため &lt;code&gt;fileshare serve&lt;/code&gt; と &lt;code&gt;fileshare provisioner&lt;/code&gt; は同じバージョンで実行します。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="the-admin-apis-volume-calls"&gt;管理 API のボリューム呼び出し&lt;span class="hx:absolute hx:-mt-20" id="the-admin-apis-volume-calls"&gt;&lt;/span&gt;
-&lt;a href="#the-admin-apis-volume-calls" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;fileshare serve&lt;/code&gt; は、これらをプロビジョナーに中継します
-(&lt;a href="https://github.com/go-fileshare/fileshare/blob/v0.28.0/proto/fileshare/admin/v1/admin.proto" target="_blank" rel="noopener"&gt;&lt;code&gt;admin.proto&lt;/code&gt;&lt;/a&gt;)。&lt;/p&gt;
+&lt;a href="#the-admin-apis-volume-calls" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;fileshare serve&lt;/code&gt; は、これらをプロビジョナーに中継します(&lt;a href="https://github.com/go-fileshare/fileshare/blob/v0.28.0/proto/fileshare/admin/v1/admin.proto" target="_blank" rel="noopener"&gt;&lt;code&gt;admin.proto&lt;/code&gt;&lt;/a&gt;)。&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
@@ -284,13 +265,9 @@ ZFS ボリュームもサーバーから見えます。&lt;/p&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;&lt;code&gt;DeleteShare&lt;/code&gt; がボリュームを削除することはありません。「それを使っている共有」とは、ボリュームから作られた
-共有、&lt;strong&gt;および&lt;/strong&gt;イメージまたはディレクトリがその内側にある共有(設定ファイルのものも含み、提供中、
-無効化中、利用不可のいずれも)を指します。&lt;/p&gt;
-&lt;p&gt;名前は &lt;code&gt;^[a-z0-9][a-z0-9_-]{0,62}$&lt;/code&gt; に一致しなければならず、リクエストがパスを運ぶことはありません。
-プロビジョナー自身の設定にある &lt;code&gt;parent&lt;/code&gt; を名指しします。&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;admin&lt;/code&gt; ブロックで &lt;code&gt;reflection = true&lt;/code&gt; を指定すれば、&lt;code&gt;grpcurl&lt;/code&gt; で呼び出せます。ソケットは 0600 で、
-上の &lt;code&gt;allowed_uids&lt;/code&gt; は fileshare の uid だけを指定しているため、そのユーザーとして実行してください。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;DeleteShare&lt;/code&gt; がボリュームを削除することはありません。「それを使っている共有」とは、ボリュームから作られた共有、&lt;strong&gt;および&lt;/strong&gt;イメージまたはディレクトリがその内側にある共有(設定ファイルのものも含み、提供中、無効化中、利用不可のいずれも)を指します。&lt;/p&gt;
+&lt;p&gt;名前は &lt;code&gt;^[a-z0-9][a-z0-9_-]{0,62}$&lt;/code&gt; に一致しなければならず、リクエストがパスを運ぶことはありません。プロビジョナー自身の設定にある &lt;code&gt;parent&lt;/code&gt; を名指しします。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;admin&lt;/code&gt; ブロックで &lt;code&gt;reflection = true&lt;/code&gt; を指定すれば、&lt;code&gt;grpcurl&lt;/code&gt; で呼び出せます。ソケットは 0600 で、上の &lt;code&gt;allowed_uids&lt;/code&gt; は fileshare の uid だけを指定しているため、そのユーザーとして実行してください。&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nv"&gt;S&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/run/fileshare/admin.sock
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nv"&gt;A&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;fileshare.admin.v1.AdminService
@@ -325,15 +302,11 @@ data-copied-label="コピーしました！"
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h3 data-hextra-search-id="status-codes"&gt;ステータスコード&lt;span class="hx:absolute hx:-mt-20" id="status-codes"&gt;&lt;/span&gt;
-&lt;a href="#status-codes" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;プロビジョナーのコードは、返されたとおりに戻ります。&lt;code&gt;INVALID_ARGUMENT&lt;/code&gt;(文法に合わない名前、不明な parent、
-0 のクォータ)、&lt;code&gt;OUT_OF_RANGE&lt;/code&gt;(&lt;code&gt;max_volume&lt;/code&gt; 超過)、&lt;code&gt;RESOURCE_EXHAUSTED&lt;/code&gt;(クォータまたはリサイズによる
-増分が parent の現在の空きを超える、またはプロジェクト ID の範囲を使い切った)、
-&lt;code&gt;ALREADY_EXISTS&lt;/code&gt;、&lt;code&gt;NOT_FOUND&lt;/code&gt;、&lt;code&gt;FAILED_PRECONDITION&lt;/code&gt;、&lt;code&gt;UNIMPLEMENTED&lt;/code&gt; です。&lt;/p&gt;
+&lt;a href="#status-codes" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;プロビジョナーのコードは、返されたとおりに戻ります。&lt;code&gt;INVALID_ARGUMENT&lt;/code&gt;(文法に合わない名前、不明な parent、0 のクォータ)、&lt;code&gt;OUT_OF_RANGE&lt;/code&gt;(&lt;code&gt;max_volume&lt;/code&gt; 超過)、&lt;code&gt;RESOURCE_EXHAUSTED&lt;/code&gt;(クォータまたはリサイズによる増分が parent の現在の空きを超える、またはプロジェクト ID の範囲を使い切った)、&lt;code&gt;ALREADY_EXISTS&lt;/code&gt;、&lt;code&gt;NOT_FOUND&lt;/code&gt;、&lt;code&gt;FAILED_PRECONDITION&lt;/code&gt;、&lt;code&gt;UNIMPLEMENTED&lt;/code&gt; です。&lt;/p&gt;
 &lt;p&gt;次の 3 つは fileshare 独自のものです。&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;provisioner&lt;/code&gt; が設定されていない場合: &lt;code&gt;FAILED_PRECONDITION&lt;/code&gt;。&lt;/li&gt;
-&lt;li&gt;プロビジョナーがこのサーバーの uid を拒否する場合も &lt;code&gt;FAILED_PRECONDITION&lt;/code&gt;。これは管理呼び出し元が
-してはいけないことではなく、デプロイの誤り(&lt;code&gt;client_uid&lt;/code&gt; が間違っている)であるため。&lt;/li&gt;
+&lt;li&gt;プロビジョナーがこのサーバーの uid を拒否する場合も &lt;code&gt;FAILED_PRECONDITION&lt;/code&gt;。これは管理呼び出し元がしてはいけないことではなく、デプロイの誤り(&lt;code&gt;client_uid&lt;/code&gt; が間違っている)であるため。&lt;/li&gt;
 &lt;li&gt;プロビジョナーが応答しない場合: &lt;code&gt;UNAVAILABLE&lt;/code&gt;。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h2 data-hextra-search-id="what-is-checked-before-a-volume-is-served"&gt;ボリュームを提供する前に検査されること&lt;span class="hx:absolute hx:-mt-20" id="what-is-checked-before-a-volume-is-served"&gt;&lt;/span&gt;
@@ -341,40 +314,22 @@ data-copied-label="コピーしました！"
 &lt;ul&gt;
 &lt;li&gt;パスがクリーンで絶対パスであり、解決後に &lt;code&gt;source_roots&lt;/code&gt; の下にあること。&lt;/li&gt;
 &lt;li&gt;ディレクトリであること。&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;statfs&lt;/code&gt; がその種類のファイルシステムを報告すること(&lt;code&gt;ZFS_SUPER_MAGIC&lt;/code&gt;、
-&lt;code&gt;BTRFS_SUPER_MAGIC&lt;/code&gt;、&lt;code&gt;XFS_SUPER_MAGIC&lt;/code&gt;、&lt;code&gt;EXT4_SUPER_MAGIC&lt;/code&gt;)。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;ZFS&lt;/strong&gt;: マウントポイントであること。そのデバイスが親のデバイスと異なること。マウントされていない
-データセットのディレクトリへの書き込みは、クォータなしで行われてしまいます。(そこにどのデータセットが
-マウントされているかは検証されません。プロビジョナーの応答にはそれが含まれないためです。)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;statfs&lt;/code&gt; がその種類のファイルシステムを報告すること(&lt;code&gt;ZFS_SUPER_MAGIC&lt;/code&gt;、&lt;code&gt;BTRFS_SUPER_MAGIC&lt;/code&gt;、&lt;code&gt;XFS_SUPER_MAGIC&lt;/code&gt;、&lt;code&gt;EXT4_SUPER_MAGIC&lt;/code&gt;)。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;ZFS&lt;/strong&gt;: マウントポイントであること。そのデバイスが親のデバイスと異なること。マウントされていないデータセットのディレクトリへの書き込みは、クォータなしで行われてしまいます。(そこにどのデータセットがマウントされているかは検証されません。プロビジョナーの応答にはそれが含まれないためです。)&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;btrfs&lt;/strong&gt;: サブボリュームのルートであること。parent の下の通常のディレクトリには qgroup がありません。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;XFS と ext4&lt;/strong&gt;: 新しいファイルが継承する、0 でないプロジェクト ID を持つこと。どのプロジェクトにも
-属さないディレクトリは、制限なしで提供されてしまいます。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;XFS と ext4&lt;/strong&gt;: 新しいファイルが継承する、0 でないプロジェクト ID を持つこと。どのプロジェクトにも属さないディレクトリは、制限なしで提供されてしまいます。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;状態ファイルが保持するのはボリュームの&lt;strong&gt;名前&lt;/strong&gt;であり、パスではありません。起動のたびに問い合わせと
-検査が再度行われます。ボリュームが消えている、検査に失敗する、またはプロビジョナーが 10 秒以内に
-応答しない場合、その共有は&lt;strong&gt;定義されたまま提供されず&lt;/strong&gt;、サーバーの残りは起動します。このことは、
-起動時、&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/configuration/check/"&gt;&lt;code&gt;fileshare check&lt;/code&gt;&lt;/a&gt;、および共有の
-&lt;code&gt;unavailable&lt;/code&gt; フィールドで伝えられます。&lt;code&gt;EnableShare&lt;/code&gt; で再試行できます。&lt;/p&gt;
+&lt;p&gt;状態ファイルが保持するのはボリュームの&lt;strong&gt;名前&lt;/strong&gt;であり、パスではありません。起動のたびに問い合わせと検査が再度行われます。ボリュームが消えている、検査に失敗する、またはプロビジョナーが 10 秒以内に応答しない場合、その共有は&lt;strong&gt;定義されたまま提供されず&lt;/strong&gt;、サーバーの残りは起動します。このことは、起動時、&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/configuration/check/"&gt;&lt;code&gt;fileshare check&lt;/code&gt;&lt;/a&gt;、および共有の&lt;code&gt;unavailable&lt;/code&gt; フィールドで伝えられます。&lt;code&gt;EnableShare&lt;/code&gt; で再試行できます。&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;fileshare serve&lt;/code&gt; は、root として、または &lt;code&gt;CAP_SYS_RESOURCE&lt;/code&gt; を持つ状態でのボリュームの提供を拒否します&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;ext4 では、そのどちらもプロジェクトクォータを超えて書き込めます(fs/quota/dquot.c、
-&lt;code&gt;ignore_hardlimit&lt;/code&gt;)。go-fsctl/projquota の CI では、root が 8 MiB のプロジェクトに 16 MiB を
-書き込みました。XFS にはそのような例外はありませんが、ルールはすべての種類に共通する、
-プロセスに対する 1 つのルールです。fileshare は実効 uid と &lt;code&gt;/proc/self/status&lt;/code&gt; の
-&lt;code&gt;CapEff&lt;/code&gt;/&lt;code&gt;CapPrm&lt;/code&gt; を読み取り(permitted のケーパビリティは、&lt;code&gt;capset(2)&lt;/code&gt; 1 回で effective になる)、
-読み取れないステータスは保持しているものとして扱います。拒否するのは&lt;strong&gt;提供&lt;/strong&gt;であって、ボリュームの
-呼び出しではありません。root でストレージを作成するのは無害ですが、root でそこに書き込むのは
-無害ではないからです。&lt;code&gt;fileshare check&lt;/code&gt; はそのどちらであるかを伝えます。プロビジョナーが
-&lt;code&gt;client_uid = 0&lt;/code&gt; を拒否するのも、上のサーバーのユニットに空の &lt;code&gt;CapabilityBoundingSet=&lt;/code&gt; があるのも
-そのためです。&lt;/p&gt;
+&lt;p&gt;ext4 では、そのどちらもプロジェクトクォータを超えて書き込めます(fs/quota/dquot.c、&lt;code&gt;ignore_hardlimit&lt;/code&gt;)。go-fsctl/projquota の CI では、root が 8 MiB のプロジェクトに 16 MiB を書き込みました。XFS にはそのような例外はありませんが、ルールはすべての種類に共通する、プロセスに対する 1 つのルールです。fileshare は実効 uid と &lt;code&gt;/proc/self/status&lt;/code&gt; の&lt;code&gt;CapEff&lt;/code&gt;/&lt;code&gt;CapPrm&lt;/code&gt; を読み取り(permitted のケーパビリティは、&lt;code&gt;capset(2)&lt;/code&gt; 1 回で effective になる)、読み取れないステータスは保持しているものとして扱います。拒否するのは&lt;strong&gt;提供&lt;/strong&gt;であって、ボリュームの呼び出しではありません。root でストレージを作成するのは無害ですが、root でそこに書き込むのは無害ではないからです。&lt;code&gt;fileshare check&lt;/code&gt; はそのどちらであるかを伝えます。プロビジョナーが&lt;code&gt;client_uid = 0&lt;/code&gt; を拒否するのも、上のサーバーのユニットに空の &lt;code&gt;CapabilityBoundingSet=&lt;/code&gt; があるのもそのためです。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="a-full-share"&gt;満杯の共有&lt;span class="hx:absolute hx:-mt-20" id="a-full-share"&gt;&lt;/span&gt;
-&lt;a href="#a-full-share" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;XFS は満杯のプロジェクトを &lt;code&gt;ENOSPC&lt;/code&gt; で伝え、ext4、btrfs、ZFS は &lt;code&gt;EDQUOT&lt;/code&gt; で伝えます。
-v0.21.1 以降は、すべてのプロトコルが「満杯」と応答します。&lt;/p&gt;
+&lt;a href="#a-full-share" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;XFS は満杯のプロジェクトを &lt;code&gt;ENOSPC&lt;/code&gt; で伝え、ext4、btrfs、ZFS は &lt;code&gt;EDQUOT&lt;/code&gt; で伝えます。v0.21.1 以降は、すべてのプロトコルが「満杯」と応答します。&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
@@ -412,44 +367,25 @@ v0.21.1 以降は、すべてのプロトコルが「満杯」と応答します
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;v0.21.0 では、SMB は &lt;code&gt;STATUS_ACCESS_DENIED&lt;/code&gt; で応答し、NFS はクォータに &lt;code&gt;NFS3ERR_NOSPC&lt;/code&gt; で応答していました。&lt;/p&gt;
-&lt;p&gt;これはボリュームだけでなく、すべての&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/configuration/shares/"&gt;ディレクトリ共有&lt;/a&gt;に適用されます。
-&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/status/"&gt;アップグレードの注意&lt;/a&gt;を参照してください。&lt;/p&gt;
+&lt;p&gt;これはボリュームだけでなく、すべての&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/configuration/shares/"&gt;ディレクトリ共有&lt;/a&gt;に適用されます。&lt;a href="https://go-fileshare.github.io/docs/0.31/ja/status/"&gt;アップグレードの注意&lt;/a&gt;を参照してください。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="the-size-a-client-sees"&gt;クライアントから見えるサイズ&lt;span class="hx:absolute hx:-mt-20" id="the-size-a-client-sees"&gt;&lt;/span&gt;
-&lt;a href="#the-size-a-client-sees" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;すべてのプロトコルは、問い合わせのたびにサーバーに共有のサイズを尋ねます。NFS の &lt;code&gt;FSSTAT&lt;/code&gt;、
-SMB の &lt;code&gt;FileFsFullSizeInformation&lt;/code&gt;、WebDAV の RFC 4331 クォータプロパティです。&lt;/p&gt;
+&lt;a href="#the-size-a-client-sees" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;すべてのプロトコルは、問い合わせのたびにサーバーに共有のサイズを尋ねます。NFS の &lt;code&gt;FSSTAT&lt;/code&gt;、SMB の &lt;code&gt;FileFsFullSizeInformation&lt;/code&gt;、WebDAV の RFC 4331 クォータプロパティです。&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;ZFS、XFS、ext4&lt;/strong&gt;: サイズはボリューム内で &lt;code&gt;statfs&lt;/code&gt; が返すものであり、カーネルはクォータ
-(ZFS では &lt;code&gt;refquota&lt;/code&gt;、XFS と ext4 ではプロジェクトクォータ)で応答します。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;btrfs&lt;/strong&gt;(fileshare v0.23.0 以降): btrfs の &lt;code&gt;statfs&lt;/code&gt; は qgroup を無視してファイルシステム全体を
-報告するため、サーバーは代わりにプロビジョナーの数値を使います。サイズはボリュームのクォータで、
-空き容量はクォータから qgroup の参照バイト数を引いたもの、またはそれより少ない場合は
-ファイルシステム自身の空き容量です。サーバーはバックグラウンドでプロビジョナーに問い合わせ、
-クライアントが尋ねている間は最大 5 秒に 1 回とし、その間は直近の数値で応答します。btrfs は
-トランザクションのコミット時(既定では 30 秒ごと)に qgroup のカウントを更新するため、
-クライアントに見える空き容量は、書き込みに対してその時間だけ遅れることがあります。
-v0.23.0 より前は、btrfs ボリュームはファイルシステム全体を表示していましたが、クォータは
-変わらず有効でした。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;ZFS、XFS、ext4&lt;/strong&gt;: サイズはボリューム内で &lt;code&gt;statfs&lt;/code&gt; が返すものであり、カーネルはクォータ(ZFS では &lt;code&gt;refquota&lt;/code&gt;、XFS と ext4 ではプロジェクトクォータ)で応答します。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;btrfs&lt;/strong&gt;(fileshare v0.23.0 以降): btrfs の &lt;code&gt;statfs&lt;/code&gt; は qgroup を無視してファイルシステム全体を報告するため、サーバーは代わりにプロビジョナーの数値を使います。サイズはボリュームのクォータで、空き容量はクォータから qgroup の参照バイト数を引いたもの、またはそれより少ない場合はファイルシステム自身の空き容量です。サーバーはバックグラウンドでプロビジョナーに問い合わせ、クライアントが尋ねている間は最大 5 秒に 1 回とし、その間は直近の数値で応答します。btrfs はトランザクションのコミット時(既定では 30 秒ごと)に qgroup のカウントを更新するため、クライアントに見える空き容量は、書き込みに対してその時間だけ遅れることがあります。v0.23.0 より前は、btrfs ボリュームはファイルシステム全体を表示していましたが、クォータは変わらず有効でした。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;使用量はプロビジョナーから取得します(&lt;code&gt;used_bytes&lt;/code&gt;)。XFS や ext4 のプロジェクトの使用量の読み取りには
-&lt;code&gt;CAP_SYS_ADMIN&lt;/code&gt; が必要で、fileshare はそれを持たないためです。&lt;/p&gt;
+&lt;p&gt;使用量はプロビジョナーから取得します(&lt;code&gt;used_bytes&lt;/code&gt;)。XFS や ext4 のプロジェクトの使用量の読み取りには&lt;code&gt;CAP_SYS_ADMIN&lt;/code&gt; が必要で、fileshare はそれを持たないためです。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="what-the-provisioner-promises"&gt;プロビジョナーが保証すること&lt;span class="hx:absolute hx:-mt-20" id="what-the-provisioner-promises"&gt;&lt;/span&gt;
 &lt;a href="#what-the-provisioner-promises" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;1 つの uid、カーネルから読み取る。&lt;/strong&gt; 相手は接続時に &lt;code&gt;SO_PEERCRED&lt;/code&gt; で識別され、&lt;code&gt;client_uid&lt;/code&gt; 以外は
-root を含めて、リクエストが 1 バイトもデコードされる前に &lt;code&gt;PERMISSION_DENIED&lt;/code&gt; となります。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;閉じた動詞の集合。&lt;/strong&gt; サービスの外にあるメソッド、デコードできないメッセージ、定義にない
-フィールドを持つメッセージには、応答がありません。接続が閉じられます。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;1 つの uid、カーネルから読み取る。&lt;/strong&gt; 相手は接続時に &lt;code&gt;SO_PEERCRED&lt;/code&gt; で識別され、&lt;code&gt;client_uid&lt;/code&gt; 以外はroot を含めて、リクエストが 1 バイトもデコードされる前に &lt;code&gt;PERMISSION_DENIED&lt;/code&gt; となります。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;閉じた動詞の集合。&lt;/strong&gt; サービスの外にあるメソッド、デコードできないメッセージ、定義にないフィールドを持つメッセージには、応答がありません。接続が閉じられます。&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;自分が作成していないものには決して触れない。&lt;/strong&gt; ZFS: データセット自身の &lt;code&gt;fileshare:volume&lt;/code&gt;
-プロパティ。ユーザープロパティは継承されるため、継承されたマークは自分のものではないので、
-データセットに直接設定されたもの。btrfs: &lt;code&gt;state_file&lt;/code&gt; に記録されたサブボリューム ID と uuid。
-XFS/ext4: parent の範囲内&lt;strong&gt;かつ&lt;/strong&gt;記録されたプロジェクト ID。リサイズ、スナップショット、削除の
-たびに検査されます。&lt;/li&gt;
+プロパティ。ユーザープロパティは継承されるため、継承されたマークは自分のものではないので、データセットに直接設定されたもの。btrfs: &lt;code&gt;state_file&lt;/code&gt; に記録されたサブボリューム ID と uuid。XFS/ext4: parent の範囲内&lt;strong&gt;かつ&lt;/strong&gt;記録されたプロジェクト ID。リサイズ、スナップショット、削除のたびに検査されます。&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;削除は、&lt;code&gt;destroy_data&lt;/code&gt; が設定されていない限り、データとスナップショットを拒否する。&lt;/strong&gt;
 また、実行前に記録されます。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h2 data-hextra-search-id="measured"&gt;計測&lt;span class="hx:absolute hx:-mt-20" id="measured"&gt;&lt;/span&gt;
-&lt;a href="#measured" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;fileshare の CI で、実際のプールとループバックのファイルシステム上で root として、&lt;code&gt;fileshare serve&lt;/code&gt; を
-&lt;code&gt;nobody&lt;/code&gt; として実行し、管理 API 経由で操作しました。WebDAV と SFTP での書き込みは、4 種類すべてで
-32 MiB のボリュームのクォータで止まります。&lt;/p&gt;
+&lt;a href="#measured" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;fileshare の CI で、実際のプールとループバックのファイルシステム上で root として、&lt;code&gt;fileshare serve&lt;/code&gt; を&lt;code&gt;nobody&lt;/code&gt; として実行し、管理 API 経由で操作しました。WebDAV と SFTP での書き込みは、4 種類すべてで32 MiB のボリュームのクォータで止まります。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="not-yet"&gt;まだ実装されていないもの&lt;span class="hx:absolute hx:-mt-20" id="not-yet"&gt;&lt;/span&gt;
 &lt;a href="#not-yet" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;Ceph。&lt;/strong&gt; CephFS のクォータと RBD は後のフェーズです。&lt;/li&gt;

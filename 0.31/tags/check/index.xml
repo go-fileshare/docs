@@ -28,8 +28,7 @@ served. That is &lt;strong&gt;read-write&lt;/strong&gt; for a share that does no
 — only a device is always opened read-only, and exclusively, so a device the
 running server holds can be refused here as busy.&lt;/p&gt;
 &lt;p&gt;It prints &lt;strong&gt;where a credential comes from and never what is in it&lt;/strong&gt; — and the
-per-person columns are why
-&lt;a href="https://github.com/go-authn/directory" target="_blank" rel="noopener"&gt;&lt;code&gt;Identity.Can&lt;/code&gt;&lt;/a&gt; exists: eli is in the
+per-person columns are why&lt;a href="https://github.com/go-authn/directory" target="_blank" rel="noopener"&gt;&lt;code&gt;Identity.Can&lt;/code&gt;&lt;/a&gt; exists: eli is in the
 same group as dora and SMB still cannot serve him, because LDAP holds his
 password and gives it to nobody.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="reading-the-columns"&gt;Reading the columns&lt;span class="hx:absolute hx:-mt-20" id="reading-the-columns"&gt;&lt;/span&gt;
@@ -64,17 +63,14 @@ password and gives it to nobody.&lt;/p&gt;
 the configuration, when it applies:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;with an &lt;code&gt;oidc&lt;/code&gt; block, that its tokens are accepted over WebDAV only, and
-whether the provider&amp;rsquo;s names are local names (&lt;code&gt;local_names&lt;/code&gt;) — see
-&lt;a href="https://go-fileshare.github.io/docs/0.31/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;identity&lt;/a&gt;;&lt;/li&gt;
+whether the provider&amp;rsquo;s names are local names (&lt;code&gt;local_names&lt;/code&gt;) — see&lt;a href="https://go-fileshare.github.io/docs/0.31/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;identity&lt;/a&gt;;&lt;/li&gt;
 &lt;li&gt;per protocol, what is &lt;strong&gt;encrypted&lt;/strong&gt; and what is &lt;strong&gt;in the clear on purpose&lt;/strong&gt;
 — see &lt;a href="https://go-fileshare.github.io/docs/0.31/security/tls/#what-check-says"&gt;TLS&lt;/a&gt;;&lt;/li&gt;
 &lt;li&gt;where a &lt;strong&gt;revocation list&lt;/strong&gt; comes from, and what happens while it cannot be
 fetched — see &lt;a href="https://go-fileshare.github.io/docs/0.31/security/"&gt;what revokes what&lt;/a&gt;;&lt;/li&gt;
-&lt;li&gt;which shares were &lt;strong&gt;taken offline&lt;/strong&gt; through the admin API&amp;rsquo;s &lt;code&gt;DisableShare&lt;/code&gt;,
-and are not served — see &lt;a href="https://go-fileshare.github.io/docs/0.31/administration/#disabling-a-share"&gt;the admin API&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;which shares were &lt;strong&gt;taken offline&lt;/strong&gt; through the admin API&amp;rsquo;s &lt;code&gt;DisableShare&lt;/code&gt;,and are not served — see &lt;a href="https://go-fileshare.github.io/docs/0.31/administration/#disabling-a-share"&gt;the admin API&lt;/a&gt;.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;For a server with a KRL, NFS identities from certificates and shared signals,
-that part reads:&lt;/p&gt;
+&lt;p&gt;For a server with a KRL, NFS identities from certificates and shared signals,that part reads:&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;pre&gt;&lt;code&gt;sftp: the provider&amp;#39;s SSH certificates are checked against the KRL at https://bridge.example.org/ssh/krl, at login and on every operation; while it is unknown or older than 1h0m0s they are refused
 federated people: revocations come from the shared signals transmitter https://bridge.example.org (CAEP session-revoked, polled); whatever the provider issued them before a revocation is refused -- tokens, SSH and OpenPubkey certificates, NFS certificates -- and open sessions stop. Refused while it is not heard from within 10m0s; revocations kept 192h0m0s in /var/lib/fileshare/revocations.json

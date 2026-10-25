@@ -12,8 +12,7 @@ data-copied-label="已复制！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;或者自 v0.9.0 起通过 HTTPS，使用 &lt;code&gt;tls = true&lt;/code&gt; 和
-&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/tls/"&gt;&lt;code&gt;tls&lt;/code&gt; 块&lt;/a&gt;：&lt;/p&gt;
+&lt;p&gt;或者自 v0.9.0 起通过 HTTPS，使用 &lt;code&gt;tls = true&lt;/code&gt; 和&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/security/tls/"&gt;&lt;code&gt;tls&lt;/code&gt; 块&lt;/a&gt;：&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;s3&amp;#34;&lt;/span&gt; {
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:9000&amp;#34;&lt;/span&gt;
@@ -30,8 +29,7 @@ data-copied-label="已复制！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;这是第五个协议，它使映像可以被任何使用对象存储的工具访问，
-例如备份工具、数据管道、&lt;code&gt;rclone&lt;/code&gt;、浏览器的 &lt;code&gt;fetch()&lt;/code&gt;。&lt;strong&gt;无需挂载任何东西。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;这是第五个协议，它使映像可以被任何使用对象存储的工具访问，例如备份工具、数据管道、&lt;code&gt;rclone&lt;/code&gt;、浏览器的 &lt;code&gt;fetch()&lt;/code&gt;。&lt;strong&gt;无需挂载任何东西。&lt;/strong&gt;&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;pre&gt;&lt;code&gt;GET / the shares this person may use, as buckets
 GET /photos?list-type=2 the files in that share, as keys
@@ -48,17 +46,12 @@ data-copied-label="已复制！"
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="a-share-is-a-bucket"&gt;共享就是存储桶&lt;span class="hx:absolute hx:-mt-20" id="a-share-is-a-bucket"&gt;&lt;/span&gt;
-&lt;a href="#a-share-is-a-bucket" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;它基于 &lt;strong&gt;SFTP 使用的同一棵每用户目录树&lt;/strong&gt;提供：这是一个顶层
-为此人可以使用的各个共享的文件系统。因此 alice 无权使用的共享，
-就不是 alice 能看到的存储桶，访问规则只在一处应用，而不是
-复制到第二个协议中。&lt;/p&gt;
+&lt;a href="#a-share-is-a-bucket" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;它基于 &lt;strong&gt;SFTP 使用的同一棵每用户目录树&lt;/strong&gt;提供：这是一个顶层为此人可以使用的各个共享的文件系统。因此 alice 无权使用的共享，就不是 alice 能看到的存储桶，访问规则只在一处应用，而不是复制到第二个协议中。&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;共享内的目录是前缀，而不是对象&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;这正是 S3 客户端已有的认识：它们把以分隔符结尾的前缀显示为
-文件夹。对目录执行 &lt;code&gt;GET&lt;/code&gt; 会返回 &lt;code&gt;NoSuchKey&lt;/code&gt;，因为
-返回 200 会让客户端以为可以获取文件夹的字节。&lt;/p&gt;
+&lt;p&gt;这正是 S3 客户端已有的认识：它们把以分隔符结尾的前缀显示为文件夹。对目录执行 &lt;code&gt;GET&lt;/code&gt; 会返回 &lt;code&gt;NoSuchKey&lt;/code&gt;，因为返回 200 会让客户端以为可以获取文件夹的字节。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -78,42 +71,27 @@ data-copied-label="已复制！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;SigV4 通过由机密计算 HMAC 来证明持有该机密，密码
-从不在网络上传输，与 NTLMv2 完全一样。&lt;/p&gt;
+&lt;p&gt;SigV4 通过由机密计算 HMAC 来证明持有该机密，密码从不在网络上传输，与 NTLMv2 完全一样。&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;因此目录服务必须持有密码，而不仅仅是检查密码&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;只能&lt;em&gt;验证&lt;/em&gt;密码的来源，例如 LDAP 绑定或 bcrypt 列，
-可以应答 WebDAV，但&lt;strong&gt;无法&lt;/strong&gt;应答 S3。&lt;/p&gt;
-&lt;p&gt;NT 哈希同样不行：它是 SMB 可以使用的 MD4，而无法
-由它计算出 HMAC。&lt;strong&gt;只持有 NT 哈希的身份可以通过
-SMB 获得服务，而不能通过 S3&lt;/strong&gt;，二者相近但并不是同一个答案。
-&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt;会打印出对应的列。&lt;/p&gt;
+&lt;p&gt;只能&lt;em&gt;验证&lt;/em&gt;密码的来源，例如 LDAP 绑定或 bcrypt 列，可以应答 WebDAV，但&lt;strong&gt;无法&lt;/strong&gt;应答 S3。&lt;/p&gt;
+&lt;p&gt;NT 哈希同样不行：它是 SMB 可以使用的 MD4，而无法由它计算出 HMAC。&lt;strong&gt;只持有 NT 哈希的身份可以通过SMB 获得服务，而不能通过 S3&lt;/strong&gt;，二者相近但并不是同一个答案。&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt;会打印出对应的列。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;⛔ 程序中的任何地方都没有 &lt;code&gt;Password()&lt;/code&gt; 访问器：密码
-只能通过 &lt;code&gt;Identity.Derive&lt;/code&gt; 获得，它接受一个派生函数并返回
-其结果。对于 S3，派生函数就是恒等函数，因为 SigV4 的密钥
-调度位于 go-filesystems/s3 中；机密只会送到那次签名检查中，
-仅为那一个用户，不会去往别处。&lt;/p&gt;
+&lt;p&gt;⛔ 程序中的任何地方都没有 &lt;code&gt;Password()&lt;/code&gt; 访问器：密码只能通过 &lt;code&gt;Identity.Derive&lt;/code&gt; 获得，它接受一个派生函数并返回其结果。对于 S3，派生函数就是恒等函数，因为 SigV4 的密钥调度位于 go-filesystems/s3 中；机密只会送到那次签名检查中，仅为那一个用户，不会去往别处。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="what-is-served"&gt;提供什么&lt;span class="hx:absolute hx:-mt-20" id="what-is-served"&gt;&lt;/span&gt;
-&lt;a href="#what-is-served" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;ListBuckets&lt;/code&gt;、&lt;code&gt;HeadBucket&lt;/code&gt;、带有前缀、分隔符、max-keys
-和续页的 &lt;code&gt;ListObjectsV2&lt;/code&gt;、&lt;code&gt;HeadObject&lt;/code&gt;，以及带 &lt;code&gt;Range&lt;/code&gt; 的 &lt;code&gt;GetObject&lt;/code&gt;。
-SigV4 的两种形式，标头和预签名，均受支持。&lt;/p&gt;
-&lt;p&gt;对象 API 本身是
-&lt;a href="https://github.com/go-filesystems/s3" target="_blank" rel="noopener"&gt;&lt;code&gt;go-filesystems/s3&lt;/code&gt;&lt;/a&gt;。&lt;/p&gt;
+&lt;a href="#what-is-served" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;ListBuckets&lt;/code&gt;、&lt;code&gt;HeadBucket&lt;/code&gt;、带有前缀、分隔符、max-keys和续页的 &lt;code&gt;ListObjectsV2&lt;/code&gt;、&lt;code&gt;HeadObject&lt;/code&gt;，以及带 &lt;code&gt;Range&lt;/code&gt; 的 &lt;code&gt;GetObject&lt;/code&gt;。SigV4 的两种形式，标头和预签名，均受支持。&lt;/p&gt;
+&lt;p&gt;对象 API 本身是&lt;a href="https://github.com/go-filesystems/s3" target="_blank" rel="noopener"&gt;&lt;code&gt;go-filesystems/s3&lt;/code&gt;&lt;/a&gt;。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="what-is-refused-and-why"&gt;拒绝什么，以及原因&lt;span class="hx:absolute hx:-mt-20" id="what-is-refused-and-why"&gt;&lt;/span&gt;
 &lt;a href="#what-is-refused-and-why" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;写入返回 403&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;PUT&lt;/code&gt;、&lt;code&gt;POST&lt;/code&gt; 和 &lt;code&gt;DELETE&lt;/code&gt; 会被拒绝，返回 &lt;code&gt;AccessDenied&lt;/code&gt;（“this export is
-read-only”）。fileshare 让 S3 服务器保持只读，因为对于某人
-只能读取的共享，必须在与 SFTP 相同的位置拒绝，而这一点尚未
-接入；本版本所基于的 go-filesystems/s3 v0.3.0 无论如何都会拒绝
-所有写入。拒绝胜过写了一半的对象。&lt;/p&gt;
+read-only”）。fileshare 让 S3 服务器保持只读，因为对于某人只能读取的共享，必须在与 SFTP 相同的位置拒绝，而这一点尚未接入；本版本所基于的 go-filesystems/s3 v0.3.0 无论如何都会拒绝所有写入。拒绝胜过写了一半的对象。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -121,29 +99,12 @@ read-only”）。fileshare 让 S3 服务器保持只读，因为对于某人
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;这里不接受持有者令牌&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/protocols/webdav/"&gt;OIDC&lt;/a&gt;只在 WebDAV 上有效，其他地方都不行。S3 使用
-SigV4 签名进行身份验证，这是对请求的 HMAC，没有可容纳持有者令牌的
-字段。&lt;/p&gt;
-&lt;p&gt;通常的做法是 STS &lt;code&gt;AssumeRoleWithWebIdentity&lt;/code&gt;，它把 OIDC
-令牌换成临时凭据，客户端随后用这些凭据签名。那是
-另一种机制，并且&lt;strong&gt;尚未实现&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://go-fileshare.github.io/docs/0.31/zh-cn/protocols/webdav/"&gt;OIDC&lt;/a&gt;只在 WebDAV 上有效，其他地方都不行。S3 使用SigV4 签名进行身份验证，这是对请求的 HMAC，没有可容纳持有者令牌的字段。&lt;/p&gt;
+&lt;p&gt;通常的做法是 STS &lt;code&gt;AssumeRoleWithWebIdentity&lt;/code&gt;，它把 OIDC令牌换成临时凭据，客户端随后用这些凭据签名。那是另一种机制，并且&lt;strong&gt;尚未实现&lt;/strong&gt;。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;分段上传、版本控制、ACL、策略、生命周期规则、复制和
-标签均未实现。设置其中任何一项以及开始分段
-上传，都属于写入，和其他写入一样返回 &lt;code&gt;AccessDenied&lt;/code&gt;。请求其中某一项的
-&lt;code&gt;GET&lt;/code&gt;（&lt;code&gt;?versioning&lt;/code&gt;、&lt;code&gt;?acl&lt;/code&gt;、&lt;code&gt;?tagging&lt;/code&gt;……）不会被区分出来：
-查询参数被忽略，返回存储桶的列表或对象。
-对于 &lt;code&gt;list-type=2&lt;/code&gt; 以外的列表、在 &lt;code&gt;/&lt;/code&gt; 上除 &lt;code&gt;GET&lt;/code&gt; 之外的任何方法，
-以及这里没有任何操作使用的方法，返回 &lt;code&gt;NotImplemented&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;分段上传、版本控制、ACL、策略、生命周期规则、复制和标签均未实现。设置其中任何一项以及开始分段上传，都属于写入，和其他写入一样返回 &lt;code&gt;AccessDenied&lt;/code&gt;。请求其中某一项的&lt;code&gt;GET&lt;/code&gt;（&lt;code&gt;?versioning&lt;/code&gt;、&lt;code&gt;?acl&lt;/code&gt;、&lt;code&gt;?tagging&lt;/code&gt;……）不会被区分出来：查询参数被忽略，返回存储桶的列表或对象。对于 &lt;code&gt;list-type=2&lt;/code&gt; 以外的列表、在 &lt;code&gt;/&lt;/code&gt; 上除 &lt;code&gt;GET&lt;/code&gt; 之外的任何方法，以及这里没有任何操作使用的方法，返回 &lt;code&gt;NotImplemented&lt;/code&gt;。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="two-limits-worth-knowing-before-pointing-it-at-something-large"&gt;在指向大对象之前值得了解的两个限制&lt;span class="hx:absolute hx:-mt-20" id="two-limits-worth-knowing-before-pointing-it-at-something-large"&gt;&lt;/span&gt;
-&lt;a href="#two-limits-worth-knowing-before-pointing-it-at-something-large" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;GetObject&lt;/code&gt; 会把整个对象读入内存。&lt;/strong&gt; 驱动接口只提供
-&lt;code&gt;ReadFile&lt;/code&gt;，没有别的，没有 opener，也没有 reader，因此没有可用的
-流式读取。256 MiB 的上限会返回 &lt;code&gt;EntityTooLarge&lt;/code&gt;，而不是让
-进程崩溃。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;&lt;code&gt;LastModified&lt;/code&gt; 是纪元时间。&lt;/strong&gt; &lt;code&gt;filesystem.Stat&lt;/code&gt; 携带 &lt;code&gt;Mode&lt;/code&gt;、&lt;code&gt;Size&lt;/code&gt; 和
-&lt;code&gt;Inode&lt;/code&gt;，完全没有修改时间。该字段在 S3
-模式中不是可选的，因此必须发送一个值；纪元时间显然不是真实时间，
-而 &lt;code&gt;time.Now()&lt;/code&gt; 则会像是刚刚更改的文件，使每个同步
-工具在每次运行时都复制所有内容。&lt;/p&gt;</description></item></channel></rss>
+&lt;a href="#two-limits-worth-knowing-before-pointing-it-at-something-large" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;GetObject&lt;/code&gt; 会把整个对象读入内存。&lt;/strong&gt; 驱动接口只提供&lt;code&gt;ReadFile&lt;/code&gt;，没有别的，没有 opener，也没有 reader，因此没有可用的流式读取。256 MiB 的上限会返回 &lt;code&gt;EntityTooLarge&lt;/code&gt;，而不是让进程崩溃。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;&lt;code&gt;LastModified&lt;/code&gt; 是纪元时间。&lt;/strong&gt; &lt;code&gt;filesystem.Stat&lt;/code&gt; 携带 &lt;code&gt;Mode&lt;/code&gt;、&lt;code&gt;Size&lt;/code&gt; 和&lt;code&gt;Inode&lt;/code&gt;，完全没有修改时间。该字段在 S3模式中不是可选的，因此必须发送一个值；纪元时间显然不是真实时间，而 &lt;code&gt;time.Now()&lt;/code&gt; 则会像是刚刚更改的文件，使每个同步工具在每次运行时都复制所有内容。&lt;/p&gt;</description></item></channel></rss>
