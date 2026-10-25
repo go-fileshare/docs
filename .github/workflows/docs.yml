@@ -63,6 +63,19 @@ jobs:
           echo "version=${version}" >> "$GITHUB_OUTPUT"
           echo "fileshare ${fileshare}: documentation version ${version}"
 
+      # The translations keep what a translation must not change: every page
+      # in every language, every code block (comments inside configuration
+      # examples are translated on purpose here, hence --comments), every
+      # heading's anchor, every relref and weight. Checked by go-fleettools'
+      # i18ncheck, pinned. Until 2026-10-25 this site ran it by hand only,
+      # as seven languages arrived; go-authn/docs runs it in CI.
+      - uses: actions/setup-go@v7
+        with:
+          go-version: "1.27.3"
+          cache: false
+      - name: Translations
+        run: go run github.com/go-fleettools/fleettools/cmd/i18ncheck@v0.36.0 --comments content
+
       # Each page's creation (first commit, followed across renames) and its
       # author, for the page history at its foot (params.page.history).
       - name: Page history
