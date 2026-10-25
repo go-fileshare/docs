@@ -102,6 +102,18 @@ markup:
       # two slug rules differ; attributes are needed for those.
       attribute:
         title: true
+    extensions:
+      # Chinese and Japanese put no space between words, so the soft line
+      # break of a wrapped source line must not become one. css3draft, not
+      # simple: goldmark's simple style drops a break between any two wide
+      # runes, Hangul included, and Korean DOES separate words with spaces;
+      # css3draft drops it only when "neither side is Hangul"
+      # (yuin/goldmark renderer/html/html.go, Rule2). Same setting as
+      # go-authn/docs v0.4.5.
+      cjk:
+        enable: true
+        eastAsianLineBreaks: true
+        eastAsianLineBreaksStyle: css3draft
   highlight:
     noClasses: false
 
