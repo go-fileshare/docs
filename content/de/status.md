@@ -5,7 +5,19 @@ description: "Welches fileshare-Release diese Seiten beschreiben, was jedes Rele
 tags: [stand, releases]
 ---
 
-Diese Seiten beschreiben **fileshare v0.31.1**.
+Diese Seiten beschreiben **fileshare v0.31.2**.
+
+{{< callout type="info" >}}
+**Ein Release-Binary mit `govulncheck -mode binary` prüfen**
+
+Ab v0.31.2 werden die Release-Binaries mit `-ldflags "-w"` statt `-s -w` gebaut: Die DWARF-Debuginformationen entfallen, die Symboltabelle bleibt erhalten. `govulncheck` liest diese Tabelle und meldet für ein heruntergeladenes Binary daher nur die Schwachstellen der Pakete, die tatsächlich eingebunden sind:
+
+```sh
+govulncheck -mode binary ./fileshare
+```
+
+Bei einem Binary ohne Symbole fällt `govulncheck` auf die Modulebene zurück und meldet auch Schwachstellen von Paketen, die nicht eingebunden sind (zum Beispiel GO-2026-5932, `golang.org/x/crypto/openpgp`). Die Binaries sind 7 bis 10 % größer; funktional ändert sich nichts.
+{{< /callout >}}
 
 {{< callout type="warning" >}}
 **Sicherheit: nehmen Sie v0.31.1, nicht v0.31.0**
@@ -60,6 +72,7 @@ Unter Go 1.27.2 meldet `govulncheck` GO-2026-6809 als erreichbar in fileshare: `
 | v0.30.0 | go-authn/directory v0.14.0: ein [`users "ldap"`-Block]({{< relref "/configuration/identity.md" >}}) liest standardmäßig, was go-authn/authnd v0.11.0 veröffentlicht – Personen `(\|(objectClass=posixAccount)(objectClass=account)(objectClass=uidObject))`, Gruppen `(\|(objectClass=posixGroup)(objectClass=groupOfNames))`, wobei ein `member`-DN nur zählt, wenn er der DN einer Person ist, die die Personensuche geliefert hat. ⛔ Gegenüber dem Verzeichnis einer Einrichtung werden standardmäßig mehr Einträge gelesen; ein ausdrücklicher `user_filter` oder `group_filter` ändert sich nicht |
 | v0.31.0 | [Verzeichnisse unter der Identität jeder Person]({{< relref "/configuration/as-each-person.md" >}}): `identity = "system"` und ein `identity`-Block; als root gestartet, startet `fileshare serve` einen Worker pro Person und Freigabe, mit ihrer uid, gid und ihren Gruppen, und bedient die Protokolle als `service_user`. Nur SFTP und WebDAV; uid 0, uids unter `min_uid` und `deny_uids` werden abgelehnt |
 | v0.31.1 | Sicherheit: mit Go 1.27.3 gebaut, das GO-2026-6809 behebt (`crypto/x509`: `Certificate.Verify` wies bekannte kompromittierte Zwischenzertifikate nicht zurück); `govulncheck` meldete es als erreichbar. `go install` verlangt jetzt Go 1.27.3 und wechselt von selbst dorthin. Aktualisierte Abhängigkeiten |
+| v0.31.2 | Release-Binaries werden mit `-w` statt `-s -w` gebaut: Die Symboltabelle bleibt erhalten, sodass `govulncheck -mode binary` auf einem heruntergeladenen Binary genau ist. Die Binaries sind 7 bis 10 % größer. Keine funktionale Änderung |
 
 {{< callout type="warning" >}}
 **Upgrade auf v0.21.0**

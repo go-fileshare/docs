@@ -5,7 +5,19 @@ description: "本文档描述的是哪个 fileshare 版本，每个版本新增�
 tags: [状态, 发布]
 ---
 
-本文档描述的是 **fileshare v0.31.1**。
+本文档描述的是 **fileshare v0.31.2**。
+
+{{< callout type="info" >}}
+**用 `govulncheck -mode binary` 检查发布二进制文件**
+
+从 v0.31.2 起，发布二进制文件使用 `-ldflags "-w"` 而不是 `-s -w` 构建：DWARF 调试信息被去掉，符号表予以保留。`govulncheck` 会读取这张表，因此对下载的二进制文件，它只报告实际链接进来的包的漏洞：
+
+```sh
+govulncheck -mode binary ./fileshare
+```
+
+对于去掉符号的二进制文件，`govulncheck` 会退回到模块级别，并且还会报告未链接的包的漏洞（例如 GO-2026-5932，`golang.org/x/crypto/openpgp`）。二进制文件会大 7% 到 10%；功能没有变化。
+{{< /callout >}}
 
 {{< callout type="warning" >}}
 **安全：请使用 v0.31.1，而不是 v0.31.0**
@@ -60,6 +72,7 @@ tags: [状态, 发布]
 | v0.30.0 | go-authn/directory v0.14.0：[`users "ldap"` 块]({{< relref "/configuration/identity.md" >}})默认读取 go-authn/authnd v0.11.0 所发布的内容：人员 `(\|(objectClass=posixAccount)(objectClass=account)(objectClass=uidObject))`，组 `(\|(objectClass=posixGroup)(objectClass=groupOfNames))`，`member` 的 DN 仅当它是人员搜索所返回的某人的 DN 时才计入。⛔ 面对机构自己的目录服务，默认会读取更多条目；显式设置的 `user_filter` 或 `group_filter` 不变 |
 | v0.31.0 | [以每个人的身份提供目录服务]({{< relref "/configuration/as-each-person.md" >}})：`identity = "system"` 和 `identity` 块；以 root 启动的 `fileshare serve` 为每个人和每个共享启动一个工作进程，以其 uid、gid 和组运行，并以 `service_user` 提供各协议服务。仅限 SFTP 和 WebDAV；uid 0、低于 `min_uid` 的 uid 以及 `deny_uids` 会被拒绝 |
 | v0.31.1 | 安全：使用 Go 1.27.3 构建，修复了 GO-2026-6809（`crypto/x509`：`Certificate.Verify` 未拒绝已知被攻破的中间证书），`govulncheck` 报告其可被触及。`go install` 现在要求 Go 1.27.3，并会自行切换。依赖更新 |
+| v0.31.2 | 发布二进制文件使用 `-w` 而不是 `-s -w` 构建：保留符号表，因此对下载的二进制文件运行 `govulncheck -mode binary` 的结果是精确的。二进制文件会大 7% 到 10%。功能没有变化 |
 
 {{< callout type="warning" >}}
 **升级到 v0.21.0**
