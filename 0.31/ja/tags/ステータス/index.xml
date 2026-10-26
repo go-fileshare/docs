@@ -1,5 +1,27 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – ステータス</title><link>https://go-fileshare.github.io/docs/0.31/ja/tags/%E3%82%B9%E3%83%86%E3%83%BC%E3%82%BF%E3%82%B9/</link><description>Recent content in ステータス on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>ja</language><atom:link href="https://go-fileshare.github.io/docs/0.31/ja/tags/%E3%82%B9%E3%83%86%E3%83%BC%E3%82%BF%E3%82%B9/index.xml" rel="self" type="application/rss+xml"/><item><title>ステータス</title><link>https://go-fileshare.github.io/docs/0.31/ja/status/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.31/ja/status/</guid><description>
-&lt;p&gt;このページは &lt;strong&gt;fileshare v0.31.1&lt;/strong&gt; について説明しています。&lt;/p&gt;
+&lt;p&gt;このページは &lt;strong&gt;fileshare v0.31.2&lt;/strong&gt; について説明しています。&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;リリースバイナリを &lt;code&gt;govulncheck -mode binary&lt;/code&gt; で確認する&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;v0.31.2 から、リリースバイナリは &lt;code&gt;-s -w&lt;/code&gt; ではなく &lt;code&gt;-ldflags &amp;quot;-w&amp;quot;&lt;/code&gt; でビルドされます。DWARF デバッグ情報は削除され、シンボルテーブルは残ります。&lt;code&gt;govulncheck&lt;/code&gt; はこのテーブルを読むため、ダウンロードしたバイナリでは、実際にリンクされているパッケージの脆弱性だけが報告されます。&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;govulncheck -mode binary ./fileshare&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="コードをコピー"
+aria-label="コードをコピー"
+data-copied-label="コピーしました！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;シンボルが取り除かれたバイナリでは、&lt;code&gt;govulncheck&lt;/code&gt; はモジュール単位の判定に戻り、リンクされていないパッケージの脆弱性（たとえば GO-2026-5932、&lt;code&gt;golang.org/x/crypto/openpgp&lt;/code&gt;）も報告します。バイナリは 7〜10 % 大きくなります。機能の変更はありません。&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
@@ -188,6 +210,10 @@
 &lt;tr&gt;
 &lt;td&gt;v0.31.1&lt;/td&gt;
 &lt;td&gt;セキュリティ: GO-2026-6809（&lt;code&gt;crypto/x509&lt;/code&gt;: &lt;code&gt;Certificate.Verify&lt;/code&gt; が既知の侵害された中間証明書を拒否していなかった）を修正する Go 1.27.3 でビルド。&lt;code&gt;govulncheck&lt;/code&gt; が到達可能と報告した。&lt;code&gt;go install&lt;/code&gt; は Go 1.27.3 を要求し、自動的に切り替わる。依存関係の更新&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.31.2&lt;/td&gt;
+&lt;td&gt;リリースバイナリを &lt;code&gt;-s -w&lt;/code&gt; ではなく &lt;code&gt;-w&lt;/code&gt; でビルド。シンボルテーブルが残るため、ダウンロードしたバイナリに対する &lt;code&gt;govulncheck -mode binary&lt;/code&gt; が正確になる。バイナリは 7〜10 % 大きくなる。機能の変更なし&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
