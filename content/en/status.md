@@ -5,7 +5,19 @@ description: "Which fileshare release these pages describe, what each release ad
 tags: [status, releases]
 ---
 
-These pages describe **fileshare v0.31.1**.
+These pages describe **fileshare v0.31.2**.
+
+{{< callout type="info" >}}
+**Checking a release binary with `govulncheck -mode binary`**
+
+From v0.31.2 the release binaries are built with `-ldflags "-w"` instead of `-s -w`: the DWARF debug information is dropped, the symbol table is kept. `govulncheck` reads that table, so on a downloaded binary it reports only the vulnerabilities of the packages that are actually linked in:
+
+```sh
+govulncheck -mode binary ./fileshare
+```
+
+On a binary stripped of its symbols, `govulncheck` falls back to the module level and also reports vulnerabilities of packages that are not linked (for example GO-2026-5932, `golang.org/x/crypto/openpgp`). The binaries are 7 to 10 % larger; there is no functional change.
+{{< /callout >}}
 
 {{< callout type="warning" >}}
 **Security: take v0.31.1, not v0.31.0**
@@ -60,6 +72,7 @@ Under Go 1.27.2, `govulncheck` reports GO-2026-6809 as reachable in fileshare: `
 | v0.30.0 | go-authn/directory v0.14.0: a [`users "ldap"` block]({{< relref "/configuration/identity.md" >}}) reads by default what go-authn/authnd v0.11.0 publishes — people `(\|(objectClass=posixAccount)(objectClass=account)(objectClass=uidObject))`, groups `(\|(objectClass=posixGroup)(objectClass=groupOfNames))`, a `member` DN counting only when it is the DN of somebody the people search returned. ⛔ Against an institution's own directory, more entries are read by default; an explicit `user_filter` or `group_filter` is unchanged |
 | v0.31.0 | [directories served as each person]({{< relref "/configuration/as-each-person.md" >}}): `identity = "system"` and an `identity` block; `fileshare serve` started as root starts a worker per person and share, running with their uid, gid and groups, and serves the protocols as `service_user`. SFTP and WebDAV only; uid 0, uids below `min_uid` and `deny_uids` are refused |
 | v0.31.1 | security: built with Go 1.27.3, which fixes GO-2026-6809 (`crypto/x509`: `Certificate.Verify` did not reject known compromised intermediate certificates), reported reachable by `govulncheck`. `go install` now requires Go 1.27.3, and switches to it by itself. Dependency updates |
+| v0.31.2 | release binaries are built with `-w` instead of `-s -w`: the symbol table is kept, so `govulncheck -mode binary` on a downloaded binary is precise. Binaries are 7 to 10 % larger. No functional change |
 
 {{< callout type="warning" >}}
 **Upgrading to v0.21.0**

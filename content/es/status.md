@@ -5,7 +5,19 @@ description: "Qué versión de fileshare describen estas páginas, qué añadió
 tags: [estado, versiones]
 ---
 
-Estas páginas describen **fileshare v0.31.1**.
+Estas páginas describen **fileshare v0.31.2**.
+
+{{< callout type="info" >}}
+**Comprobar un binario de versión con `govulncheck -mode binary`**
+
+Desde la v0.31.2 los binarios de versión se compilan con `-ldflags "-w"` en lugar de `-s -w`: se elimina la información de depuración DWARF y se conserva la tabla de símbolos. `govulncheck` lee esa tabla, de modo que en un binario descargado solo señala las vulnerabilidades de los paquetes que realmente están enlazados:
+
+```sh
+govulncheck -mode binary ./fileshare
+```
+
+En un binario sin símbolos, `govulncheck` recurre al nivel de módulo y señala también vulnerabilidades de paquetes que no están enlazados (por ejemplo GO-2026-5932, `golang.org/x/crypto/openpgp`). Los binarios son entre un 7 y un 10 % más grandes; no hay ningún cambio funcional.
+{{< /callout >}}
 
 {{< callout type="warning" >}}
 **Seguridad: use la v0.31.1, no la v0.31.0**
@@ -60,6 +72,7 @@ Con Go 1.27.2, `govulncheck` señala GO-2026-6809 como alcanzable en fileshare: 
 | v0.30.0 | go-authn/directory v0.14.0: un [bloque `users "ldap"`]({{< relref "/configuration/identity.md" >}}) lee por defecto lo que publica go-authn/authnd v0.11.0 — las personas `(\|(objectClass=posixAccount)(objectClass=account)(objectClass=uidObject))`, los grupos `(\|(objectClass=posixGroup)(objectClass=groupOfNames))`, y un DN `member` solo cuenta si es el DN de alguien que devolvió la búsqueda de personas. ⛔ Frente al directorio de una institución se leen más entradas por defecto; un `user_filter` o un `group_filter` explícito no cambia |
 | v0.31.0 | [directorios servidos con la identidad de cada persona]({{< relref "/configuration/as-each-person.md" >}}): `identity = "system"` y un bloque `identity`; `fileshare serve` arrancado como root arranca un worker por persona y recurso, con su uid, su gid y sus grupos, y sirve los protocolos como `service_user`. Solo SFTP y WebDAV; se rechazan el uid 0, los uid por debajo de `min_uid` y los de `deny_uids` |
 | v0.31.1 | seguridad: compilado con Go 1.27.3, que corrige GO-2026-6809 (`crypto/x509`: `Certificate.Verify` no rechazaba certificados intermedios comprometidos conocidos), que `govulncheck` señala como alcanzable. `go install` ahora exige Go 1.27.3 y cambia a él por sí solo. Actualizaciones de dependencias |
+| v0.31.2 | los binarios de versión se compilan con `-w` en lugar de `-s -w`: se conserva la tabla de símbolos, de modo que `govulncheck -mode binary` sobre un binario descargado es preciso. Los binarios son entre un 7 y un 10 % más grandes. Sin cambios funcionales |
 
 {{< callout type="warning" >}}
 **Actualizar a la v0.21.0**

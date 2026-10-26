@@ -5,7 +5,19 @@ description: "このページが説明している fileshare のリリース、�
 tags: [ステータス, リリース]
 ---
 
-このページは **fileshare v0.31.1** について説明しています。
+このページは **fileshare v0.31.2** について説明しています。
+
+{{< callout type="info" >}}
+**リリースバイナリを `govulncheck -mode binary` で確認する**
+
+v0.31.2 から、リリースバイナリは `-s -w` ではなく `-ldflags "-w"` でビルドされます。DWARF デバッグ情報は削除され、シンボルテーブルは残ります。`govulncheck` はこのテーブルを読むため、ダウンロードしたバイナリでは、実際にリンクされているパッケージの脆弱性だけが報告されます。
+
+```sh
+govulncheck -mode binary ./fileshare
+```
+
+シンボルが取り除かれたバイナリでは、`govulncheck` はモジュール単位の判定に戻り、リンクされていないパッケージの脆弱性（たとえば GO-2026-5932、`golang.org/x/crypto/openpgp`）も報告します。バイナリは 7〜10 % 大きくなります。機能の変更はありません。
+{{< /callout >}}
 
 {{< callout type="warning" >}}
 **セキュリティ: v0.31.0 ではなく v0.31.1 を使ってください**
@@ -60,6 +72,7 @@ Go 1.27.2 では、`govulncheck` が fileshare で GO-2026-6809 に到達可能�
 | v0.30.0 | go-authn/directory v0.14.0: [`users "ldap"` ブロック]({{< relref "/configuration/identity.md" >}})は、go-authn/authnd v0.11.0 が公開するものを既定で読み取る。人は `(\|(objectClass=posixAccount)(objectClass=account)(objectClass=uidObject))`、グループは `(\|(objectClass=posixGroup)(objectClass=groupOfNames))`、`member` の DN は、人の検索が返した誰かの DN である場合にのみ数えられる。⛔ 組織自身のディレクトリに対しては、既定でより多くのエントリが読み取られる。明示的な `user_filter` または `group_filter` は変わらない |
 | v0.31.0 | [各人として提供されるディレクトリ]({{< relref "/configuration/as-each-person.md" >}}): `identity = "system"` と `identity` ブロック。root で起動した `fileshare serve` は、人と共有ごとに、その uid、gid、グループで動作するワーカーを起動し、プロトコルは `service_user` として提供する。SFTP と WebDAV のみ。uid 0、`min_uid` 未満の uid、`deny_uids` は拒否される |
 | v0.31.1 | セキュリティ: GO-2026-6809（`crypto/x509`: `Certificate.Verify` が既知の侵害された中間証明書を拒否していなかった）を修正する Go 1.27.3 でビルド。`govulncheck` が到達可能と報告した。`go install` は Go 1.27.3 を要求し、自動的に切り替わる。依存関係の更新 |
+| v0.31.2 | リリースバイナリを `-s -w` ではなく `-w` でビルド。シンボルテーブルが残るため、ダウンロードしたバイナリに対する `govulncheck -mode binary` が正確になる。バイナリは 7〜10 % 大きくなる。機能の変更なし |
 
 {{< callout type="warning" >}}
 **v0.21.0 へのアップグレード**
