@@ -18,7 +18,7 @@ theme: hextra
 # working; other languages will live under their code
 # (/docs/<version>/fr/protocols/sftp/). The versions built with MkDocs (0.4 to
 # 0.21) are English only: the version selector falls back to their English
-# page (layouts/_partials/custom/version-select.html).
+# page (themes/hextra/layouts/_partials/components/version-select.html).
 defaultContentLanguage: en
 defaultContentLanguageInSubdir: false
 
@@ -168,7 +168,7 @@ menu:
       weight: 3
       params:
         type: partial
-        partial: custom/version-select.html
+        partial: components/version-select.html
     - name: Theme
       weight: 4
       params:
@@ -185,6 +185,9 @@ menu:
         icon: github
 
 params:
+  versions:
+    # What the version selector shows with the development icon.
+    development: "dev"
   description: "A disk image or a directory, served over SMB, NFS, WebDAV, SFTP and S3: the same users, the same per-share access, from one configuration file. Pure Go, CGO_ENABLED=0."
 
   # The fileshare release these pages describe. Its minor version is the
@@ -243,7 +246,7 @@ params:
     displayDescription: true
     # "Created on ... by ... · Modified on ... by ..." at the foot of each page:
     # creation from data/pagehistory.json, which the build writes with
-    # themes/hextra/scripts/page-history.sh (it needs the full git history);
+    # the theme's cmd/pagehistory (it needs the full git history);
     # modification from git (enableGitInfo).
     history: true
     contextMenu:
