@@ -125,49 +125,6 @@ mismo vale para &lt;code&gt;opkssh_client_id&lt;/code&gt; con &lt;code&gt;noopen
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;h2 data-hextra-search-id="as-a-webassembly-container-wasip1"&gt;Como contenedor WebAssembly (&lt;code&gt;wasip1&lt;/code&gt;)&lt;span class="hx:absolute hx:-mt-20" id="as-a-webassembly-container-wasip1"&gt;&lt;/span&gt;
-&lt;a href="#as-a-webassembly-container-wasip1" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Desde la v0.32.0 fileshare se compila para &lt;code&gt;GOOS=wasip1 GOARCH=wasm&lt;/code&gt; y sirve
-WebDAV como contenedor WASI, por ejemplo en el motor&lt;a href="https://github.com/go-wasmcontainers" target="_blank" rel="noopener"&gt;go-wasmcontainers&lt;/a&gt; (&lt;code&gt;wctr&lt;/code&gt;), de forma
-nativa o en una pestaña del navegador.&lt;/p&gt;
-&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
-&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nv"&gt;GOOS&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;wasip1 &lt;span class="nv"&gt;GOARCH&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;wasm go build -trimpath &lt;span class="se"&gt;\
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; -tags nosql,noopenpubkey,nosmb,nonfs,nos3,nosftp,nogrpc,nopartitioned,noprovisioner &lt;span class="se"&gt;\
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; -o fileshare.wasm . &lt;span class="c1"&gt;# solo WebDAV: 6,5 MB gzip&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
-&lt;button
-class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
-title="Copiar código"
-aria-label="Copiar código"
-data-copied-label="¡Copiado!"
-&gt;
-&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
-&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
-&lt;/button&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;nosql&lt;/code&gt; y &lt;code&gt;noopenpubkey&lt;/code&gt; son obligatorios: el controlador de SQLite y las
-dependencias de OpenPubkey no se compilan para wasip1. Una compilación
-completa para wasip1 (&lt;code&gt;-tags nosql,noopenpubkey&lt;/code&gt;) pesa 11,5 MB gzip. La CI tiene
-un trabajo &lt;code&gt;wasip1&lt;/code&gt; que compila ambas variantes.&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;La escucha&lt;/strong&gt; pasa por los sockets del motor (&lt;code&gt;stealthrocket/net/wasip1&lt;/code&gt;, la
-extensión de sockets de WasmEdge): el &lt;code&gt;net.Listen&lt;/code&gt; de Go no tiene ninguno en
-wasip1.&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Sin gestión de señales.&lt;/strong&gt; El entorno de ejecución wasip1 de Go espera una
-señal cediendo en un bucle, y un solo &lt;code&gt;signal.Notify&lt;/code&gt; dejó sin servicio al
-sondeador de red, de modo que el listener nunca aceptaba. El cierre consiste en
-que el anfitrión termine el módulo.&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;TLS&lt;/strong&gt; termina delante del contenedor: use &lt;code&gt;plaintext = true&lt;/code&gt; cuando el salto
-hasta él es privado.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
-&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
-&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
-&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Llegará con la próxima versión del playground de go-wasmcontainers&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;Una imagen &lt;code&gt;fileshare&lt;/code&gt; y un botón «explore :PORT» que abre el explorador de
-go-fileshare (v0.4.0) como cliente de navegador del contenedor(&lt;a href="https://github.com/go-wasmcontainers/playground/pull/31" target="_blank" rel="noopener"&gt;playground#31&lt;/a&gt;,pendiente). Todavía no está disponible.&lt;/p&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
 &lt;h2 data-hextra-search-id="why-not-subprocess-plugins"&gt;Por qué no plugins en subprocesos&lt;span class="hx:absolute hx:-mt-20" id="why-not-subprocess-plugins"&gt;&lt;/span&gt;
 &lt;a href="#why-not-subprocess-plugins" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Se &lt;strong&gt;midió en lugar de argumentarse&lt;/strong&gt;: &lt;code&gt;hashicorp/go-plugin&lt;/code&gt; trae gRPC y protobuf,que cuestan &lt;strong&gt;13,2 MB por sí solos&lt;/strong&gt;, más que todo este binario con los tres
 protocolos y todos los controladores. Un host de plugins tendría el doble de tamaño

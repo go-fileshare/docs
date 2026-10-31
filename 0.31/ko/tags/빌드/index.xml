@@ -123,45 +123,6 @@ data-copied-label="복사됨!"
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;h2 data-hextra-search-id="as-a-webassembly-container-wasip1"&gt;WebAssembly 컨테이너로 (&lt;code&gt;wasip1&lt;/code&gt;)&lt;span class="hx:absolute hx:-mt-20" id="as-a-webassembly-container-wasip1"&gt;&lt;/span&gt;
-&lt;a href="#as-a-webassembly-container-wasip1" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;v0.32.0부터 fileshare는 &lt;code&gt;GOOS=wasip1 GOARCH=wasm&lt;/code&gt;용으로 빌드되며 WebDAV를 WASI
-컨테이너로 제공합니다. 예를 들어&lt;a href="https://github.com/go-wasmcontainers" target="_blank" rel="noopener"&gt;go-wasmcontainers&lt;/a&gt; 엔진(&lt;code&gt;wctr&lt;/code&gt;)에서
-네이티브로 또는 브라우저 탭 안에서 실행할 수 있습니다.&lt;/p&gt;
-&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
-&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nv"&gt;GOOS&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;wasip1 &lt;span class="nv"&gt;GOARCH&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;wasm go build -trimpath &lt;span class="se"&gt;\
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; -tags nosql,noopenpubkey,nosmb,nonfs,nos3,nosftp,nogrpc,nopartitioned,noprovisioner &lt;span class="se"&gt;\
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; -o fileshare.wasm . &lt;span class="c1"&gt;# WebDAV 전용: gzip 6.5 MB&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
-&lt;button
-class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
-title="코드 복사"
-aria-label="코드 복사"
-data-copied-label="복사됨!"
-&gt;
-&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
-&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
-&lt;/button&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;nosql&lt;/code&gt;과 &lt;code&gt;noopenpubkey&lt;/code&gt;는 필수입니다. SQLite 드라이버와 OpenPubkey의 의존성은
-wasip1용으로 빌드되지 않습니다. 전체 wasip1 빌드(&lt;code&gt;-tags nosql,noopenpubkey&lt;/code&gt;)는
-gzip 11.5 MB입니다. CI에는 두 변형을 모두 빌드하는 &lt;code&gt;wasip1&lt;/code&gt; 작업이 있습니다.&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;수신 대기&lt;/strong&gt;는 엔진의 소켓(&lt;code&gt;stealthrocket/net/wasip1&lt;/code&gt;, WasmEdge 소켓 확장)을
-통해 이루어집니다. Go의 &lt;code&gt;net.Listen&lt;/code&gt;은 wasip1에서 소켓이 없습니다.&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;시그널 처리 없음.&lt;/strong&gt; Go의 wasip1 런타임은 루프에서 양보하며 시그널을 기다리기
-때문에, &lt;code&gt;signal.Notify&lt;/code&gt; 하나만으로도 네트워크 폴러가 굶어 리스너가 아무것도
-accept하지 못했습니다. 종료는 호스트가 모듈을 끝내는 방식입니다.&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;TLS&lt;/strong&gt;는 컨테이너 앞에서 끝납니다. 거기까지의 구간이 사설이면&lt;code&gt;plaintext = true&lt;/code&gt;를 사용하세요.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
-&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
-&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
-&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;go-wasmcontainers 플레이그라운드의 다음 릴리스에서 제공 예정&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;fileshare&lt;/code&gt; 이미지와, go-fileshare 탐색기(v0.4.0)를 컨테이너의 브라우저
-클라이언트로 여는 &amp;ldquo;explore :PORT&amp;rdquo; 버튼(&lt;a href="https://github.com/go-wasmcontainers/playground/pull/31" target="_blank" rel="noopener"&gt;playground#31&lt;/a&gt;,보류 중). 아직 사용할 수 없습니다.&lt;/p&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
 &lt;h2 data-hextra-search-id="why-not-subprocess-plugins"&gt;서브프로세스 플러그인을 쓰지 않는 이유&lt;span class="hx:absolute hx:-mt-20" id="why-not-subprocess-plugins"&gt;&lt;/span&gt;
 &lt;a href="#why-not-subprocess-plugins" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;논증하지 않고 &lt;strong&gt;측정했습니다&lt;/strong&gt;. &lt;code&gt;hashicorp/go-plugin&lt;/code&gt;은 gRPC와 protobuf를
 끌어들이며, 이것만으로 &lt;strong&gt;13.2 MB&lt;/strong&gt;가 듭니다. 세 프로토콜과 모든 드라이버를 담은

@@ -110,37 +110,6 @@ data-copied-label="コピーしました！"
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;h2 data-hextra-search-id="as-a-webassembly-container-wasip1"&gt;WebAssembly コンテナとして (&lt;code&gt;wasip1&lt;/code&gt;)&lt;span class="hx:absolute hx:-mt-20" id="as-a-webassembly-container-wasip1"&gt;&lt;/span&gt;
-&lt;a href="#as-a-webassembly-container-wasip1" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;v0.32.0 から、fileshare は &lt;code&gt;GOOS=wasip1 GOARCH=wasm&lt;/code&gt; 向けにビルドでき、WebDAV をWASI コンテナとして提供します。たとえば&lt;a href="https://github.com/go-wasmcontainers" target="_blank" rel="noopener"&gt;go-wasmcontainers&lt;/a&gt; エンジン (&lt;code&gt;wctr&lt;/code&gt;) で、ネイティブまたはブラウザのタブ内で動かせます。&lt;/p&gt;
-&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
-&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nv"&gt;GOOS&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;wasip1 &lt;span class="nv"&gt;GOARCH&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;wasm go build -trimpath &lt;span class="se"&gt;\
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; -tags nosql,noopenpubkey,nosmb,nonfs,nos3,nosftp,nogrpc,nopartitioned,noprovisioner &lt;span class="se"&gt;\
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; -o fileshare.wasm . &lt;span class="c1"&gt;# WebDAV のみ: gzip で 6.5 MB&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
-&lt;button
-class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
-title="コードをコピー"
-aria-label="コードをコピー"
-data-copied-label="コピーしました！"
-&gt;
-&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
-&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
-&lt;/button&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;nosql&lt;/code&gt; と &lt;code&gt;noopenpubkey&lt;/code&gt; は必須です。SQLite ドライバと OpenPubkey の依存関係はwasip1 ではビルドできません。wasip1 のフルビルド (&lt;code&gt;-tags nosql,noopenpubkey&lt;/code&gt;) はgzip で 11.5 MB です。CI には両方のバリアントをビルドする &lt;code&gt;wasip1&lt;/code&gt; ジョブがあります。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;待ち受け&lt;/strong&gt;はエンジンのソケット (&lt;code&gt;stealthrocket/net/wasip1&lt;/code&gt;、WasmEdge のソケット拡張) を通します。Go の &lt;code&gt;net.Listen&lt;/code&gt; は wasip1 では使えません。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;シグナル処理なし。&lt;/strong&gt; Go の wasip1 ランタイムはループで譲りながらシグナルを待つため、&lt;code&gt;signal.Notify&lt;/code&gt; が 1 つあるだけでネットワークポーラーが飢餓状態になり、リスナーが何も accept しませんでした。終了はホストがモジュールを終わらせることで行います。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;TLS&lt;/strong&gt; はコンテナの手前で終端します。そこまでの経路がプライベートな場合は&lt;code&gt;plaintext = true&lt;/code&gt; を使ってください。&lt;/li&gt;
-&lt;/ul&gt;
-&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
-&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
-&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
-&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;go-wasmcontainers プレイグラウンドの次のリリースで提供予定&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;fileshare&lt;/code&gt; イメージと、go-fileshare エクスプローラー (v0.4.0) をコンテナのブラウザクライアントとして開く「explore :PORT」ボタン(&lt;a href="https://github.com/go-wasmcontainers/playground/pull/31" target="_blank" rel="noopener"&gt;playground#31&lt;/a&gt;、保留中)。まだ利用できません。&lt;/p&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
 &lt;h2 data-hextra-search-id="why-not-subprocess-plugins"&gt;サブプロセスのプラグインを使わない理由&lt;span class="hx:absolute hx:-mt-20" id="why-not-subprocess-plugins"&gt;&lt;/span&gt;
 &lt;a href="#why-not-subprocess-plugins" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;これは議論ではなく&lt;strong&gt;計測&lt;/strong&gt;で決めました。&lt;code&gt;hashicorp/go-plugin&lt;/code&gt; は gRPC と protobuf を持ち込み、それだけで &lt;strong&gt;13.2 MB&lt;/strong&gt; かかります。3 つのプロトコルとすべてのドライバーを含むこのバイナリ全体よりも大きい値です。プラグインホストは、何も読み込む前からサイズが 2 倍になり、各プラグインのバイナリもそれぞれ gRPC を抱えることになります。&lt;/p&gt;
 &lt;p&gt;攻撃対象領域の観点でも、実行しないものについてはタグのほうが強力な手段です。&lt;strong&gt;一度もコンパイルされなかったコードには、サンドボックスの有無にかかわらず到達できません。&lt;/strong&gt;&lt;/p&gt;
