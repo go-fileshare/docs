@@ -1,7 +1,13 @@
 #!/bin/sh
 # Publish one documentation build into a checkout of the gh-pages branch.
 #
-#   scripts/publish-version.sh <version> <built site> <gh-pages checkout>
+#   scripts/publish-version.sh [--only] <version> <built site> <gh-pages checkout>
+#
+# With --only (a build of a tag, dispatched by hand to republish an old
+# version) the script replaces <gh-pages>/<version>/ and NOTHING else: not
+# versions.json, not latest, not the root redirect. It refuses a version that is
+# not already published as a real directory and listed in versions.json, so a
+# republish can never add a version or move latest.
 #
 # <version> is the minor version of fileshare the build describes, MAJOR.MINOR
 # (0.22): the label mike used for this site, so every URL it published keeps
@@ -20,7 +26,12 @@ set -eu
 
 die() { echo "publish-version.sh: $*" >&2; exit 1; }
 
-[ $# -eq 3 ] || die "usage: $0 <version> <built site> <gh-pages checkout>"
+only=0
+if [ "${1:-}" = "--only" ]; then
+	only=1
+	shift
+fi
+[ $# -eq 3 ] || die "usage: $0 [--only] <version> <built site> <gh-pages checkout>"
 version=$1
 site=$2
 pages=$3
@@ -31,6 +42,16 @@ printf '%s\n' "$version" | grep -Eq "$label" || die "version must be MAJOR.MINOR
 [ -d "$pages" ] || die "$pages is not a directory"
 command -v jq >/dev/null || die "jq is required"
 command -v rsync >/dev/null || die "rsync is required"
+
+if [ "$only" -eq 1 ]; then
+	[ -d "$pages/$version" ] && [ ! -L "$pages/$version" ] ||
+		die "--only: $version is not a published version directory"
+	jq -e --arg v "$version" 'any(.[]; .version == $v)' "$pages/versions.json" >/dev/null ||
+		die "--only: $version is not listed in versions.json"
+	rsync -a --delete "$site/" "$pages/$version/"
+	echo "republished $version only; latest, versions.json and the root are untouched"
+	exit 0
+fi
 
 # The version's own directory, replaced whole. A real directory: if it was a
 # link (an alias), the link goes, not what it pointed to.
