@@ -79,6 +79,40 @@ for `opkssh_client_id` under `noopenpubkey` and an `admin` block under
 `nogrpc`.
 {{< /callout >}}
 
+## As a WebAssembly container (`wasip1`)
+
+From v0.32.0 fileshare builds for `GOOS=wasip1 GOARCH=wasm` and serves WebDAV as
+a WASI container, for example in the
+[go-wasmcontainers](https://github.com/go-wasmcontainers) engine (`wctr`),
+natively or in a browser tab.
+
+```sh
+GOOS=wasip1 GOARCH=wasm go build -trimpath \
+  -tags nosql,noopenpubkey,nosmb,nonfs,nos3,nosftp,nogrpc,nopartitioned,noprovisioner \
+  -o fileshare.wasm .                              # WebDAV only: 6.5 MB gzip
+```
+
+- `nosql` and `noopenpubkey` are required: the SQLite driver and OpenPubkey's
+  dependencies do not build for wasip1. A full wasip1 build
+  (`-tags nosql,noopenpubkey`) is 11.5 MB gzip. CI has a `wasip1` job building
+  both variants.
+- **Listening** goes through the engine's sockets (`stealthrocket/net/wasip1`,
+  the WasmEdge sockets extension): Go's `net.Listen` has none on wasip1.
+- **No signal handling.** Go's wasip1 runtime waits for a signal by yielding in
+  a loop, and a single `signal.Notify` starved the network poller, so the
+  listener never accepted. Shutdown is the host ending the module.
+- **TLS** ends in front of the container: use `plaintext = true` when the hop to
+  it is private.
+
+{{< callout type="info" >}}
+**Coming in the next go-wasmcontainers playground release**
+
+A `fileshare` image and an "explore :PORT" button that opens the go-fileshare
+explorer (v0.4.0) as a browser client of the container
+([playground#31](https://github.com/go-wasmcontainers/playground/pull/31),
+pending). It is not live yet.
+{{< /callout >}}
+
 ## Why not subprocess plugins
 
 It was **measured rather than argued**: `hashicorp/go-plugin` brings gRPC and
