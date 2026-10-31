@@ -5,7 +5,7 @@ description: "本文档描述的是哪个 fileshare 版本，每个版本新增�
 tags: [状态, 发布]
 ---
 
-本文档描述的是 **fileshare v0.31.2**。
+本文档描述的是 **fileshare v0.32.0**。
 
 {{< callout type="info" >}}
 **用 `govulncheck -mode binary` 检查发布二进制文件**
@@ -73,6 +73,7 @@ govulncheck -mode binary ./fileshare
 | v0.31.0 | [以每个人的身份提供目录服务]({{< relref "/configuration/as-each-person.md" >}})：`identity = "system"` 和 `identity` 块；以 root 启动的 `fileshare serve` 为每个人和每个共享启动一个工作进程，以其 uid、gid 和组运行，并以 `service_user` 提供各协议服务。仅限 SFTP 和 WebDAV；uid 0、低于 `min_uid` 的 uid 以及 `deny_uids` 会被拒绝 |
 | v0.31.1 | 安全：使用 Go 1.27.3 构建，修复了 GO-2026-6809（`crypto/x509`：`Certificate.Verify` 未拒绝已知被攻破的中间证书），`govulncheck` 报告其可被触及。`go install` 现在要求 Go 1.27.3，并会自行切换。依赖更新 |
 | v0.31.2 | 发布二进制文件使用 `-w` 而不是 `-s -w` 构建：保留符号表，因此对下载的二进制文件运行 `govulncheck -mode binary` 的结果是精确的。二进制文件会大 7% 到 10%。功能没有变化 |
+| v0.32.0 | [可在 `GOOS=wasip1 GOARCH=wasm` 上构建并提供服务](../operations/build-tags/#as-a-webassembly-container-wasip1)，作为 go-wasmcontainers 引擎中的 WebAssembly 容器：WebDAV 通过 WasmEdge 套接字扩展 (`stealthrocket/net/wasip1`) 监听。构建标签为 `nosql,noopenpubkey`（完整，gzip 后 11.5 MB）或仅 WebDAV 的标签集（gzip 后 6.5 MB）；CI 同时构建两者。wasip1 上不处理信号：由宿主结束该模块 |
 
 {{< callout type="warning" >}}
 **升级到 v0.21.0**

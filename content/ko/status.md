@@ -5,7 +5,7 @@ description: "이 페이지들이 설명하는 fileshare 릴리스, 각 릴리�
 tags: [상태, 릴리스]
 ---
 
-이 페이지들은 **fileshare v0.31.2**을 설명합니다.
+이 페이지들은 **fileshare v0.32.0**을 설명합니다.
 
 {{< callout type="info" >}}
 **릴리스 바이너리를 `govulncheck -mode binary`로 확인하기**
@@ -73,6 +73,7 @@ Go 1.27.2에서 `govulncheck`는 fileshare에서 GO-2026-6809에 도달할 수 �
 | v0.31.0 | [각 사용자의 권한으로 제공되는 디렉터리]({{< relref "/configuration/as-each-person.md" >}}): `identity = "system"`과 `identity` 블록. root로 시작한 `fileshare serve`가 사용자와 공유마다 워커를 시작하여 해당 uid, gid, 그룹으로 실행하고, 프로토콜은 `service_user`로 제공. SFTP와 WebDAV만 해당. uid 0, `min_uid` 미만의 uid, `deny_uids`는 거부됨 |
 | v0.31.1 | 보안: GO-2026-6809(`crypto/x509`: `Certificate.Verify`가 알려진 침해된 중간 인증서를 거부하지 않았음)를 수정한 Go 1.27.3으로 빌드. `govulncheck`가 도달 가능하다고 보고했음. `go install`은 이제 Go 1.27.3을 요구하며 스스로 전환함. 의존성 업데이트 |
 | v0.31.2 | 릴리스 바이너리를 `-s -w` 대신 `-w`로 빌드. 심볼 테이블이 유지되므로 내려받은 바이너리에 대한 `govulncheck -mode binary`가 정확해짐. 바이너리는 7~10 % 커짐. 기능상 변경 없음 |
+| v0.32.0 | [`GOOS=wasip1 GOARCH=wasm`에서 빌드되고 서비스됨](../operations/build-tags/#as-a-webassembly-container-wasip1). go-wasmcontainers 엔진의 WebAssembly 컨테이너로서, WebDAV가 WasmEdge 소켓 확장(`stealthrocket/net/wasip1`)을 통해 수신 대기. 빌드 태그 `nosql,noopenpubkey`(전체, gzip 11.5 MB) 또는 WebDAV 전용 세트(gzip 6.5 MB). CI가 둘 다 빌드. wasip1에서는 시그널 처리 없음: 호스트가 모듈을 종료 |
 
 {{< callout type="warning" >}}
 **v0.21.0으로 업그레이드할 때**

@@ -80,6 +80,42 @@ mismo vale para `opkssh_client_id` con `noopenpubkey` y para un bloque
 `admin` con `nogrpc`.
 {{< /callout >}}
 
+## Como contenedor WebAssembly (`wasip1`) {#as-a-webassembly-container-wasip1}
+
+Desde la v0.32.0 fileshare se compila para `GOOS=wasip1 GOARCH=wasm` y sirve
+WebDAV como contenedor WASI, por ejemplo en el motor
+[go-wasmcontainers](https://github.com/go-wasmcontainers) (`wctr`), de forma
+nativa o en una pestaña del navegador.
+
+```sh
+GOOS=wasip1 GOARCH=wasm go build -trimpath \
+  -tags nosql,noopenpubkey,nosmb,nonfs,nos3,nosftp,nogrpc,nopartitioned,noprovisioner \
+  -o fileshare.wasm .                              # solo WebDAV: 6,5 MB gzip
+```
+
+- `nosql` y `noopenpubkey` son obligatorios: el controlador de SQLite y las
+  dependencias de OpenPubkey no se compilan para wasip1. Una compilación
+  completa para wasip1 (`-tags nosql,noopenpubkey`) pesa 11,5 MB gzip. La CI tiene
+  un trabajo `wasip1` que compila ambas variantes.
+- **La escucha** pasa por los sockets del motor (`stealthrocket/net/wasip1`, la
+  extensión de sockets de WasmEdge): el `net.Listen` de Go no tiene ninguno en
+  wasip1.
+- **Sin gestión de señales.** El entorno de ejecución wasip1 de Go espera una
+  señal cediendo en un bucle, y un solo `signal.Notify` dejó sin servicio al
+  sondeador de red, de modo que el listener nunca aceptaba. El cierre consiste en
+  que el anfitrión termine el módulo.
+- **TLS** termina delante del contenedor: use `plaintext = true` cuando el salto
+  hasta él es privado.
+
+{{< callout type="info" >}}
+**Llegará con la próxima versión del playground de go-wasmcontainers**
+
+Una imagen `fileshare` y un botón «explore :PORT» que abre el explorador de
+go-fileshare (v0.4.0) como cliente de navegador del contenedor
+([playground#31](https://github.com/go-wasmcontainers/playground/pull/31),
+pendiente). Todavía no está disponible.
+{{< /callout >}}
+
 ## Por qué no plugins en subprocesos {#why-not-subprocess-plugins}
 
 Se **midió en lugar de argumentarse**: `hashicorp/go-plugin` trae gRPC y protobuf,

@@ -5,7 +5,7 @@ description: "Qué versión de fileshare describen estas páginas, qué añadió
 tags: [estado, versiones]
 ---
 
-Estas páginas describen **fileshare v0.31.2**.
+Estas páginas describen **fileshare v0.32.0**.
 
 {{< callout type="info" >}}
 **Comprobar un binario de versión con `govulncheck -mode binary`**
@@ -73,6 +73,7 @@ Con Go 1.27.2, `govulncheck` señala GO-2026-6809 como alcanzable en fileshare: 
 | v0.31.0 | [directorios servidos con la identidad de cada persona]({{< relref "/configuration/as-each-person.md" >}}): `identity = "system"` y un bloque `identity`; `fileshare serve` arrancado como root arranca un worker por persona y recurso, con su uid, su gid y sus grupos, y sirve los protocolos como `service_user`. Solo SFTP y WebDAV; se rechazan el uid 0, los uid por debajo de `min_uid` y los de `deny_uids` |
 | v0.31.1 | seguridad: compilado con Go 1.27.3, que corrige GO-2026-6809 (`crypto/x509`: `Certificate.Verify` no rechazaba certificados intermedios comprometidos conocidos), que `govulncheck` señala como alcanzable. `go install` ahora exige Go 1.27.3 y cambia a él por sí solo. Actualizaciones de dependencias |
 | v0.31.2 | los binarios de versión se compilan con `-w` en lugar de `-s -w`: se conserva la tabla de símbolos, de modo que `govulncheck -mode binary` sobre un binario descargado es preciso. Los binarios son entre un 7 y un 10 % más grandes. Sin cambios funcionales |
+| v0.32.0 | [se compila y sirve en `GOOS=wasip1 GOARCH=wasm`](../operations/build-tags/#as-a-webassembly-container-wasip1), como contenedor WebAssembly en el motor go-wasmcontainers: WebDAV escucha mediante la extensión de sockets de WasmEdge (`stealthrocket/net/wasip1`). Etiquetas de compilación `nosql,noopenpubkey` (completa, 11,5 MB gzip) o el conjunto solo WebDAV (6,5 MB gzip); la CI compila ambas. Sin gestión de señales en wasip1: el anfitrión termina el módulo |
 
 {{< callout type="warning" >}}
 **Actualizar a la v0.21.0**
