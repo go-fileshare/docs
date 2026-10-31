@@ -32,6 +32,14 @@ pages. A patch release (`v0.22.3`) updates `0.22`; a minor release (`v0.23.0`)
 publishes `0.23` beside it, `latest` moves to it, and `0.22` stays as it was last
 published.
 
+To restore or rebuild an old version, run the `docs` workflow by hand
+(`workflow_dispatch`) from `main` with `ref` set to a released tag
+(`vMAJOR.MINOR.PATCH`, validated before checkout). The tag is built with the
+current workflow and published under the version its own `params.fileshare.version`
+names; with `scripts/publish-version.sh --only` that directory is replaced and
+`latest`, `versions.json` and the root redirect are not touched. Only a version
+that is already published can be rebuilt this way.
+
 The version selector in the navbar lists every version from
 `docs/versions.json` and opens the same page in the version chosen; if it is
 not there, the same page in English, else that version's home.

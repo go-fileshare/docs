@@ -13,6 +13,16 @@ on:
     branches: [main]
   pull_request:
   workflow_dispatch:
+    inputs:
+      ref:
+        description: >-
+          Optional. A released tag (vMAJOR.MINOR.PATCH) to rebuild and republish
+          under its own version directory, for example to restore an old
+          version. Leave empty to build main. A tag run replaces only that
+          version's directory: never latest, versions.json or the root.
+        required: false
+        default: ""
+        type: string
 
 # The build needs nothing beyond the source. Write access to the repository
 # is granted to the deploy job alone, below, so a pull request build cannot
@@ -31,10 +41,32 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.version.outputs.version }}
+      only: ${{ steps.ref.outputs.only }}
     steps:
+      # A dispatched ref is validated BEFORE checkout, and passed through the
+      # environment, never interpolated into the script.
+      - name: Validate the dispatched ref
+        id: ref
+        env:
+          INPUT_REF: ${{ inputs.ref }}
+        run: |
+          if [ -z "${INPUT_REF}" ]; then
+            echo "only=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if ! printf '%s\n' "${INPUT_REF}" | grep -Eq '^v[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "::error::ref must be a released tag vMAJOR.MINOR.PATCH, not \"${INPUT_REF}\""
+            exit 1
+          fi
+          echo "only=true" >> "$GITHUB_OUTPUT"
+
       - name: Checkout
         uses: actions/checkout@v7
         with:
+          # Empty on a push or a plain dispatch: the triggering commit. A
+          # validated tag otherwise, spelled out so a branch of that name
+          # cannot be taken for it.
+          ref: ${{ inputs.ref && format('refs/tags/{0}', inputs.ref) || '' }}
           # themes/hextra (the tannevaled/hextra fork, pinned to a release tag)
           # and branding (go-fileshare/brand) are submodules.
           submodules: recursive
@@ -201,8 +233,14 @@ jobs:
           name: site
           path: site
 
+      # --only for a dispatched tag: that version's directory alone.
       - name: Publish ${{ needs.build.outputs.version }}
-        run: source/scripts/publish-version.sh "${{ needs.build.outputs.version }}" site gh-pages
+        env:
+          ONLY: ${{ needs.build.outputs.only }}
+        run: |
+          flag=""
+          if [ "${ONLY}" = "true" ]; then flag="--only"; fi
+          source/scripts/publish-version.sh ${flag} "${{ needs.build.outputs.version }}" site gh-pages
 
       - name: Push gh-pages
         working-directory: gh-pages
