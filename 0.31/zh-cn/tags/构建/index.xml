@@ -112,6 +112,38 @@ data-copied-label="已复制！"
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
+&lt;h2 data-hextra-search-id="as-a-webassembly-container-wasip1"&gt;作为 WebAssembly 容器 (&lt;code&gt;wasip1&lt;/code&gt;)&lt;span class="hx:absolute hx:-mt-20" id="as-a-webassembly-container-wasip1"&gt;&lt;/span&gt;
+&lt;a href="#as-a-webassembly-container-wasip1" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;从 v0.32.0 起，fileshare 可以为 &lt;code&gt;GOOS=wasip1 GOARCH=wasm&lt;/code&gt; 构建，并以 WASI 容器的形式提供 WebDAV，例如在 &lt;a href="https://github.com/go-wasmcontainers" target="_blank" rel="noopener"&gt;go-wasmcontainers&lt;/a&gt;
+引擎 (&lt;code&gt;wctr&lt;/code&gt;) 中，原生运行或在浏览器标签页中运行。&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nv"&gt;GOOS&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;wasip1 &lt;span class="nv"&gt;GOARCH&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;wasm go build -trimpath &lt;span class="se"&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; -tags nosql,noopenpubkey,nosmb,nonfs,nos3,nosftp,nogrpc,nopartitioned,noprovisioner &lt;span class="se"&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; -o fileshare.wasm . &lt;span class="c1"&gt;# 仅 WebDAV：gzip 后 6.5 MB&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="复制代码"
+aria-label="复制代码"
+data-copied-label="已复制！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;nosql&lt;/code&gt; 和 &lt;code&gt;noopenpubkey&lt;/code&gt; 是必需的：SQLite 驱动和 OpenPubkey 的依赖无法为wasip1 构建。完整的 wasip1 构建（&lt;code&gt;-tags nosql,noopenpubkey&lt;/code&gt;）gzip 后为11.5 MB。CI 中有一个 &lt;code&gt;wasip1&lt;/code&gt; 作业，构建这两个变体。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;监听&lt;/strong&gt;通过引擎的套接字完成（&lt;code&gt;stealthrocket/net/wasip1&lt;/code&gt;，即 WasmEdge 套接字扩展）：Go 的 &lt;code&gt;net.Listen&lt;/code&gt; 在 wasip1 上没有套接字。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;不处理信号。&lt;/strong&gt; Go 的 wasip1 运行时通过在循环中让出来等待信号，一个&lt;code&gt;signal.Notify&lt;/code&gt; 就会让网络轮询器饿死，监听器因此从不接受连接。关闭方式是由宿主结束该模块。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;TLS&lt;/strong&gt; 在容器之前终止：当通向容器的这一跳是私有网络时，使用&lt;code&gt;plaintext = true&lt;/code&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;将随 go-wasmcontainers playground 的下一个版本提供&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;一个 &lt;code&gt;fileshare&lt;/code&gt; 镜像，以及一个“explore :PORT”按钮，用于把 go-fileshare 资源管理器(v0.4.0) 作为该容器的浏览器客户端打开（&lt;a href="https://github.com/go-wasmcontainers/playground/pull/31" target="_blank" rel="noopener"&gt;playground#31&lt;/a&gt;，待合并）。目前尚不可用。&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
 &lt;h2 data-hextra-search-id="why-not-subprocess-plugins"&gt;为什么不使用子进程插件&lt;span class="hx:absolute hx:-mt-20" id="why-not-subprocess-plugins"&gt;&lt;/span&gt;
 &lt;a href="#why-not-subprocess-plugins" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;这是&lt;strong&gt;经过测量而不是争论出来的&lt;/strong&gt;：&lt;code&gt;hashicorp/go-plugin&lt;/code&gt; 会引入 gRPC 和protobuf，仅它们就占 &lt;strong&gt;13.2 MB&lt;/strong&gt;，比包含全部三个协议和所有驱动的整个二进制文件还大。插件宿主在加载任何东西之前就已是其两倍大小，而每个插件二进制文件又会再次携带 gRPC。&lt;/p&gt;
 &lt;p&gt;就攻击面而言，对于任何你不运行的内容，标签也是更强的工具：&lt;strong&gt;从未编译的代码无法被触及&lt;/strong&gt;，无论是否有沙箱。&lt;/p&gt;
