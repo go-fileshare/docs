@@ -5,7 +5,7 @@ description: "Which fileshare release these pages describe, what each release ad
 tags: [status, releases]
 ---
 
-These pages describe **fileshare v0.31.2**.
+These pages describe **fileshare v0.32.0**.
 
 {{< callout type="info" >}}
 **Checking a release binary with `govulncheck -mode binary`**
@@ -73,6 +73,7 @@ Under Go 1.27.2, `govulncheck` reports GO-2026-6809 as reachable in fileshare: `
 | v0.31.0 | [directories served as each person]({{< relref "/configuration/as-each-person.md" >}}): `identity = "system"` and an `identity` block; `fileshare serve` started as root starts a worker per person and share, running with their uid, gid and groups, and serves the protocols as `service_user`. SFTP and WebDAV only; uid 0, uids below `min_uid` and `deny_uids` are refused |
 | v0.31.1 | security: built with Go 1.27.3, which fixes GO-2026-6809 (`crypto/x509`: `Certificate.Verify` did not reject known compromised intermediate certificates), reported reachable by `govulncheck`. `go install` now requires Go 1.27.3, and switches to it by itself. Dependency updates |
 | v0.31.2 | release binaries are built with `-w` instead of `-s -w`: the symbol table is kept, so `govulncheck -mode binary` on a downloaded binary is precise. Binaries are 7 to 10 % larger. No functional change |
+| v0.32.0 | [builds and serves on `GOOS=wasip1 GOARCH=wasm`](../operations/build-tags/#as-a-webassembly-container-wasip1), as a WebAssembly container in the go-wasmcontainers engine: WebDAV listening through the WasmEdge sockets extension (`stealthrocket/net/wasip1`). Build tags `nosql,noopenpubkey` (full, 11.5 MB gzip) or the WebDAV-only set (6.5 MB gzip); CI builds both. No signal handling on wasip1: the host ends the module |
 
 {{< callout type="warning" >}}
 **Upgrading to v0.21.0**

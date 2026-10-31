@@ -79,6 +79,42 @@ pour `opkssh_client_id` sous `noopenpubkey` et pour un bloc `admin` sous
 `nogrpc`.
 {{< /callout >}}
 
+## Comme conteneur WebAssembly (`wasip1`) {#as-a-webassembly-container-wasip1}
+
+Depuis la v0.32.0, fileshare se construit pour `GOOS=wasip1 GOARCH=wasm` et sert
+WebDAV comme conteneur WASI, par exemple dans le moteur
+[go-wasmcontainers](https://github.com/go-wasmcontainers) (`wctr`), en natif ou
+dans un onglet de navigateur.
+
+```sh
+GOOS=wasip1 GOARCH=wasm go build -trimpath \
+  -tags nosql,noopenpubkey,nosmb,nonfs,nos3,nosftp,nogrpc,nopartitioned,noprovisioner \
+  -o fileshare.wasm .                              # WebDAV seul : 6,5 Mo gzip
+```
+
+- `nosql` et `noopenpubkey` sont obligatoires : le pilote SQLite et les
+  dépendances d'OpenPubkey ne se construisent pas pour wasip1. Une construction
+  complète pour wasip1 (`-tags nosql,noopenpubkey`) pèse 11,5 Mo gzip. La CI a un
+  job `wasip1` qui construit les deux variantes.
+- **L'écoute** passe par les sockets du moteur (`stealthrocket/net/wasip1`,
+  l'extension de sockets de WasmEdge) : le `net.Listen` de Go n'en a pas sur
+  wasip1.
+- **Pas de gestion des signaux.** Le runtime wasip1 de Go attend un signal en
+  cédant la main dans une boucle, et un seul `signal.Notify` affamait le
+  scrutateur réseau, si bien que l'écouteur n'acceptait jamais rien. L'arrêt, c'est
+  l'hôte qui met fin au module.
+- **TLS** s'arrête devant le conteneur : utilisez `plaintext = true` quand le
+  saut jusqu'à lui est privé.
+
+{{< callout type="info" >}}
+**Dans la prochaine version du playground go-wasmcontainers**
+
+Une image `fileshare` et un bouton « explore :PORT » qui ouvre l'explorateur
+go-fileshare (v0.4.0) comme client navigateur du conteneur
+([playground#31](https://github.com/go-wasmcontainers/playground/pull/31),
+en attente). Pas encore disponible.
+{{< /callout >}}
+
 ## Pourquoi pas des greffons en sous-processus {#why-not-subprocess-plugins}
 
 Cela a été **mesuré plutôt que débattu** : `hashicorp/go-plugin` apporte gRPC et

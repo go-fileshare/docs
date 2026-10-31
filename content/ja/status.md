@@ -5,7 +5,7 @@ description: "このページが説明している fileshare のリリース、�
 tags: [ステータス, リリース]
 ---
 
-このページは **fileshare v0.31.2** について説明しています。
+このページは **fileshare v0.32.0** について説明しています。
 
 {{< callout type="info" >}}
 **リリースバイナリを `govulncheck -mode binary` で確認する**
@@ -73,6 +73,7 @@ Go 1.27.2 では、`govulncheck` が fileshare で GO-2026-6809 に到達可能�
 | v0.31.0 | [各人として提供されるディレクトリ]({{< relref "/configuration/as-each-person.md" >}}): `identity = "system"` と `identity` ブロック。root で起動した `fileshare serve` は、人と共有ごとに、その uid、gid、グループで動作するワーカーを起動し、プロトコルは `service_user` として提供する。SFTP と WebDAV のみ。uid 0、`min_uid` 未満の uid、`deny_uids` は拒否される |
 | v0.31.1 | セキュリティ: GO-2026-6809（`crypto/x509`: `Certificate.Verify` が既知の侵害された中間証明書を拒否していなかった）を修正する Go 1.27.3 でビルド。`govulncheck` が到達可能と報告した。`go install` は Go 1.27.3 を要求し、自動的に切り替わる。依存関係の更新 |
 | v0.31.2 | リリースバイナリを `-s -w` ではなく `-w` でビルド。シンボルテーブルが残るため、ダウンロードしたバイナリに対する `govulncheck -mode binary` が正確になる。バイナリは 7〜10 % 大きくなる。機能の変更なし |
+| v0.32.0 | [`GOOS=wasip1 GOARCH=wasm` でビルドして提供できる](../operations/build-tags/#as-a-webassembly-container-wasip1)ようになった。go-wasmcontainers エンジン上の WebAssembly コンテナとして、WebDAV が WasmEdge のソケット拡張 (`stealthrocket/net/wasip1`) 経由で待ち受ける。ビルドタグは `nosql,noopenpubkey` (フル、gzip で 11.5 MB) または WebDAV のみのセット (gzip で 6.5 MB)。CI は両方をビルドする。wasip1 ではシグナル処理なし: ホストがモジュールを終了させる |
 
 {{< callout type="warning" >}}
 **v0.21.0 へのアップグレード**

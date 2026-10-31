@@ -76,6 +76,41 @@ go-fsctl の zfs、btrfs、projquota も一緒に除外します。ボリュー�
 `nogrpc` の下の `admin` ブロックでも同様です。
 {{< /callout >}}
 
+## WebAssembly コンテナとして (`wasip1`) {#as-a-webassembly-container-wasip1}
+
+v0.32.0 から、fileshare は `GOOS=wasip1 GOARCH=wasm` 向けにビルドでき、WebDAV を
+WASI コンテナとして提供します。たとえば
+[go-wasmcontainers](https://github.com/go-wasmcontainers) エンジン (`wctr`) で、
+ネイティブまたはブラウザのタブ内で動かせます。
+
+```sh
+GOOS=wasip1 GOARCH=wasm go build -trimpath \
+  -tags nosql,noopenpubkey,nosmb,nonfs,nos3,nosftp,nogrpc,nopartitioned,noprovisioner \
+  -o fileshare.wasm .                              # WebDAV のみ: gzip で 6.5 MB
+```
+
+- `nosql` と `noopenpubkey` は必須です。SQLite ドライバと OpenPubkey の依存関係は
+  wasip1 ではビルドできません。wasip1 のフルビルド (`-tags nosql,noopenpubkey`) は
+  gzip で 11.5 MB です。CI には両方のバリアントをビルドする `wasip1` ジョブが
+  あります。
+- **待ち受け**はエンジンのソケット (`stealthrocket/net/wasip1`、WasmEdge の
+  ソケット拡張) を通します。Go の `net.Listen` は wasip1 では使えません。
+- **シグナル処理なし。** Go の wasip1 ランタイムはループで譲りながらシグナルを
+  待つため、`signal.Notify` が 1 つあるだけでネットワークポーラーが飢餓状態になり、
+  リスナーが何も accept しませんでした。終了はホストがモジュールを終わらせる
+  ことで行います。
+- **TLS** はコンテナの手前で終端します。そこまでの経路がプライベートな場合は
+  `plaintext = true` を使ってください。
+
+{{< callout type="info" >}}
+**go-wasmcontainers プレイグラウンドの次のリリースで提供予定**
+
+`fileshare` イメージと、go-fileshare エクスプローラー (v0.4.0) をコンテナの
+ブラウザクライアントとして開く「explore :PORT」ボタン
+([playground#31](https://github.com/go-wasmcontainers/playground/pull/31)、
+保留中)。まだ利用できません。
+{{< /callout >}}
+
 ## サブプロセスのプラグインを使わない理由 {#why-not-subprocess-plugins}
 
 これは議論ではなく**計測**で決めました。`hashicorp/go-plugin` は gRPC と protobuf を持ち込み、

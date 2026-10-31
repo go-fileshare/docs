@@ -10,7 +10,7 @@ description: "go-fileshare 通过 SMB、NFS、WebDAV、SFTP 和 S3 提供磁盘�
 **一个磁盘映像，或一个目录，通过 SMB、NFS、WebDAV、SFTP 和 S3 提供服务：
 相同的用户，相同的按共享访问控制，来自同一个配置文件。** 纯
 Go 实现，`CGO_ENABLED=0`，单一二进制文件。本文档描述的是
-[v0.31.2]({{< relref "/status.md" >}})。
+[v0.32.0]({{< relref "/status.md" >}})。
 
 ```sh
 go install github.com/go-fileshare/fileshare@latest          # with Go 1.27.3 or later

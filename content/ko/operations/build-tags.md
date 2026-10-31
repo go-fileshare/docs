@@ -79,6 +79,39 @@ gRPC의 비용은 **11.7 MB**입니다. 아래의
 아래의 `opkssh_client_id`와 `nogrpc` 아래의 `admin` 블록도 마찬가지입니다.
 {{< /callout >}}
 
+## WebAssembly 컨테이너로 (`wasip1`) {#as-a-webassembly-container-wasip1}
+
+v0.32.0부터 fileshare는 `GOOS=wasip1 GOARCH=wasm`용으로 빌드되며 WebDAV를 WASI
+컨테이너로 제공합니다. 예를 들어
+[go-wasmcontainers](https://github.com/go-wasmcontainers) 엔진(`wctr`)에서
+네이티브로 또는 브라우저 탭 안에서 실행할 수 있습니다.
+
+```sh
+GOOS=wasip1 GOARCH=wasm go build -trimpath \
+  -tags nosql,noopenpubkey,nosmb,nonfs,nos3,nosftp,nogrpc,nopartitioned,noprovisioner \
+  -o fileshare.wasm .                              # WebDAV 전용: gzip 6.5 MB
+```
+
+- `nosql`과 `noopenpubkey`는 필수입니다. SQLite 드라이버와 OpenPubkey의 의존성은
+  wasip1용으로 빌드되지 않습니다. 전체 wasip1 빌드(`-tags nosql,noopenpubkey`)는
+  gzip 11.5 MB입니다. CI에는 두 변형을 모두 빌드하는 `wasip1` 작업이 있습니다.
+- **수신 대기**는 엔진의 소켓(`stealthrocket/net/wasip1`, WasmEdge 소켓 확장)을
+  통해 이루어집니다. Go의 `net.Listen`은 wasip1에서 소켓이 없습니다.
+- **시그널 처리 없음.** Go의 wasip1 런타임은 루프에서 양보하며 시그널을 기다리기
+  때문에, `signal.Notify` 하나만으로도 네트워크 폴러가 굶어 리스너가 아무것도
+  accept하지 못했습니다. 종료는 호스트가 모듈을 끝내는 방식입니다.
+- **TLS**는 컨테이너 앞에서 끝납니다. 거기까지의 구간이 사설이면
+  `plaintext = true`를 사용하세요.
+
+{{< callout type="info" >}}
+**go-wasmcontainers 플레이그라운드의 다음 릴리스에서 제공 예정**
+
+`fileshare` 이미지와, go-fileshare 탐색기(v0.4.0)를 컨테이너의 브라우저
+클라이언트로 여는 "explore :PORT" 버튼
+([playground#31](https://github.com/go-wasmcontainers/playground/pull/31),
+보류 중). 아직 사용할 수 없습니다.
+{{< /callout >}}
+
 ## 서브프로세스 플러그인을 쓰지 않는 이유 {#why-not-subprocess-plugins}
 
 논증하지 않고 **측정했습니다**. `hashicorp/go-plugin`은 gRPC와 protobuf를

@@ -78,6 +78,38 @@ gRPC 的代价是 **11.7 MB**，即下面的[插件测量](#why-not-subprocess-p
 `opkssh_client_id` 和 `nogrpc` 下的 `admin` 块也是如此。
 {{< /callout >}}
 
+## 作为 WebAssembly 容器 (`wasip1`) {#as-a-webassembly-container-wasip1}
+
+从 v0.32.0 起，fileshare 可以为 `GOOS=wasip1 GOARCH=wasm` 构建，并以 WASI 容器的
+形式提供 WebDAV，例如在 [go-wasmcontainers](https://github.com/go-wasmcontainers)
+引擎 (`wctr`) 中，原生运行或在浏览器标签页中运行。
+
+```sh
+GOOS=wasip1 GOARCH=wasm go build -trimpath \
+  -tags nosql,noopenpubkey,nosmb,nonfs,nos3,nosftp,nogrpc,nopartitioned,noprovisioner \
+  -o fileshare.wasm .                              # 仅 WebDAV：gzip 后 6.5 MB
+```
+
+- `nosql` 和 `noopenpubkey` 是必需的：SQLite 驱动和 OpenPubkey 的依赖无法为
+  wasip1 构建。完整的 wasip1 构建（`-tags nosql,noopenpubkey`）gzip 后为
+  11.5 MB。CI 中有一个 `wasip1` 作业，构建这两个变体。
+- **监听**通过引擎的套接字完成（`stealthrocket/net/wasip1`，即 WasmEdge 套接字
+  扩展）：Go 的 `net.Listen` 在 wasip1 上没有套接字。
+- **不处理信号。** Go 的 wasip1 运行时通过在循环中让出来等待信号，一个
+  `signal.Notify` 就会让网络轮询器饿死，监听器因此从不接受连接。关闭方式是由
+  宿主结束该模块。
+- **TLS** 在容器之前终止：当通向容器的这一跳是私有网络时，使用
+  `plaintext = true`。
+
+{{< callout type="info" >}}
+**将随 go-wasmcontainers playground 的下一个版本提供**
+
+一个 `fileshare` 镜像，以及一个“explore :PORT”按钮，用于把 go-fileshare 资源管理器
+(v0.4.0) 作为该容器的浏览器客户端打开
+（[playground#31](https://github.com/go-wasmcontainers/playground/pull/31)，
+待合并）。目前尚不可用。
+{{< /callout >}}
+
 ## 为什么不使用子进程插件 {#why-not-subprocess-plugins}
 
 这是**经过测量而不是争论出来的**：`hashicorp/go-plugin` 会引入 gRPC 和
