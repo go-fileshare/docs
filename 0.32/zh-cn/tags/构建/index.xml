@@ -1,0 +1,150 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – 构建</title><link>https://go-fileshare.github.io/docs/0.32/zh-cn/tags/%E6%9E%84%E5%BB%BA/</link><description>Recent content in 构建 on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><atom:link href="https://go-fileshare.github.io/docs/0.32/zh-cn/tags/%E6%9E%84%E5%BB%BA/index.xml" rel="self" type="application/rss+xml"/><item><title>只构建所需内容</title><link>https://go-fileshare.github.io/docs/0.32/zh-cn/operations/build-tags/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.32/zh-cn/operations/build-tags/</guid><description>
+&lt;p&gt;每个协议都位于一个构建标签之后，使用标签会将其&lt;strong&gt;完全&lt;/strong&gt;排除：没有监听器、没有解析器、没有依赖、没有代码。&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;go install -tags nonfs,nowebdav,nosftp,nos3 github.com/go-fileshare/fileshare@latest &lt;span class="c1"&gt;# 仅 SMB&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;go build -tags nosmb,nonfs,nosftp,nos3 . &lt;span class="c1"&gt;# 仅 WebDAV&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="复制代码"
+aria-label="复制代码"
+data-copied-label="已复制！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;人员&lt;/strong&gt;的来源也有各自的标签：&lt;code&gt;nosql&lt;/code&gt; 排除三个数据库驱动，&lt;code&gt;noldap&lt;/code&gt; 排除 LDAP 客户端。&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;构建&lt;/th&gt;
+&lt;th&gt;大小&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;全部&lt;/td&gt;
+&lt;td&gt;31.2 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags noldap&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;30.9 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags nosftp&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;30.6 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags noopenpubkey&lt;/code&gt;（SFTP 上没有 opkssh 登录）&lt;/td&gt;
+&lt;td&gt;约少 2 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags nos3&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;31.1 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags nonfs,nowebdav,nosftp,nos3&lt;/code&gt;（仅 SMB）&lt;/td&gt;
+&lt;td&gt;28.1 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags nopartitioned&lt;/code&gt;（没有 apfs、btrfs、xfs、zfs）&lt;/td&gt;
+&lt;td&gt;29.2 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags nosql&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;20.2 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags nosql,noldap&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;19.8 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags nosql,noldap,nonfs,nowebdav,nosftp,nos3&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;16.2 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;这些是 fileshare README 给出的数字，测量于管理API 出现之前；下面的表格是后来的测量结果。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="the-admin-api-and-nogrpc"&gt;管理 API 与 &lt;code&gt;nogrpc&lt;/code&gt;&lt;span class="hx:absolute hx:-mt-20" id="the-admin-api-and-nogrpc"&gt;&lt;/span&gt;
+&lt;a href="#the-admin-api-and-nogrpc" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;a href="https://go-fileshare.github.io/docs/0.32/zh-cn/administration/"&gt;管理 API&lt;/a&gt;引入了 gRPC 和 protobuf，它们位于 &lt;code&gt;nogrpc&lt;/code&gt; 之后（linux/amd64，测量于 2026-09-29，当时上面各行的“全部”已增长到 34.1 MB）：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;构建&lt;/th&gt;
+&lt;th&gt;大小&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;全部，含管理 API&lt;/td&gt;
+&lt;td&gt;46.1 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags nogrpc&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;34.4 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags nosql,noldap,nogrpc&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;22.5 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;gRPC 的代价是 &lt;strong&gt;11.7 MB&lt;/strong&gt;，即下面的&lt;a href="#why-not-subprocess-plugins"&gt;插件测量&lt;/a&gt;
+在这里因其自身的理由而再次进行的结果。通过文件管理共享的站点不需要携带它。&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;在 &lt;code&gt;nogrpc&lt;/code&gt; 构建中，&lt;code&gt;admin&lt;/code&gt; 块会被拒绝&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;而不是在没有管理 API 的情况下提供服务：请求 API 却在没有它的情况下启动的配置，并没有按其所说的去做。&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;nogrpc&lt;/code&gt; 会排除管理 API，同时也排除&lt;a href="https://go-fileshare.github.io/docs/0.32/zh-cn/administration/volumes/"&gt;配给程序&lt;/a&gt;。&lt;a href="https://go-fileshare.github.io/docs/0.32/zh-cn/administration/health/"&gt;健康检查与指标&lt;/a&gt;
+是普通的 HTTP，予以保留。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;-tags noprovisioner&lt;/code&gt; 只排除配给程序，即特权的&lt;code&gt;fileshare provisioner&lt;/code&gt; 角色，以及随之而来的 go-fsctl 的 zfs、btrfs 和 projquota：从不提供卷服务的服务器无需携带创建卷的代码。这种构建中的 &lt;code&gt;fileshare provisioner&lt;/code&gt; 会说明原因，而不是显示“unknown command”。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;nosql&lt;/code&gt; 是迄今为止最大的杠杆：PostgreSQL、MySQL 和 SQLite合计重 &lt;strong&gt;11.7 MB&lt;/strong&gt;，超过本程序中所有协议加在一起的大小。用户都在文件中的站点需要它。这些驱动由命令导入，而不是由使用它们的库导入，这使得这一选择成为构建标签，而不是分叉。&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;此二进制文件构建时未包含的协议&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;指明它的配置会被告知&lt;em&gt;这一点&lt;/em&gt;，而不是“没有这样的协议”，这就是拼写错误与构建标签之间的区别。&lt;code&gt;noopenpubkey&lt;/code&gt; 下的&lt;code&gt;opkssh_client_id&lt;/code&gt; 和 &lt;code&gt;nogrpc&lt;/code&gt; 下的 &lt;code&gt;admin&lt;/code&gt; 块也是如此。&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="as-a-webassembly-container-wasip1"&gt;作为 WebAssembly 容器 (&lt;code&gt;wasip1&lt;/code&gt;)&lt;span class="hx:absolute hx:-mt-20" id="as-a-webassembly-container-wasip1"&gt;&lt;/span&gt;
+&lt;a href="#as-a-webassembly-container-wasip1" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;从 v0.32.0 起，fileshare 可以为 &lt;code&gt;GOOS=wasip1 GOARCH=wasm&lt;/code&gt; 构建，并以 WASI 容器的形式提供 WebDAV，例如在 &lt;a href="https://github.com/go-wasmcontainers" target="_blank" rel="noopener"&gt;go-wasmcontainers&lt;/a&gt;
+引擎 (&lt;code&gt;wctr&lt;/code&gt;) 中，原生运行或在浏览器标签页中运行。&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nv"&gt;GOOS&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;wasip1 &lt;span class="nv"&gt;GOARCH&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;wasm go build -trimpath &lt;span class="se"&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; -tags nosql,noopenpubkey,nosmb,nonfs,nos3,nosftp,nogrpc,nopartitioned,noprovisioner &lt;span class="se"&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; -o fileshare.wasm . &lt;span class="c1"&gt;# 仅 WebDAV：gzip 后 6.5 MB&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="复制代码"
+aria-label="复制代码"
+data-copied-label="已复制！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;nosql&lt;/code&gt; 和 &lt;code&gt;noopenpubkey&lt;/code&gt; 是必需的：SQLite 驱动和 OpenPubkey 的依赖无法为wasip1 构建。完整的 wasip1 构建（&lt;code&gt;-tags nosql,noopenpubkey&lt;/code&gt;）gzip 后为11.5 MB。CI 中有一个 &lt;code&gt;wasip1&lt;/code&gt; 作业，构建这两个变体。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;监听&lt;/strong&gt;通过引擎的套接字完成（&lt;code&gt;stealthrocket/net/wasip1&lt;/code&gt;，即 WasmEdge 套接字扩展）：Go 的 &lt;code&gt;net.Listen&lt;/code&gt; 在 wasip1 上没有套接字。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;不处理信号。&lt;/strong&gt; Go 的 wasip1 运行时通过在循环中让出来等待信号，一个&lt;code&gt;signal.Notify&lt;/code&gt; 就会让网络轮询器饿死，监听器因此从不接受连接。关闭方式是由宿主结束该模块。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;TLS&lt;/strong&gt; 在容器之前终止：当通向容器的这一跳是私有网络时，使用&lt;code&gt;plaintext = true&lt;/code&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;将随 go-wasmcontainers playground 的下一个版本提供&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;一个 &lt;code&gt;fileshare&lt;/code&gt; 镜像，以及一个“explore :PORT”按钮，用于把 go-fileshare 资源管理器(v0.4.0) 作为该容器的浏览器客户端打开（&lt;a href="https://github.com/go-wasmcontainers/playground/pull/31" target="_blank" rel="noopener"&gt;playground#31&lt;/a&gt;，待合并）。目前尚不可用。&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="why-not-subprocess-plugins"&gt;为什么不使用子进程插件&lt;span class="hx:absolute hx:-mt-20" id="why-not-subprocess-plugins"&gt;&lt;/span&gt;
+&lt;a href="#why-not-subprocess-plugins" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;这是&lt;strong&gt;经过测量而不是争论出来的&lt;/strong&gt;：&lt;code&gt;hashicorp/go-plugin&lt;/code&gt; 会引入 gRPC 和protobuf，仅它们就占 &lt;strong&gt;13.2 MB&lt;/strong&gt;，比包含全部三个协议和所有驱动的整个二进制文件还大。插件宿主在加载任何东西之前就已是其两倍大小，而每个插件二进制文件又会再次携带 gRPC。&lt;/p&gt;
+&lt;p&gt;就攻击面而言，对于任何你不运行的内容，标签也是更强的工具：&lt;strong&gt;从未编译的代码无法被触及&lt;/strong&gt;，无论是否有沙箱。&lt;/p&gt;
+&lt;p&gt;标签&lt;em&gt;无法&lt;/em&gt;提供的是你&lt;strong&gt;确实&lt;/strong&gt;运行的各协议之间的隔离，也无法提供不重新编译就添加协议的方式。这两点都是真实存在的，而且它们都是支持采用进程边界、而不是更小二进制文件的理由，也就是&lt;a href="https://go-fileshare.github.io/docs/0.32/zh-cn/operations/isolation/"&gt;每个协议一个进程&lt;/a&gt;，使用的是同一个二进制文件，而不是插件框架。&lt;/p&gt;</description></item></channel></rss>

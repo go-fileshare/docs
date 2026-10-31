@@ -1,0 +1,288 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – 운영</title><link>https://go-fileshare.github.io/docs/0.32/ko/tags/%EC%9A%B4%EC%98%81/</link><description>Recent content in 운영 on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>ko</language><atom:link href="https://go-fileshare.github.io/docs/0.32/ko/tags/%EC%9A%B4%EC%98%81/index.xml" rel="self" type="application/rss+xml"/><item><title>필요한 것만 빌드하기</title><link>https://go-fileshare.github.io/docs/0.32/ko/operations/build-tags/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.32/ko/operations/build-tags/</guid><description>
+&lt;p&gt;각 프로토콜은 빌드 태그 뒤에 있으며, 태그는 그것을 &lt;strong&gt;완전히&lt;/strong&gt; 제외합니다.리스너도, 파서도, 의존성도, 코드도 없습니다.&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;go install -tags nonfs,nowebdav,nosftp,nos3 github.com/go-fileshare/fileshare@latest &lt;span class="c1"&gt;# SMB only&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;go build -tags nosmb,nonfs,nosftp,nos3 . &lt;span class="c1"&gt;# WebDAV only&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="코드 복사"
+aria-label="코드 복사"
+data-copied-label="복사됨!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;사용자&lt;/strong&gt;가 어디에서 오는지도 자체 태그 뒤에 있습니다. &lt;code&gt;nosql&lt;/code&gt;은 세 개의
+데이터베이스 드라이버를, &lt;code&gt;noldap&lt;/code&gt;은 LDAP 클라이언트를 제외합니다.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;빌드&lt;/th&gt;
+&lt;th&gt;크기&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;전체&lt;/td&gt;
+&lt;td&gt;31.2 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags noldap&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;30.9 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags nosftp&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;30.6 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags noopenpubkey&lt;/code&gt; (SFTP를 통한 opkssh 로그인 없음)&lt;/td&gt;
+&lt;td&gt;약 2 MB 감소&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags nos3&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;31.1 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags nonfs,nowebdav,nosftp,nos3&lt;/code&gt; (SMB 전용)&lt;/td&gt;
+&lt;td&gt;28.1 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags nopartitioned&lt;/code&gt; (apfs, btrfs, xfs, zfs 없음)&lt;/td&gt;
+&lt;td&gt;29.2 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags nosql&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;20.2 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags nosql,noldap&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;19.8 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags nosql,noldap,nonfs,nowebdav,nosftp,nos3&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;16.2 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;이는 fileshare README가 제시하는 수치로, 관리 API가 추가되기 전에 측정한
+것입니다. 아래 표가 그 이후의 측정입니다.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="the-admin-api-and-nogrpc"&gt;관리 API와 &lt;code&gt;nogrpc&lt;/code&gt;&lt;span class="hx:absolute hx:-mt-20" id="the-admin-api-and-nogrpc"&gt;&lt;/span&gt;
+&lt;a href="#the-admin-api-and-nogrpc" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;a href="https://go-fileshare.github.io/docs/0.32/ko/administration/"&gt;관리 API&lt;/a&gt;는 gRPC와 protobuf를 끌어들였고,이들은 &lt;code&gt;nogrpc&lt;/code&gt; 뒤에 있습니다(linux/amd64, 2026-09-29 측정. 이때 위 표의 전체
+빌드는 34.1 MB로 커져 있었습니다).&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;빌드&lt;/th&gt;
+&lt;th&gt;크기&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;전체, 관리 API 포함&lt;/td&gt;
+&lt;td&gt;46.1 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags nogrpc&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;34.4 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags nosql,noldap,nogrpc&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;22.5 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;gRPC의 비용은 &lt;strong&gt;11.7 MB&lt;/strong&gt;입니다. 아래의&lt;a href="#why-not-subprocess-plugins"&gt;플러그인 측정&lt;/a&gt;을 이제 자체적인 이유로 다시 측정한
+값입니다. 공유를 파일로 관리하는 사이트는 이를 싣고 있을 필요가 없습니다.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;nogrpc&lt;/code&gt; 빌드에서 &lt;code&gt;admin&lt;/code&gt; 블록은 거부됩니다&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;관리 API 없이 제공하는 대신 거부합니다. API를 요구하면서 API 없이 시작하는
+구성은 말한 대로 동작하지 않기 때문입니다.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;nogrpc&lt;/code&gt;는 관리 API와 함께&lt;a href="https://go-fileshare.github.io/docs/0.32/ko/administration/volumes/"&gt;프로비저너&lt;/a&gt;도 제외합니다.&lt;a href="https://go-fileshare.github.io/docs/0.32/ko/administration/health/"&gt;상태 점검과 메트릭&lt;/a&gt;은 평범한 HTTP이므로
+유지됩니다.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;-tags noprovisioner&lt;/code&gt;는 프로비저너, 곧 권한 있는 &lt;code&gt;fileshare provisioner&lt;/code&gt; 역할만
+제외하며, go-fsctl의 zfs, btrfs, projquota도 함께 제외됩니다. 볼륨을 전혀
+제공하지 않는 서버는 볼륨을 만드는 코드를 싣고 있을 필요가 없습니다. 이런 빌드의&lt;code&gt;fileshare provisioner&lt;/code&gt;는 &amp;ldquo;알 수 없는 명령&amp;rdquo; 대신 그렇게 빌드되었음을 알려
+줍니다.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;nosql&lt;/code&gt;은 단연 가장 큰 수단입니다. PostgreSQL, MySQL, SQLite를 합치면&lt;strong&gt;11.7 MB&lt;/strong&gt;로, 이 프로그램의 모든 프로토콜을 합친 것보다 큽니다. 사용자가 파일에
+있는 사이트에서는 이 태그가 필요합니다. 드라이버는 이를 사용하는 라이브러리가
+아니라 명령이 임포트하며, 그래서 이 선택이 포크가 아닌 빌드 태그로 가능합니다.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;이 바이너리가 제외하고 빌드된 프로토콜&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;그런 프로토콜을 지정한 구성에는 &amp;ldquo;그런 프로토콜은 없다&amp;quot;가 아니라 &lt;em&gt;그렇게
+빌드되었다&lt;/em&gt;는 사실이 알려집니다. 오타와 빌드 태그의 차이입니다. &lt;code&gt;noopenpubkey&lt;/code&gt;
+아래의 &lt;code&gt;opkssh_client_id&lt;/code&gt;와 &lt;code&gt;nogrpc&lt;/code&gt; 아래의 &lt;code&gt;admin&lt;/code&gt; 블록도 마찬가지입니다.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="as-a-webassembly-container-wasip1"&gt;WebAssembly 컨테이너로 (&lt;code&gt;wasip1&lt;/code&gt;)&lt;span class="hx:absolute hx:-mt-20" id="as-a-webassembly-container-wasip1"&gt;&lt;/span&gt;
+&lt;a href="#as-a-webassembly-container-wasip1" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;v0.32.0부터 fileshare는 &lt;code&gt;GOOS=wasip1 GOARCH=wasm&lt;/code&gt;용으로 빌드되며 WebDAV를 WASI
+컨테이너로 제공합니다. 예를 들어&lt;a href="https://github.com/go-wasmcontainers" target="_blank" rel="noopener"&gt;go-wasmcontainers&lt;/a&gt; 엔진(&lt;code&gt;wctr&lt;/code&gt;)에서
+네이티브로 또는 브라우저 탭 안에서 실행할 수 있습니다.&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nv"&gt;GOOS&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;wasip1 &lt;span class="nv"&gt;GOARCH&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;wasm go build -trimpath &lt;span class="se"&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; -tags nosql,noopenpubkey,nosmb,nonfs,nos3,nosftp,nogrpc,nopartitioned,noprovisioner &lt;span class="se"&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; -o fileshare.wasm . &lt;span class="c1"&gt;# WebDAV 전용: gzip 6.5 MB&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="코드 복사"
+aria-label="코드 복사"
+data-copied-label="복사됨!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;nosql&lt;/code&gt;과 &lt;code&gt;noopenpubkey&lt;/code&gt;는 필수입니다. SQLite 드라이버와 OpenPubkey의 의존성은
+wasip1용으로 빌드되지 않습니다. 전체 wasip1 빌드(&lt;code&gt;-tags nosql,noopenpubkey&lt;/code&gt;)는
+gzip 11.5 MB입니다. CI에는 두 변형을 모두 빌드하는 &lt;code&gt;wasip1&lt;/code&gt; 작업이 있습니다.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;수신 대기&lt;/strong&gt;는 엔진의 소켓(&lt;code&gt;stealthrocket/net/wasip1&lt;/code&gt;, WasmEdge 소켓 확장)을
+통해 이루어집니다. Go의 &lt;code&gt;net.Listen&lt;/code&gt;은 wasip1에서 소켓이 없습니다.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;시그널 처리 없음.&lt;/strong&gt; Go의 wasip1 런타임은 루프에서 양보하며 시그널을 기다리기
+때문에, &lt;code&gt;signal.Notify&lt;/code&gt; 하나만으로도 네트워크 폴러가 굶어 리스너가 아무것도
+accept하지 못했습니다. 종료는 호스트가 모듈을 끝내는 방식입니다.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;TLS&lt;/strong&gt;는 컨테이너 앞에서 끝납니다. 거기까지의 구간이 사설이면&lt;code&gt;plaintext = true&lt;/code&gt;를 사용하세요.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;go-wasmcontainers 플레이그라운드의 다음 릴리스에서 제공 예정&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;fileshare&lt;/code&gt; 이미지와, go-fileshare 탐색기(v0.4.0)를 컨테이너의 브라우저
+클라이언트로 여는 &amp;ldquo;explore :PORT&amp;rdquo; 버튼(&lt;a href="https://github.com/go-wasmcontainers/playground/pull/31" target="_blank" rel="noopener"&gt;playground#31&lt;/a&gt;,보류 중). 아직 사용할 수 없습니다.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="why-not-subprocess-plugins"&gt;서브프로세스 플러그인을 쓰지 않는 이유&lt;span class="hx:absolute hx:-mt-20" id="why-not-subprocess-plugins"&gt;&lt;/span&gt;
+&lt;a href="#why-not-subprocess-plugins" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;논증하지 않고 &lt;strong&gt;측정했습니다&lt;/strong&gt;. &lt;code&gt;hashicorp/go-plugin&lt;/code&gt;은 gRPC와 protobuf를
+끌어들이며, 이것만으로 &lt;strong&gt;13.2 MB&lt;/strong&gt;가 듭니다. 세 프로토콜과 모든 드라이버를 담은
+이 바이너리 전체보다 큽니다. 플러그인 호스트는 아무것도 로드하기 전에 이미 두 배
+크기가 될 것이고, 각 플러그인 바이너리도 gRPC를 다시 싣게 됩니다.&lt;/p&gt;
+&lt;p&gt;공격 표면 측면에서도, 실행하지 않는 것에 대해서는 태그가 더 강력한 수단입니다.&lt;strong&gt;컴파일된 적이 없는 코드는&lt;/strong&gt; 샌드박스 여부와 관계없이 &lt;strong&gt;도달할 수 없습니다&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;태그가 &lt;em&gt;주지 못하는&lt;/em&gt; 것은 &lt;strong&gt;실행하는&lt;/strong&gt; 프로토콜 사이의 격리, 그리고 다시
+컴파일하지 않고 프로토콜을 추가하는 방법입니다. 둘 다 실제 요구이며, 둘 다 더
+작은 바이너리가 아니라 프로세스 경계를 위한 논거입니다. 그 경계가 바로 플러그인
+프레임워크가 아니라 같은 바이너리를 사용하는&lt;a href="https://go-fileshare.github.io/docs/0.32/ko/operations/isolation/"&gt;프로토콜마다 하나의 프로세스&lt;/a&gt;입니다.&lt;/p&gt;</description></item><item><title>프로토콜마다 하나의 프로세스</title><link>https://go-fileshare.github.io/docs/0.32/ko/operations/isolation/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.32/ko/operations/isolation/</guid><description>
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;fileshare --config /etc/fileshare.d --isolate&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="코드 복사"
+aria-label="코드 복사"
+data-copied-label="복사됨!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;pre&gt;&lt;code&gt;smb on 0.0.0.0:445 — process 19810, serving public, photos and scratch
+webdav on 0.0.0.0:8080 — process 19811, serving public and photos
+nfs on 0.0.0.0:2049 — process 19812, serving public&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="코드 복사"
+aria-label="코드 복사"
+data-copied-label="복사됨!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;부모는 리스너를 바인딩한 다음 프로토콜마다 &lt;strong&gt;자기 자신을&lt;/strong&gt; 한 번씩 exec하며,각 자식에게는 해당 프로토콜이 제공할 수 있는 공유만 넘깁니다.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="checked-with-lsof-not-by-reading-the-code"&gt;코드를 읽어서가 아니라 &lt;code&gt;lsof&lt;/code&gt;로 확인했습니다&lt;span class="hx:absolute hx:-mt-20" id="checked-with-lsof-not-by-reading-the-code"&gt;&lt;/span&gt;
+&lt;a href="#checked-with-lsof-not-by-reading-the-code" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;pre&gt;&lt;code&gt;smb (pid 19810) has open: scratch.img photos.img
+webdav (pid 19811) has open: photos.img
+nfs (pid 19812) has open: photos.img&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="코드 복사"
+aria-label="코드 복사"
+data-copied-label="복사됨!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;쓰기 가능한 이미지는 &lt;strong&gt;정확히 하나의 프로세스&lt;/strong&gt;에서만 열려 있으며, WebDAV
+자식은 이를 전혀 열지 않습니다.&lt;/p&gt;
+&lt;p&gt;이것이 &lt;a href="https://go-fileshare.github.io/docs/0.32/ko/operations/build-tags/"&gt;빌드 태그&lt;/a&gt;가 줄 수 없는 것입니다.한 프로토콜의 패닉이나 고갈된 힙은 그 프로토콜 하나만 중단시키고, 각 자식은
+운영 체제가 제공하는 수단으로 가둘 수 있으며, 한 파서의 버그는 그 프로세스가
+열어 본 적 없는 이미지에는 닿을 수 없습니다.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="privileged-ports"&gt;권한이 필요한 포트&lt;span class="hx:absolute hx:-mt-20" id="privileged-ports"&gt;&lt;/span&gt;
+&lt;a href="#privileged-ports" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Unix에서는 부모가 바인딩한 리스너를 자식에게 넘기므로, &lt;strong&gt;권한이 필요한 포트도
+권한 없는 자식으로 동작합니다&lt;/strong&gt;. 부모가 445를 바인딩하고 자식은 그 권한이 전혀
+필요 없습니다.&lt;/p&gt;
+&lt;p&gt;Windows에는 &lt;code&gt;ExtraFiles&lt;/code&gt;가 없으므로 자식이 직접 주소를 바인딩합니다. 격리는
+같지만, 권한이 필요한 포트에 관한 절반은 해당하지 않습니다.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="the-rule-that-makes-it-honest"&gt;정직하게 만드는 규칙&lt;span class="hx:absolute hx:-mt-20" id="the-rule-that-makes-it-honest"&gt;&lt;/span&gt;
+&lt;a href="#the-rule-that-makes-it-honest" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;자식은 이미지를 직접 열므로, 두 프로토콜이 &lt;em&gt;쓰기 가능하게&lt;/em&gt; 제공하는 이미지는&lt;strong&gt;서로 간에 잠금이 없는&lt;/strong&gt; 하나의 파일 위의 두 드라이버가 됩니다. 이는 한
+프로세스 안에서 &lt;a href="https://go-fileshare.github.io/docs/0.32/ko/operations/locking/"&gt;공유 잠금&lt;/a&gt;이 막아 주는
+바로 그 상황입니다.&lt;/p&gt;
+&lt;p&gt;이는 거부되며, 거부 메시지가 해결 방법을 알려 줍니다.&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;pre&gt;&lt;code&gt;scratch is writable over smb and webdav, and one process per protocol means
+that many drivers writing one file with no lock between them. Say
+`protocols = [&amp;#34;smb&amp;#34;]` on the share, or make it read_only, or do not isolate.&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="코드 복사"
+aria-label="코드 복사"
+data-copied-label="복사됨!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;공유의 &lt;code&gt;protocols = [...]&lt;/code&gt;는 &lt;code&gt;--isolate&lt;/code&gt;에서만이 아니라 그 자체로도 유용합니다.SMB 전용으로 선언된 공유는 WebDAV 프로세스가 전혀 알지 못하는 공유입니다.결국 아무것도 제공하지 않게 될 &lt;code&gt;serve&lt;/code&gt; 블록도 이미지가 열리기 전에 거부되며, 그
+블록에서 제외된 공유와 이유가 함께 표시됩니다.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="not-with-an-admin-or-a-metrics-block-yet"&gt;아직은 &lt;code&gt;admin&lt;/code&gt; 또는 &lt;code&gt;metrics&lt;/code&gt; 블록과 함께 쓸 수 없습니다&lt;span class="hx:absolute hx:-mt-20" id="not-with-an-admin-or-a-metrics-block-yet"&gt;&lt;/span&gt;
+&lt;a href="#not-with-an-admin-or-a-metrics-block-yet" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;--isolate&lt;/code&gt;를 &lt;a href="https://go-fileshare.github.io/docs/0.32/ko/administration/"&gt;&lt;code&gt;admin&lt;/code&gt;&lt;/a&gt; 또는&lt;a href="https://go-fileshare.github.io/docs/0.32/ko/administration/health/"&gt;&lt;code&gt;metrics&lt;/code&gt;&lt;/a&gt; 블록과 함께 쓰면 거부됩니다.자식이 이미지를 열고 부모는 아무것도 열지 않으므로, API 변경을 적용할 단일
+프로세스도, 프로브가 준비 상태를 물을 단일 프로세스도 없기 때문입니다.&lt;/p&gt;</description></item><item><title>이미지 하나, 여러 프로토콜, 잠금 하나</title><link>https://go-fileshare.github.io/docs/0.32/ko/operations/locking/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.32/ko/operations/locking/</guid><description>
+&lt;p&gt;이 계열의 모든 서버는 드라이버 자체를 직렬화합니다.&lt;a href="https://github.com/go-filesystems/interface" target="_blank" rel="noopener"&gt;&lt;code&gt;go-filesystems/interface&lt;/code&gt;&lt;/a&gt;가 경로
+기반 동시 호출에 대해 아무것도 보장하지 않기 때문이며, 각 서버는 다른 서버를
+전혀 모른 채 &lt;strong&gt;자신만의&lt;/strong&gt; 잠금을 가집니다.&lt;/p&gt;
+&lt;p&gt;따라서 이미지 하나를 세 프로토콜로 동시에 제공하면 어디에도 공통 잠금이 없게
+됩니다. 그래서 이미지는 여기서 &lt;strong&gt;한 번만&lt;/strong&gt; 감싸지고, 같은 래퍼가 모든 프로토콜에
+넘겨집니다.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="stated-as-measured-so-as-not-to-overstate-it"&gt;과장하지 않기 위해 측정한 대로 서술합니다&lt;span class="hx:absolute hx:-mt-20" id="stated-as-measured-so-as-not-to-overstate-it"&gt;&lt;/span&gt;
+&lt;a href="#stated-as-measured-so-as-not-to-overstate-it" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;감싸지 않은&lt;/strong&gt; fat32 드라이버를 &lt;code&gt;-race&lt;/code&gt;로 실행하며 고루틴 여덟 개가 쓰기를 해도
+오늘 &lt;strong&gt;경쟁 상태가 발생하지 않습니다&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;이는 결함의 재현이 아니라 계약에 대한 보험입니다. ext4와 ntfs는 fat32가
+아니며, 드라이버 업데이트마다 이 프로그램이 다시 감사해야 하는 것은 아니어야
+합니다.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="the-wrapper-carries-capabilities-through"&gt;래퍼는 기능을 그대로 통과시킵니다&lt;span class="hx:absolute hx:-mt-20" id="the-wrapper-carries-capabilities-through"&gt;&lt;/span&gt;
+&lt;a href="#the-wrapper-carries-capabilities-through" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;기능을 숨기지 않습니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Opener&lt;/code&gt;에 응답하는 드라이버는 **잠금이 적용된 &lt;code&gt;File&lt;/code&gt;**을 돌려받습니다.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;File&lt;/code&gt;이 &lt;code&gt;WritableFile&lt;/code&gt;에 응답하는 드라이버는 &lt;strong&gt;위치 지정 쓰기&lt;/strong&gt;를 유지합니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;이 둘과 전체 파일 대체 경로의 차이는 이 계열의 다른 곳에서 &lt;strong&gt;약 70배&lt;/strong&gt;로
+측정되었으므로, 이를 지워 버리는 래퍼는 안전으로 위장한 성능 결함이 될
+것입니다.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="under-isolate-the-lock-cannot-help"&gt;&lt;code&gt;--isolate&lt;/code&gt; 아래에서는 잠금이 도움이 되지 않습니다&lt;span class="hx:absolute hx:-mt-20" id="under-isolate-the-lock-cannot-help"&gt;&lt;/span&gt;
+&lt;a href="#under-isolate-the-lock-cannot-help" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;자식 프로세스는 이미지를 직접 열므로 자식 사이에 공유 래퍼가 없습니다. 두
+프로토콜이 쓰기 가능하게 제공하는 이미지를 잠금 없이 조용히 제공하는 대신&lt;a href="https://go-fileshare.github.io/docs/0.32/ko/operations/isolation/#the-rule-that-makes-it-honest"&gt;거부하는&lt;/a&gt; 이유가
+이것입니다.&lt;/p&gt;</description></item><item><title>운영</title><link>https://go-fileshare.github.io/docs/0.32/ko/operations/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.32/ko/operations/</guid><description>
+&lt;div class="hextra-cards hx:mt-4 hx:gap-4 hx:grid not-prose" style="--hextra-cards-grid-cols: 3;"&gt;
+&lt;a class="hextra-card hx:group hx:flex hx:flex-col hx:justify-start hx:overflow-hidden hx:rounded-lg hx:border hx:border-gray-200 hx:text-current hx:no-underline hx:dark:shadow-none hx:hover:shadow-gray-100 hx:dark:hover:shadow-none hx:shadow-gray-100 hx:active:shadow-sm hx:active:shadow-gray-200 hx:transition-all hx:duration-200 hx:hover:border-gray-300 hx:bg-transparent hx:shadow-xs hx:dark:border-neutral-800 hx:hover:bg-slate-50 hx:hover:shadow-md hx:dark:hover:border-neutral-700 hx:dark:hover:bg-neutral-900" href="build-tags/"&gt;&lt;div&gt;
+&lt;span class="hextra-card-icon hx:flex hx:font-semibold hx:items-start hx:gap-2 hx:pt-4 hx:px-4 hx:text-gray-700 hx:hover:text-gray-900 hx:dark:text-neutral-200 hx:dark:hover:text-neutral-50"&gt;&lt;svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/&gt;&lt;/svg&gt;필요한 것만 빌드하기&lt;/span&gt;&lt;div class="hextra-card-subtitle hx:line-clamp-3 hx:text-sm hx:font-normal hx:text-gray-500 hx:dark:text-gray-400 hx:px-4 hx:mb-4 hx:mt-2"&gt;빌드 태그는 프로토콜이나 관리 API를 바이너리에서 완전히 제외합니다.&lt;/div&gt;&lt;/div&gt;&lt;/a&gt;
+&lt;a class="hextra-card hx:group hx:flex hx:flex-col hx:justify-start hx:overflow-hidden hx:rounded-lg hx:border hx:border-gray-200 hx:text-current hx:no-underline hx:dark:shadow-none hx:hover:shadow-gray-100 hx:dark:hover:shadow-none hx:shadow-gray-100 hx:active:shadow-sm hx:active:shadow-gray-200 hx:transition-all hx:duration-200 hx:hover:border-gray-300 hx:bg-transparent hx:shadow-xs hx:dark:border-neutral-800 hx:hover:bg-slate-50 hx:hover:shadow-md hx:dark:hover:border-neutral-700 hx:dark:hover:bg-neutral-900" href="isolation/"&gt;&lt;div&gt;
+&lt;span class="hextra-card-icon hx:flex hx:font-semibold hx:items-start hx:gap-2 hx:pt-4 hx:px-4 hx:text-gray-700 hx:hover:text-gray-900 hx:dark:text-neutral-200 hx:dark:hover:text-neutral-50"&gt;&lt;svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/&gt;&lt;/svg&gt;프로토콜마다 하나의 프로세스&lt;/span&gt;&lt;div class="hextra-card-subtitle hx:line-clamp-3 hx:text-sm hx:font-normal hx:text-gray-500 hx:dark:text-gray-400 hx:px-4 hx:mb-4 hx:mt-2"&gt;&amp;ndash;isolate: 각 프로토콜을 자체 프로세스에서 실행합니다.&lt;/div&gt;&lt;/div&gt;&lt;/a&gt;
+&lt;a class="hextra-card hx:group hx:flex hx:flex-col hx:justify-start hx:overflow-hidden hx:rounded-lg hx:border hx:border-gray-200 hx:text-current hx:no-underline hx:dark:shadow-none hx:hover:shadow-gray-100 hx:dark:hover:shadow-none hx:shadow-gray-100 hx:active:shadow-sm hx:active:shadow-gray-200 hx:transition-all hx:duration-200 hx:hover:border-gray-300 hx:bg-transparent hx:shadow-xs hx:dark:border-neutral-800 hx:hover:bg-slate-50 hx:hover:shadow-md hx:dark:hover:border-neutral-700 hx:dark:hover:bg-neutral-900" href="locking/"&gt;&lt;div&gt;
+&lt;span class="hextra-card-icon hx:flex hx:font-semibold hx:items-start hx:gap-2 hx:pt-4 hx:px-4 hx:text-gray-700 hx:hover:text-gray-900 hx:dark:text-neutral-200 hx:dark:hover:text-neutral-50"&gt;&lt;svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/&gt;&lt;/svg&gt;이미지 하나, 여러 프로토콜, 잠금 하나&lt;/span&gt;&lt;div class="hextra-card-subtitle hx:line-clamp-3 hx:text-sm hx:font-normal hx:text-gray-500 hx:dark:text-gray-400 hx:px-4 hx:mb-4 hx:mt-2"&gt;여러 프로토콜에서 하나의 이미지로 가는 쓰기는 하나의 공유 잠금을 거칩니다.&lt;/div&gt;&lt;/div&gt;&lt;/a&gt;
+&lt;/div&gt;</description></item></channel></rss>

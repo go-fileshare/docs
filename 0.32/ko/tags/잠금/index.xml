@@ -1,0 +1,26 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – 잠금</title><link>https://go-fileshare.github.io/docs/0.32/ko/tags/%EC%9E%A0%EA%B8%88/</link><description>Recent content in 잠금 on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>ko</language><atom:link href="https://go-fileshare.github.io/docs/0.32/ko/tags/%EC%9E%A0%EA%B8%88/index.xml" rel="self" type="application/rss+xml"/><item><title>이미지 하나, 여러 프로토콜, 잠금 하나</title><link>https://go-fileshare.github.io/docs/0.32/ko/operations/locking/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.32/ko/operations/locking/</guid><description>
+&lt;p&gt;이 계열의 모든 서버는 드라이버 자체를 직렬화합니다.&lt;a href="https://github.com/go-filesystems/interface" target="_blank" rel="noopener"&gt;&lt;code&gt;go-filesystems/interface&lt;/code&gt;&lt;/a&gt;가 경로
+기반 동시 호출에 대해 아무것도 보장하지 않기 때문이며, 각 서버는 다른 서버를
+전혀 모른 채 &lt;strong&gt;자신만의&lt;/strong&gt; 잠금을 가집니다.&lt;/p&gt;
+&lt;p&gt;따라서 이미지 하나를 세 프로토콜로 동시에 제공하면 어디에도 공통 잠금이 없게
+됩니다. 그래서 이미지는 여기서 &lt;strong&gt;한 번만&lt;/strong&gt; 감싸지고, 같은 래퍼가 모든 프로토콜에
+넘겨집니다.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="stated-as-measured-so-as-not-to-overstate-it"&gt;과장하지 않기 위해 측정한 대로 서술합니다&lt;span class="hx:absolute hx:-mt-20" id="stated-as-measured-so-as-not-to-overstate-it"&gt;&lt;/span&gt;
+&lt;a href="#stated-as-measured-so-as-not-to-overstate-it" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;감싸지 않은&lt;/strong&gt; fat32 드라이버를 &lt;code&gt;-race&lt;/code&gt;로 실행하며 고루틴 여덟 개가 쓰기를 해도
+오늘 &lt;strong&gt;경쟁 상태가 발생하지 않습니다&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;이는 결함의 재현이 아니라 계약에 대한 보험입니다. ext4와 ntfs는 fat32가
+아니며, 드라이버 업데이트마다 이 프로그램이 다시 감사해야 하는 것은 아니어야
+합니다.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="the-wrapper-carries-capabilities-through"&gt;래퍼는 기능을 그대로 통과시킵니다&lt;span class="hx:absolute hx:-mt-20" id="the-wrapper-carries-capabilities-through"&gt;&lt;/span&gt;
+&lt;a href="#the-wrapper-carries-capabilities-through" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;기능을 숨기지 않습니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Opener&lt;/code&gt;에 응답하는 드라이버는 **잠금이 적용된 &lt;code&gt;File&lt;/code&gt;**을 돌려받습니다.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;File&lt;/code&gt;이 &lt;code&gt;WritableFile&lt;/code&gt;에 응답하는 드라이버는 &lt;strong&gt;위치 지정 쓰기&lt;/strong&gt;를 유지합니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;이 둘과 전체 파일 대체 경로의 차이는 이 계열의 다른 곳에서 &lt;strong&gt;약 70배&lt;/strong&gt;로
+측정되었으므로, 이를 지워 버리는 래퍼는 안전으로 위장한 성능 결함이 될
+것입니다.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="under-isolate-the-lock-cannot-help"&gt;&lt;code&gt;--isolate&lt;/code&gt; 아래에서는 잠금이 도움이 되지 않습니다&lt;span class="hx:absolute hx:-mt-20" id="under-isolate-the-lock-cannot-help"&gt;&lt;/span&gt;
+&lt;a href="#under-isolate-the-lock-cannot-help" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;자식 프로세스는 이미지를 직접 열므로 자식 사이에 공유 래퍼가 없습니다. 두
+프로토콜이 쓰기 가능하게 제공하는 이미지를 잠금 없이 조용히 제공하는 대신&lt;a href="https://go-fileshare.github.io/docs/0.32/ko/operations/isolation/#the-rule-that-makes-it-honest"&gt;거부하는&lt;/a&gt; 이유가
+이것입니다.&lt;/p&gt;</description></item></channel></rss>

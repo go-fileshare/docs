@@ -1,0 +1,271 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Grpc</title><link>https://go-fileshare.github.io/docs/0.32/ja/tags/grpc/</link><description>Recent content in Grpc on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>ja</language><atom:link href="https://go-fileshare.github.io/docs/0.32/ja/tags/grpc/index.xml" rel="self" type="application/rss+xml"/><item><title>管理 API</title><link>https://go-fileshare.github.io/docs/0.32/ja/administration/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.32/ja/administration/</guid><description>
+&lt;p&gt;v0.8.0 以降、サーバーの稼働中に共有を変更できます。&lt;code&gt;admin&lt;/code&gt; ブロックを書くと gRPC サービスが有効になり、再起動やファイルの編集なしに、共有の作成、変更、オフライン化ができます。&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;admin&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; listen&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;unix:///run/fileshare/admin.sock&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # made 0600
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; state_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/var/lib/fileshare/shares.json&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; source_roots&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;/srv/images&amp;#34;, &amp;#34;/data&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="コードをコピー"
+aria-label="コードをコピー"
+data-copied-label="コピーしました！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;ブロックを書かない限り、何も待ち受けません。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-it-does"&gt;できること&lt;span class="hx:absolute hx:-mt-20" id="what-it-does"&gt;&lt;/span&gt;
+&lt;a href="#what-it-does" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;サービスは&lt;a href="https://github.com/go-fileshare/fileshare/blob/v0.28.0/proto/fileshare/admin/v1/admin.proto" target="_blank" rel="noopener"&gt;&lt;code&gt;fileshare.admin.v1.AdminService&lt;/code&gt;&lt;/a&gt;
+です。&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;CreateShare&lt;/code&gt;、&lt;code&gt;UpdateShare&lt;/code&gt;、&lt;code&gt;DeleteShare&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;イメージ、ディレクトリ、または(v0.21.0 以降)ボリュームから共有を定義する。&lt;code&gt;read_only&lt;/code&gt; や &lt;code&gt;protocols&lt;/code&gt; を変更する(ソースは変更できない。削除して別のものを作成する)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;DisableShare&lt;/code&gt;、&lt;code&gt;EnableShare&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;共有をオフラインにする、およびオンラインに戻す&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;Grant&lt;/code&gt;、&lt;code&gt;Revoke&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;サブジェクトに読み取りまたは書き込みのアクセス権を与える、または取り消す&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ListShares&lt;/code&gt;、&lt;code&gt;GetShare&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;すべての共有について、何を提供しているか、どのプロトコルで提供しているか、他のプロトコルで提供していない理由&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ListUsers&lt;/code&gt;、&lt;code&gt;ListGroups&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;権限付与で名指しできる対象。各ユーザーについては、その認証情報が応答できるプロトコル&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ReloadDirectory&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;人を今すぐ読み直す。&lt;a href="https://go-fileshare.github.io/docs/0.32/ja/administration/reload/"&gt;ディレクトリの再読み込み&lt;/a&gt;を参照&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;GetServerInfo&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;名前、バージョン、起動時刻、世代、リスナー&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ListParents&lt;/code&gt;、&lt;code&gt;CreateVolume&lt;/code&gt;、&lt;code&gt;ResizeVolume&lt;/code&gt;、&lt;code&gt;SnapshotVolume&lt;/code&gt;、&lt;code&gt;DeleteVolume&lt;/code&gt;、&lt;code&gt;GetVolume&lt;/code&gt;、&lt;code&gt;ListVolumes&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;特権を持つプロビジョナー経由で作成されるストレージと、そこから提供される共有。&lt;a href="https://go-fileshare.github.io/docs/0.32/ja/administration/volumes/"&gt;ボリューム&lt;/a&gt;を参照(v0.21.0 以降)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;権限付与で名指しできるのは、&lt;strong&gt;ユーザー&lt;/strong&gt;、&lt;strong&gt;グループ&lt;/strong&gt;(設定ファイルでは &lt;code&gt;@group&lt;/code&gt;)、&lt;strong&gt;&lt;code&gt;oidc:groups:&lt;/code&gt; の値&lt;/strong&gt;、&lt;strong&gt;&lt;code&gt;oidc:user:&lt;/code&gt; の名前&lt;/strong&gt;です。これらは設定ファイルで使うのと同じ語彙です。&lt;a href="https://go-fileshare.github.io/docs/0.32/ja/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;ID プロバイダーが名指しする人&lt;/a&gt;を参照してください。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;grpc.health.v1&lt;/code&gt; は同じリスナーで応答します。ブロックに &lt;code&gt;reflection = true&lt;/code&gt; を指定すると、&lt;code&gt;grpcurl&lt;/code&gt; 用の gRPC サーバーリフレクションが有効になります。&lt;/p&gt;
+&lt;h3 data-hextra-search-id="every-change-says-what-serving-it-did"&gt;すべての変更は、提供にどう反映されたかを伝える&lt;span class="hx:absolute hx:-mt-20" id="every-change-says-what-serving-it-did"&gt;&lt;/span&gt;
+&lt;a href="#every-change-says-what-serving-it-did" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;変更は &lt;code&gt;Applied&lt;/code&gt; メッセージで応答します。&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-proto" data-lang="proto"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;message&lt;/span&gt; &lt;span class="nc"&gt;Applied&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;uint64&lt;/span&gt; &lt;span class="n"&gt;generation&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="c1"&gt;// the generation now being served
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;uint64&lt;/span&gt; &lt;span class="n"&gt;connections_closed&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="c1"&gt;// how many the previous one had open, and closed
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="コードをコピー"
+aria-label="コードをコピー"
+data-copied-label="コピーしました！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;そのため、すべての RPC は共有そのものを返すのではなく、それぞれ専用の応答メッセージを持ちます。&lt;code&gt;.proto&lt;/code&gt; は、AIP-131 の「リソースを返す」よりも、&lt;a href="https://buf.build" target="_blank" rel="noopener"&gt;buf&lt;/a&gt; の &lt;code&gt;STANDARD&lt;/code&gt; lint ルール(fileshare の CI で &lt;code&gt;buf lint&lt;/code&gt; により検査)に従っており、&lt;code&gt;Applied&lt;/code&gt; を運ぶのがラッパーです。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="where-it-listens-and-who-may-call-it"&gt;待ち受ける場所と、呼び出せる人&lt;span class="hx:absolute hx:-mt-20" id="where-it-listens-and-who-may-call-it"&gt;&lt;/span&gt;
+&lt;a href="#where-it-listens-and-who-may-call-it" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;TCP の場合は、相互 TLS か、何もなしかのどちらかです&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;tls_cert_file&lt;/code&gt;、&lt;code&gt;tls_key_file&lt;/code&gt;、&lt;code&gt;client_ca_file&lt;/code&gt; の 3 つすべてが必要で、&lt;strong&gt;ループバックも例外ではありません&lt;/strong&gt;。ローカルユーザーなら誰でもループバックに到達でき、この API は誰が誰のファイルを読めるかを決めるためです。Unix ソケットは &lt;strong&gt;0600&lt;/strong&gt; で作成され、そのパーミッションがアクセス制御になります。&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;admin&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; listen&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;127.0.0.1:7443&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; tls_cert_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/admin/server.pem&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; tls_key_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/admin/server.key&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; client_ca_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/admin/clients.pem&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; state_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/var/lib/fileshare/shares.json&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; source_roots&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;/srv/images&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="コードをコピー"
+aria-label="コードをコピー"
+data-copied-label="コピーしました！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;リスナーは&lt;a href="https://github.com/grpc-transports/control" target="_blank" rel="noopener"&gt;grpc-transports/control&lt;/a&gt; です。すべての変更は、誰が行ったか(クライアント証明書の CN、またはソケットの相手の uid)とともに記録されます。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="over-https-for-oidc-tokens"&gt;HTTPS 経由、OIDC トークン向け&lt;span class="hx:absolute hx:-mt-20" id="over-https-for-oidc-tokens"&gt;&lt;/span&gt;
+&lt;a href="#over-https-for-oidc-tokens" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;v0.28.0 以降、&lt;code&gt;admin&lt;/code&gt; ブロックに &lt;code&gt;web&lt;/code&gt; ブロックがあれば、同じ API(同じ状態、同じ監査)がHTTPS でも提供されます。&lt;strong&gt;Connect、gRPC-Web、gRPC を 1 つのリスナーで&lt;/strong&gt;、&lt;a href="https://go-fileshare.github.io/docs/0.32/ja/security/tls/"&gt;&lt;code&gt;tls&lt;/code&gt; ブロック&lt;/a&gt;の証明書を使って提供します。Web UI とネイティブ UI が通信する先がこれです。&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;admin&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; listen&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;unix:///run/fileshare/admin.sock&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; state_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/var/lib/fileshare/shares.json&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;web&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; listen&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:8443&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;issuer&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://login.example.org&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; audience&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;fileshare-a&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # what THIS server is called there
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; groups&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;fileshare-admins&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;issuer&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://login.partner.example.org&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; audience&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;fileshare-a.partner&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; subjects&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;5b0c…&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="c1"&gt; # a person is (issuer, sub)
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="コードをコピー"
+aria-label="コードをコピー"
+data-copied-label="コピーしました！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;フィールド&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;listen&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;TCP アドレス。&lt;code&gt;tls&lt;/code&gt; ブロックがないと拒否される。ベアラートークンはパスワードと同じ価値を持つため&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;issuer &amp;quot;&amp;lt;url&amp;gt;&amp;quot;&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;ID プロバイダーごとに 1 ブロック(その &lt;code&gt;iss&lt;/code&gt;)。同じものを 2 回指定すると拒否される&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;audience&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;トークンが名指しすべき &lt;code&gt;aud&lt;/code&gt;。そのプロバイダーで&lt;strong&gt;このサーバーが何と呼ばれているか&lt;/strong&gt;。必須&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;subjects&lt;/code&gt;、&lt;code&gt;groups&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;呼び出せる人: &lt;code&gt;sub&lt;/code&gt;、または groups クレーム内のグループ。少なくともどちらか一方が必要&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;jwks_url&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;OIDC ディスカバリーを省略する。ディスカバリーを公開しないプロバイダー向け&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;groups_claim&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;グループを運ぶクレーム。既定は &lt;code&gt;groups&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;strong&gt;誰に応答するか。&lt;/strong&gt; 呼び出しに応答するのは、ある発行者の検証器がそのベアラートークン(署名、&lt;code&gt;iss&lt;/code&gt;、このサーバーを名指しする &lt;code&gt;aud&lt;/code&gt;、時刻)を受け入れ、&lt;strong&gt;かつ&lt;/strong&gt;その発行者のブロックがトークンのサブジェクトまたはそのグループのいずれかを名指ししている場合です。ある発行者に列挙されたサブジェクトは、別の発行者では誰でもありません。人とは (発行者、&lt;code&gt;sub&lt;/code&gt;) です。検査はヘッダーだけで行われ、メッセージが 1 バイトもデコードされる前に実行されます。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;サーバーごとに 1 つのオーディエンス。&lt;/strong&gt; 複数のサーバー宛てのトークンは、そのうちのどれかが他のサーバーに対して再利用できてしまいます(RFC 8707、RFC 9068)。そのため各サーバーが独自のオーディエンスを持ち、複数のサーバーを操作する UI はサーバーごとに 1 つのトークンを要求します。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;拒否された呼び出し元が知ること。&lt;/strong&gt; 「拒否された」ということだけです。理由と、行われたすべての変更は、&lt;code&gt;oidc=&amp;lt;issuer&amp;gt; &amp;lt;sub&amp;gt;&lt;/code&gt; として監査出力に記録されます。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;CORS なし。&lt;/strong&gt; ブラウザーは直接呼び出しません。トークンを保持する UI 自身のサーバー経由で到達します。リクエストは 1 MiB に制限され、接続のすべての段階にタイムアウトがあります。各発行者には鍵を読むために&lt;strong&gt;起動時に&lt;/strong&gt;接続します。到達できない発行者があると、その名前を示して起動が停止します。&lt;/p&gt;
+&lt;h3 data-hextra-search-id="in-a-browser-the-console"&gt;ブラウザーで: コンソール&lt;span class="hx:absolute hx:-mt-20" id="in-a-browser-the-console"&gt;&lt;/span&gt;
+&lt;a href="#in-a-browser-the-console" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;&lt;a href="https://github.com/go-fileshare/console" target="_blank" rel="noopener"&gt;go-fileshare/console&lt;/a&gt; は、この API を呼び出す管理コンソールです。共有、詳細、権限付与、作成、有効化、無効化、削除、権限の付与と取り消し、そして&lt;a href="https://go-fileshare.github.io/docs/0.32/ja/administration/volumes/"&gt;ボリューム&lt;/a&gt;(作成、リサイズ、スナップショット、共有、削除。データは決して破棄しない)を、すべてのサーバーにまたがって操作できます。&lt;a href="https://github.com/go-fileshare/portal" target="_blank" rel="noopener"&gt;go-fileshare/portal&lt;/a&gt; の背後でブラウザー上で動作し、portal が OpenID Connect で人をログインさせ、そのトークンを保持します。トークンはサーバーごとに 1 つで、そのサーバーだけを宛先とします。ブラウザーがトークンを保持することはありません。&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# portal.hcl
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;server&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;paris&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://fs-paris.example.org:8443&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # this web listener
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; issuer&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://login.example.org&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; resource&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://fs-paris.example.org/&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # this server&amp;#39;s audience above
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;ui &amp;#34;console&amp;#34; { dir&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/usr/share/fileshare-console&amp;#34;&lt;/span&gt; }&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="コードをコピー"
+aria-label="コードをコピー"
+data-copied-label="コピーしました！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;同じコンソールは、portal なしで&lt;strong&gt;ネイティブ&lt;/strong&gt;にも動作します。パブリッククライアントとして(&lt;a href="https://github.com/go-authn/rp" target="_blank" rel="noopener"&gt;go-authn/rp&lt;/a&gt;、RFC 8252)、システムのブラウザーとループバックのリスナー経由でログインし、各サーバーを、そのサーバーだけを宛先とするトークンで呼び出します。サーバーは自身の &lt;code&gt;console.hcl&lt;/code&gt; に、ここと同じ &lt;code&gt;url&lt;/code&gt; と &lt;code&gt;resource&lt;/code&gt; で列挙します。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;ファイルエクスプローラー&lt;/strong&gt;の &lt;a href="https://github.com/go-fileshare/explorer" target="_blank" rel="noopener"&gt;go-fileshare/explorer&lt;/a&gt; は、同じ portal の背後で動作します。人が利用できるすべての共有で、参照、アップロード、ダウンロード、名前の変更、コピー、削除ができます。portal 経由(&lt;code&gt;/dav/&amp;lt;server&amp;gt;/...&lt;/code&gt;)で各サーバーの WebDAV に、そのサーバー宛てのトークンで到達し、返ってきたものを portal は&lt;strong&gt;無害化して&lt;/strong&gt;提供します(&lt;code&gt;Content-Security-Policy: sandbox&lt;/code&gt;、添付ファイルとして)。共有上のページが portal として実行されることは決してありません。fileshare &lt;strong&gt;v0.29.0&lt;/strong&gt; 以降が必要です。その&lt;a href="https://go-fileshare.github.io/docs/0.32/ja/protocols/webdav/#the-root-and-uploads-in-pieces"&gt;WebDAV&lt;/a&gt;は、ルートで共有を一覧し、分割アップロードを受け付けます。&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# portal.hcl、同じサーバー
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;server&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;paris&amp;#34;&lt;/span&gt; {&lt;span class="c1"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt; # ... 上記と同じで、WebDAV も同様です:
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; dav_url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://fs-paris.example.org&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;ui &amp;#34;explorer&amp;#34; { dir&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/usr/share/fileshare-explorer&amp;#34;&lt;/span&gt; }&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="コードをコピー"
+aria-label="コードをコピー"
+data-copied-label="コピーしました！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;エクスプローラーも、コンソールと同様に portal なしで&lt;strong&gt;ネイティブ&lt;/strong&gt;に動作します(explorer v0.2.0)。パブリッククライアントとしてシステムのブラウザー経由でログインし、各サーバーの WebDAV を、そのサーバーだけを宛先とするトークンで呼び出します。サーバーは &lt;code&gt;explorer.hcl&lt;/code&gt; に、それぞれの &lt;code&gt;dav_url&lt;/code&gt;(https のみ)と &lt;code&gt;oidc&lt;/code&gt; ブロックの &lt;code&gt;resource&lt;/code&gt; とともに列挙します。どちらのネイティブクライアントも、トークン付きのリダイレクトには従いません。Go の HTTP クライアントは、同じホストへのリダイレクトであればスキームが異なっても &lt;code&gt;Authorization&lt;/code&gt; を保持するため、プレーンな &lt;code&gt;http&lt;/code&gt; アドレスに &lt;code&gt;307&lt;/code&gt; を返す誤設定のプロキシがあると、トークンが平文で送られてしまうからです。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;失敗したアップロードは再開されます&lt;/strong&gt;(explorer v0.3.0)。パートファイルにはファイルの名前、サイズ、更新時刻から付けた名前が使われるため、同じファイルをもう一度アップロードすると、パートの末尾から続きが行われます。ただし、パートの最後の 64 KiB を読み戻して、それがそのファイルのものであると確認できた場合に限ります。別のファイルの続きが行われることはありません。ネットワークやサーバーの障害ではパートが保持され、拒否(403、満杯の共有の 507)では削除されます。&lt;/p&gt;
+&lt;p&gt;各サーバーの &lt;code&gt;audience&lt;/code&gt; は、そのサーバーに対する portal の &lt;code&gt;resource&lt;/code&gt; です。この API を使うために独自のコンソールを書く必要はありません。このサーバー宛てのトークンを持つ Connect、gRPC-Web、gRPC のクライアントであれば何でも使えます。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-it-will-and-will-not-touch"&gt;触れるものと触れないもの&lt;span class="hx:absolute hx:-mt-20" id="what-it-will-and-will-not-touch"&gt;&lt;/span&gt;
+&lt;a href="#what-it-will-and-will-not-touch" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;自分が作成した共有を管理します。&lt;/strong&gt; 設定ファイルに書かれた共有は同じフィールドで一覧に表示されますが、その定義の変更は &lt;code&gt;FAILED_PRECONDITION&lt;/code&gt; で拒否されます。2 か所で定義された共有は誰も答えたくない問いであり、その定義の場所はファイルだからです。API の共有は &lt;code&gt;state_file&lt;/code&gt; にアトミックに書き込まれ、次回の起動時に再び提供されます。&lt;code&gt;state_file&lt;/code&gt; のないブロックが拒否されるのはそのためです。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;ソースは &lt;code&gt;source_roots&lt;/code&gt; の下になければなりません。&lt;/strong&gt; 解決後の(リンクをたどり、&lt;code&gt;..&lt;/code&gt; を取り除いた)パスで判定され、保持されるのも解決後のパスです。&lt;code&gt;source_roots&lt;/code&gt; がなければ、API は&lt;strong&gt;共有をまったく作成できません&lt;/strong&gt;。プロセスは &lt;code&gt;/dev&lt;/code&gt; や &lt;code&gt;/etc&lt;/code&gt; を読めますが、それらを呼び出し元に渡すつもりは誰にもないからです。起動のたびに再検査され、&lt;code&gt;state_file&lt;/code&gt; にある共有がルートの下になくなっていれば、その名前を示して起動が停止します。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;すべての共有には少なくとも 1 つの権限付与があります。&lt;/strong&gt; 権限付与のない共有は、認証した誰にでも開放されます。ファイルでは意図的にそう書けますが、API 呼び出しで省略によってそうなるべきではありません。そのため &lt;code&gt;CreateShare&lt;/code&gt; には権限付与が必要で、最後の 1 つを取り消すことは拒否されます。代わりに共有を削除してください。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;プロトコルが運べる名前。&lt;/strong&gt; 共有名は最大 80 文字で、空白で始まったり終わったりせず、&lt;code&gt;.&lt;/code&gt; や &lt;code&gt;..&lt;/code&gt; ではなく、印字できない文字や &lt;code&gt;:*?&amp;quot;&amp;lt;&amp;gt;|{}%&lt;/code&gt; のいずれも含みません。サブジェクトも印字できない文字を含まず、1 つの共有が受け付ける権限付与は最大 1000 件です。それ以前にグループの仕事でしょう。これらはいずれも v0.14.0 より前には受け付けられ、&lt;code&gt;state_file&lt;/code&gt; に書き込まれたうえで、起動のたびに致命的な問題になっていました。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;どの共有も、設定、状態ファイル、およびそれらが指すシークレットを含んではなりません。&lt;/strong&gt;
+そこに書き込める人は、誰が何をできるかを書き換えられてしまいます。v0.17.0 以降は、&lt;code&gt;authorized_keys_file&lt;/code&gt;、&lt;code&gt;users&lt;/code&gt; ブロックの &lt;code&gt;dsn_file&lt;/code&gt; と &lt;code&gt;bind_password_file&lt;/code&gt;、&lt;code&gt;ssf&lt;/code&gt; ブロックの&lt;code&gt;ca_file&lt;/code&gt;、DSN が指す sqlite データベースも含みます。誰かの &lt;code&gt;authorized_keys&lt;/code&gt; に自分の鍵を追加できる書き込み者は、その人としてログインできてしまうからです。&lt;strong&gt;また、共有が別の共有を含んでもなりません&lt;/strong&gt;(&lt;a href="https://go-fileshare.github.io/docs/0.32/ja/configuration/shares/#a-directory-not-only-an-image"&gt;ディレクトリ&lt;/a&gt;を参照)。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;変更は、設定と同じように検査され、開かれ、書き込まれ、そのあとで提供されます。&lt;/strong&gt; サーバーが受け入れられない変更(開けないイメージ、ディレクトリの誰も持たない名前)は拒否され、提供中のものと書き込まれたものは元のままに保たれます。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="disabling-a-share"&gt;共有の無効化&lt;span class="hx:absolute hx:-mt-20" id="disabling-a-share"&gt;&lt;/span&gt;
+&lt;a href="#disabling-a-share" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;無効化は Samba の &lt;code&gt;available = no&lt;/code&gt; に相当します。&lt;/strong&gt; 共有は定義されたままで、接続の試行はすべて失敗します。開いている接続は閉じられ、イメージやディレクトリは&lt;strong&gt;解放される&lt;/strong&gt;ので、オフラインの間にファイルを置き換えられます。&lt;code&gt;EnableShare&lt;/code&gt; で再び提供され、ソースを開けなくなっている場合は拒否されます。&lt;code&gt;CreateShare&lt;/code&gt; で、最初から無効化された共有を作成することもできます。&lt;/p&gt;
+&lt;p&gt;ほかのすべての変更と異なり、これは&lt;strong&gt;設定ファイルの&lt;/strong&gt;共有にも適用されます。共有をオフラインにするのは定義ではなく操作だからで、再起動をまたいで保持されます(状態ファイルに保存されます)。&lt;a href="https://go-fileshare.github.io/docs/0.32/ja/configuration/check/"&gt;&lt;code&gt;fileshare check&lt;/code&gt;&lt;/a&gt;はオフラインのものを一覧します。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="a-change-is-a-new-generation"&gt;変更は新しい世代&lt;span class="hx:absolute hx:-mt-20" id="a-change-is-a-new-generation"&gt;&lt;/span&gt;
+&lt;a href="#a-change-is-a-new-generation" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;変更はプロトコルサーバーを再起動し、その接続を閉じます&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;SMB は接続を許可する人をツリー接続ごとに 1 回検査し、SFTP は人のツリーをログインごとに 1 回構築します。そのため、失効後も生き残るセッションは、取り上げられたばかりのアクセスを保持し続けてしまいます。「すでに接続していた人を除いて失効」は、失効ではありません。&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;したがって、変更は稼働中のサーバー&lt;em&gt;に対して&lt;/em&gt;適用されるのではなく、新しいリストから構築された新しいサーバー(&lt;strong&gt;世代&lt;/strong&gt;)に置き換えられます。再起動と同じやり方ですが、ポートは手放しません。ライブラリ側でほかの方法をとることはできませんでした。go-filesystems/smb には &lt;code&gt;Share&lt;/code&gt; はあっても&lt;code&gt;Unshare&lt;/code&gt; がなく、nfs には &lt;code&gt;Export&lt;/code&gt; はあっても &lt;code&gt;Unexport&lt;/code&gt; がありません。&lt;/p&gt;
+&lt;p&gt;ポートはバインドされたままなので、変更中に接続してきたクライアントは拒否されず、&lt;strong&gt;待たされます&lt;/strong&gt;。共有が変わっていないイメージは、ドライバーを保持したまま、二度開かれることはありません。クライアントは再接続します。これはすべての変更で支払う代価であり、API がフィールドごとではなく呼び出しごとに 1 つの変更を適用するのもそのためです。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="limits"&gt;制限&lt;span class="hx:absolute hx:-mt-20" id="limits"&gt;&lt;/span&gt;
+&lt;a href="#limits" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;--isolate&lt;/code&gt; は、&lt;code&gt;admin&lt;/code&gt; ブロックとも &lt;code&gt;metrics&lt;/code&gt; ブロックともまだ併用できません。変更を適用できる単一のプロセスがないためで、この組み合わせは拒否されます。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;-tags nogrpc&lt;/code&gt; でビルドしたバイナリには管理 API がなく、&lt;code&gt;admin&lt;/code&gt; ブロックのある設定は、管理 API なしで提供されるのではなく&lt;strong&gt;拒否されます&lt;/strong&gt;。このタグで 11.7 MB を節約できます。&lt;a href="https://go-fileshare.github.io/docs/0.32/ja/operations/build-tags/#the-admin-api-and-nogrpc"&gt;必要なものだけをビルドする&lt;/a&gt;を参照してください。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 data-hextra-search-id="changing-the-proto"&gt;&lt;code&gt;.proto&lt;/code&gt; を変更する&lt;span class="hx:absolute hx:-mt-20" id="changing-the-proto"&gt;&lt;/span&gt;
+&lt;a href="#changing-the-proto" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;proto/&lt;/code&gt; 以下の Go コードは生成されてコミットされているため、&lt;code&gt;go install&lt;/code&gt; に &lt;code&gt;protoc&lt;/code&gt; は不要です。&lt;code&gt;.proto&lt;/code&gt;(管理 API のもの、またはプロビジョナーの &lt;code&gt;proto/fileshare/provision/v1/provision.proto&lt;/code&gt;)を変更した後は、fileshare の CI が固定しているバージョン(protoc 34.1、protoc-gen-go v1.36.12、protoc-gen-go-grpc v1.6.2)で両方を再生成してください。CI はそれらを再生成し、コミット済みのコードと異なる場合や、生成コードがコミットされていない場合に失敗します。&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;protoc -I proto --go_out&lt;span class="o"&gt;=&lt;/span&gt;. --go_opt&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;module&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;github.com/go-fileshare/fileshare &lt;span class="se"&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; --go-grpc_out&lt;span class="o"&gt;=&lt;/span&gt;. --go-grpc_opt&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;module&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;github.com/go-fileshare/fileshare &lt;span class="se"&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; proto/fileshare/admin/v1/admin.proto proto/fileshare/provision/v1/provision.proto&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="コードをコピー"
+aria-label="コードをコピー"
+data-copied-label="コピーしました！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;</description></item></channel></rss>

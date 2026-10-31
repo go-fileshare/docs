@@ -1,0 +1,392 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Zfs</title><link>https://go-fileshare.github.io/docs/0.32/zh-cn/tags/zfs/</link><description>Recent content in Zfs on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><atom:link href="https://go-fileshare.github.io/docs/0.32/zh-cn/tags/zfs/index.xml" rel="self" type="application/rss+xml"/><item><title>卷：fileshare 创建的存储</title><link>https://go-fileshare.github.io/docs/0.32/zh-cn/administration/volumes/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.32/zh-cn/administration/volumes/</guid><description>
+&lt;p&gt;自 v0.21.0 起，&lt;a href="https://go-fileshare.github.io/docs/0.32/zh-cn/administration/"&gt;管理 API&lt;/a&gt;可以&lt;strong&gt;创建共享所提供的存储&lt;/strong&gt;，包括 &lt;strong&gt;ZFS 数据集&lt;/strong&gt;、&lt;strong&gt;btrfs 子卷&lt;/strong&gt;、&lt;strong&gt;受项目配额限制的 XFS 或 ext4 目录&lt;/strong&gt;，并设定大小、所有者且可被追踪，然后由其提供共享。仅支持 Linux。尚不支持 Ceph。&lt;/p&gt;
+&lt;p&gt;创建这类存储需要 &lt;code&gt;CAP_SYS_ADMIN&lt;/code&gt;（quotactl、btrfs 配额 ioctl、&lt;code&gt;/dev/zfs&lt;/code&gt;、mount(2)）。&lt;code&gt;fileshare serve&lt;/code&gt; 要为陌生人解析五种网络协议，因此不持有任何特权，具备特权的部分是同一二进制文件的第二种角色&lt;code&gt;fileshare provisioner&lt;/code&gt;，它位于 unix 套接字和一个小型封闭协议之后：&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;pre&gt;&lt;code&gt; admin gRPC (unix socket 0600 &amp;#43; peer uid, or mTLS)
+operator ─────────────────────────────────────────────▶ fileshare serve
+(unprivileged)
+│
+provision gRPC (unix socket, SO_PEERCRED = fileshare&amp;#39;s uid)
+▼
+fileshare provisioner
+(CAP_SYS_ADMIN, CAP_CHOWN, CAP_FOWNER)
+│
+go-fsctl: zfs · btrfs · projquota (ioctls, no CLI)&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="复制代码"
+aria-label="复制代码"
+data-copied-label="已复制！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;使用一个二进制文件而不是两个守护进程：只需部署一个版本，只有一份协议定义。存储本身由 &lt;a href="https://go-fsctl.github.io/" target="_blank" rel="noopener"&gt;go-fsctl&lt;/a&gt; 完成（纯 Go，不使用 &lt;code&gt;zfs&lt;/code&gt; 或 &lt;code&gt;btrfs&lt;/code&gt; 命令）。设计以及构建过程中的变化记录在 fileshare 仓库的&lt;a href="https://github.com/go-fileshare/fileshare/blob/v0.28.0/docs/volumes.md" target="_blank" rel="noopener"&gt;&lt;code&gt;docs/volumes.md&lt;/code&gt;&lt;/a&gt; 中。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="both-processes-configured"&gt;两个进程的配置&lt;span class="hx:absolute hx:-mt-20" id="both-processes-configured"&gt;&lt;/span&gt;
+&lt;a href="#both-processes-configured" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;fileshare serve&lt;/code&gt;，以用户 &lt;code&gt;fileshare&lt;/code&gt;（uid 990）运行：&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# /etc/fileshare/fileshare.hcl
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;admin&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; listen&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;unix:///run/fileshare/admin.sock&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; state_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/var/lib/fileshare/shares.json&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; source_roots&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;/srv/fileshare/volumes&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; provisioner&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;unix:///run/fileshare-provisioner/provisioner.sock&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; provisioner_uid&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;0&lt;/span&gt;&lt;span class="c1"&gt; # 必须在该套接字上应答的 uid；默认为 0
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; allowed_uids&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="m"&gt;990&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="c1"&gt; # 可以调用此 API 的 uid
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="复制代码"
+aria-label="复制代码"
+data-copied-label="已复制！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;键&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;provisioner&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;配给程序的套接字，即 &lt;code&gt;unix:///path&lt;/code&gt;。没有它时，每个卷调用都返回 &lt;code&gt;FAILED_PRECONDITION&lt;/code&gt;，也不会基于卷创建共享&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;provisioner_uid&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;在该套接字上应答的进程必须运行所用的 uid，每次连接时都从内核（&lt;code&gt;SO_PEERCRED&lt;/code&gt;）读取：由他人绑定的套接字什么都得不到。未设置时为 0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;allowed_uids&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;可选，仅限 unix 套接字：只有这些 uid 的调用会得到应答；其他任何调用返回 &lt;code&gt;PERMISSION_DENIED&lt;/code&gt;，并记入审计。它只能&lt;strong&gt;收窄&lt;/strong&gt;套接字 0600 模式所允许的范围（其所有者和 root），例如可使 root 无法调用。在 TCP 上会被拒绝，因为那里由客户端证书负责检查&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;卷的路径必须位于 &lt;code&gt;source_roots&lt;/code&gt; 之下，与其他任何来源一样。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;fileshare provisioner&lt;/code&gt;，以 root 运行：&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# /etc/fileshare-provisioner.hcl
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;provisioner&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; listen&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;unix:///run/fileshare-provisioner/provisioner.sock&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; client_uid&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;990&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; group&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;fileshare&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; max_volume&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;10T&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; state_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/var/lib/fileshare-provisioner/volumes.json&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;parent&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;tank&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; zfs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;tank/fileshare&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; root&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/fileshare/volumes/tank&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; parent &amp;#34;fast&amp;#34; { btrfs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/fileshare/volumes/fast&amp;#34;&lt;/span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;parent&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;plain&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; xfs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/fileshare/volumes/plain&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; project_ids&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;100000-199999&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="复制代码"
+aria-label="复制代码"
+data-copied-label="已复制！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;键&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;listen&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;只能是 &lt;code&gt;unix://&amp;lt;绝对路径&amp;gt;&lt;/code&gt;。套接字的权限设为 0660，所有者为配给程序的用户（root）和 &lt;code&gt;&amp;lt;group&amp;gt;&lt;/code&gt;，并且必须位于只有配给程序才能写入的目录中，即它&lt;strong&gt;自己的&lt;/strong&gt;目录（&lt;code&gt;/run/fileshare-provisioner&lt;/code&gt;），而不是 fileshare 的&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;client_uid&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;唯一会得到应答的 uid：fileshare 的 uid。&lt;strong&gt;0 会被拒绝&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;group&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;拥有每个卷的根目录（&lt;code&gt;root:&amp;lt;group&amp;gt;&lt;/code&gt;，模式 2770）。fileshare 必须属于该组：它通过该组写入卷，而不是以所有者身份写入，因为目录的所有者无需特权即可清除其项目 id，从而逃出 XFS/ext4 配额&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;max_volume&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;单个卷可以拥有的最大配额（&lt;code&gt;&amp;quot;10T&amp;quot;&lt;/code&gt;、&lt;code&gt;&amp;quot;500G&amp;quot;&lt;/code&gt;、&lt;code&gt;&amp;quot;1048576&amp;quot;&lt;/code&gt;）；超过则返回 &lt;code&gt;OUT_OF_RANGE&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;state_file&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;此进程创建的内容（btrfs 子卷 id、XFS/ext4 项目 id），以便重启后它知道哪些是自己的&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;parent &amp;quot;&amp;lt;id&amp;gt;&amp;quot;&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;可以创建卷的位置，使用请求中指明的 id。&lt;code&gt;zfs&lt;/code&gt;（卷作为其子数据集的数据集，&lt;code&gt;root&lt;/code&gt; 为挂载位置）、&lt;code&gt;btrfs&lt;/code&gt;、&lt;code&gt;xfs&lt;/code&gt; 或 &lt;code&gt;ext4&lt;/code&gt;（创建卷的目录）四者中恰好给出一个&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;project_ids&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;XFS/ext4：此 parent 可以分配的项目 id 范围&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;enable_quota&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;btrfs：当配额处于关闭状态时，允许配给程序将其开启。没有它时，配额关闭的 btrfs parent 会使启动中止，因为快照越多，qgroup 就会拖慢每次提交，而这是运维人员的选择&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;配给程序的文件中只有它的 &lt;code&gt;provisioner&lt;/code&gt; 块：若误把 fileshare 自己的文件交给它，会被拒绝，而不是只读取一半。&lt;/p&gt;
+&lt;p&gt;卷始终是 &lt;code&gt;&amp;lt;parent root&amp;gt;/&amp;lt;name&amp;gt;&lt;/code&gt;：数据集 &lt;code&gt;tank/fileshare/&amp;lt;name&amp;gt;&lt;/code&gt;
+挂载于 &lt;code&gt;/srv/fileshare/volumes/tank/&amp;lt;name&amp;gt;&lt;/code&gt;（带 &lt;code&gt;refquota&lt;/code&gt;）、受其 qgroup 限制的btrfs 子卷、带有来自该范围的项目 id 和硬性块限制的XFS 或 ext4 目录。XFS 和 ext4 需要 &lt;code&gt;prjquota&lt;/code&gt; 挂载选项（ext4 还需要 &lt;code&gt;project,quota&lt;/code&gt; 特性）。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="the-systemd-pair"&gt;systemd 单元对&lt;span class="hx:absolute hx:-mt-20" id="the-systemd-pair"&gt;&lt;/span&gt;
+&lt;a href="#the-systemd-pair" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;配给程序：&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-ini" data-lang="ini"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# fileshare-provisioner.service&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;[Service]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;ExecStart&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;/usr/local/bin/fileshare provisioner -c /etc/fileshare-provisioner.hcl&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;RuntimeDirectory&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;fileshare-provisioner&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;RuntimeDirectoryMode&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;0755&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;StateDirectory&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;fileshare-provisioner&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;StateDirectoryMode&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;0700&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;CapabilityBoundingSet&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;CAP_SYS_ADMIN CAP_CHOWN CAP_FOWNER&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 以 root 运行，或以专用用户运行并设置：&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# AmbientCapabilities=CAP_SYS_ADMIN CAP_CHOWN CAP_FOWNER&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;NoNewPrivileges&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;yes&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;SystemCallFilter&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;@system-service @mount quotactl quotactl_fd&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;SystemCallArchitectures&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;native&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;LockPersonality&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;yes&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;RestrictRealtime&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;yes&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 不要使用 ProtectSystem= 或 ReadWritePaths=：它们会让该服务拥有自己的&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 挂载命名空间，其挂载的 ZFS 卷将无人能看到。&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 也不要使用 Landlock：受 Landlock 限制的线程无法调用 mount(2)。&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="复制代码"
+aria-label="复制代码"
+data-copied-label="已复制！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;服务器，不带任何 capability：&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-ini" data-lang="ini"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# fileshare.service&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;[Unit]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;Requires&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;fileshare-provisioner.service&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;After&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;fileshare-provisioner.service&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;[Service]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;User&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;fileshare&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;Group&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;fileshare&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;ExecStart&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;/usr/local/bin/fileshare serve -c /etc/fileshare/fileshare.hcl&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;RuntimeDirectory&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;fileshare&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;StateDirectory&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;fileshare&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 不带任何 capability：CAP_SYS_RESOURCE 会让它越过 ext4 配额，&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 而 fileshare 拒绝在持有它的情况下提供卷服务。&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;CapabilityBoundingSet&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;AmbientCapabilities&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;NoNewPrivileges&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;yes&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;ProtectSystem&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;strict&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;ReadWritePaths&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;/srv/fileshare/volumes /var/lib/fileshare&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="复制代码"
+aria-label="复制代码"
+data-copied-label="已复制！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;服务器使用 &lt;code&gt;ProtectSystem=&lt;/code&gt; 没有问题：执行挂载的是配给程序，而挂载会传播进服务器的命名空间，而不是传播出去，因此在服务器启动后挂载的 ZFS 卷对它是可见的。&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;这些是示例，不是经过测试的单元&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;这两个单元都没有在 CI 中运行过：端到端任务在 &lt;code&gt;sudo&lt;/code&gt; 下运行这两个进程。&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;请先升级配给程序&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;配给程序会拒绝带有其版本未定义字段的消息，并关闭该连接，因此 &lt;code&gt;fileshare serve&lt;/code&gt; 和&lt;code&gt;fileshare provisioner&lt;/code&gt; 必须运行相同的版本。&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="the-admin-apis-volume-calls"&gt;管理 API 的卷调用&lt;span class="hx:absolute hx:-mt-20" id="the-admin-apis-volume-calls"&gt;&lt;/span&gt;
+&lt;a href="#the-admin-apis-volume-calls" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;fileshare serve&lt;/code&gt; 将这些调用转发给配给程序（&lt;a href="https://github.com/go-fileshare/fileshare/blob/v0.28.0/proto/fileshare/admin/v1/admin.proto" target="_blank" rel="noopener"&gt;&lt;code&gt;admin.proto&lt;/code&gt;&lt;/a&gt;）：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ListParents&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;可以创建卷的位置：每个 parent 的 id、种类、根目录、可用和总空间、是否支持快照；以及 &lt;code&gt;max_volume_bytes&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;CreateVolume&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;配额为 &lt;code&gt;quota_bytes&lt;/code&gt; 的卷（0 会被拒绝）。按名称幂等：相同的配额会返回已存在的卷（&lt;code&gt;created&lt;/code&gt; 为 false），不同的配额则返回 &lt;code&gt;ALREADY_EXISTS&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ResizeVolume&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;修改配额，增减皆可，但不得低于已使用量（&lt;code&gt;FAILED_PRECONDITION&lt;/code&gt;）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;SnapshotVolume&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;只读的命名快照：ZFS 和 btrfs 支持；XFS 和 ext4 返回 &lt;code&gt;UNIMPLEMENTED&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;GetVolume&lt;/code&gt;、&lt;code&gt;ListVolumes&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;每个卷，包括其配额、使用量、快照以及&lt;strong&gt;使用它的共享&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;DeleteVolume&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;有共享使用时会被拒绝，请先删除共享。含有数据或快照的卷需要 &lt;code&gt;destroy_data&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;带 &lt;code&gt;volume { parent, name }&lt;/code&gt; 的 &lt;code&gt;CreateShare&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;以目录形式由该卷提供的共享&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;code&gt;DeleteShare&lt;/code&gt; 绝不会删除卷。“使用它的共享”包括由它创建的共享&lt;strong&gt;以及&lt;/strong&gt;任何其映像或目录位于其内部的共享，也包括配置文件中的共享，无论处于已提供服务、已停用还是不可用状态。&lt;/p&gt;
+&lt;p&gt;名称须匹配 &lt;code&gt;^[a-z0-9][a-z0-9_-]{0,62}$&lt;/code&gt;，请求绝不携带路径：它指明的是配给程序自己配置中的某个 &lt;code&gt;parent&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;在 &lt;code&gt;admin&lt;/code&gt; 块中设置 &lt;code&gt;reflection = true&lt;/code&gt; 后，&lt;code&gt;grpcurl&lt;/code&gt; 就可以发起这些调用。套接字权限为 0600，而上文的 &lt;code&gt;allowed_uids&lt;/code&gt; 只列出 fileshare 的 uid，因此请以该用户运行：&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nv"&gt;S&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/run/fileshare/admin.sock
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nv"&gt;A&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;fileshare.admin.v1.AdminService
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo -u fileshare grpcurl -plaintext -unix &lt;span class="nv"&gt;$S&lt;/span&gt; &lt;span class="nv"&gt;$A&lt;/span&gt;/ListParents
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# XFS parent 上的一个 32 GiB 卷&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo -u fileshare grpcurl -plaintext -unix &lt;span class="nv"&gt;$S&lt;/span&gt; &lt;span class="se"&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; -d &lt;span class="s1"&gt;&amp;#39;{&amp;#34;parent&amp;#34;: &amp;#34;plain&amp;#34;, &amp;#34;name&amp;#34;: &amp;#34;projects&amp;#34;, &amp;#34;quota_bytes&amp;#34;: &amp;#34;34359738368&amp;#34;}&amp;#39;&lt;/span&gt; &lt;span class="se"&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nv"&gt;$A&lt;/span&gt;/CreateVolume
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 由它提供服务的共享&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo -u fileshare grpcurl -plaintext -unix &lt;span class="nv"&gt;$S&lt;/span&gt; &lt;span class="se"&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; -d &lt;span class="s1"&gt;&amp;#39;{&amp;#34;name&amp;#34;: &amp;#34;projects&amp;#34;,
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="s1"&gt; &amp;#34;volume&amp;#34;: {&amp;#34;parent&amp;#34;: &amp;#34;plain&amp;#34;, &amp;#34;name&amp;#34;: &amp;#34;projects&amp;#34;},
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="s1"&gt; &amp;#34;grants&amp;#34;: [{&amp;#34;subject&amp;#34;: {&amp;#34;group&amp;#34;: &amp;#34;staff&amp;#34;}, &amp;#34;access&amp;#34;: &amp;#34;ACCESS_WRITE&amp;#34;}]}&amp;#39;&lt;/span&gt; &lt;span class="se"&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nv"&gt;$A&lt;/span&gt;/CreateShare
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 扩容到 64 GiB&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo -u fileshare grpcurl -plaintext -unix &lt;span class="nv"&gt;$S&lt;/span&gt; &lt;span class="se"&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; -d &lt;span class="s1"&gt;&amp;#39;{&amp;#34;parent&amp;#34;: &amp;#34;plain&amp;#34;, &amp;#34;name&amp;#34;: &amp;#34;projects&amp;#34;, &amp;#34;quota_bytes&amp;#34;: &amp;#34;68719476736&amp;#34;}&amp;#39;&lt;/span&gt; &lt;span class="se"&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nv"&gt;$A&lt;/span&gt;/ResizeVolume&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="复制代码"
+aria-label="复制代码"
+data-copied-label="已复制！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h3 data-hextra-search-id="status-codes"&gt;状态码&lt;span class="hx:absolute hx:-mt-20" id="status-codes"&gt;&lt;/span&gt;
+&lt;a href="#status-codes" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;配给程序的状态码原样返回：&lt;code&gt;INVALID_ARGUMENT&lt;/code&gt;（名称不符合语法、未知的 parent、配额为 0）、&lt;code&gt;OUT_OF_RANGE&lt;/code&gt;（超过&lt;code&gt;max_volume&lt;/code&gt;）、&lt;code&gt;RESOURCE_EXHAUSTED&lt;/code&gt;（配额或调整大小所增加的部分超过 parent 当前的可用空间；或项目 id 范围已用尽）、&lt;code&gt;ALREADY_EXISTS&lt;/code&gt;、&lt;code&gt;NOT_FOUND&lt;/code&gt;、&lt;code&gt;FAILED_PRECONDITION&lt;/code&gt;、&lt;code&gt;UNIMPLEMENTED&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;有三个是 fileshare 自己的：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;未配置 &lt;code&gt;provisioner&lt;/code&gt;：&lt;code&gt;FAILED_PRECONDITION&lt;/code&gt;；&lt;/li&gt;
+&lt;li&gt;配给程序拒绝此服务器的 uid：同样是 &lt;code&gt;FAILED_PRECONDITION&lt;/code&gt;，因为这是部署错误（其 &lt;code&gt;client_uid&lt;/code&gt; 不对），而不是管理调用方无权执行的操作；&lt;/li&gt;
+&lt;li&gt;配给程序没有应答：&lt;code&gt;UNAVAILABLE&lt;/code&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 data-hextra-search-id="what-is-checked-before-a-volume-is-served"&gt;提供卷服务之前检查什么&lt;span class="hx:absolute hx:-mt-20" id="what-is-checked-before-a-volume-is-served"&gt;&lt;/span&gt;
+&lt;a href="#what-is-checked-before-a-volume-is-served" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;fileshare 向配给程序询问卷的位置，然后自行检查：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;路径是干净的绝对路径，并且解析之后位于 &lt;code&gt;source_roots&lt;/code&gt; 之下；&lt;/li&gt;
+&lt;li&gt;它是一个目录；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;statfs&lt;/code&gt; 报告的是该种类对应的文件系统（&lt;code&gt;ZFS_SUPER_MAGIC&lt;/code&gt;、&lt;code&gt;BTRFS_SUPER_MAGIC&lt;/code&gt;、&lt;code&gt;XFS_SUPER_MAGIC&lt;/code&gt;、&lt;code&gt;EXT4_SUPER_MAGIC&lt;/code&gt;）；&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;ZFS&lt;/strong&gt;：它是挂载点，即其设备不同于其父目录的设备。未挂载的数据集的目录会在没有任何配额的情况下接受写入。（挂载在那里的是哪个数据集则不做验证：配给程序的应答没有说明。）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;btrfs&lt;/strong&gt;：它是子卷的根，因为 parent 下的普通目录没有 qgroup；&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;XFS 和 ext4&lt;/strong&gt;：它带有非零的项目 id，且其新文件会继承该 id，因为不属于任何项目的目录会在无限制的情况下被提供服务。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;状态文件保存的是卷的&lt;strong&gt;名称&lt;/strong&gt;，而不是路径，每次启动都会重新询问并检查。如果卷已不存在、未通过检查，或其配给程序在 10 秒内没有应答，则其共享会保持&lt;strong&gt;已定义但不提供服务&lt;/strong&gt;，这一点会在启动时、通过 &lt;a href="https://go-fileshare.github.io/docs/0.32/zh-cn/configuration/check/"&gt;&lt;code&gt;fileshare check&lt;/code&gt;&lt;/a&gt;，以及在共享的 &lt;code&gt;unavailable&lt;/code&gt; 字段中说明，而服务器的其余部分照常启动。&lt;code&gt;EnableShare&lt;/code&gt; 会再次尝试。&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;fileshare serve&lt;/code&gt; 拒绝以 root 身份或带 &lt;code&gt;CAP_SYS_RESOURCE&lt;/code&gt; 提供卷服务&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;ext4 允许二者越过项目配额写入（fs/quota/dquot.c，&lt;code&gt;ignore_hardlimit&lt;/code&gt;）：在 go-fsctl/projquota 的 CI 中，root 向一个 8 MiB 的项目写入了 16 MiB。XFS 没有这样的豁免，但这条规则对进程是统一的，适用于每一种类：fileshare 读取其有效 uid 以及 &lt;code&gt;/proc/self/status&lt;/code&gt; 中的&lt;code&gt;CapEff&lt;/code&gt;/&lt;code&gt;CapPrm&lt;/code&gt;（被许可的 capability 离生效只差一次&lt;code&gt;capset(2)&lt;/code&gt;），读不到状态则视为持有该权限。它拒绝的是&lt;strong&gt;提供服务&lt;/strong&gt;，而不是卷调用：以 root 创建存储无害，以 root 向其中写入则不然。&lt;code&gt;fileshare check&lt;/code&gt; 会指出是哪一种情况。因此配给程序会拒绝 &lt;code&gt;client_uid = 0&lt;/code&gt;，而上面的服务器单元的 &lt;code&gt;CapabilityBoundingSet=&lt;/code&gt; 为空。&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="a-full-share"&gt;已满的共享&lt;span class="hx:absolute hx:-mt-20" id="a-full-share"&gt;&lt;/span&gt;
+&lt;a href="#a-full-share" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;XFS 用 &lt;code&gt;ENOSPC&lt;/code&gt; 表示项目已满；ext4、btrfs 和 ZFS 用 &lt;code&gt;EDQUOT&lt;/code&gt;。自v0.21.1 起，每个协议都会应答“已满”：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;协议&lt;/th&gt;
+&lt;th&gt;无剩余空间（&lt;code&gt;ENOSPC&lt;/code&gt;）&lt;/th&gt;
+&lt;th&gt;配额（&lt;code&gt;EDQUOT&lt;/code&gt;）&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;WebDAV&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;507 Insufficient Storage&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;507 Insufficient Storage&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;NFS&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;NFS3ERR_NOSPC&lt;/code&gt; (28)&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;NFS3ERR_DQUOT&lt;/code&gt; (69)，与 RFC 1813 和 Linux 的 nfsd 一致&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;SFTP&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;SSH_FX_FAILURE&lt;/code&gt;，“no space left on device (the share is full)”，因为版本 3 没有对应的代码&lt;/td&gt;
+&lt;td&gt;相同&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;SMB&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;STATUS_DISK_FULL&lt;/code&gt; (0xC000007F)&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;STATUS_DISK_FULL&lt;/code&gt;，与 Samba 一致（“Windows apps need this, not NT_STATUS_QUOTA_EXCEEDED”）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;S3&lt;/td&gt;
+&lt;td&gt;以只读方式提供服务&lt;/td&gt;
+&lt;td&gt;以只读方式提供服务&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;在 v0.21.0 中，SMB 返回 &lt;code&gt;STATUS_ACCESS_DENIED&lt;/code&gt;，NFS 对配额返回 &lt;code&gt;NFS3ERR_NOSPC&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;这适用于每个&lt;a href="https://go-fileshare.github.io/docs/0.32/zh-cn/configuration/shares/"&gt;目录共享&lt;/a&gt;，而不仅限于卷，参见&lt;a href="https://go-fileshare.github.io/docs/0.32/zh-cn/status/"&gt;升级说明&lt;/a&gt;。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="the-size-a-client-sees"&gt;客户端看到的大小&lt;span class="hx:absolute hx:-mt-20" id="the-size-a-client-sees"&gt;&lt;/span&gt;
+&lt;a href="#the-size-a-client-sees" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;每个协议在每次查询时都会向服务器询问共享的大小：NFS 的&lt;code&gt;FSSTAT&lt;/code&gt;、SMB 的 &lt;code&gt;FileFsFullSizeInformation&lt;/code&gt; 以及 WebDAV 的 RFC 4331 配额属性。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;ZFS、XFS 和 ext4&lt;/strong&gt;：大小就是 &lt;code&gt;statfs&lt;/code&gt; 在卷内部所报告的值，内核以配额作答（ZFS 为 &lt;code&gt;refquota&lt;/code&gt;，XFS 和 ext4 为项目配额）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;btrfs&lt;/strong&gt;（自 fileshare v0.23.0 起）：btrfs 的 &lt;code&gt;statfs&lt;/code&gt; 忽略 qgroup，报告的是整个文件系统，因此服务器改用配给程序提供的数字。大小是卷的配额，可用空间是配额减去 qgroup 的已引用字节数，或者在文件系统自身的可用空间更少时取后者。服务器在后台向配给程序询问，客户端查询期间最多每 5 秒一次，其间以最近一次的数字作答。btrfs 在提交事务时更新 qgroup 的计数（默认每 30 秒一次），因此客户端看到的可用空间可能比写入滞后这么久。在 v0.23.0 之前，btrfs 卷显示的是整个文件系统；配额依然有效。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;已用空间来自配给程序（&lt;code&gt;used_bytes&lt;/code&gt;）：读取 XFS 或 ext4项目的用量需要 &lt;code&gt;CAP_SYS_ADMIN&lt;/code&gt;，而 fileshare 没有这一权限。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-the-provisioner-promises"&gt;配给程序的承诺&lt;span class="hx:absolute hx:-mt-20" id="what-the-provisioner-promises"&gt;&lt;/span&gt;
+&lt;a href="#what-the-provisioner-promises" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;一个 uid，从内核读取。&lt;/strong&gt; 对端在连接时通过 &lt;code&gt;SO_PEERCRED&lt;/code&gt; 识别，除 &lt;code&gt;client_uid&lt;/code&gt; 之外的任何人（包括 root）在请求的任何一个字节被解码之前就会得到 &lt;code&gt;PERMISSION_DENIED&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;封闭的动词集合。&lt;/strong&gt; 其服务之外的方法，或无法解码、或带有其未定义字段的消息，不会得到应答：连接被关闭。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;绝不触碰并非自己创建的内容。&lt;/strong&gt; ZFS：数据集自身的&lt;code&gt;fileshare:volume&lt;/code&gt; 属性，设置在数据集上，因为用户属性会被继承，而继承来的标记不是它自己的。btrfs：记录在 &lt;code&gt;state_file&lt;/code&gt;
+中的子卷 id 和 uuid。XFS/ext4：位于 parent 范围内的项目 id，&lt;em&gt;并且&lt;/em&gt;已被记录。在每次调整大小、快照和删除之前都会检查。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;删除会拒绝数据和快照&lt;/strong&gt;，除非设置了 &lt;code&gt;destroy_data&lt;/code&gt;，并且在执行之前就会记入日志。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 data-hextra-search-id="measured"&gt;实测&lt;span class="hx:absolute hx:-mt-20" id="measured"&gt;&lt;/span&gt;
+&lt;a href="#measured" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;在 fileshare 的 CI 中，以 root 身份在真实存储池和回环文件系统上运行，&lt;code&gt;fileshare serve&lt;/code&gt; 以 &lt;code&gt;nobody&lt;/code&gt; 运行并通过管理 API 驱动：经 WebDAV 和 SFTP 的写入都会在 32 MiB 卷的配额处停止，四种种类均如此。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="not-yet"&gt;尚未实现&lt;span class="hx:absolute hx:-mt-20" id="not-yet"&gt;&lt;/span&gt;
+&lt;a href="#not-yet" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Ceph。&lt;/strong&gt; CephFS 配额和 RBD 留待后续阶段。&lt;/li&gt;
+&lt;/ul&gt;</description></item></channel></rss>

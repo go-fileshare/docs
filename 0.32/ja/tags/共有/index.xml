@@ -1,0 +1,294 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – 共有</title><link>https://go-fileshare.github.io/docs/0.32/ja/tags/%E5%85%B1%E6%9C%89/</link><description>Recent content in 共有 on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>ja</language><atom:link href="https://go-fileshare.github.io/docs/0.32/ja/tags/%E5%85%B1%E6%9C%89/index.xml" rel="self" type="application/rss+xml"/><item><title>共有: イメージ、デバイス、ディレクトリ</title><link>https://go-fileshare.github.io/docs/0.32/ja/configuration/shares/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.32/ja/configuration/shares/</guid><description>
+&lt;p&gt;共有が提供するのは、&lt;strong&gt;ディスクイメージ&lt;/strong&gt;、&lt;strong&gt;デバイス&lt;/strong&gt;ノード、&lt;strong&gt;ホストのディレクトリ&lt;/strong&gt;の3 つのうちの 1 つです。イメージとデバイスにはファイルシステムが含まれており、このプログラムが自分で読み取ります。ディレクトリはホスト自身のものです。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="an-image-and-the-filesystem-inside-it"&gt;イメージと、その中のファイルシステム&lt;span class="hx:absolute hx:-mt-20" id="an-image-and-the-filesystem-inside-it"&gt;&lt;/span&gt;
+&lt;a href="#an-image-and-the-filesystem-inside-it" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;イメージの中のファイルシステムは、宣言されるのではなく&lt;strong&gt;判別されます&lt;/strong&gt;。&lt;a href="https://github.com/go-filesystems/detect" target="_blank" rel="noopener"&gt;&lt;code&gt;go-filesystems/detect&lt;/code&gt;&lt;/a&gt; がマジックを読み取り、それを扱うドライバーを返します。対象は &lt;strong&gt;fat32、exfat、ext4、ntfs、ufs、iso9660、squashfs、hfsplus&lt;/strong&gt; で、どのドライバーも同じ形、つまりオフセット 0 にファイルシステムがある &lt;code&gt;OpenReader(io.ReaderAt, int64)&lt;/code&gt; です。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="the-four-that-cannot-be-sniffed"&gt;判別できない 4 つ&lt;span class="hx:absolute hx:-mt-20" id="the-four-that-cannot-be-sniffed"&gt;&lt;/span&gt;
+&lt;a href="#the-four-that-cannot-be-sniffed" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;apfs、btrfs、xfs、zfs&lt;/strong&gt; はそれぞれ&lt;em&gt;ディスク&lt;/em&gt;イメージを開いて&lt;strong&gt;パーティション&lt;/strong&gt;を選ぶため、オフセット 0 には見つけられるマジックがありません。共有側でどれを使うかを指定します。&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;photos&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/disk.img&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; filesystem&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;xfs&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; partition&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;2&lt;/span&gt;&lt;span class="c1"&gt; # or leave it out: the driver takes the first data partition
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="コードをコピー"
+aria-label="コードをコピー"
+data-copied-label="コピーしました！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="a-partition-for-any-filesystem"&gt;任意のファイルシステムでのパーティション&lt;span class="hx:absolute hx:-mt-20" id="a-partition-for-any-filesystem"&gt;&lt;/span&gt;
+&lt;a href="#a-partition-for-any-filesystem" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;FAT32、ext4、exFAT を含むディスクイメージも、XFS を含むものと同じくらいの頻度で、先頭にパーティションテーブルを持ちます。ところが検出はオフセット 0 を読み、パーティション分割されたイメージのそこにあるのは&lt;em&gt;テーブル&lt;/em&gt;です。そのため先にパーティションを選び、ドライバーにはそのビューを渡します。&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;photos&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/disk.img&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; partition_label&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;photos&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # what lsblk calls PARTLABEL
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="コードをコピー"
+aria-label="コードをコピー"
+data-copied-label="コピーしました！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;パーティションの指定方法は 3 通りあり、&lt;strong&gt;指定できるのは 1 つだけ&lt;/strong&gt;です。食い違う 2 つを許すと、コードが先に試したほうが提供されてしまうためです。&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;partition = 2&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;パーティション分割ツールが表示する形式で、1 から数えた番号&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;partition_label = &amp;quot;photos&amp;quot;&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;GPT のパーティション名&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;partition_uuid = &amp;quot;…&amp;quot;&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;GPT の一意な GUID。Linux の &lt;code&gt;PARTUUID&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;インデックスは動く&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;ディスクの再パーティション、エントリを別の順序で書き込むツール、パーティションが 1 つ少ない状態で復元されたイメージなどにより、&lt;code&gt;partition = 2&lt;/code&gt; は&lt;strong&gt;黙って&lt;/strong&gt;別のものを指すようになります。そこにもファイルシステムが見つかってしまうためです。ラベルや UUID はパーティションそのものを指します。fstab が何年も前にインデックスの使用をやめたのはそのためです。インデックスは、そのどちらも持たない MBR イメージのために残されています。&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;パーティションを選んだ共有は&lt;strong&gt;読み取り専用&lt;/strong&gt;になり、起動時にその旨が表示されます。ドライバーのオフセットはパーティション基準であるのに、下にあるファイルはディスク全体なので、書き込みは&lt;em&gt;イメージ&lt;/em&gt;の先頭からそのオフセットの位置に着地してしまいます。その位置がパーティションテーブルになることも珍しくありません。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="naming-a-filesystem-turns-detection-off"&gt;ファイルシステムを指定すると検出が無効になる&lt;span class="hx:absolute hx:-mt-20" id="naming-a-filesystem-turns-detection-off"&gt;&lt;/span&gt;
+&lt;a href="#naming-a-filesystem-turns-detection-off" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;それが狙いであり、同時にリスクでもあります&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;イメージは&lt;em&gt;その&lt;/em&gt;ファイルシステムとして開かれるか、拒否されるかのどちらかです。XFS だと指定されたFAT32 イメージが XFS の共有になることはなく、起動に失敗し、何として開くよう求められたかが表示されます。&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;filesystem&lt;/code&gt; は判別可能なファイルシステムに対しても受け付けられ、その場合は両者が比較されます。FAT32 イメージに対して &lt;code&gt;ext4&lt;/code&gt; と指定した共有は、&lt;em&gt;the share says ext4 and the image holds fat32&lt;/em&gt; というメッセージで拒否されます。これにより、誤検出を後から発見するのではなく、その場で拒否できます。&lt;a href="https://go-fileshare.github.io/docs/0.32/ja/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt; は、名前で指定されたドライバーにアスタリスクを付けます。その行は認識されたのではなく、主張されたものだからです。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="a-device-not-only-an-image"&gt;イメージだけでなくデバイスも&lt;span class="hx:absolute hx:-mt-20" id="a-device-not-only-an-image"&gt;&lt;/span&gt;
+&lt;a href="#a-device-not-only-an-image" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;photos&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/dev/sda&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # a device node, not a file
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="コードをコピー"
+aria-label="コードをコピー"
+data-copied-label="コピーしました！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;特権は必要ありません。&lt;/strong&gt; ここでは何もマウントしません。&lt;a href="https://github.com/go-filesystems" target="_blank" rel="noopener"&gt;&lt;code&gt;go-filesystems&lt;/code&gt;&lt;/a&gt; のドライバーが ext4、xfs などをユーザー空間で読み取るため、&lt;code&gt;mount(2)&lt;/code&gt; はなく、したがって &lt;code&gt;CAP_SYS_ADMIN&lt;/code&gt; も不要です。デバイスを開くのは通常の &lt;code&gt;open(2)&lt;/code&gt; であり、ノードのパーミッションによって制御されます。&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;所有者&lt;/th&gt;
+&lt;th&gt;モード&lt;/th&gt;
+&lt;th&gt;必要な条件&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Linux &lt;code&gt;/dev/sda&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;root:disk&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;0660&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;disk&lt;/code&gt; グループのメンバーであること&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;macOS &lt;code&gt;/dev/disk0&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;root:operator&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;0640&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;operator&lt;/code&gt; グループのメンバーであることに加え、フルディスクアクセス&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;拒否された場合は、&lt;code&gt;permission denied&lt;/code&gt; ではなくどのグループが必要かが表示されます。答えが &lt;code&gt;sudo&lt;/code&gt; になることはありません。&lt;/p&gt;
+&lt;p&gt;⛔ &lt;strong&gt;デバイス共有は読み取り専用です。&lt;/strong&gt; パーティションを選んだ共有と同じ理由です。稼働中のディスクに書き込むことは、利用者に代わって決めてよいことではありません。&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;デバイスは排他的に開かれます。これは慎重さではなく、正確さのためです&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;カーネルがそのデバイスからファイルシステムをマウントしている場合、ファイルシステムのページキャッシュにはデバイス上よりも新しいメタデータがあります。そのため生の読み取りでは、更新前のディレクトリブロックと更新後の inode ブロックが並んで見えてしまい、ディスク上にはどの瞬間にも存在しなかった状態になります。ブロックデバイスへの &lt;code&gt;O_EXCL&lt;/code&gt; は、「マウントを含め、ほかに誰も使っていない」ことを示すカーネル自身のプリミティブで、&lt;code&gt;mkfs&lt;/code&gt; や &lt;code&gt;fsck&lt;/code&gt; が使っているものです。使用中のデバイスは、名前と理由を示して拒否されます。&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;2 つの点は、想定ではなく実測で確かめました。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;デバイスでは &lt;code&gt;Stat().Size()&lt;/code&gt; が &lt;strong&gt;0&lt;/strong&gt; になるため、長さはデバイス自身に問い合わせます。末尾へのシークは Linux では答えを返しますが、macOS ではエラーなしで &lt;strong&gt;0&lt;/strong&gt; を返します。そのため Darwin では代わりに &lt;code&gt;DKIOCGETBLOCKCOUNT&lt;/code&gt; を使います。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;raw&lt;/strong&gt; ノード(&lt;code&gt;/dev/rdiskN&lt;/code&gt;、または Linux の &lt;code&gt;O_DIRECT&lt;/code&gt;)はアラインされていない読み取りを拒否しますが、オフセット 11 の 2 バイトのフィールドを読むことこそが FAT BPB の解析です。そこでデバイスへの読み取りはブロック全体に切り上げられます。これがないと、&lt;code&gt;/dev/rdisk4&lt;/code&gt; は &lt;code&gt;unknown filesystem&lt;/code&gt; と報告していました。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 data-hextra-search-id="a-directory-not-only-an-image"&gt;イメージだけでなくディレクトリも&lt;span class="hx:absolute hx:-mt-20" id="a-directory-not-only-an-image"&gt;&lt;/span&gt;
+&lt;a href="#a-directory-not-only-an-image" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;v0.8.0 以降、共有はイメージの代わりに、コンテナーのボリュームなど、ホストのディレクトリを提供できます。&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;photos&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; directory&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/data/photos&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; allow&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;@family&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="コードをコピー"
+aria-label="コードをコピー"
+data-copied-label="コピーしました！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;これを担うのは &lt;a href="https://github.com/go-filesystems/osfs" target="_blank" rel="noopener"&gt;go-filesystems/osfs&lt;/a&gt; で、ツリーには &lt;strong&gt;&lt;code&gt;os.Root&lt;/code&gt;&lt;/strong&gt; 経由でアクセスします。外へ抜ける &lt;code&gt;..&lt;/code&gt;、絶対パス、外へ向かうシンボリックリンクは、文字列の判定ではなく、カーネルに支えられたルートによって拒否されます。クライアントが &lt;code&gt;/etc&lt;/code&gt; へのリンクを&lt;em&gt;作成&lt;/em&gt;することはできますが、それをたどるものはありません。ツリーに置かれた FIFO は、サーバーをハングさせることなく拒否されます。&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;1 つの共有が別の共有を含んではならない(v0.17.0 以降)&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;ツリーの中に別の共有のイメージやディレクトリを含むディレクトリ共有は、&lt;strong&gt;起動時に拒否され&lt;/strong&gt;、管理 API でも拒否されます。外側の共有を使える人が、許可されていないはずの内側の共有を読み書きできてしまうためで、匿名 NFS も例外ではありません。同じソースを指す 2 つの共有も同様に拒否されます。ただし、1 つのディスクイメージの異なる 2 つのパーティションは除きます。&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;イメージのロックの対象外&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;イメージのドライバーは 1 つのファイルを所有し、同時に 2 つの呼び出しが来たときの動作を何も保証しません。そのため&lt;a href="https://go-fileshare.github.io/docs/0.32/ja/operations/locking/"&gt;すべてのイメージは 1 つのロックで包まれています&lt;/a&gt;。ホストのツリーはカーネルのものであり、カーネルは呼び出しごとに直列化すべきものだけを直列化し、それ以上のことはしません。全クライアントのすべてのファイルの前に 1 つのミューテックスを置けば、ファイルサーバーとして最も遅い構成になってしまいます。&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;⛔ 共有には &lt;code&gt;image&lt;/code&gt; &lt;strong&gt;または&lt;/strong&gt; &lt;code&gt;directory&lt;/code&gt; のどちらか一方が必要で、両方を指定することも、どちらも指定しないこともできません。&lt;code&gt;filesystem&lt;/code&gt; と &lt;code&gt;partition&lt;/code&gt; はイメージ用です。これらを指定したディレクトリ共有は拒否されます。指定したということは、その共有がイメージのつもりだったことを意味するためです。&lt;code&gt;read_only = true&lt;/code&gt; はイメージと同様にディレクトリでも機能します。これを指定しながら&lt;code&gt;writers&lt;/code&gt; も列挙した共有は、&lt;code&gt;read_only&lt;/code&gt; が優先されてしまうため拒否されます。&lt;/p&gt;
+&lt;p&gt;クライアントに通知される容量は、ツリーが置かれているファイルシステムのものです。取得できないプラットフォームでは 0 のままとなり、プロトコル側はこれを「満杯」ではなく「不明」として扱います。&lt;/p&gt;</description></item><item><title>各人として提供されるディレクトリ</title><link>https://go-fileshare.github.io/docs/0.32/ja/configuration/as-each-person/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.32/ja/configuration/as-each-person/</guid><description>
+&lt;p&gt;通常、1 つの fileshare プロセスが、1 つのアカウントとして全員にサービスを提供します。誰に何を許可するかは fileshare が決め、作成されるファイルはすべてそのアカウントの所有になります。ディレクトリ共有は、これに代えて&lt;strong&gt;各人として&lt;/strong&gt;提供することもできます。ログインした人のファイルは、その人の uid、gid、グループで動作するプロセスによって開かれるため、ツリーのパーミッションはカーネルが適用し、作成されたものはその人の所有になります。&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;identity&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; service_user&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;fileshare&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # the account the protocols are served as
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; min_uid&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;1000&lt;/span&gt;&lt;span class="c1"&gt; # the default; uid 0 is refused whatever this says
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; min_gid&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;1000&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; deny_uids&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="m"&gt;65534&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; idle&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;2m&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # how long an unused worker is kept
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;home&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; directory&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/home&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; identity&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;system&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="コードをコピー"
+aria-label="コードをコピー"
+data-copied-label="コピーしました！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="three-processes"&gt;3 つのプロセス&lt;span class="hx:absolute hx:-mt-20" id="three-processes"&gt;&lt;/span&gt;
+&lt;a href="#three-processes" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;fileshare serve&lt;/code&gt; は&lt;strong&gt;root で起動&lt;/strong&gt;しなければなりません。root のままでいるのは、各人のワーカーを起動するためだけです。ネットワークに面する処理はすべて、2 つ目のプロセスで &lt;code&gt;service_user&lt;/code&gt; として動作します。&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;プロセス&lt;/th&gt;
+&lt;th&gt;実行ユーザー&lt;/th&gt;
+&lt;th&gt;役割&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;ランチャー&lt;/strong&gt;(&lt;code&gt;fileshare serve&lt;/code&gt;)&lt;/td&gt;
+&lt;td&gt;root&lt;/td&gt;
+&lt;td&gt;リスナーをバインドし、フロントを起動し、フロントの要求に応じてワーカーを起動する。プロトコルは一切話さない。&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;フロント&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;service_user&lt;/code&gt;(そのアカウントのグループを持つ)&lt;/td&gt;
+&lt;td&gt;これまでの &lt;code&gt;serve&lt;/code&gt; と同様に、プロトコルを話して認証を行う。このような共有については、uid やパスではなく、ランチャーに&lt;strong&gt;人と共有&lt;/strong&gt;を求める。&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;ワーカー&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;その人&lt;/td&gt;
+&lt;td&gt;ランチャーが渡したソケットを通じて、フロントに 1 つの共有を提供する&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;ワーカーは最初に、期待どおりの uid、gid、グループで動作していること、そして&lt;code&gt;setuid(0)&lt;/code&gt; が失敗することを確認します。そのあとで初めて &lt;code&gt;os.Root&lt;/code&gt; を通じてツリーを開きます。1 つのワーカーが、その人のその共有へのすべての接続を、SFTP と WebDAV の両方にわたって処理し、&lt;code&gt;idle&lt;/code&gt; の間まったく使われなければ停止します。サーバーが停止すると、ワーカーも一緒に停止します。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="who-a-person-is-on-this-system"&gt;システム上で人とは誰か&lt;span class="hx:absolute hx:-mt-20" id="who-a-person-is-on-this-system"&gt;&lt;/span&gt;
+&lt;a href="#who-a-person-is-on-this-system" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;ランチャーは、人を&lt;strong&gt;自ら&lt;/strong&gt;次の順序で解決します。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;uidNumber&lt;/code&gt; と &lt;code&gt;gidNumber&lt;/code&gt; を持っていれば、&lt;strong&gt;ディレクトリ&lt;/strong&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;user&lt;/code&gt; ブロックの &lt;code&gt;attributes = { uidNumber = &amp;quot;2001&amp;quot;, gidNumber = &amp;quot;2001&amp;quot; }&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;attributes = [&amp;quot;uidNumber&amp;quot;, &amp;quot;gidNumber&amp;quot;]&lt;/code&gt; を指定した LDAP ソース&lt;/li&gt;
+&lt;li&gt;SQL ソースの &lt;code&gt;users_attributes&lt;/code&gt; クエリ&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;補助グループは、その人を一覧に含むグループ(&lt;code&gt;group&lt;/code&gt; ブロックの &lt;code&gt;members&lt;/code&gt;、&lt;code&gt;memberUid&lt;/code&gt;)と、その人が名指しするグループ(&lt;code&gt;memberOf&lt;/code&gt;)で、いずれも &lt;code&gt;gidNumber&lt;/code&gt; によって決まります。&lt;code&gt;gidNumber&lt;/code&gt; のないグループはシステムグループではありません。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;名前による &lt;strong&gt;&lt;code&gt;/etc/passwd&lt;/code&gt; と &lt;code&gt;/etc/group&lt;/code&gt;&lt;/strong&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;拒否されるもの&lt;/strong&gt;: uid 0、gid 0、&lt;code&gt;(uid_t)-1&lt;/code&gt;、&lt;code&gt;min_uid&lt;/code&gt; 未満の uid、&lt;code&gt;min_gid&lt;/code&gt; 未満のプライマリ gid、&lt;code&gt;deny_uids&lt;/code&gt; にあるすべての uid。&lt;code&gt;min_gid&lt;/code&gt; 未満の補助グループは除外され、ログにその旨が記録されます。どちらにも見つからない人も拒否されます。共有の代替アカウントはありません。ID プロバイダーが身元を保証する人にワーカーが割り当てられるのは、その名前をローカル名にする &lt;a href="https://go-fileshare.github.io/docs/0.32/ja/configuration/identity/"&gt;&lt;code&gt;local_names&lt;/code&gt;&lt;/a&gt; がある場合だけです。&lt;/p&gt;
+&lt;p&gt;したがって、乗っ取られたフロントが要求できるのは、存在して許可されている人の、存在する共有に限られます。&lt;strong&gt;誰が&lt;/strong&gt;認証されたかを決めるのは依然としてフロントであり、ランチャーにはそれを確認する手段がありません。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-a-client-sees"&gt;クライアントから見えるもの&lt;span class="hx:absolute hx:-mt-20" id="what-a-client-sees"&gt;&lt;/span&gt;
+&lt;a href="#what-a-client-sees" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;SFTP&lt;/th&gt;
+&lt;th&gt;WebDAV&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;ワーカーの確保&lt;/td&gt;
+&lt;td&gt;ログイン時に、接続全体で&lt;/td&gt;
+&lt;td&gt;リクエストごと。ロックはワーカーが存続する間は保持される&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;ランチャーがその人を拒否した場合&lt;/td&gt;
+&lt;td&gt;その人のツリーに共有が表示されない(何も入っていないツリーはログイン拒否となる)&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;403&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;ワーカーを起動できない場合&lt;/td&gt;
+&lt;td&gt;同上&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;503&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;理由はサーバーのログに記録され、クライアントには返されません。&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;SMB、NFS、S3 ではまだ使えません&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;これらはそのような共有を拒否し、&lt;a href="https://go-fileshare.github.io/docs/0.32/ja/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt;
+がそのことを伝えます。SMB と NFS では、各ライブラリでセッションごとのファイルシステムが必要です。NFS は &lt;code&gt;AUTH_UNIX&lt;/code&gt; がクライアント自身の主張にすぎないため(RFC 5531 §14)、Kerberos の下でのみ対応する予定です。&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="what-it-asks-of-the-system"&gt;システムに求めるもの&lt;span class="hx:absolute hx:-mt-20" id="what-it-asks-of-the-system"&gt;&lt;/span&gt;
+&lt;a href="#what-it-asks-of-the-system" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Unix&lt;/strong&gt;: Linux、BSD 系、macOS。Windows では共有は拒否されます。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;service_user&lt;/code&gt; が読み取れること&lt;/strong&gt;: フロントが読むため、設定と、そこで名指しされるすべてのファイル(パスワードファイル、ホスト鍵、証明書)。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;各人が実行できること&lt;/strong&gt;: 各ワーカーがその人としてバイナリを実行するため、バイナリ。&lt;/li&gt;
+&lt;li&gt;そのような共有を追加または変更するには&lt;strong&gt;再起動&lt;/strong&gt;が必要です。ランチャーは設定を一度だけ読み込み、フロントに提供させるのではなく、知らない共有を拒否します。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--isolate&lt;/code&gt; とは併用できません。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;設計と、それぞれの選択の理由は&lt;a href="https://github.com/go-fileshare/fileshare/blob/main/docs/identity.md" target="_blank" rel="noopener"&gt;docs/identity.md&lt;/a&gt;に書かれています。&lt;/p&gt;</description></item></channel></rss>

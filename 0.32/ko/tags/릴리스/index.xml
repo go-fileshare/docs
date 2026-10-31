@@ -1,0 +1,326 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – 릴리스</title><link>https://go-fileshare.github.io/docs/0.32/ko/tags/%EB%A6%B4%EB%A6%AC%EC%8A%A4/</link><description>Recent content in 릴리스 on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>ko</language><atom:link href="https://go-fileshare.github.io/docs/0.32/ko/tags/%EB%A6%B4%EB%A6%AC%EC%8A%A4/index.xml" rel="self" type="application/rss+xml"/><item><title>현황</title><link>https://go-fileshare.github.io/docs/0.32/ko/status/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.32/ko/status/</guid><description>
+&lt;p&gt;이 페이지들은 &lt;strong&gt;fileshare v0.32.0&lt;/strong&gt;을 설명합니다.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;릴리스 바이너리를 &lt;code&gt;govulncheck -mode binary&lt;/code&gt;로 확인하기&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;v0.31.2부터 릴리스 바이너리는 &lt;code&gt;-s -w&lt;/code&gt; 대신 &lt;code&gt;-ldflags &amp;quot;-w&amp;quot;&lt;/code&gt;로 빌드됩니다. DWARF 디버그 정보는 제거되고 심볼 테이블은 유지됩니다. &lt;code&gt;govulncheck&lt;/code&gt;가 이 테이블을 읽으므로, 내려받은 바이너리에서는 실제로 링크된 패키지의 취약점만 보고됩니다.&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;govulncheck -mode binary ./fileshare&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="코드 복사"
+aria-label="코드 복사"
+data-copied-label="복사됨!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;심볼이 제거된 바이너리에서는 &lt;code&gt;govulncheck&lt;/code&gt;가 모듈 수준으로 되돌아가, 링크되지 않은 패키지의 취약점(예: GO-2026-5932, &lt;code&gt;golang.org/x/crypto/openpgp&lt;/code&gt;)도 보고합니다. 바이너리는 7~10 % 커지며, 기능상 변경은 없습니다.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;보안: v0.31.0이 아니라 v0.31.1을 사용하세요&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Go 1.27.2에서 &lt;code&gt;govulncheck&lt;/code&gt;는 fileshare에서 GO-2026-6809에 도달할 수 있다고 보고합니다. &lt;code&gt;crypto/x509&lt;/code&gt;의 &lt;code&gt;Certificate.Verify&lt;/code&gt;가 알려진 침해된 중간 인증서를 거부하지 않았습니다. Go 1.26.10과 1.27.3에서 수정되었습니다. &lt;strong&gt;더 오래된 Go로 빌드한 v0.31.0의 릴리스 바이너리는 영향을 받습니다.&lt;/strong&gt; v0.31.1은 Go 1.27.3으로 빌드되고 &lt;code&gt;go&lt;/code&gt; 지시어도 1.27.3이므로, &lt;code&gt;go install&lt;/code&gt;이 스스로 수정된 툴체인으로 전환합니다. 릴리스 바이너리는 &lt;code&gt;go version -m&lt;/code&gt;에서 &lt;code&gt;go1.27.3&lt;/code&gt;을 보고합니다. 세 UI도 같은 방식으로 다시 빌드되었습니다(portal v0.3.2, console v0.3.5, explorer v0.3.2). 툴체인만 바뀌었고 동작은 바뀌지 않았습니다.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="what-each-release-added"&gt;각 릴리스가 추가한 것&lt;span class="hx:absolute hx:-mt-20" id="what-each-release-added"&gt;&lt;/span&gt;
+&lt;a href="#what-each-release-added" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.7.0&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://go-fileshare.github.io/docs/0.32/ko/protocols/nfs/#the-refusal-that-used-to-be-permanent"&gt;&lt;code&gt;kerberos&lt;/code&gt; 블록&lt;/a&gt;을 통한 NFS의 제한된 공유&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.8.0&lt;/td&gt;
+&lt;td&gt;gRPC 기반 &lt;a href="https://go-fileshare.github.io/docs/0.32/ko/administration/"&gt;관리 API&lt;/a&gt;, &lt;a href="https://go-fileshare.github.io/docs/0.32/ko/configuration/shares/#a-directory-not-only-an-image"&gt;디렉터리 공유&lt;/a&gt;, &lt;a href="https://go-fileshare.github.io/docs/0.32/ko/administration/health/"&gt;&lt;code&gt;/healthz&lt;/code&gt;, &lt;code&gt;/readyz&lt;/code&gt;, &lt;code&gt;/metrics&lt;/code&gt;&lt;/a&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.9.0&lt;/td&gt;
+&lt;td&gt;파일 또는 ACME의 인증서를 쓰는 WebDAV, S3, NFS용 &lt;a href="https://go-fileshare.github.io/docs/0.32/ko/security/tls/"&gt;TLS&lt;/a&gt;, &lt;strong&gt;비밀번호를 쓰는 WebDAV의 평문 거부&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.10.0&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://go-fileshare.github.io/docs/0.32/ko/administration/reload/"&gt;디렉터리 다시 읽기&lt;/a&gt;: &lt;code&gt;reload = &amp;quot;5m&amp;quot;&lt;/code&gt;, &lt;code&gt;SIGHUP&lt;/code&gt;, &lt;code&gt;ReloadDirectory&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.11.0&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://go-fileshare.github.io/docs/0.32/ko/protocols/sftp/#people-the-identity-provider-vouches-for"&gt;ID 공급자가 보증하는 사용자를 위한 SFTP&lt;/a&gt;: 공급자의 SSH CA와 opkssh&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.12.0&lt;/td&gt;
+&lt;td&gt;폐기: 공급자의 SSH 인증서를 위한 &lt;a href="https://go-fileshare.github.io/docs/0.32/ko/security/revocation-lists/"&gt;KRL&lt;/a&gt;, &lt;a href="https://go-fileshare.github.io/docs/0.32/ko/security/nfs-certificates/"&gt;인증서 기반 NFS ID&lt;/a&gt;를 위한 CRL&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.13.0&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://go-fileshare.github.io/docs/0.32/ko/security/shared-signals/"&gt;공유 신호&lt;/a&gt;: CAEP &lt;code&gt;session-revoked&lt;/code&gt;가 공급자가 그 이전에 발급한 모든 것을 모든 프로토콜에서 무효화&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.14.0&lt;/td&gt;
+&lt;td&gt;보안 검토의 수정 사항: &lt;a href="https://go-fileshare.github.io/docs/0.32/ko/administration/#what-it-will-and-will-not-touch"&gt;프로토콜이 담을 수 있는 공유 이름&lt;/a&gt;, 구성이나 그 비밀 정보를 포함하는 공유 금지, 시작할 때 &lt;code&gt;source_roots&lt;/code&gt; 재검사, SSF &lt;code&gt;max_age&lt;/code&gt; ≥ 1m 및 &lt;code&gt;retain&lt;/code&gt; ≥ 169h&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.15.0&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://go-fileshare.github.io/docs/0.32/ko/security/revocation-lists/#signed-and-dated-from-ssh_krl_url"&gt;&lt;code&gt;ssh_krl_url&lt;/code&gt;의 KRL은 서명되고 날짜가 기록되어야 함&lt;/a&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.16.0&lt;/td&gt;
+&lt;td&gt;폐기 목록이 &lt;a href="https://go-fileshare.github.io/docs/0.32/ko/security/revocation-lists/#never-backwards-across-a-restart-too"&gt;결코 거꾸로 가지 않음&lt;/a&gt;, &lt;code&gt;ssh_krl_state_file&lt;/code&gt; / &lt;code&gt;crl_state_file&lt;/code&gt;로 재시작 후에도 유지. 신뢰 앵커와 목록 파일은 공유 안에 있을 수 없음&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.16.1&lt;/td&gt;
+&lt;td&gt;Go 1.26.6 필요: 1.26.4의 도달 가능한 표준 라이브러리 권고 9건&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.16.2&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://go-fileshare.github.io/docs/0.32/ko/security/nfs-certificates/#revocation-the-crl"&gt;NFS CRL의 서명을 파싱하기 전에 검사&lt;/a&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.16.3&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://go-fileshare.github.io/docs/0.32/ko/protocols/webdav/#a-token-over-the-one-protocol-that-can-carry-one"&gt;검증되지 않은 이메일로는 누구도 지정되지 않음&lt;/a&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.16.4&lt;/td&gt;
+&lt;td&gt;테스트만&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.16.5&lt;/td&gt;
+&lt;td&gt;테스트만(&lt;a href="https://github.com/go-fileshare/fileshare/issues/36" target="_blank" rel="noopener"&gt;#36&lt;/a&gt;: 테스트가 전송 오류를 성공으로 읽음)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.16.6&lt;/td&gt;
+&lt;td&gt;NFS 거부 메시지가 두 가지 해결 방법을 모두 안내: &lt;code&gt;kerberos&lt;/code&gt; 블록 또는 &lt;a href="https://go-fileshare.github.io/docs/0.32/ko/security/nfs-certificates/"&gt;&lt;code&gt;identity = &amp;quot;certificate&amp;quot;&lt;/code&gt;&lt;/a&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.16.7&lt;/td&gt;
+&lt;td&gt;go-authn/oidc v0.2.2: RSA 키의 크기를 비트 단위로 계산. 이전에는 0 옥텟으로 채운 1024비트 키가 WebDAV 토큰이나 opkssh PK 토큰을 검증했음&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.17.0&lt;/td&gt;
+&lt;td&gt;보안 감사의 수정 사항: 한 공유가 다른 공유를 포함할 수 없음, 접근 파일(&lt;code&gt;authorized_keys_file&lt;/code&gt;, &lt;code&gt;dsn_file&lt;/code&gt; 등)은 공유 안에 있을 수 없음, 디렉터리 읽기가 비어서 돌아와도 WebDAV가 익명이 되지 않음, S3가 &lt;code&gt;protocols&lt;/code&gt;를 준수, 30초 안에 인증하지 않은 연결은 닫힘, opkssh 세션은 &lt;code&gt;opkssh_max_age&lt;/code&gt;에 종료, 폐기된 세션은 폐기된 채로 닫힘&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.17.1&lt;/td&gt;
+&lt;td&gt;go-authn/oidc v0.2.4(http로의 리디렉션 뒤에 키 집합 없음), servercert v0.3.0(sshd의 StrictModes처럼 ACME 캐시 경로를 검사), krl v0.5.0, revocation v0.3.0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.17.2&lt;/td&gt;
+&lt;td&gt;go-filesystems/s3 v0.3.0: S3가 인증되지 않은 호출자에게 어떤 액세스 키가 존재하는지 더 이상 알려 주지 않음. 사전 서명 URL이 동작하며, 최대 일주일간 유효하고, 자체 날짜 이전에는 거부됨&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.18.0&lt;/td&gt;
+&lt;td&gt;CI가 &lt;code&gt;stable&lt;/code&gt; 대신 Go 1.27.1을 고정&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.18.1&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;oidc&lt;/code&gt; 블록에 &lt;code&gt;domains&lt;/code&gt;가 없으면 &lt;code&gt;fileshare check&lt;/code&gt;가 경고: &lt;a href="https://go-fileshare.github.io/docs/0.32/ko/configuration/identity/"&gt;공급자의 단순 이름이 같은 이름의 로컬 계정에 도달&lt;/a&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.19.0&lt;/td&gt;
+&lt;td&gt;go-authn/directory v0.11.0: &lt;code&gt;users &amp;quot;ldap&amp;quot;&lt;/code&gt; 블록이 &lt;a href="https://go-fileshare.github.io/docs/0.32/ko/configuration/identity/"&gt;다른 머신으로의 평문 바인드&lt;/a&gt;를 거부. 비밀번호는 다이제스트로 상수 시간에 비교됨&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.20.0&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://go-fileshare.github.io/docs/0.32/ko/configuration/identity/"&gt;&lt;code&gt;local_names&lt;/code&gt;&lt;/a&gt;: 공급자의 이름은 &lt;code&gt;oidc&lt;/code&gt; 블록이 그렇다고 할 때만 로컬 이름(보안 감사 F4)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.21.0&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://go-fileshare.github.io/docs/0.32/ko/administration/volumes/"&gt;볼륨&lt;/a&gt;: 권한 있는 &lt;code&gt;fileshare provisioner&lt;/code&gt;가 ZFS 데이터셋, btrfs 서브볼륨, XFS/ext4 프로젝트 쿼터 디렉터리를 생성하고 관리 API가 그로부터 공유를 제공. 가득 찬 디렉터리 공유는 모든 프로토콜에서 하나의 응답. 관리 소켓의 &lt;code&gt;allowed_uids&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.21.1&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://go-fileshare.github.io/docs/0.32/ko/administration/volumes/#a-full-share"&gt;가득 찬 공유&lt;/a&gt;가 SMB(&lt;code&gt;STATUS_DISK_FULL&lt;/code&gt;)와 NFS(&lt;code&gt;NFS3ERR_NOSPC&lt;/code&gt; / &lt;code&gt;NFS3ERR_DQUOT&lt;/code&gt;)에서 그렇게 응답&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.22.0&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://go-fileshare.github.io/docs/0.32/ko/protocols/sftp/#certificates-meant-for-this-host-the-domain-grant"&gt;&lt;code&gt;ssh_domains&lt;/code&gt;&lt;/a&gt;: SSH 인증서는 도메인 부여(&lt;code&gt;ssh-domain-grant@core.aai.geant.org&lt;/code&gt;, EuroHPC SSH CA 프로필)가 이 호스트를 지정하는 곳에서만 수락되며 fail closed. &lt;code&gt;ssh_accept_ungranted&lt;/code&gt;는 부여가 없는 인증서를 허용&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.22.1&lt;/td&gt;
+&lt;td&gt;go-filesystems/sftp v0.5.1: &lt;a href="https://go-fileshare.github.io/docs/0.32/ko/protocols/sftp/#a-certificate-pinned-to-an-address"&gt;주소에 고정된&lt;/a&gt; 인증서(&lt;code&gt;source-address&lt;/code&gt;)가 &lt;code&gt;ssh_domains&lt;/code&gt; 아래와 공급자 및 OpenPubkey 인증서에서 그 주소로부터 수락됨. 이전에는 모든 주소에서 거부되었음&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.22.2&lt;/td&gt;
+&lt;td&gt;테스트와 문서만: &lt;code&gt;source-address&lt;/code&gt;를 &lt;code&gt;::1&lt;/code&gt;과 두 번째 IPv4 주소(&lt;code&gt;127.0.0.2&lt;/code&gt;)에서, &lt;code&gt;ssh_domains&lt;/code&gt; 아래에서, 그리고 OpenPubkey 인증서에서 테스트. Linux에서 &lt;code&gt;FILESHARE_REQUIRE_JUDGE&lt;/code&gt;가 설정되면 판정기가 없을 때 건너뛰지 않고 실패&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.23.0&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://go-fileshare.github.io/docs/0.32/ko/administration/volumes/#the-size-a-client-sees"&gt;btrfs 볼륨&lt;/a&gt;이 NFS, SMB, WebDAV에서 쿼터의 크기로 표시됨(go-filesystems/nfs v0.7.0, smb v0.5.0, webdav v0.3.0이 질의마다 크기를 보고). 이전에는 btrfs가 파일 시스템 전체를 보여 주었음. 공유가 관리 API에서 오는 서버가 NFS를 제공하면서 아직 공유가 없을 때 시작에서 더 이상 중단되지 않음&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.24.0&lt;/td&gt;
+&lt;td&gt;더 빠른 읽기: 디렉터리 또는 볼륨 공유의 WebDAV GET이 평문 HTTP에서 &lt;code&gt;sendfile(2)&lt;/code&gt;로 전송됨(TLS에서는 아님), NFS 읽기와 쓰기는 1 MiB(rtmax/wtmax), SMB 클라이언트는 요청당 64 KiB보다 많이 읽음(&lt;code&gt;CAP_LARGE_MTU&lt;/code&gt;). CI 러너에서 256 MiB 파일: WebDAV 6.6 GB/s, SMB 0.84, NFS 1.47(클라이언트 하나)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.24.1&lt;/td&gt;
+&lt;td&gt;보안: 유휴 NFS 연결이 가장 큰 호출에 필요했던 3 MiB를 더 이상 유지하지 않음(유휴 연결 24개가 59 MiB를 보유했음). SMB 프레임 헤더가 바이트가 도착하기 전에 헤더가 알린 8 MiB를 서버가 할당하게 하지 않음. SMB 요청이 크레딧 하나로 4 GiB를 지불할 수 없음(go-filesystems/nfs v0.8.1, smb v0.6.1 및 v0.6.2)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.25.0&lt;/td&gt;
+&lt;td&gt;SFTP가 &lt;code&gt;limits@openssh.com&lt;/code&gt;에 응답하여 OpenSSH의 &lt;code&gt;sftp&lt;/code&gt;가 최대 255 KiB씩 읽음(+25%). 한 세션은 최대 1024개의 열린 핸들을 보유(go-filesystems/sftp v0.6.0)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.26.0&lt;/td&gt;
+&lt;td&gt;이를 지원하는 모든 프로토콜에서 서버 측 복사: WebDAV &lt;code&gt;COPY&lt;/code&gt;, SFTP &lt;code&gt;copy-data&lt;/code&gt;(OpenSSH의 &lt;code&gt;sftp cp&lt;/code&gt;), SMB COPYCHUNK(탐색기, Linux &lt;code&gt;copy_file_range&lt;/code&gt;)이 호스트 파일 간의 &lt;code&gt;copy_file_range(2)&lt;/code&gt;로 서버에서 수행됨 — btrfs와 XFS에서는 리플링크이며, CI에서 8 MiB 복사에 사용량 0바이트로 측정됨. 보안: WebDAV &lt;code&gt;COPY&lt;/code&gt;와 모든 S3 &lt;code&gt;GET&lt;/code&gt;/&lt;code&gt;HEAD&lt;/code&gt;가 더 이상 파일 전체를 메모리로 읽지 않음. S3는 모든 크기의 오브젝트를 스트리밍. 정정: v0.24.0의 WebDAV &lt;code&gt;GET&lt;/code&gt;용 sendfile은 읽기 전용 공유에서만 일어났음 — 쓰기 가능한 공유에서는 래퍼가 이를 가렸고, v0.26.0부터 양쪽에서 일어남&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.27.0&lt;/td&gt;
+&lt;td&gt;ACME: 인증서를 첫 연결이 아니라 &lt;strong&gt;시작할 때&lt;/strong&gt; 요청하며, 서버가 계속 제공하는 동안 1분 후에 재시도하고 최대 1시간까지 두 배씩 늘림. &lt;strong&gt;SNI를 보내지 않는&lt;/strong&gt; 클라이언트(IP 주소로 접속)에는 핸드셰이크 실패 대신 첫 번째 도메인의 인증서를 제공(go-authn/servercert v0.5.0). &lt;a href="https://go-fileshare.github.io/docs/0.32/ko/security/tls/#harica-gant-tcs-which-account-and-caa"&gt;HARICA&lt;/a&gt;: Enterprise &lt;strong&gt;Admin&lt;/strong&gt;(OV) 계정만 챌린지 없이 발급하며, CAA가 &lt;code&gt;harica.gr&lt;/code&gt;을 허용해야 함&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.28.0&lt;/td&gt;
+&lt;td&gt;관리 API가 &lt;a href="https://go-fileshare.github.io/docs/0.32/ko/administration/#over-https-for-oidc-tokens"&gt;OIDC 토큰을 위해 HTTPS로도&lt;/a&gt; 제공됨 — 하나의 리스너에서 Connect, gRPC-Web, gRPC, 서버마다 하나의 audience, 발급자별 주체 또는 그룹으로 지정된 호출자 — 웹 및 네이티브 UI를 향한 첫걸음&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.28.1&lt;/td&gt;
+&lt;td&gt;보안: Go 1.27.2와 golang.org/x/net v0.60.0으로 빌드하여 GO-2026-6617(서버를 중단시킬 수 있는 HTTP/2 HPACK 경쟁 상태), GO-2026-6613, -6612, -6611, -6610, -6603을 수정. HTTPS 위의 관리 API가 HTTP/2를 사용. &lt;code&gt;go install&lt;/code&gt;은 이제 Go 1.27.2가 필요하며 스스로 전환함&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.29.1&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://go-fileshare.github.io/docs/0.32/ko/administration/reload/"&gt;다시 불러오기&lt;/a&gt;가 디렉터리에서 비워진 그룹을 삭제된 그룹처럼 취급: 아무것도 부여하지 않으며, 다시 불러오기의 참고 사항에 &lt;code&gt;group @x has no members: it grants nothing&lt;/code&gt;이 표시됨(빈 그룹과 없는 그룹을 구별하는 go-authn/directory v0.12.0)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.29.2&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;NetBSD(amd64) 및 OpenBSD arm64용 바이너리&lt;/strong&gt;: fileshare는 NetBSD에서 빌드되지 않았는데, memguard와 OpenPubkey를 통해 가져오는 awnumar/memcall v0.1.2가 NetBSD에 없는 플래그 &lt;code&gt;MADV_DONTDUMP&lt;/code&gt;를 사용하기 때문입니다. memguard v0.23.0과 memcall v0.4.0이 업스트림에서 수정했습니다. 이제 모든 릴리스 플랫폼이 모든 풀 리퀘스트에서 크로스 빌드됩니다. v0.29.1부터 모든 릴리스는 &lt;a href="https://github.com/go-fileshare/fileshare/releases" target="_blank" rel="noopener"&gt;릴리스 페이지&lt;/a&gt;에 플랫폼별 정적 바이너리를 &lt;code&gt;SHA256SUMS&lt;/code&gt; 및 출처 증명과 함께 제공합니다&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.29.0&lt;/td&gt;
+&lt;td&gt;WebDAV: &lt;a href="https://go-fileshare.github.io/docs/0.32/ko/protocols/webdav/#the-root-and-uploads-in-pieces"&gt;루트의 &lt;code&gt;PROPFIND&lt;/code&gt;가 공유를 나열&lt;/a&gt;하여(207, Depth infinity는 403, 쓰기는 405) 파일 관리자가 서버 전체를 마운트할 수 있음. 업로드를 조각으로 보낼 수 있으며 각 &lt;code&gt;Content-Range&lt;/code&gt;는 직전 조각이 끝난 곳에 이어짐(go-filesystems/webdav v0.6.0) — &lt;a href="https://go-fileshare.github.io/docs/0.32/ko/administration/"&gt;파일 탐색기&lt;/a&gt;가 필요로 하는 것&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.30.0&lt;/td&gt;
+&lt;td&gt;go-authn/directory v0.14.0: &lt;a href="https://go-fileshare.github.io/docs/0.32/ko/configuration/identity/"&gt;&lt;code&gt;users &amp;quot;ldap&amp;quot;&lt;/code&gt; 블록&lt;/a&gt;이 기본적으로 go-authn/authnd v0.11.0이 게시하는 것을 읽음 — 사용자 &lt;code&gt;(|(objectClass=posixAccount)(objectClass=account)(objectClass=uidObject))&lt;/code&gt;, 그룹 &lt;code&gt;(|(objectClass=posixGroup)(objectClass=groupOfNames))&lt;/code&gt;, &lt;code&gt;member&lt;/code&gt; DN은 사용자 검색이 반환한 사용자의 DN일 때만 인정. ⛔ 기관 자체의 디렉터리에서는 기본적으로 더 많은 항목을 읽음. 명시적인 &lt;code&gt;user_filter&lt;/code&gt; 또는 &lt;code&gt;group_filter&lt;/code&gt;는 변하지 않음&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.31.0&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://go-fileshare.github.io/docs/0.32/ko/configuration/as-each-person/"&gt;각 사용자의 권한으로 제공되는 디렉터리&lt;/a&gt;: &lt;code&gt;identity = &amp;quot;system&amp;quot;&lt;/code&gt;과 &lt;code&gt;identity&lt;/code&gt; 블록. root로 시작한 &lt;code&gt;fileshare serve&lt;/code&gt;가 사용자와 공유마다 워커를 시작하여 해당 uid, gid, 그룹으로 실행하고, 프로토콜은 &lt;code&gt;service_user&lt;/code&gt;로 제공. SFTP와 WebDAV만 해당. uid 0, &lt;code&gt;min_uid&lt;/code&gt; 미만의 uid, &lt;code&gt;deny_uids&lt;/code&gt;는 거부됨&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.31.1&lt;/td&gt;
+&lt;td&gt;보안: GO-2026-6809(&lt;code&gt;crypto/x509&lt;/code&gt;: &lt;code&gt;Certificate.Verify&lt;/code&gt;가 알려진 침해된 중간 인증서를 거부하지 않았음)를 수정한 Go 1.27.3으로 빌드. &lt;code&gt;govulncheck&lt;/code&gt;가 도달 가능하다고 보고했음. &lt;code&gt;go install&lt;/code&gt;은 이제 Go 1.27.3을 요구하며 스스로 전환함. 의존성 업데이트&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.31.2&lt;/td&gt;
+&lt;td&gt;릴리스 바이너리를 &lt;code&gt;-s -w&lt;/code&gt; 대신 &lt;code&gt;-w&lt;/code&gt;로 빌드. 심볼 테이블이 유지되므로 내려받은 바이너리에 대한 &lt;code&gt;govulncheck -mode binary&lt;/code&gt;가 정확해짐. 바이너리는 7~10 % 커짐. 기능상 변경 없음&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.32.0&lt;/td&gt;
+&lt;td&gt;&lt;a href="../operations/build-tags/#as-a-webassembly-container-wasip1"&gt;&lt;code&gt;GOOS=wasip1 GOARCH=wasm&lt;/code&gt;에서 빌드되고 서비스됨&lt;/a&gt;. go-wasmcontainers 엔진의 WebAssembly 컨테이너로서, WebDAV가 WasmEdge 소켓 확장(&lt;code&gt;stealthrocket/net/wasip1&lt;/code&gt;)을 통해 수신 대기. 빌드 태그 &lt;code&gt;nosql,noopenpubkey&lt;/code&gt;(전체, gzip 11.5 MB) 또는 WebDAV 전용 세트(gzip 6.5 MB). CI가 둘 다 빌드. wasip1에서는 시그널 처리 없음: 호스트가 모듈을 종료&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;v0.21.0으로 업그레이드할 때&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;가득 찬 디렉터리 공유&lt;/strong&gt;의 응답이 달라집니다. &lt;code&gt;EDQUOT&lt;/code&gt;(쿼터)와 &lt;code&gt;ENOSPC&lt;/code&gt;가 이제
+볼륨만이 아니라 모든 디렉터리 공유에서 하나의 오류, &amp;ldquo;no space left on device (the
+share is full)&amp;ldquo;입니다. WebDAV &lt;code&gt;500&lt;/code&gt;이고 NFS &lt;code&gt;NFS3ERR_IO&lt;/code&gt;였던 &lt;code&gt;EDQUOT&lt;/code&gt;는 이제 &lt;code&gt;507&lt;/code&gt;과&lt;code&gt;NFS3ERR_NOSPC&lt;/code&gt;이며, SFTP의 텍스트는 경로 없이 그 문장입니다. SMB는 여전히 접근
+거부로 응답합니다. &lt;a href="https://go-fileshare.github.io/docs/0.32/ko/administration/volumes/#a-full-share"&gt;가득 찬 공유&lt;/a&gt;를
+참고하십시오.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;v0.20.0으로 업그레이드할 때&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;공급자의 &lt;code&gt;alice&lt;/code&gt;는 더 이상 로컬 &lt;code&gt;alice&lt;/code&gt;의 공유를 받지 못합니다. 공급자의 이름이
+곧 로컬 이름인 사이트는 &lt;code&gt;oidc&lt;/code&gt; 블록에 &lt;code&gt;local_names = true&lt;/code&gt;를 추가하며(그리고&lt;code&gt;domains&lt;/code&gt;를 설정하며), 서버는 이것이 없어 거부한 이름마다 해당 행을 로그에
+기록합니다.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;v0.19.0으로 업그레이드할 때&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;start_tls = true&lt;/code&gt; 없이 다른 머신의 &lt;code&gt;ldap://&lt;/code&gt;를 가리키는 &lt;code&gt;users &amp;quot;ldap&amp;quot;&lt;/code&gt; 블록은&lt;strong&gt;더 이상 시작되지 않습니다&lt;/strong&gt;. &lt;code&gt;ldaps://&lt;/code&gt; 또는 StartTLS를 사용하십시오.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;v0.17.0으로 업그레이드할 때&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;한 공유가 다른 공유 안에 있거나, 두 공유가 하나의 소스를 쓰거나, 접근 파일(&lt;code&gt;authorized_keys_file&lt;/code&gt;, &lt;code&gt;dsn_file&lt;/code&gt;, &lt;code&gt;bind_password_file&lt;/code&gt;, &lt;code&gt;ssf&lt;/code&gt;의 &lt;code&gt;ca_file&lt;/code&gt;)이
+공유 안에 있는 구성은 &lt;strong&gt;더 이상 시작되지 않으며&lt;/strong&gt;, 오류가 공유와 경로를 알려 줍니다.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;v0.9.0 이후로 업그레이드할 때&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;인증할 사용자가 있는 상태에서 다른 머신이 접근할 수 있는 주소로 TLS 없이 WebDAV를
+제공하는 구성은 &lt;strong&gt;더 이상 시작되지 않습니다&lt;/strong&gt;. &lt;code&gt;tls = true&lt;/code&gt;와 &lt;code&gt;tls&lt;/code&gt; 블록을
+추가하거나, TLS를 종료하는 프록시 뒤에서는 &lt;code&gt;plaintext = true&lt;/code&gt;를 추가하십시오.&lt;a href="https://go-fileshare.github.io/docs/0.32/ko/security/tls/#webdav-is-not-served-in-the-clear"&gt;TLS&lt;/a&gt;를 참고하십시오.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="verified"&gt;검증됨&lt;span class="hx:absolute hx:-mt-20" id="verified"&gt;&lt;/span&gt;
+&lt;a href="#verified" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;이 프로젝트가 작성하지 않은 클라이언트가 실제로 수행하도록 한 것들이며, 코드에
+대한 주장이 아닙니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;macOS&lt;/strong&gt;는 &lt;code&gt;curl&lt;/code&gt;이 같은 이미지에 WebDAV로 쓰는 동안 공유를 SMB로 마운트하고,WebDAV가 쓴 내용을 다시 읽습니다. 읽기만 가능한 공유에 대한 Bob의 WebDAV 쓰기는&lt;code&gt;403&lt;/code&gt;이고, 잘못된 비밀번호는 &lt;code&gt;401&lt;/code&gt;입니다.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;go-smb2&lt;/strong&gt; — 이 프로젝트가 작성하지 않은 클라이언트 — 가 CI에서 &lt;code&gt;-race&lt;/code&gt;로 SMB를
+통한 동시 읽기 스무 건과 WebDAV를 통한 스무 건을 함께 구동합니다.&lt;/li&gt;
+&lt;li&gt;접근 규칙은 구성만이 아니라 &lt;strong&gt;모든 프로토콜을 통해&lt;/strong&gt; 검사됩니다. alice는 쓸 수
+있고 bob은 쓸 수 없는 것이 SMB와 WebDAV 양쪽에서 확인되며, NFS에는 그 공유가
+아예 제공되지 않습니다.&lt;/li&gt;
+&lt;li&gt;SFTP 인증서는 &lt;strong&gt;OpenSSH 자체 클라이언트&lt;/strong&gt;로 검증되며, 이 클라이언트는 인증서를
+치워 두면 같은 키를 거부합니다.&lt;/li&gt;
+&lt;li&gt;인증서 기반 NFS ID는 go-filesystems/nfs의 CI에서 &lt;strong&gt;실제 Linux 클라이언트&lt;/strong&gt;(커널
+6.17, ktls-utils 0.9)로 측정했으며, 이를 통해&lt;a href="https://go-fileshare.github.io/docs/0.32/ko/security/nfs-certificates/#measured-with-a-real-linux-client"&gt;평문 &lt;code&gt;MNT&lt;/code&gt;와 &lt;code&gt;tlshd&lt;/code&gt;의 함정&lt;/a&gt;을
+발견했습니다.&lt;/li&gt;
+&lt;li&gt;KRL의 서명되지 않은 형태는 측정 결과입니다. OpenSSH 9.6과 10.3은 서명된 KRL을
+읽고 서명을 건너뜁니다(go-authn/krl, 두 버전 모두 대조).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;go-authn/bridge의 상호 운용 레인&lt;/strong&gt;
+(&lt;a href="https://github.com/go-authn/bridge/pull/12" target="_blank" rel="noopener"&gt;#12&lt;/a&gt;,&lt;a href="https://github.com/go-authn/bridge/pull/17" target="_blank" rel="noopener"&gt;#17&lt;/a&gt;)이 fileshare v0.13.0을 실제
+bridge에 대해 판정합니다. KRL, NFS의 CRL, 공유 신호로 폐기된 WebDAV 토큰, 스코프로
+비활성화된 IdP, 공유 신호를 통한 opkssh입니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 data-hextra-search-id="not-yet"&gt;아직 지원하지 않는 것&lt;span class="hx:absolute hx:-mt-20" id="not-yet"&gt;&lt;/span&gt;
+&lt;a href="#not-yet" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;S3를 통한 쓰기.&lt;/strong&gt; &lt;code&gt;PUT&lt;/code&gt;과 &lt;code&gt;DELETE&lt;/code&gt;는 403으로 응답합니다. 라이브러리는 쓸 수
+있지만, 사용자가 읽기만 할 수 있는 공유는 SFTP와 같은 지점에서 거부해야 하는데
+아직 연결되지 않았습니다. 거부하는 편이 반쯤 쓰인 오브젝트보다 낫습니다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;S3를 통한 OIDC 토큰.&lt;/strong&gt; 토큰은 &lt;a href="https://go-fileshare.github.io/docs/0.32/ko/protocols/webdav/"&gt;WebDAV&lt;/a&gt;에서만
+동작하며 다른 곳에서는 동작하지 않습니다. S3의 일반적인 경로는 STS&lt;code&gt;AssumeRoleWithWebIdentity&lt;/code&gt;로, 토큰을 클라이언트가 이후 서명에 쓰는 임시 자격
+증명으로 교환합니다. 베어러 토큰을 수락하는 것과는 다른 메커니즘이며 구현되어 있지
+않습니다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;&lt;code&gt;admin&lt;/code&gt; 또는 &lt;code&gt;metrics&lt;/code&gt; 블록이 있는 &lt;code&gt;--isolate&lt;/code&gt;.&lt;/strong&gt; 거부됩니다. API 변경을 적용할
+단일 프로세스가 없기 때문입니다.&lt;a href="https://go-fileshare.github.io/docs/0.32/ko/operations/isolation/#not-with-an-admin-or-a-metrics-block-yet"&gt;프로토콜마다 하나의 프로세스&lt;/a&gt;를
+참고하십시오.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;공유 Linux NFS 클라이언트에서 인증서 기반의 사용자별 구분.&lt;/strong&gt; Linux 클라이언트는
+인증서를 마운트에 연결하므로 마운트의 모든 사용자가 인증서가 지정하는 사용자가
+됩니다. 이는 클라이언트의 속성이며, 그곳에서의 답은 &lt;code&gt;sec=krb5&lt;/code&gt;입니다.&lt;a href="https://go-fileshare.github.io/docs/0.32/ko/security/nfs-certificates/#what-it-cannot-promise"&gt;보장할 수 없는 것&lt;/a&gt;을
+참고하십시오.&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://go-fileshare.github.io/docs/0.32/ko/protocols/s3/"&gt;S3 자체&lt;/a&gt;는 출시되었습니다. 공유는 버킷이며, SFTP가
+사용하는 것과 같은 사용자별 트리 위에서 제공됩니다.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="measured-and-stated-as-measured"&gt;측정되었으며, 측정된 것으로 서술합니다&lt;span class="hx:absolute hx:-mt-20" id="measured-and-stated-as-measured"&gt;&lt;/span&gt;
+&lt;a href="#measured-and-stated-as-measured" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;이 페이지들의 주장 중 결함의 재현이 아니라 보험이나 측정인 것들이며, 소스에도
+그렇게 기록되어 있습니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;감싸지 않은 fat32 드라이버를 &lt;code&gt;-race&lt;/code&gt;로 실행하며 고루틴 여덟 개가 쓰기를 해도 오늘
+경쟁 상태가 발생하지 않습니다. &lt;a href="https://go-fileshare.github.io/docs/0.32/ko/operations/locking/"&gt;공유 잠금&lt;/a&gt;은
+계약에 대한 보험(&lt;code&gt;go-filesystems/interface&lt;/code&gt;는 경로 기반 동시 호출에 대해 아무것도
+보장하지 않음)이지, 관찰된 실패의 수정이 아닙니다.&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://go-fileshare.github.io/docs/0.32/ko/operations/build-tags/"&gt;빌드 태그 크기&lt;/a&gt;는 측정한 값입니다.&lt;code&gt;hashicorp/go-plugin&lt;/code&gt; 단독으로 드는 13.2 MB(플러그인 프레임워크를 택하지 않기로
+결정한 근거)와, 관리 API가 가져오는 gRPC의 11.7 MB(&lt;code&gt;nogrpc&lt;/code&gt;가 존재하는 이유)를
+포함합니다.&lt;/li&gt;
+&lt;li&gt;그룹 태그용 자체 인증서 확장을 설계하여 Go의 X.509 파서에 대해 &lt;strong&gt;측정&lt;/strong&gt;했고, 파서가
+인증서 전체를 거부했습니다. 그래서 그룹은 대신&lt;a href="https://go-fileshare.github.io/docs/0.32/ko/security/nfs-certificates/#what-the-certificate-carries"&gt;tag URI&lt;/a&gt;로
+전달됩니다.&lt;/li&gt;
+&lt;/ul&gt;</description></item></channel></rss>

@@ -1,0 +1,275 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Grpc</title><link>https://go-fileshare.github.io/docs/0.32/zh-cn/tags/grpc/</link><description>Recent content in Grpc on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><atom:link href="https://go-fileshare.github.io/docs/0.32/zh-cn/tags/grpc/index.xml" rel="self" type="application/rss+xml"/><item><title>管理 API</title><link>https://go-fileshare.github.io/docs/0.32/zh-cn/administration/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.32/zh-cn/administration/</guid><description>
+&lt;p&gt;自 v0.8.0 起，共享可以在服务器运行期间发生变化。&lt;code&gt;admin&lt;/code&gt; 块会启用一个 gRPC 服务，无需重启，也无需编辑文件，即可创建、修改共享并使其下线。&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;admin&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; listen&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;unix:///run/fileshare/admin.sock&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # 权限设为 0600
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; state_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/var/lib/fileshare/shares.json&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; source_roots&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;/srv/images&amp;#34;, &amp;#34;/data&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="复制代码"
+aria-label="复制代码"
+data-copied-label="已复制！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;未编写该块时，不会有任何监听。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-it-does"&gt;它能做什么&lt;span class="hx:absolute hx:-mt-20" id="what-it-does"&gt;&lt;/span&gt;
+&lt;a href="#what-it-does" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;该服务是&lt;a href="https://github.com/go-fileshare/fileshare/blob/v0.28.0/proto/fileshare/admin/v1/admin.proto" target="_blank" rel="noopener"&gt;&lt;code&gt;fileshare.admin.v1.AdminService&lt;/code&gt;&lt;/a&gt;：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;CreateShare&lt;/code&gt;、&lt;code&gt;UpdateShare&lt;/code&gt;、&lt;code&gt;DeleteShare&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;根据映像、目录或（自 v0.21.0 起）卷定义共享；修改 &lt;code&gt;read_only&lt;/code&gt; 或 &lt;code&gt;protocols&lt;/code&gt;（其来源不能更改：请删除后另行创建）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;DisableShare&lt;/code&gt;、&lt;code&gt;EnableShare&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;使共享下线，以及重新上线&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;Grant&lt;/code&gt;、&lt;code&gt;Revoke&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;授予某个主体读取或写入权限，或收回该权限&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ListShares&lt;/code&gt;、&lt;code&gt;GetShare&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;所有共享，包括它们提供的内容、所用的协议，以及为何不通过其他协议提供&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ListUsers&lt;/code&gt;、&lt;code&gt;ListGroups&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;授权可以指明哪些对象；每个用户及其凭据所能应答的协议&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ReloadDirectory&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;立即重新读取人员信息，参见&lt;a href="https://go-fileshare.github.io/docs/0.32/zh-cn/administration/reload/"&gt;重新读取目录服务&lt;/a&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;GetServerInfo&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;名称、版本、启动时间、世代和监听器&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ListParents&lt;/code&gt;、&lt;code&gt;CreateVolume&lt;/code&gt;、&lt;code&gt;ResizeVolume&lt;/code&gt;、&lt;code&gt;SnapshotVolume&lt;/code&gt;、&lt;code&gt;DeleteVolume&lt;/code&gt;、&lt;code&gt;GetVolume&lt;/code&gt;、&lt;code&gt;ListVolumes&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;通过特权配给程序创建的存储，以及由其提供的共享，参见&lt;a href="https://go-fileshare.github.io/docs/0.32/zh-cn/administration/volumes/"&gt;卷&lt;/a&gt;（自 v0.21.0 起）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;授权可以指明一个&lt;strong&gt;用户&lt;/strong&gt;、一个&lt;strong&gt;组&lt;/strong&gt;（配置文件中的 &lt;code&gt;@group&lt;/code&gt;）、一个&lt;strong&gt;&lt;code&gt;oidc:groups:&lt;/code&gt; 值&lt;/strong&gt;或一个 &lt;strong&gt;&lt;code&gt;oidc:user:&lt;/code&gt; 名称&lt;/strong&gt;，即配置文件所用的词汇，参见&lt;a href="https://go-fileshare.github.io/docs/0.32/zh-cn/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;由身份提供方指明的人员&lt;/a&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;grpc.health.v1&lt;/code&gt; 在同一个监听器上应答。块中设置 &lt;code&gt;reflection = true&lt;/code&gt;
+会启用 gRPC 服务器反射，供 &lt;code&gt;grpcurl&lt;/code&gt; 使用。&lt;/p&gt;
+&lt;h3 data-hextra-search-id="every-change-says-what-serving-it-did"&gt;每次变更都会说明服务端做了什么&lt;span class="hx:absolute hx:-mt-20" id="every-change-says-what-serving-it-did"&gt;&lt;/span&gt;
+&lt;a href="#every-change-says-what-serving-it-did" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;变更以 &lt;code&gt;Applied&lt;/code&gt; 消息作为应答：&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-proto" data-lang="proto"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;message&lt;/span&gt; &lt;span class="nc"&gt;Applied&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;uint64&lt;/span&gt; &lt;span class="n"&gt;generation&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="c1"&gt;// the generation now being served
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;uint64&lt;/span&gt; &lt;span class="n"&gt;connections_closed&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="c1"&gt;// how many the previous one had open, and closed
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="复制代码"
+aria-label="复制代码"
+data-copied-label="已复制！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;因此每个 RPC 都有自己的响应消息，而不是直接返回共享本身：&lt;code&gt;.proto&lt;/code&gt; 遵循 &lt;a href="https://buf.build" target="_blank" rel="noopener"&gt;buf&lt;/a&gt; 的 &lt;code&gt;STANDARD&lt;/code&gt; lint 规则，由 fileshare CI 中的 &lt;code&gt;buf lint&lt;/code&gt; 检查，而不是 AIP-131 的“返回资源”，由这层包装来携带 &lt;code&gt;Applied&lt;/code&gt;。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="where-it-listens-and-who-may-call-it"&gt;它在哪里监听，谁可以调用它&lt;span class="hx:absolute hx:-mt-20" id="where-it-listens-and-who-may-call-it"&gt;&lt;/span&gt;
+&lt;a href="#where-it-listens-and-who-may-call-it" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;通过 TCP 时，要么使用双向 TLS，要么不可用&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;tls_cert_file&lt;/code&gt;、&lt;code&gt;tls_key_file&lt;/code&gt; 和 &lt;code&gt;client_ca_file&lt;/code&gt;，三者缺一不可，&lt;strong&gt;回环地址也不例外&lt;/strong&gt;：任何本地用户都可以访问回环地址，而这个 API决定谁可以读取谁的文件。unix 套接字的权限设为 &lt;strong&gt;0600&lt;/strong&gt;，其权限即是访问控制。&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;admin&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; listen&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;127.0.0.1:7443&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; tls_cert_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/admin/server.pem&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; tls_key_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/admin/server.key&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; client_ca_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/admin/clients.pem&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; state_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/var/lib/fileshare/shares.json&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; source_roots&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;/srv/images&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="复制代码"
+aria-label="复制代码"
+data-copied-label="已复制！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;监听器是&lt;a href="https://github.com/grpc-transports/control" target="_blank" rel="noopener"&gt;grpc-transports/control&lt;/a&gt;。每次变更都会记录操作者：客户端证书的 CN，或套接字对端的 uid。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="over-https-for-oidc-tokens"&gt;通过 HTTPS，用于 OIDC 令牌&lt;span class="hx:absolute hx:-mt-20" id="over-https-for-oidc-tokens"&gt;&lt;/span&gt;
+&lt;a href="#over-https-for-oidc-tokens" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;自 v0.28.0 起，当 &lt;code&gt;admin&lt;/code&gt; 块包含 &lt;code&gt;web&lt;/code&gt; 块时，同一套 API（相同的状态、相同的审计）也通过 HTTPS 提供：&lt;strong&gt;Connect、gRPC-Web 和gRPC 共用一个监听器&lt;/strong&gt;，使用 &lt;a href="https://go-fileshare.github.io/docs/0.32/zh-cn/security/tls/"&gt;&lt;code&gt;tls&lt;/code&gt; 块&lt;/a&gt;的证书。Web 和原生界面与之通信的正是它。&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;admin&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; listen&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;unix:///run/fileshare/admin.sock&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; state_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/var/lib/fileshare/shares.json&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;web&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; listen&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:8443&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;issuer&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://login.example.org&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; audience&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;fileshare-a&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # 在该提供方处，本服务器的名称
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; groups&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;fileshare-admins&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;issuer&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://login.partner.example.org&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; audience&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;fileshare-a.partner&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; subjects&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;5b0c…&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="c1"&gt; # 一个人由 (issuer, sub) 标识
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="复制代码"
+aria-label="复制代码"
+data-copied-label="已复制！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;字段&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;listen&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;TCP 地址；没有 &lt;code&gt;tls&lt;/code&gt; 块时会被拒绝，因为持有者令牌与密码等效&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;issuer &amp;quot;&amp;lt;url&amp;gt;&amp;quot;&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;每个身份提供方一个块，即其 &lt;code&gt;iss&lt;/code&gt;；重复给出会被拒绝&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;audience&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;令牌必须指明的 &lt;code&gt;aud&lt;/code&gt;：&lt;strong&gt;本服务器&lt;/strong&gt;在该提供方处的名称；必填&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;subjects&lt;/code&gt;、&lt;code&gt;groups&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;谁可以调用：一个 &lt;code&gt;sub&lt;/code&gt;，或组声明中的一个组；两者至少给出一个&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;jwks_url&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;跳过 OIDC 发现，用于不发布该信息的提供方&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;groups_claim&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;携带组信息的声明；默认为 &lt;code&gt;groups&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;strong&gt;谁会得到应答。&lt;/strong&gt; 当某个颁发者的验证器接受其持有者令牌（签名、&lt;code&gt;iss&lt;/code&gt;、指明本服务器的 &lt;code&gt;aud&lt;/code&gt;、时间）&lt;strong&gt;并且&lt;/strong&gt;
+该颁发者的块指明了令牌的主体或其所属的某个组时，调用才会得到应答。在一个颁发者处列出的主体，在另一个颁发者处什么都不是：一个人由 (颁发者, &lt;code&gt;sub&lt;/code&gt;) 标识。检查仅依据标头进行，此时消息的任何一个字节都尚未被解码。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;每个服务器一个受众。&lt;/strong&gt; 发给多个服务器的令牌可能被其中任何一个重放给其他服务器（RFC 8707、RFC 9068），因此每个服务器都有自己的受众，同时驱动多个服务器的界面需要为每个服务器申请一个令牌。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;被拒绝的调用方能得知什么。&lt;/strong&gt; 只有“已拒绝”，别无其他。原因，以及所做的每一项变更，都会以 &lt;code&gt;oidc=&amp;lt;issuer&amp;gt; &amp;lt;sub&amp;gt;&lt;/code&gt; 的形式写入审计输出。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;没有 CORS。&lt;/strong&gt; 浏览器不会直接调用它：它们通过界面自己的服务器访问，由该服务器持有令牌。请求大小限制为 1 MiB，连接的每个阶段都有超时。每个颁发者都会在&lt;strong&gt;启动时&lt;/strong&gt;被联系，以读取其密钥；无法联系的颁发者会使启动中止，并指明该颁发者。&lt;/p&gt;
+&lt;h3 data-hextra-search-id="in-a-browser-the-console"&gt;在浏览器中：控制台&lt;span class="hx:absolute hx:-mt-20" id="in-a-browser-the-console"&gt;&lt;/span&gt;
+&lt;a href="#in-a-browser-the-console" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;&lt;a href="https://github.com/go-fileshare/console" target="_blank" rel="noopener"&gt;go-fileshare/console&lt;/a&gt; 是调用此 API 的管理控制台：共享、详情、授权、创建、启用、停用、删除、授予和撤销，以及&lt;a href="https://go-fileshare.github.io/docs/0.32/zh-cn/administration/volumes/"&gt;卷&lt;/a&gt;
+（创建、调整大小、快照、共享、删除，绝不销毁数据），可同时覆盖所有服务器。它在浏览器中运行，位于&lt;a href="https://github.com/go-fileshare/portal" target="_blank" rel="noopener"&gt;go-fileshare/portal&lt;/a&gt; 之后，后者通过 OpenID Connect让人员登录并保管其令牌：每个服务器一个，仅发给该服务器。浏览器从不持有令牌。&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# portal.hcl
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;server&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;paris&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://fs-paris.example.org:8443&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # 此 web 监听器
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; issuer&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://login.example.org&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; resource&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://fs-paris.example.org/&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # 上文中本服务器的受众
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;ui &amp;#34;console&amp;#34; { dir&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/usr/share/fileshare-console&amp;#34;&lt;/span&gt; }&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="复制代码"
+aria-label="复制代码"
+data-copied-label="已复制！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;同一个控制台也可以&lt;strong&gt;以原生方式&lt;/strong&gt;运行，无需门户。它通过系统浏览器和回环监听器登录，作为公共客户端（&lt;a href="https://github.com/go-authn/rp" target="_blank" rel="noopener"&gt;go-authn/rp&lt;/a&gt;，RFC 8252），并使用仅限该服务器的令牌调用每个服务器。服务器列在其自己的&lt;code&gt;console.hcl&lt;/code&gt; 中，其 &lt;code&gt;url&lt;/code&gt; 和 &lt;code&gt;resource&lt;/code&gt; 与此处相同。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;文件资源管理器&lt;/strong&gt; &lt;a href="https://github.com/go-fileshare/explorer" target="_blank" rel="noopener"&gt;go-fileshare/explorer&lt;/a&gt;
+在同一个门户之后运行：浏览、上传、下载、重命名、复制和删除，覆盖一个人有权使用的每个共享。它通过门户（&lt;code&gt;/dav/&amp;lt;server&amp;gt;/...&lt;/code&gt;）并使用该服务器的令牌访问各服务器的 WebDAV，门户对返回的内容一律&lt;strong&gt;去除可执行性&lt;/strong&gt;后再提供（&lt;code&gt;Content-Security-Policy: sandbox&lt;/code&gt;，作为附件）：共享中的页面绝不会以门户的身份运行。它需要 fileshare &lt;strong&gt;v0.29.0&lt;/strong&gt; 或更高版本，其 &lt;a href="https://go-fileshare.github.io/docs/0.32/zh-cn/protocols/webdav/#the-root-and-uploads-in-pieces"&gt;WebDAV&lt;/a&gt;
+在根目录列出各共享，并支持分块上传。&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# portal.hcl，同一个服务器
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;server&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;paris&amp;#34;&lt;/span&gt; {&lt;span class="c1"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt; # ... 同上，以及它的 WebDAV：
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; dav_url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://fs-paris.example.org&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;ui &amp;#34;explorer&amp;#34; { dir&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/usr/share/fileshare-explorer&amp;#34;&lt;/span&gt; }&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="复制代码"
+aria-label="复制代码"
+data-copied-label="已复制！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;资源管理器同样可以&lt;strong&gt;以原生方式&lt;/strong&gt;运行（explorer v0.2.0），无需门户，与控制台一样：它通过系统浏览器作为公共客户端登录，并使用仅限该服务器的令牌调用每个服务器的 WebDAV。其服务器列在 &lt;code&gt;explorer.hcl&lt;/code&gt; 中，每个都带有&lt;code&gt;dav_url&lt;/code&gt;（仅限 https）和其 &lt;code&gt;oidc&lt;/code&gt; 块的&lt;code&gt;resource&lt;/code&gt;。两种原生客户端在携带令牌时都不会跟随重定向：Go 的 HTTP 客户端在重定向到同一主机时，无论使用何种协议方案都会保留 &lt;code&gt;Authorization&lt;/code&gt;，而配置错误的代理若以 &lt;code&gt;307&lt;/code&gt; 指向纯 &lt;code&gt;http&lt;/code&gt; 地址，就会使令牌以明文发出。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;失败的上传可以续传&lt;/strong&gt;（explorer v0.3.0）。部分文件以原文件命名，即其名称、大小和修改时间，因此再次上传同一文件时，会从部分文件的末尾继续，前提是回读该部分文件最后 64 KiB 后发现与原文件一致。不同的文件绝不会被续传。网络或服务器故障会保留部分文件；被拒绝（403，共享已满：507）则会将其删除。&lt;/p&gt;
+&lt;p&gt;每个服务器的 &lt;code&gt;audience&lt;/code&gt; 就是门户为其设置的 &lt;code&gt;resource&lt;/code&gt;。使用该 API 并不需要自行编写控制台：任何持有该服务器令牌的 Connect、gRPC-Web 或 gRPC 客户端都可以。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-it-will-and-will-not-touch"&gt;它会碰什么，不会碰什么&lt;span class="hx:absolute hx:-mt-20" id="what-it-will-and-will-not-touch"&gt;&lt;/span&gt;
+&lt;a href="#what-it-will-and-will-not-touch" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;它管理自己创建的共享。&lt;/strong&gt; 配置中写明的共享会被列出，字段相同，而对其定义的更改会被拒绝，并返回&lt;code&gt;FAILED_PRECONDITION&lt;/code&gt;：一个共享在两处定义，是没有人愿意回答的问题，而该共享的定义以文件为准。API 创建的共享保存在&lt;code&gt;state_file&lt;/code&gt; 中，以原子方式写入，并在下次启动时重新提供服务，这就是没有 &lt;code&gt;state_file&lt;/code&gt; 的块会被拒绝的原因。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;来源必须位于 &lt;code&gt;source_roots&lt;/code&gt; 之下&lt;/strong&gt;，指的是解析之后的路径（跟随链接、去除 &lt;code&gt;..&lt;/code&gt;），保存的也是解析后的路径。没有 &lt;code&gt;source_roots&lt;/code&gt; 时，API&lt;strong&gt;根本无法创建共享&lt;/strong&gt;：进程可以读取 &lt;code&gt;/dev&lt;/code&gt; 和 &lt;code&gt;/etc&lt;/code&gt;，而没有人打算把它们交给调用方。每次启动都会再次检查，&lt;code&gt;state_file&lt;/code&gt; 中某个共享若不再位于任何根目录之下，启动会中止，并指明该共享。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;每个共享至少有一项授权。&lt;/strong&gt; 没有任何授权的共享对任何通过身份验证的人开放。文件可以有意这样写；API 调用不应因遗漏而这样写。因此 &lt;code&gt;CreateShare&lt;/code&gt; 需要一项授权，撤销最后一项授权也会被拒绝，请改为删除该共享。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;协议能够承载的名称。&lt;/strong&gt; 共享名称最长 80 个字符，不以空格开头或结尾，不是 &lt;code&gt;.&lt;/code&gt; 或 &lt;code&gt;..&lt;/code&gt;，不含不可打印字符，也不含 &lt;code&gt;:*?&amp;quot;&amp;lt;&amp;gt;|{}%&lt;/code&gt; 中的任何字符。主体同样不含不可打印字符，一个共享最多接受 1000 项授权，远在此之前就该由组来承担。以上每一种情况在 v0.14.0 之前都会被接受并写入 &lt;code&gt;state_file&lt;/code&gt;，随后在每次启动时都致命。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;任何共享都不得包含&lt;/strong&gt;配置、状态文件，或它们所指明的机密：能写入其中的人就能改写谁可以做什么。自 v0.17.0 起这包括 &lt;code&gt;authorized_keys_file&lt;/code&gt;、&lt;code&gt;users&lt;/code&gt; 块的 &lt;code&gt;dsn_file&lt;/code&gt; 和&lt;code&gt;bind_password_file&lt;/code&gt;、&lt;code&gt;ssf&lt;/code&gt; 块的 &lt;code&gt;ca_file&lt;/code&gt;，以及 DSN 所指明的 sqlite 数据库：能把自己的密钥加入他人 &lt;code&gt;authorized_keys&lt;/code&gt; 的写入者就能以该人的身份登录。&lt;strong&gt;共享也不得包含另一个共享&lt;/strong&gt;（参见&lt;a href="https://go-fileshare.github.io/docs/0.32/zh-cn/configuration/shares/#a-directory-not-only-an-image"&gt;目录&lt;/a&gt;）。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;变更会像配置一样被检查，先打开，再记录，然后提供服务。&lt;/strong&gt; 服务器无法满足的变更，例如无法打开的映像、目录服务中没有人使用的名称，会被拒绝，已提供的服务和已写入的内容保持原样。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="disabling-a-share"&gt;停用共享&lt;span class="hx:absolute hx:-mt-20" id="disabling-a-share"&gt;&lt;/span&gt;
+&lt;a href="#disabling-a-share" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;停用相当于 Samba 的 &lt;code&gt;available = no&lt;/code&gt;&lt;/strong&gt;：共享仍保持定义，所有连接尝试都会失败；其已打开的连接被关闭，其映像或目录被&lt;strong&gt;释放&lt;/strong&gt;，因此文件可以在它下线期间被替换。&lt;code&gt;EnableShare&lt;/code&gt; 会让它重新提供服务，若其来源已无法打开则会被拒绝。&lt;code&gt;CreateShare&lt;/code&gt; 也可以直接创建一个已停用的共享。&lt;/p&gt;
+&lt;p&gt;与其他所有变更不同，它也适用于&lt;strong&gt;配置中&lt;/strong&gt;的共享，因为使共享下线是一种操作，而不是一种定义，并且它在重启后仍然有效：它保存在状态文件中。&lt;a href="https://go-fileshare.github.io/docs/0.32/zh-cn/configuration/check/"&gt;&lt;code&gt;fileshare check&lt;/code&gt;&lt;/a&gt;
+会列出处于下线状态的共享。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="a-change-is-a-new-generation"&gt;一次变更就是一个新世代&lt;span class="hx:absolute hx:-mt-20" id="a-change-is-a-new-generation"&gt;&lt;/span&gt;
+&lt;a href="#a-change-is-a-new-generation" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;一次变更会重启协议服务器，并关闭它们的连接&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;SMB 在每次树连接时检查谁可以连接，SFTP 在每次登录时构建一个人的目录树，因此在撤销之后仍然存活的会话会保留刚被收回的访问权限。“已撤销，但已连接的人除外”不是撤销。&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;因此变更并不是应用&lt;em&gt;到&lt;/em&gt;正在运行的服务器上：它们会被根据新列表构建的新服务器所取代，这就是一个&lt;strong&gt;世代&lt;/strong&gt;，其方式与重启相同，但不释放端口。这些库别无选择：go-filesystems/smb 有 &lt;code&gt;Share&lt;/code&gt; 而没有 &lt;code&gt;Unshare&lt;/code&gt;，nfs 有 &lt;code&gt;Export&lt;/code&gt; 而没有&lt;code&gt;Unexport&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;端口保持绑定，因此在变更期间连接的客户端会&lt;strong&gt;等待&lt;/strong&gt;，而不是被拒绝。共享未发生变化的映像保留其驱动，不会被第二次打开。客户端会重新连接；这是代价，每次变更都要付出，这就是 API 每次调用只应用一项变更，而不是每个字段一项变更的原因。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="limits"&gt;限制&lt;span class="hx:absolute hx:-mt-20" id="limits"&gt;&lt;/span&gt;
+&lt;a href="#limits" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;--isolate&lt;/code&gt; 目前不能与 &lt;code&gt;admin&lt;/code&gt; 块同时使用，也不能与 &lt;code&gt;metrics&lt;/code&gt; 块同时使用：没有任何单一进程可以让变更应用于其上。这种组合会被拒绝。&lt;/li&gt;
+&lt;li&gt;使用 &lt;code&gt;-tags nogrpc&lt;/code&gt; 构建的二进制文件没有管理 API，包含&lt;code&gt;admin&lt;/code&gt; 块的配置会被&lt;strong&gt;拒绝&lt;/strong&gt;，而不是在没有该 API 的情况下提供服务。该标签可节省11.7 MB；参见&lt;a href="https://go-fileshare.github.io/docs/0.32/zh-cn/operations/build-tags/#the-admin-api-and-nogrpc"&gt;只构建所需内容&lt;/a&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 data-hextra-search-id="changing-the-proto"&gt;修改 &lt;code&gt;.proto&lt;/code&gt;&lt;span class="hx:absolute hx:-mt-20" id="changing-the-proto"&gt;&lt;/span&gt;
+&lt;a href="#changing-the-proto" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;proto/&lt;/code&gt; 下的 Go 代码是生成的并已提交，因此 &lt;code&gt;go install&lt;/code&gt; 不需要&lt;code&gt;protoc&lt;/code&gt;。修改 &lt;code&gt;.proto&lt;/code&gt; 之后（管理 API 的，或配给程序的&lt;code&gt;proto/fileshare/provision/v1/provision.proto&lt;/code&gt;），请使用 fileshare CI 所固定的版本重新生成两者（protoc 34.1、protoc-gen-go v1.36.12、protoc-gen-go-grpc v1.6.2）。CI 会重新生成它们，当已提交的代码不同，或生成的代码未提交时，CI 会失败：&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;protoc -I proto --go_out&lt;span class="o"&gt;=&lt;/span&gt;. --go_opt&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;module&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;github.com/go-fileshare/fileshare &lt;span class="se"&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; --go-grpc_out&lt;span class="o"&gt;=&lt;/span&gt;. --go-grpc_opt&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;module&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;github.com/go-fileshare/fileshare &lt;span class="se"&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; proto/fileshare/admin/v1/admin.proto proto/fileshare/provision/v1/provision.proto&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="复制代码"
+aria-label="复制代码"
+data-copied-label="已复制！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;</description></item></channel></rss>

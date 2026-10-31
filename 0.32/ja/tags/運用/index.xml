@@ -1,0 +1,240 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – 運用</title><link>https://go-fileshare.github.io/docs/0.32/ja/tags/%E9%81%8B%E7%94%A8/</link><description>Recent content in 運用 on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>ja</language><atom:link href="https://go-fileshare.github.io/docs/0.32/ja/tags/%E9%81%8B%E7%94%A8/index.xml" rel="self" type="application/rss+xml"/><item><title>必要なものだけをビルドする</title><link>https://go-fileshare.github.io/docs/0.32/ja/operations/build-tags/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.32/ja/operations/build-tags/</guid><description>
+&lt;p&gt;各プロトコルはビルドタグの背後にあり、タグを指定するとそのプロトコルは&lt;strong&gt;完全に&lt;/strong&gt;除外されます。リスナーも、パーサーも、依存関係も、コードもありません。&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;go install -tags nonfs,nowebdav,nosftp,nos3 github.com/go-fileshare/fileshare@latest &lt;span class="c1"&gt;# SMB only&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;go build -tags nosmb,nonfs,nosftp,nos3 . &lt;span class="c1"&gt;# WebDAV only&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="コードをコピー"
+aria-label="コードをコピー"
+data-copied-label="コピーしました！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;人&lt;/strong&gt;の取得元も、それ専用のタグの背後にあります。&lt;code&gt;nosql&lt;/code&gt; は 3 つのデータベースドライバーを、&lt;code&gt;noldap&lt;/code&gt; は LDAP クライアントを除外します。&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;ビルド&lt;/th&gt;
+&lt;th&gt;サイズ&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;すべて&lt;/td&gt;
+&lt;td&gt;31.2 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags noldap&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;30.9 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags nosftp&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;30.6 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags noopenpubkey&lt;/code&gt;(SFTP での opkssh ログインなし)&lt;/td&gt;
+&lt;td&gt;約 2 MB 減&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags nos3&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;31.1 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags nonfs,nowebdav,nosftp,nos3&lt;/code&gt;(SMB のみ)&lt;/td&gt;
+&lt;td&gt;28.1 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags nopartitioned&lt;/code&gt;(apfs、btrfs、xfs、zfs なし)&lt;/td&gt;
+&lt;td&gt;29.2 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags nosql&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;20.2 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags nosql,noldap&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;19.8 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags nosql,noldap,nonfs,nowebdav,nosftp,nos3&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;16.2 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;これらは fileshare の README に記載されている数値で、管理 API が加わる前に計測されたものです。下の表がそれ以降の計測です。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="the-admin-api-and-nogrpc"&gt;管理 API と &lt;code&gt;nogrpc&lt;/code&gt;&lt;span class="hx:absolute hx:-mt-20" id="the-admin-api-and-nogrpc"&gt;&lt;/span&gt;
+&lt;a href="#the-admin-api-and-nogrpc" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;a href="https://go-fileshare.github.io/docs/0.32/ja/administration/"&gt;管理 API&lt;/a&gt;は gRPC と protobuf を持ち込み、それらは&lt;code&gt;nogrpc&lt;/code&gt; の背後にあります(linux/amd64、2026-09-29 に計測。このとき上の行は、すべて含めると34.1 MB に増えていました)。&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;ビルド&lt;/th&gt;
+&lt;th&gt;サイズ&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;すべて、管理 API 付き&lt;/td&gt;
+&lt;td&gt;46.1 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags nogrpc&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;34.4 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-tags nosql,noldap,nogrpc&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;22.5 MB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;gRPC のコストは &lt;strong&gt;11.7 MB&lt;/strong&gt; です。これは下の&lt;a href="#why-not-subprocess-plugins"&gt;プラグインの計測&lt;/a&gt;を、今回は独自の理由があって取り直したものです。共有をファイルで管理するサイトは、これを抱える必要がありません。&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;nogrpc&lt;/code&gt; ビルドで &lt;code&gt;admin&lt;/code&gt; ブロックを指定すると拒否されます&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;管理 API なしで提供するのではなく、拒否します。API を求めておきながらそれなしで起動する設定は、書いてあることと異なる動作をするためです。&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;nogrpc&lt;/code&gt; は管理 API を除外し、それに伴って&lt;a href="https://go-fileshare.github.io/docs/0.32/ja/administration/volumes/"&gt;プロビジョナー&lt;/a&gt;も除外します。&lt;a href="https://go-fileshare.github.io/docs/0.32/ja/administration/health/"&gt;ヘルスチェックとメトリクス&lt;/a&gt;は通常の HTTP なので、残ります。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;-tags noprovisioner&lt;/code&gt; はプロビジョナー、つまり特権を持つ &lt;code&gt;fileshare provisioner&lt;/code&gt; ロールだけを除外し、go-fsctl の zfs、btrfs、projquota も一緒に除外します。ボリュームを一切提供しないサーバーは、それを作成するコードを抱える必要がありません。そのようなビルドの &lt;code&gt;fileshare provisioner&lt;/code&gt; は、「不明なコマンド」ではなく、その旨を伝えます。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;nosql&lt;/code&gt; は群を抜いて大きな節約手段です。PostgreSQL、MySQL、SQLite を合わせると &lt;strong&gt;11.7 MB&lt;/strong&gt; になり、このプログラムのすべてのプロトコルを合わせたものより大きくなります。ユーザーをファイルで管理するサイトには、これが向いています。ドライバーはそれを使うライブラリではなくコマンドによってインポートされるため、この選択はフォークではなくビルドタグで行えます。&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;このバイナリがビルドされていないプロトコル&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;そのプロトコルを指定した設定には、「そのようなプロトコルはありません」ではなく、&lt;em&gt;そうである&lt;/em&gt;ことが伝えられます。これは、タイプミスとビルドタグの違いです。&lt;code&gt;noopenpubkey&lt;/code&gt; の下の &lt;code&gt;opkssh_client_id&lt;/code&gt; と、&lt;code&gt;nogrpc&lt;/code&gt; の下の &lt;code&gt;admin&lt;/code&gt; ブロックでも同様です。&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="as-a-webassembly-container-wasip1"&gt;WebAssembly コンテナとして (&lt;code&gt;wasip1&lt;/code&gt;)&lt;span class="hx:absolute hx:-mt-20" id="as-a-webassembly-container-wasip1"&gt;&lt;/span&gt;
+&lt;a href="#as-a-webassembly-container-wasip1" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;v0.32.0 から、fileshare は &lt;code&gt;GOOS=wasip1 GOARCH=wasm&lt;/code&gt; 向けにビルドでき、WebDAV をWASI コンテナとして提供します。たとえば&lt;a href="https://github.com/go-wasmcontainers" target="_blank" rel="noopener"&gt;go-wasmcontainers&lt;/a&gt; エンジン (&lt;code&gt;wctr&lt;/code&gt;) で、ネイティブまたはブラウザのタブ内で動かせます。&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nv"&gt;GOOS&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;wasip1 &lt;span class="nv"&gt;GOARCH&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;wasm go build -trimpath &lt;span class="se"&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; -tags nosql,noopenpubkey,nosmb,nonfs,nos3,nosftp,nogrpc,nopartitioned,noprovisioner &lt;span class="se"&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; -o fileshare.wasm . &lt;span class="c1"&gt;# WebDAV のみ: gzip で 6.5 MB&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="コードをコピー"
+aria-label="コードをコピー"
+data-copied-label="コピーしました！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;nosql&lt;/code&gt; と &lt;code&gt;noopenpubkey&lt;/code&gt; は必須です。SQLite ドライバと OpenPubkey の依存関係はwasip1 ではビルドできません。wasip1 のフルビルド (&lt;code&gt;-tags nosql,noopenpubkey&lt;/code&gt;) はgzip で 11.5 MB です。CI には両方のバリアントをビルドする &lt;code&gt;wasip1&lt;/code&gt; ジョブがあります。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;待ち受け&lt;/strong&gt;はエンジンのソケット (&lt;code&gt;stealthrocket/net/wasip1&lt;/code&gt;、WasmEdge のソケット拡張) を通します。Go の &lt;code&gt;net.Listen&lt;/code&gt; は wasip1 では使えません。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;シグナル処理なし。&lt;/strong&gt; Go の wasip1 ランタイムはループで譲りながらシグナルを待つため、&lt;code&gt;signal.Notify&lt;/code&gt; が 1 つあるだけでネットワークポーラーが飢餓状態になり、リスナーが何も accept しませんでした。終了はホストがモジュールを終わらせることで行います。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;TLS&lt;/strong&gt; はコンテナの手前で終端します。そこまでの経路がプライベートな場合は&lt;code&gt;plaintext = true&lt;/code&gt; を使ってください。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;go-wasmcontainers プレイグラウンドの次のリリースで提供予定&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;fileshare&lt;/code&gt; イメージと、go-fileshare エクスプローラー (v0.4.0) をコンテナのブラウザクライアントとして開く「explore :PORT」ボタン(&lt;a href="https://github.com/go-wasmcontainers/playground/pull/31" target="_blank" rel="noopener"&gt;playground#31&lt;/a&gt;、保留中)。まだ利用できません。&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="why-not-subprocess-plugins"&gt;サブプロセスのプラグインを使わない理由&lt;span class="hx:absolute hx:-mt-20" id="why-not-subprocess-plugins"&gt;&lt;/span&gt;
+&lt;a href="#why-not-subprocess-plugins" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;これは議論ではなく&lt;strong&gt;計測&lt;/strong&gt;で決めました。&lt;code&gt;hashicorp/go-plugin&lt;/code&gt; は gRPC と protobuf を持ち込み、それだけで &lt;strong&gt;13.2 MB&lt;/strong&gt; かかります。3 つのプロトコルとすべてのドライバーを含むこのバイナリ全体よりも大きい値です。プラグインホストは、何も読み込む前からサイズが 2 倍になり、各プラグインのバイナリもそれぞれ gRPC を抱えることになります。&lt;/p&gt;
+&lt;p&gt;攻撃対象領域の観点でも、実行しないものについてはタグのほうが強力な手段です。&lt;strong&gt;一度もコンパイルされなかったコードには、サンドボックスの有無にかかわらず到達できません。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;タグが与え&lt;em&gt;ない&lt;/em&gt;のは、&lt;strong&gt;実際に動かす&lt;/strong&gt;プロトコル同士の分離と、再コンパイルせずにプロトコルを追加する手段です。どちらも現実的な要件であり、どちらもバイナリを小さくするのではなく、プロセスの境界を支持する議論です。それがこの同じバイナリを使う&lt;a href="https://go-fileshare.github.io/docs/0.32/ja/operations/isolation/"&gt;プロトコルごとに 1 プロセス&lt;/a&gt;であり、プラグインフレームワークではありません。&lt;/p&gt;</description></item><item><title>プロトコルごとに 1 プロセス</title><link>https://go-fileshare.github.io/docs/0.32/ja/operations/isolation/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.32/ja/operations/isolation/</guid><description>
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;fileshare --config /etc/fileshare.d --isolate&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="コードをコピー"
+aria-label="コードをコピー"
+data-copied-label="コピーしました！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;pre&gt;&lt;code&gt;smb on 0.0.0.0:445 — process 19810, serving public, photos and scratch
+webdav on 0.0.0.0:8080 — process 19811, serving public and photos
+nfs on 0.0.0.0:2049 — process 19812, serving public&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="コードをコピー"
+aria-label="コードをコピー"
+data-copied-label="コピーしました！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;親プロセスがリスナーをバインドし、その後プロトコルごとに&lt;strong&gt;自分自身&lt;/strong&gt;を exec して、各子プロセスにはそのプロトコルが提供してよい共有だけを渡します。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="checked-with-lsof-not-by-reading-the-code"&gt;コードを読むのではなく、&lt;code&gt;lsof&lt;/code&gt; で確認する&lt;span class="hx:absolute hx:-mt-20" id="checked-with-lsof-not-by-reading-the-code"&gt;&lt;/span&gt;
+&lt;a href="#checked-with-lsof-not-by-reading-the-code" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;pre&gt;&lt;code&gt;smb (pid 19810) has open: scratch.img photos.img
+webdav (pid 19811) has open: photos.img
+nfs (pid 19812) has open: photos.img&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="コードをコピー"
+aria-label="コードをコピー"
+data-copied-label="コピーしました！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;書き込み可能なイメージが開かれているのは&lt;strong&gt;ちょうど 1 つのプロセス&lt;/strong&gt;だけで、WebDAV の子プロセスはそれをまったく開きません。&lt;/p&gt;
+&lt;p&gt;これは&lt;a href="https://go-fileshare.github.io/docs/0.32/ja/operations/build-tags/"&gt;ビルドタグ&lt;/a&gt;では得られないものです。あるプロトコルでのパニックやヒープの枯渇が影響するのは、そのプロトコルだけです。各子プロセスはオペレーティングシステムが提供するあらゆる手段で隔離でき、あるパーサーのバグが、そのプロセスが一度も開いていないイメージに到達することはありません。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="privileged-ports"&gt;特権ポート&lt;span class="hx:absolute hx:-mt-20" id="privileged-ports"&gt;&lt;/span&gt;
+&lt;a href="#privileged-ports" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Unix では、親プロセスがバインド済みのリスナーを子プロセスに渡すので、&lt;strong&gt;特権ポートも特権のない子プロセスで使えます&lt;/strong&gt;。親プロセスが 445 をバインドし、子プロセスは特権を必要としません。&lt;/p&gt;
+&lt;p&gt;Windows には &lt;code&gt;ExtraFiles&lt;/code&gt; がないため、子プロセスが自分でアドレスをバインドします。分離は同じですが、特権ポートに関する利点は得られません。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="the-rule-that-makes-it-honest"&gt;誠実さを保つルール&lt;span class="hx:absolute hx:-mt-20" id="the-rule-that-makes-it-honest"&gt;&lt;/span&gt;
+&lt;a href="#the-rule-that-makes-it-honest" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;子プロセスは自分でイメージを開くため、2 つのプロトコルで&lt;em&gt;書き込み可能&lt;/em&gt;として提供されるイメージは、1 つのファイルに対する 2 つのドライバーとなり、その間に&lt;strong&gt;ロックがありません&lt;/strong&gt;。これはまさに、1 つのプロセスの内側で&lt;a href="https://go-fileshare.github.io/docs/0.32/ja/operations/locking/"&gt;共有ロック&lt;/a&gt;が防いでいるものです。&lt;/p&gt;
+&lt;p&gt;これは拒否され、拒否メッセージには修正方法が示されます。&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;pre&gt;&lt;code&gt;scratch is writable over smb and webdav, and one process per protocol means
+that many drivers writing one file with no lock between them. Say
+`protocols = [&amp;#34;smb&amp;#34;]` on the share, or make it read_only, or do not isolate.&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="コードをコピー"
+aria-label="コードをコピー"
+data-copied-label="コピーしました！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;共有の &lt;code&gt;protocols = [...]&lt;/code&gt; は、&lt;code&gt;--isolate&lt;/code&gt; のときだけでなく単独でも有用です。SMB 専用と宣言した共有は、WebDAV プロセスには一切通知されません。結果として何も提供しなくなる &lt;code&gt;serve&lt;/code&gt; ブロックも、イメージを開く前に拒否され、そこから除外された共有とその理由が示されます。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="not-with-an-admin-or-a-metrics-block-yet"&gt;&lt;code&gt;admin&lt;/code&gt; ブロックや &lt;code&gt;metrics&lt;/code&gt; ブロックとは、まだ併用できません&lt;span class="hx:absolute hx:-mt-20" id="not-with-an-admin-or-a-metrics-block-yet"&gt;&lt;/span&gt;
+&lt;a href="#not-with-an-admin-or-a-metrics-block-yet" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;--isolate&lt;/code&gt; を &lt;a href="https://go-fileshare.github.io/docs/0.32/ja/administration/"&gt;&lt;code&gt;admin&lt;/code&gt;&lt;/a&gt; ブロックや&lt;a href="https://go-fileshare.github.io/docs/0.32/ja/administration/health/"&gt;&lt;code&gt;metrics&lt;/code&gt;&lt;/a&gt; ブロックと併用することは拒否されます。イメージを開くのは子プロセスで、親プロセスは何も開かないため、API の変更を適用できる単一のプロセスも、プローブが準備状態を尋ねる単一のプロセスも存在しないからです。&lt;/p&gt;</description></item><item><title>1 つのイメージ、複数のプロトコル、1 つのロック</title><link>https://go-fileshare.github.io/docs/0.32/ja/operations/locking/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.32/ja/operations/locking/</guid><description>
+&lt;p&gt;このファミリーのサーバーはすべて、ドライバー自体を直列化しています。&lt;a href="https://github.com/go-filesystems/interface" target="_blank" rel="noopener"&gt;&lt;code&gt;go-filesystems/interface&lt;/code&gt;&lt;/a&gt; が、パスベースの並行呼び出しについて何も保証していないためです。そして、それぞれが&lt;strong&gt;自分専用の&lt;/strong&gt;ロックを持ち、他のサーバーのことは何も知りません。&lt;/p&gt;
+&lt;p&gt;したがって、1 つのイメージを 3 つのプロトコルで同時に提供すると、どこにも共通のロックがないことになります。そこで、イメージはここで&lt;strong&gt;一度だけ&lt;/strong&gt;ラップされ、同じラッパーがすべてのプロトコルに渡されます。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="stated-as-measured-so-as-not-to-overstate-it"&gt;誇張しないよう、計測結果として記載する&lt;span class="hx:absolute hx:-mt-20" id="stated-as-measured-so-as-not-to-overstate-it"&gt;&lt;/span&gt;
+&lt;a href="#stated-as-measured-so-as-not-to-overstate-it" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;ラップされていない&lt;/strong&gt; fat32 ドライバーに対して 8 つの goroutine が &lt;code&gt;-race&lt;/code&gt; の下で書き込んでも、&lt;strong&gt;現時点ではレースは発生しません&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;これは不具合の再現ではなく、契約に対する保険です。ext4 や ntfs は fat32 ではなく、ドライバーの更新のたびにこのプログラムが再監査しなければならないというのは望ましくないためです。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="the-wrapper-carries-capabilities-through"&gt;ラッパーはケーパビリティを引き継ぐ&lt;span class="hx:absolute hx:-mt-20" id="the-wrapper-carries-capabilities-through"&gt;&lt;/span&gt;
+&lt;a href="#the-wrapper-carries-capabilities-through" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;ケーパビリティを隠すことはありません。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Opener&lt;/code&gt; に応答するドライバーは、&lt;strong&gt;ロック付きの &lt;code&gt;File&lt;/code&gt;&lt;/strong&gt; を受け取ります。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;File&lt;/code&gt; が &lt;code&gt;WritableFile&lt;/code&gt; に応答するドライバーは、&lt;strong&gt;位置指定の書き込み&lt;/strong&gt;を維持します。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;これらとファイル全体にフォールバックする方式との差は、このファミリーの別の場所で&lt;strong&gt;約 70 倍&lt;/strong&gt;と計測されています。そのため、これらを消してしまうラッパーは、安全性を装ったパフォーマンス上の欠陥になってしまいます。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="under-isolate-the-lock-cannot-help"&gt;&lt;code&gt;--isolate&lt;/code&gt; の下では、ロックは役に立たない&lt;span class="hx:absolute hx:-mt-20" id="under-isolate-the-lock-cannot-help"&gt;&lt;/span&gt;
+&lt;a href="#under-isolate-the-lock-cannot-help" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;子プロセスは自分でイメージを開くため、子プロセス間に共有のラッパーはありません。2 つのプロトコルで書き込み可能として提供されるイメージが、ロックなしで黙って提供されるのではなく、&lt;a href="https://go-fileshare.github.io/docs/0.32/ja/operations/isolation/#the-rule-that-makes-it-honest"&gt;拒否される&lt;/a&gt;のはそのためです。&lt;/p&gt;</description></item><item><title>運用</title><link>https://go-fileshare.github.io/docs/0.32/ja/operations/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.32/ja/operations/</guid><description>
+&lt;div class="hextra-cards hx:mt-4 hx:gap-4 hx:grid not-prose" style="--hextra-cards-grid-cols: 3;"&gt;
+&lt;a class="hextra-card hx:group hx:flex hx:flex-col hx:justify-start hx:overflow-hidden hx:rounded-lg hx:border hx:border-gray-200 hx:text-current hx:no-underline hx:dark:shadow-none hx:hover:shadow-gray-100 hx:dark:hover:shadow-none hx:shadow-gray-100 hx:active:shadow-sm hx:active:shadow-gray-200 hx:transition-all hx:duration-200 hx:hover:border-gray-300 hx:bg-transparent hx:shadow-xs hx:dark:border-neutral-800 hx:hover:bg-slate-50 hx:hover:shadow-md hx:dark:hover:border-neutral-700 hx:dark:hover:bg-neutral-900" href="build-tags/"&gt;&lt;div&gt;
+&lt;span class="hextra-card-icon hx:flex hx:font-semibold hx:items-start hx:gap-2 hx:pt-4 hx:px-4 hx:text-gray-700 hx:hover:text-gray-900 hx:dark:text-neutral-200 hx:dark:hover:text-neutral-50"&gt;&lt;svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/&gt;&lt;/svg&gt;必要なものだけをビルドする&lt;/span&gt;&lt;div class="hextra-card-subtitle hx:line-clamp-3 hx:text-sm hx:font-normal hx:text-gray-500 hx:dark:text-gray-400 hx:px-4 hx:mb-4 hx:mt-2"&gt;ビルドタグを指定すると、プロトコルや管理 API をバイナリから完全に除外できます。&lt;/div&gt;&lt;/div&gt;&lt;/a&gt;
+&lt;a class="hextra-card hx:group hx:flex hx:flex-col hx:justify-start hx:overflow-hidden hx:rounded-lg hx:border hx:border-gray-200 hx:text-current hx:no-underline hx:dark:shadow-none hx:hover:shadow-gray-100 hx:dark:hover:shadow-none hx:shadow-gray-100 hx:active:shadow-sm hx:active:shadow-gray-200 hx:transition-all hx:duration-200 hx:hover:border-gray-300 hx:bg-transparent hx:shadow-xs hx:dark:border-neutral-800 hx:hover:bg-slate-50 hx:hover:shadow-md hx:dark:hover:border-neutral-700 hx:dark:hover:bg-neutral-900" href="isolation/"&gt;&lt;div&gt;
+&lt;span class="hextra-card-icon hx:flex hx:font-semibold hx:items-start hx:gap-2 hx:pt-4 hx:px-4 hx:text-gray-700 hx:hover:text-gray-900 hx:dark:text-neutral-200 hx:dark:hover:text-neutral-50"&gt;&lt;svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/&gt;&lt;/svg&gt;プロトコルごとに 1 プロセス&lt;/span&gt;&lt;div class="hextra-card-subtitle hx:line-clamp-3 hx:text-sm hx:font-normal hx:text-gray-500 hx:dark:text-gray-400 hx:px-4 hx:mb-4 hx:mt-2"&gt;&amp;ndash;isolate: 各プロトコルを専用のプロセスで実行します。&lt;/div&gt;&lt;/div&gt;&lt;/a&gt;
+&lt;a class="hextra-card hx:group hx:flex hx:flex-col hx:justify-start hx:overflow-hidden hx:rounded-lg hx:border hx:border-gray-200 hx:text-current hx:no-underline hx:dark:shadow-none hx:hover:shadow-gray-100 hx:dark:hover:shadow-none hx:shadow-gray-100 hx:active:shadow-sm hx:active:shadow-gray-200 hx:transition-all hx:duration-200 hx:hover:border-gray-300 hx:bg-transparent hx:shadow-xs hx:dark:border-neutral-800 hx:hover:bg-slate-50 hx:hover:shadow-md hx:dark:hover:border-neutral-700 hx:dark:hover:bg-neutral-900" href="locking/"&gt;&lt;div&gt;
+&lt;span class="hextra-card-icon hx:flex hx:font-semibold hx:items-start hx:gap-2 hx:pt-4 hx:px-4 hx:text-gray-700 hx:hover:text-gray-900 hx:dark:text-neutral-200 hx:dark:hover:text-neutral-50"&gt;&lt;svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/&gt;&lt;/svg&gt;1 つのイメージ、複数のプロトコル、1 つのロック&lt;/span&gt;&lt;div class="hextra-card-subtitle hx:line-clamp-3 hx:text-sm hx:font-normal hx:text-gray-500 hx:dark:text-gray-400 hx:px-4 hx:mb-4 hx:mt-2"&gt;複数のプロトコルから 1 つのイメージへの書き込みは、共有の 1 つのロックを通ります。&lt;/div&gt;&lt;/div&gt;&lt;/a&gt;
+&lt;/div&gt;</description></item></channel></rss>
