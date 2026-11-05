@@ -500,4 +500,17 @@ geöffnet hat, fragt die Liste erneut, offene Dateien eingeschlossen;&lt;/li&gt;
 OpenSSHs &lt;code&gt;sftp&lt;/code&gt; bis zu 255 KiB pro Anfrage liest und schreibt statt 32 KiB:etwa +25 %, gemessen mit OpenSSH 10.3. Eine Sitzung darf höchstens 1024
 Dateien und Verzeichnisse gleichzeitig offen halten; bei einer
 Verzeichnisfreigabe ist jede ein Deskriptor des Hosts, und die Grenze hält
-einen Benutzer davon ab, alle zu verbrauchen.&lt;/p&gt;</description></item></channel></rss>
+einen Benutzer davon ab, alle zu verbrauchen.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="requests-in-flight"&gt;Anfragen in Bearbeitung&lt;span class="hx:absolute hx:-mt-20" id="requests-in-flight"&gt;&lt;/span&gt;
+&lt;a href="#requests-in-flight" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Seit go-filesystems/sftp v0.8.0 beantwortet eine Sitzung bis zu 64 Anfragen
+gleichzeitig und antwortet nach Anfrage-ID, was das &lt;code&gt;sftp&lt;/code&gt; von OpenSSH verlangt(standardmäßig 64 ausstehende Anfragen, &lt;code&gt;-R&lt;/code&gt;); frühere Versionen beantworteten
+ein Paket, bevor sie das nächste lasen. &lt;code&gt;READ&lt;/code&gt; und &lt;code&gt;WRITE&lt;/code&gt; laufen parallel; zwei
+Anfragen, deren Bytebereiche sich in derselben Datei überschneiden und von denen
+eine schreibt, laufen in der Reihenfolge ihres Eintreffens; und &lt;code&gt;OPEN&lt;/code&gt;, &lt;code&gt;CLOSE&lt;/code&gt;,&lt;code&gt;READDIR&lt;/code&gt; sowie jede Metadatenanfrage warten auf alles, was gerade läuft, und
+laufen allein, sodass ein &lt;code&gt;CLOSE&lt;/code&gt; immer auf die ausstehenden Operationen seines
+Handles folgt. Ein Client, der schneller Anfragen aneinanderreiht, als der
+Server antwortet, wartet in der Verbindung, nicht im Speicher des Servers.&lt;/p&gt;
+&lt;p&gt;Eine &lt;strong&gt;Verzeichnis&lt;/strong&gt;-Freigabe erreicht die Dateien des Hosts ohne eigene Sperre
+und profitiert vollständig. Eine &lt;strong&gt;Image&lt;/strong&gt;-Freigabe bleibt hinter der einen
+Sperre, die ihren Treiber korrekt hält, und bleibt seriell. Der Messaufbau&lt;code&gt;throughput_test.go&lt;/code&gt; im Repository misst es (&lt;code&gt;FILESHARE_THROUGHPUT_MIB&lt;/code&gt;): sftp
+mit 64 und mit 1 Anfrage in Bearbeitung, nfs über 1, 4 und 8 Verbindungen.&lt;/p&gt;</description></item></channel></rss>

@@ -601,7 +601,21 @@ OpenSSH&amp;rsquo;s &lt;code&gt;sftp&lt;/code&gt; reads and writes up to 255 KiB
 32 KiB: about +25% measured with OpenSSH 10.3. One session may hold at most
 1024 open files and directories at once; on a directory share each is a
 descriptor of the host, and the bound keeps one user from spending all of
-them.&lt;/p&gt;</description></item><item><title>S3 — a share is a bucket</title><link>https://go-fileshare.github.io/docs/0.32/protocols/s3/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.32/protocols/s3/</guid><description>
+them.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="requests-in-flight"&gt;Requests in flight&lt;span class="hx:absolute hx:-mt-20" id="requests-in-flight"&gt;&lt;/span&gt;
+&lt;a href="#requests-in-flight" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Since go-filesystems/sftp v0.8.0 a session answers up to 64 requests at once
+and replies by request id, which is what OpenSSH&amp;rsquo;s &lt;code&gt;sftp&lt;/code&gt; (64 outstanding by
+default, &lt;code&gt;-R&lt;/code&gt;) asks of a server; earlier versions answered one packet before
+reading the next. &lt;code&gt;READ&lt;/code&gt; and &lt;code&gt;WRITE&lt;/code&gt; run in parallel; two requests whose byte
+ranges overlap on one file, with a write among them, run in arrival order; and&lt;code&gt;OPEN&lt;/code&gt;, &lt;code&gt;CLOSE&lt;/code&gt;, &lt;code&gt;READDIR&lt;/code&gt; and every metadata request wait for what is in
+flight and run alone, so a &lt;code&gt;CLOSE&lt;/code&gt; always follows the operations pending on its
+handle. A client that pipelines faster than the server answers waits in the
+connection, not in the server&amp;rsquo;s memory.&lt;/p&gt;
+&lt;p&gt;A &lt;strong&gt;directory&lt;/strong&gt; share reaches the host&amp;rsquo;s files with no lock of its own and
+gets the whole gain. A share backed by an &lt;strong&gt;image&lt;/strong&gt; is still behind the one
+lock that keeps its driver correct, and stays serial. The &lt;code&gt;throughput_test.go&lt;/code&gt;
+harness of the repository measures it (&lt;code&gt;FILESHARE_THROUGHPUT_MIB&lt;/code&gt;): sftp with
+64 requests in flight and with 1, nfs over 1, 4 and 8 connections.&lt;/p&gt;</description></item><item><title>S3 — a share is a bucket</title><link>https://go-fileshare.github.io/docs/0.32/protocols/s3/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.32/protocols/s3/</guid><description>
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;serve &amp;#34;s3&amp;#34; { addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:9000&amp;#34;&lt;/span&gt; }&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
 &lt;button

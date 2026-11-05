@@ -524,4 +524,18 @@ que el &lt;code&gt;sftp&lt;/code&gt; de OpenSSH lee y escribe hasta 255 KiB por 
 de 32 KiB: alrededor de +25 % medido con OpenSSH 10.3. Una sesión puede tener
 como mucho 1024 archivos y directorios abiertos a la vez; en un recurso
 compartido de directorio cada uno es un descriptor del host, y el límite
-impide que un usuario los gaste todos.&lt;/p&gt;</description></item></channel></rss>
+impide que un usuario los gaste todos.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="requests-in-flight"&gt;Solicitudes en vuelo&lt;span class="hx:absolute hx:-mt-20" id="requests-in-flight"&gt;&lt;/span&gt;
+&lt;a href="#requests-in-flight" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Desde go-filesystems/sftp v0.8.0, una sesión responde hasta 64 solicitudes a la
+vez y responde por identificador de solicitud, que es lo que pide el &lt;code&gt;sftp&lt;/code&gt; de
+OpenSSH (64 pendientes por defecto, &lt;code&gt;-R&lt;/code&gt;); las versiones anteriores respondían
+a un paquete antes de leer el siguiente. &lt;code&gt;READ&lt;/code&gt; y &lt;code&gt;WRITE&lt;/code&gt; se ejecutan en
+paralelo; dos solicitudes cuyos rangos de bytes se solapan en un mismo archivo,con una escritura entre ellas, se ejecutan en orden de llegada; y &lt;code&gt;OPEN&lt;/code&gt;,&lt;code&gt;CLOSE&lt;/code&gt;, &lt;code&gt;READDIR&lt;/code&gt; y toda solicitud de metadatos esperan a lo que está en vuelo
+y se ejecutan solas, de modo que un &lt;code&gt;CLOSE&lt;/code&gt; siempre sigue a las operaciones
+pendientes de su descriptor. Un cliente que encadena más rápido de lo que el
+servidor responde espera en la conexión, no en la memoria del servidor.&lt;/p&gt;
+&lt;p&gt;Un recurso de &lt;strong&gt;directorio&lt;/strong&gt; llega a los archivos del host sin un bloqueo
+propio y aprovecha toda la mejora. Un recurso respaldado por una &lt;strong&gt;imagen&lt;/strong&gt;
+sigue detrás del único bloqueo que mantiene correcto su controlador, y sigue
+siendo serial. El banco &lt;code&gt;throughput_test.go&lt;/code&gt; del repositorio lo mide(&lt;code&gt;FILESHARE_THROUGHPUT_MIB&lt;/code&gt;): sftp con 64 solicitudes en vuelo y con 1, nfs
+sobre 1, 4 y 8 conexiones.&lt;/p&gt;</description></item></channel></rss>

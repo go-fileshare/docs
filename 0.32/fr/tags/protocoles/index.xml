@@ -593,7 +593,21 @@ que le fournisseur a émis pour la personne avant un &lt;code&gt;session-revoked
 &lt;h2 data-hextra-search-id="transfer-size-and-open-files"&gt;Taille des transferts et fichiers ouverts&lt;span class="hx:absolute hx:-mt-20" id="transfer-size-and-open-files"&gt;&lt;/span&gt;
 &lt;a href="#transfer-size-and-open-files" class="subheading-anchor" aria-label="Lien permanent vers cette section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;fileshare répond à &lt;code&gt;limits@openssh.com&lt;/code&gt; d&amp;rsquo;OpenSSH (depuis la v0.25.0) : le&lt;code&gt;sftp&lt;/code&gt; d&amp;rsquo;OpenSSH lit et écrit jusqu&amp;rsquo;à 255 Kio par requête au lieu de 32 Kio,environ +25 % mesuré avec OpenSSH 10.3. Une session peut tenir au plus 1024
 fichiers et répertoires ouverts à la fois ; sur un partage de répertoire,chacun est un descripteur de l&amp;rsquo;hôte, et la limite empêche un utilisateur de
-tous les prendre.&lt;/p&gt;</description></item><item><title>S3 — un partage est un bucket</title><link>https://go-fileshare.github.io/docs/0.32/fr/protocols/s3/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.32/fr/protocols/s3/</guid><description>
+tous les prendre.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="requests-in-flight"&gt;Requêtes en vol&lt;span class="hx:absolute hx:-mt-20" id="requests-in-flight"&gt;&lt;/span&gt;
+&lt;a href="#requests-in-flight" class="subheading-anchor" aria-label="Lien permanent vers cette section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Depuis go-filesystems/sftp v0.8.0, une session répond à jusqu&amp;rsquo;à 64 requêtes à
+la fois et répond par identifiant de requête, ce que demande le &lt;code&gt;sftp&lt;/code&gt;
+d&amp;rsquo;OpenSSH (64 requêtes en attente par défaut, &lt;code&gt;-R&lt;/code&gt;) ; les versions précédentes
+répondaient à un paquet avant de lire le suivant. &lt;code&gt;READ&lt;/code&gt; et &lt;code&gt;WRITE&lt;/code&gt; s&amp;rsquo;exécutent
+en parallèle ; deux requêtes dont les plages d&amp;rsquo;octets se recouvrent sur un même
+fichier, dont l&amp;rsquo;une est une écriture, s&amp;rsquo;exécutent dans l&amp;rsquo;ordre d&amp;rsquo;arrivée ; et&lt;code&gt;OPEN&lt;/code&gt;, &lt;code&gt;CLOSE&lt;/code&gt;, &lt;code&gt;READDIR&lt;/code&gt; et toute requête de métadonnées attendent ce qui est
+en vol et s&amp;rsquo;exécutent seules, de sorte qu&amp;rsquo;un &lt;code&gt;CLOSE&lt;/code&gt; suit toujours les
+opérations en attente sur son descripteur. Un client qui enchaîne plus vite que
+le serveur ne répond attend dans la connexion, pas dans la mémoire du serveur.&lt;/p&gt;
+&lt;p&gt;Un partage de &lt;strong&gt;répertoire&lt;/strong&gt; atteint les fichiers de l&amp;rsquo;hôte sans verrou propre
+et profite de tout le gain. Un partage adossé à une &lt;strong&gt;image&lt;/strong&gt; reste derrière le
+verrou unique qui garde son pilote correct, et reste sériel. Le banc&lt;code&gt;throughput_test.go&lt;/code&gt; du dépôt le mesure (&lt;code&gt;FILESHARE_THROUGHPUT_MIB&lt;/code&gt;) : sftp avec
+64 requêtes en vol et avec 1, nfs sur 1, 4 et 8 connexions.&lt;/p&gt;</description></item><item><title>S3 — un partage est un bucket</title><link>https://go-fileshare.github.io/docs/0.32/fr/protocols/s3/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.32/fr/protocols/s3/</guid><description>
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;serve &amp;#34;s3&amp;#34; { addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:9000&amp;#34;&lt;/span&gt; }&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
 &lt;button
