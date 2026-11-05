@@ -296,3 +296,23 @@ de 32 KiB: alrededor de +25 % medido con OpenSSH 10.3. Una sesión puede tener
 como mucho 1024 archivos y directorios abiertos a la vez; en un recurso
 compartido de directorio cada uno es un descriptor del host, y el límite
 impide que un usuario los gaste todos.
+
+## Solicitudes en vuelo {#requests-in-flight}
+
+Desde go-filesystems/sftp v0.8.0, una sesión responde hasta 64 solicitudes a la
+vez y responde por identificador de solicitud, que es lo que pide el `sftp` de
+OpenSSH (64 pendientes por defecto, `-R`); las versiones anteriores respondían
+a un paquete antes de leer el siguiente. `READ` y `WRITE` se ejecutan en
+paralelo; dos solicitudes cuyos rangos de bytes se solapan en un mismo archivo,
+con una escritura entre ellas, se ejecutan en orden de llegada; y `OPEN`,
+`CLOSE`, `READDIR` y toda solicitud de metadatos esperan a lo que está en vuelo
+y se ejecutan solas, de modo que un `CLOSE` siempre sigue a las operaciones
+pendientes de su descriptor. Un cliente que encadena más rápido de lo que el
+servidor responde espera en la conexión, no en la memoria del servidor.
+
+Un recurso de **directorio** llega a los archivos del host sin un bloqueo
+propio y aprovecha toda la mejora. Un recurso respaldado por una **imagen**
+sigue detrás del único bloqueo que mantiene correcto su controlador, y sigue
+siendo serial. El banco `throughput_test.go` del repositorio lo mide
+(`FILESHARE_THROUGHPUT_MIB`): sftp con 64 solicitudes en vuelo y con 1, nfs
+sobre 1, 4 y 8 conexiones.

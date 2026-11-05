@@ -284,3 +284,22 @@ environ +25 % mesuré avec OpenSSH 10.3. Une session peut tenir au plus 1024
 fichiers et répertoires ouverts à la fois ; sur un partage de répertoire,
 chacun est un descripteur de l'hôte, et la limite empêche un utilisateur de
 tous les prendre.
+
+## Requêtes en vol {#requests-in-flight}
+
+Depuis go-filesystems/sftp v0.8.0, une session répond à jusqu'à 64 requêtes à
+la fois et répond par identifiant de requête, ce que demande le `sftp`
+d'OpenSSH (64 requêtes en attente par défaut, `-R`) ; les versions précédentes
+répondaient à un paquet avant de lire le suivant. `READ` et `WRITE` s'exécutent
+en parallèle ; deux requêtes dont les plages d'octets se recouvrent sur un même
+fichier, dont l'une est une écriture, s'exécutent dans l'ordre d'arrivée ; et
+`OPEN`, `CLOSE`, `READDIR` et toute requête de métadonnées attendent ce qui est
+en vol et s'exécutent seules, de sorte qu'un `CLOSE` suit toujours les
+opérations en attente sur son descripteur. Un client qui enchaîne plus vite que
+le serveur ne répond attend dans la connexion, pas dans la mémoire du serveur.
+
+Un partage de **répertoire** atteint les fichiers de l'hôte sans verrou propre
+et profite de tout le gain. Un partage adossé à une **image** reste derrière le
+verrou unique qui garde son pilote correct, et reste sériel. Le banc
+`throughput_test.go` du dépôt le mesure (`FILESHARE_THROUGHPUT_MIB`) : sftp avec
+64 requêtes en vol et avec 1, nfs sur 1, 4 et 8 connexions.

@@ -285,3 +285,21 @@ OpenSSH's `sftp` reads and writes up to 255 KiB per request instead of
 1024 open files and directories at once; on a directory share each is a
 descriptor of the host, and the bound keeps one user from spending all of
 them.
+
+## Requests in flight
+
+Since go-filesystems/sftp v0.8.0 a session answers up to 64 requests at once
+and replies by request id, which is what OpenSSH's `sftp` (64 outstanding by
+default, `-R`) asks of a server; earlier versions answered one packet before
+reading the next. `READ` and `WRITE` run in parallel; two requests whose byte
+ranges overlap on one file, with a write among them, run in arrival order; and
+`OPEN`, `CLOSE`, `READDIR` and every metadata request wait for what is in
+flight and run alone, so a `CLOSE` always follows the operations pending on its
+handle. A client that pipelines faster than the server answers waits in the
+connection, not in the server's memory.
+
+A **directory** share reaches the host's files with no lock of its own and
+gets the whole gain. A share backed by an **image** is still behind the one
+lock that keeps its driver correct, and stays serial. The `throughput_test.go`
+harness of the repository measures it (`FILESHARE_THROUGHPUT_MIB`): sftp with
+64 requests in flight and with 1, nfs over 1, 4 and 8 connections.
