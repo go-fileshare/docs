@@ -285,3 +285,22 @@ etwa +25 %, gemessen mit OpenSSH 10.3. Eine Sitzung darf höchstens 1024
 Dateien und Verzeichnisse gleichzeitig offen halten; bei einer
 Verzeichnisfreigabe ist jede ein Deskriptor des Hosts, und die Grenze hält
 einen Benutzer davon ab, alle zu verbrauchen.
+
+## Anfragen in Bearbeitung
+
+Seit go-filesystems/sftp v0.8.0 beantwortet eine Sitzung bis zu 64 Anfragen
+gleichzeitig und antwortet nach Anfrage-ID, was das `sftp` von OpenSSH verlangt
+(standardmäßig 64 ausstehende Anfragen, `-R`); frühere Versionen beantworteten
+ein Paket, bevor sie das nächste lasen. `READ` und `WRITE` laufen parallel; zwei
+Anfragen, deren Bytebereiche sich in derselben Datei überschneiden und von denen
+eine schreibt, laufen in der Reihenfolge ihres Eintreffens; und `OPEN`, `CLOSE`,
+`READDIR` sowie jede Metadatenanfrage warten auf alles, was gerade läuft, und
+laufen allein, sodass ein `CLOSE` immer auf die ausstehenden Operationen seines
+Handles folgt. Ein Client, der schneller Anfragen aneinanderreiht, als der
+Server antwortet, wartet in der Verbindung, nicht im Speicher des Servers.
+
+Eine **Verzeichnis**-Freigabe erreicht die Dateien des Hosts ohne eigene Sperre
+und profitiert vollständig. Eine **Image**-Freigabe bleibt hinter der einen
+Sperre, die ihren Treiber korrekt hält, und bleibt seriell. Der Messaufbau
+`throughput_test.go` im Repository misst es (`FILESHARE_THROUGHPUT_MIB`): sftp
+mit 64 und mit 1 Anfrage in Bearbeitung, nfs über 1, 4 und 8 Verbindungen.
