@@ -297,7 +297,7 @@ como mucho 1024 archivos y directorios abiertos a la vez; en un recurso
 compartido de directorio cada uno es un descriptor del host, y el límite
 impide que un usuario los gaste todos.
 
-## Solicitudes en vuelo
+## Solicitudes en vuelo {#requests-in-flight}
 
 Desde go-filesystems/sftp v0.8.0, una sesión responde hasta 64 solicitudes a la
 vez y responde por identificador de solicitud, que es lo que pide el `sftp` de

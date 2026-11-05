@@ -285,7 +285,7 @@ fichiers et répertoires ouverts à la fois ; sur un partage de répertoire,
 chacun est un descripteur de l'hôte, et la limite empêche un utilisateur de
 tous les prendre.
 
-## Requêtes en vol
+## Requêtes en vol {#requests-in-flight}
 
 Depuis go-filesystems/sftp v0.8.0, une session répond à jusqu'à 64 requêtes à
 la fois et répond par identifiant de requête, ce que demande le `sftp`

@@ -286,7 +286,7 @@ fileshare는 OpenSSH의 `limits@openssh.com`에 응답하므로(v0.25.0부터) O
 있습니다. 디렉터리 공유에서는 각각이 호스트의 디스크립터이며, 이 상한은 한
 사용자가 모두 소진하는 것을 막습니다.
 
-## 처리 중인 요청
+## 처리 중인 요청 {#requests-in-flight}
 
 go-filesystems/sftp v0.8.0부터 세션은 최대 64개의 요청을 동시에 처리하고 요청 ID로
 응답합니다. 이는 OpenSSH의 `sftp`가 요구하는 동작입니다(기본적으로 64개를 미응답 상태로

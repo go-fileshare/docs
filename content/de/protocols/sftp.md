@@ -286,7 +286,7 @@ Dateien und Verzeichnisse gleichzeitig offen halten; bei einer
 Verzeichnisfreigabe ist jede ein Deskriptor des Hosts, und die Grenze hält
 einen Benutzer davon ab, alle zu verbrauchen.
 
-## Anfragen in Bearbeitung
+## Anfragen in Bearbeitung {#requests-in-flight}
 
 Seit go-filesystems/sftp v0.8.0 beantwortet eine Sitzung bis zu 64 Anfragen
 gleichzeitig und antwortet nach Anfrage-ID, was das `sftp` von OpenSSH verlangt
