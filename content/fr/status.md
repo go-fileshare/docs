@@ -5,7 +5,7 @@ description: "La version de fileshare que décrivent ces pages, ce que chaque ve
 tags: [état, versions]
 ---
 
-Ces pages décrivent **fileshare v0.32.0**.
+Ces pages décrivent **fileshare v0.34.0**.
 
 {{< callout type="info" >}}
 **Vérifier un binaire de version avec `govulncheck -mode binary`**
@@ -74,6 +74,7 @@ Sous Go 1.27.2, `govulncheck` signale GO-2026-6809 comme atteignable dans filesh
 | v0.31.1 | sécurité : construit avec Go 1.27.3, qui corrige GO-2026-6809 (`crypto/x509` : `Certificate.Verify` ne rejetait pas des certificats intermédiaires compromis connus), signalé atteignable par `govulncheck`. `go install` exige désormais Go 1.27.3 et bascule vers lui tout seul. Mises à jour de dépendances |
 | v0.31.2 | les binaires de version sont construits avec `-w` au lieu de `-s -w` : la table des symboles est conservée, donc `govulncheck -mode binary` sur un binaire téléchargé est précis. Les binaires sont de 7 à 10 % plus gros. Aucun changement fonctionnel |
 | v0.32.0 | [se construit et sert sous `GOOS=wasip1 GOARCH=wasm`](../operations/build-tags/#as-a-webassembly-container-wasip1), comme conteneur WebAssembly dans le moteur go-wasmcontainers : WebDAV écoute via l'extension de sockets de WasmEdge (`stealthrocket/net/wasip1`). Étiquettes de construction `nosql,noopenpubkey` (complète, 11,5 Mo gzip) ou l'ensemble WebDAV seul (6,5 Mo gzip) ; la CI construit les deux. Pas de gestion des signaux sous wasip1 : l'hôte met fin au module |
+| v0.34.0 | sécurité, à la suite d'un audit : l'ouverture par SFTP d'un fichier d'un pilote sans accès aléatoire (hfsplus, ntfs, xfs, apfs, btrfs, zfs, ufs) ne lit rien ; les handles d'un même fichier partagent un instantané libéré à la fermeture du dernier ; un fichier de plus de 64 Mio (ou au-delà de 512 Mio d'instantanés) est refusé, alors que chaque handle gardait sa propre copie (64 handles sur un fichier de 8 Mio : 537 Mo alloués, désormais 8,4 Mo) ; go-filesystems/nfs v0.10.0 (un READ d'un tel fichier de plus de 64 Mio répond `NFS3ERR_IO`, un `SETATTR` partiel du propriétaire ne met plus l'autre identifiant à 0). Le portail v0.4.0 met fin à la session pour toute copie de son cookie à la déconnexion (page Administration, « Déconnexion ») |
 
 {{< callout type="warning" >}}
 **Passer à la v0.21.0**

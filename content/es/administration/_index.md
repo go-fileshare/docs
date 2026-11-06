@@ -156,6 +156,8 @@ servidores a la vez. Funciona en un navegador detrás de
 las personas con OpenID Connect y guarda sus tokens: uno por servidor, dirigido
 solo a ese servidor. El navegador nunca tiene ninguno.
 
+**Cierre de sesión (portal v0.4.0).** Una sesión va sellada en la cookie; la copia de una cookie hecha antes de un cierre de sesión la volvía a abrir hasta el final del inicio de sesión. Cada sesión tiene ahora un id; un cierre de sesión borra las cookies, anota el id en un conjunto de revocaciones que consulta cada petición, y revoca el refresh token en el proveedor (RFC 7009) cuando este anuncia un `revocation_endpoint`. Con `session { revocations_file = "/var/lib/portal/revoked" }` el cierre de sesión sobrevive a un reinicio como las sesiones (las copias del portal que comparten el archivo ven los cierres de las demás en un segundo); sin él, el conjunto está en memoria y un reinicio lo olvida. **Actualizar desde v0.3.x termina todas las sesiones.** Dos servidores con la misma audiencia (`resource`, `dav_resource` o `scope`) se rechazan al arrancar: un token para uno valdría en el otro.
+
 ```hcl
 # portal.hcl
 server "paris" {

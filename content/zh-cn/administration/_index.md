@@ -149,6 +149,8 @@ admin {
 让人员登录并保管其令牌：每个服务器一个，仅发给该
 服务器。浏览器从不持有令牌。
 
+**登出（门户 v0.4.0）。** 会话封存在 Cookie 中；登出之前复制的 Cookie 曾可在登录结束前重新打开会话。现在每个会话都有 ID：登出会清除 Cookie，把 ID 记入每个请求都会查询的吊销集合，并在提供者公布 `revocation_endpoint` 时吊销刷新令牌（RFC 7009）。设置 `session { revocations_file = "/var/lib/portal/revoked" }` 后，登出与会话一样能跨重启保留（共享该文件的门户副本会在一秒内看到彼此的登出）；不设置时集合在内存中，重启即忘。**从 v0.3.x 升级会结束所有会话。** 受众相同（`resource`、`dav_resource` 或 `scope`）的两台服务器在启动时被拒绝：给其中一台的令牌会在另一台上有效。
+
 ```hcl
 # portal.hcl
 server "paris" {
