@@ -150,6 +150,18 @@ server at once. It runs in a browser behind
 in with OpenID Connect and keeps their tokens: one per server, addressed to that
 server alone. The browser never holds one.
 
+**Logout (portal v0.4.0).** A session is sealed in the cookie, so a copy of the
+cookie taken before a logout used to open it again until the login's end. Every
+session now has an id, and a logout clears the cookies, puts the id in a
+revocation set that every request consults, and revokes the refresh token at the
+provider (RFC 7009) when it advertises a `revocation_endpoint`. Name the set's
+file in `session { revocations_file = "/var/lib/portal/revoked" }` so that a
+logout survives a restart as the sessions do (copies of the portal sharing the
+file see each other's logouts within a second); without it the set is in memory
+and a restart forgets it. **Upgrading from v0.3.x ends every session.** Two
+servers with the same audience (`resource`, `dav_resource` or `scope`) are now
+refused at start: a token for one would be valid at the other.
+
 ```hcl
 # portal.hcl
 server "paris" {
