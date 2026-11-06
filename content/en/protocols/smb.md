@@ -53,3 +53,7 @@ lists — is a new generation, and SMB's open connections are closed, so a
 revocation reaches the sessions already open. A share whose `allow` group has
 emptied is **not offered over SMB at all**: its empty `AllowUsers` would read as
 everyone.
+
+## Requests in flight
+
+Since go-filesystems/smb v0.8.1 a connection holds up to 32 requests in flight, and the server up to 128 across all connections. Replies are matched by `MessageId`. A frame holding one `READ` of a plain file runs beside others; compound chains (answered whole, in order), asynchronous requests and `WRITE` run alone. A frame has 30 s to arrive once it has begun. The mechanism is the shared module go-filesystems/inflight, also used by SFTP and NFS.

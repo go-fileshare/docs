@@ -100,3 +100,7 @@ incorrecto en una máquina en la que inician sesión varias personas: use
 Lo que transporta el certificado, la CRL que se exige y lo que se midió con un
 cliente Linux real (`MNT` sin cifrar, las trampas de `tlshd`) se encuentran en
 [NFS, con identidades a partir de certificados]({{< relref "/security/nfs-certificates.md" >}}).
+
+## Solicitudes en vuelo {#requests-in-flight}
+
+Desde go-filesystems/nfs v0.11.0, una conexión mantiene hasta 32 llamadas RPC en vuelo, y el servidor hasta 128 entre todas las conexiones, contadas antes de leer el registro. Las respuestas se asocian por xid. Las llamadas `READ` se ejecutan en paralelo (`ReadAt` bajo un bloqueo compartido del sistema de archivos); cualquier otra llamada, incluida `WRITE` porque abre su propio archivo en cada llamada, espera a las anteriores y se ejecuta sola. Un registro dispone de 30 s para llegar una vez iniciado. El mecanismo es el módulo compartido go-filesystems/inflight, que también usan SFTP y SMB.

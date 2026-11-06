@@ -98,3 +98,7 @@ serve "nfs" {
 证书携带什么、必需的 CRL，以及用真实 Linux 客户端实测
 得到的结果（明文的 `MNT`、`tlshd` 的陷阱），见
 [NFS 与基于证书的身份]({{< relref "/security/nfs-certificates.md" >}})。
+
+## 并发处理的请求 {#requests-in-flight}
+
+自 go-filesystems/nfs v0.11.0 起，一个连接最多同时处理 32 个 RPC 调用，整个服务器跨所有连接最多 128 个，该额度在读取记录之前占用。回复按 xid 匹配。`READ` 并行执行（在共享的文件系统锁下调用 `ReadAt`）；其他所有调用，包括每次调用都会打开自己文件的 `WRITE`，都要等待其前面的调用完成后单独执行。一条记录开始后须在 30 秒内到达。该机制是共享模块 go-filesystems/inflight，SFTP 和 SMB 也使用它。

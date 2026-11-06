@@ -285,8 +285,10 @@ OpenSSH 的 `sftp` 每个请求最多读写 255 KiB，而不是
 
 ## 并发处理的请求 {#requests-in-flight}
 
-自 go-filesystems/sftp v0.8.0 起,一个会话最多同时处理 64 个请求,并按请求 ID 回复,
-这正是 OpenSSH 的 `sftp`(默认同时挂起 64 个请求,`-R`)对服务器的要求;早先的版本
+自 go-filesystems/sftp v0.9.0 起,一个会话最多同时处理 64 个请求,回复按请求到达的顺序发出,
+因为 OpenSSH 的 `sftp`(默认同时挂起 64 个请求,`-R`)会拒绝恢复回复顺序被打乱的传输;
+自 v0.10.0 起该机制移入共享模块 go-filesystems/inflight,自 v0.10.1 起一个数据包开始后,
+其余部分须在 30 秒内到达(`WithPacketTimeout`)。早先的版本
 回复一个数据包后才读取下一个。`READ` 和 `WRITE` 并行执行;同一文件上字节范围重叠、
 且其中一个是写入的两个请求,按到达顺序执行;`OPEN`、`CLOSE`、`READDIR` 以及所有元数据
 请求会等待正在处理的请求完成后单独执行,因此 `CLOSE` 总是排在其句柄上待处理操作之后。

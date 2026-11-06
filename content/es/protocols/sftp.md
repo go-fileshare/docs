@@ -299,9 +299,13 @@ impide que un usuario los gaste todos.
 
 ## Solicitudes en vuelo {#requests-in-flight}
 
-Desde go-filesystems/sftp v0.8.0, una sesión responde hasta 64 solicitudes a la
-vez y responde por identificador de solicitud, que es lo que pide el `sftp` de
-OpenSSH (64 pendientes por defecto, `-R`); las versiones anteriores respondían
+Desde go-filesystems/sftp v0.9.0, una sesión responde hasta 64 solicitudes a la
+vez y las respuestas salen en el orden en que llegaron las solicitudes, porque
+el `sftp` de OpenSSH (64 pendientes por defecto, `-R`) se niega a reanudar una
+transferencia cuyas respuestas vuelven reordenadas; desde v0.10.0 el mecanismo
+vive en el módulo compartido go-filesystems/inflight, y desde v0.10.1 el resto
+de un paquete dispone de 30 s para llegar una vez iniciado
+(`WithPacketTimeout`). Las versiones anteriores respondían
 a un paquete antes de leer el siguiente. `READ` y `WRITE` se ejecutan en
 paralelo; dos solicitudes cuyos rangos de bytes se solapan en un mismo archivo,
 con una escritura entre ellas, se ejecutan en orden de llegada; y `OPEN`,

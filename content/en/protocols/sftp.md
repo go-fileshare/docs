@@ -288,9 +288,12 @@ them.
 
 ## Requests in flight
 
-Since go-filesystems/sftp v0.8.0 a session answers up to 64 requests at once
-and replies by request id, which is what OpenSSH's `sftp` (64 outstanding by
-default, `-R`) asks of a server; earlier versions answered one packet before
+Since go-filesystems/sftp v0.9.0 a session answers up to 64 requests at once
+and replies leave in the order the requests arrived, because OpenSSH's `sftp`
+(64 outstanding by default, `-R`) refuses to resume a transfer whose replies
+come back reordered; since v0.10.0 the mechanism lives in the shared module
+go-filesystems/inflight, and since v0.10.1 the rest of a packet has 30 s to
+arrive once it has begun (`WithPacketTimeout`). Earlier versions answered one packet before
 reading the next. `READ` and `WRITE` run in parallel; two requests whose byte
 ranges overlap on one file, with a write among them, run in arrival order; and
 `OPEN`, `CLOSE`, `READDIR` and every metadata request wait for what is in

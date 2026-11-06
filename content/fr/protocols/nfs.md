@@ -98,3 +98,7 @@ utilisez `sec=krb5` dans ce cas.
 Ce que transporte le certificat, la CRL exigée, et ce qui a été mesuré
 avec un vrai client Linux (`MNT` en clair, les pièges de `tlshd`) se trouvent dans
 [NFS, avec des identités issues de certificats]({{< relref "/security/nfs-certificates.md" >}}).
+
+## Requêtes en vol {#requests-in-flight}
+
+Depuis go-filesystems/nfs v0.11.0, une connexion garde jusqu'à 32 appels RPC en vol, et le serveur jusqu'à 128 sur l'ensemble des connexions, comptés avant la lecture de l'enregistrement. Les réponses sont associées par xid. Les appels `READ` s'exécutent en parallèle (`ReadAt` sous un verrou partagé du système de fichiers) ; tout autre appel, `WRITE` compris puisqu'il ouvre son propre fichier à chaque appel, attend ceux qui le précèdent et s'exécute seul. Un enregistrement dispose de 30 s pour arriver une fois commencé. Le mécanisme est le module partagé go-filesystems/inflight, que SFTP et SMB utilisent aussi.

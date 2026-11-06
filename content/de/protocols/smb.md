@@ -53,3 +53,7 @@ ist eine neue Generation, und die offenen SMB-Verbindungen werden geschlossen, s
 Widerruf die bereits offenen Sitzungen erreicht. Eine Freigabe, deren `allow`-Gruppe sich
 geleert hat, wird **überhaupt nicht über SMB angeboten**: Ihr leeres `AllowUsers` würde als
 „alle“ gelesen.
+
+## Anfragen in Bearbeitung {#requests-in-flight}
+
+Seit go-filesystems/smb v0.8.1 hält eine Verbindung bis zu 32 Anfragen gleichzeitig in Bearbeitung, der Server insgesamt bis zu 128 über alle Verbindungen. Antworten werden über die `MessageId` zugeordnet. Ein Frame mit einem einzelnen `READ` einer normalen Datei läuft neben anderen; Compound-Ketten (als Ganzes und der Reihe nach beantwortet), asynchrone Anfragen und `WRITE` laufen allein. Ein Frame hat 30 s Zeit, einzutreffen, sobald er begonnen hat. Der Mechanismus ist das gemeinsame Modul go-filesystems/inflight, das auch SFTP und NFS verwenden.

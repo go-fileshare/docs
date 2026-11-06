@@ -53,3 +53,7 @@ constitue une nouvelle génération, et les connexions SMB ouvertes sont fermée
 révocation atteint ainsi les sessions déjà ouvertes. Un partage dont le groupe `allow` s'est
 vidé **n'est pas du tout proposé en SMB** : son `AllowUsers` vide se lirait comme
 « tout le monde ».
+
+## Requêtes en vol {#requests-in-flight}
+
+Depuis go-filesystems/smb v0.8.1, une connexion garde jusqu'à 32 requêtes en vol, et le serveur jusqu'à 128 sur l'ensemble des connexions. Les réponses sont associées par `MessageId`. Une trame contenant un seul `READ` d'un fichier ordinaire s'exécute à côté d'autres ; les chaînes composées (traitées en bloc, dans l'ordre), les requêtes asynchrones et `WRITE` s'exécutent seules. Une trame dispose de 30 s pour arriver une fois commencée. Le mécanisme est le module partagé go-filesystems/inflight, que SFTP et NFS utilisent aussi.
