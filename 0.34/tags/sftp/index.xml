@@ -510,9 +510,12 @@ OpenSSH&amp;rsquo;s &lt;code&gt;sftp&lt;/code&gt; reads and writes up to 255 KiB
 descriptor of the host, and the bound keeps one user from spending all of
 them.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="requests-in-flight"&gt;Requests in flight&lt;span class="hx:absolute hx:-mt-20" id="requests-in-flight"&gt;&lt;/span&gt;
-&lt;a href="#requests-in-flight" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Since go-filesystems/sftp v0.8.0 a session answers up to 64 requests at once
-and replies by request id, which is what OpenSSH&amp;rsquo;s &lt;code&gt;sftp&lt;/code&gt; (64 outstanding by
-default, &lt;code&gt;-R&lt;/code&gt;) asks of a server; earlier versions answered one packet before
+&lt;a href="#requests-in-flight" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Since go-filesystems/sftp v0.9.0 a session answers up to 64 requests at once
+and replies leave in the order the requests arrived, because OpenSSH&amp;rsquo;s &lt;code&gt;sftp&lt;/code&gt;
+(64 outstanding by default, &lt;code&gt;-R&lt;/code&gt;) refuses to resume a transfer whose replies
+come back reordered; since v0.10.0 the mechanism lives in the shared module
+go-filesystems/inflight, and since v0.10.1 the rest of a packet has 30 s to
+arrive once it has begun (&lt;code&gt;WithPacketTimeout&lt;/code&gt;). Earlier versions answered one packet before
 reading the next. &lt;code&gt;READ&lt;/code&gt; and &lt;code&gt;WRITE&lt;/code&gt; run in parallel; two requests whose byte
 ranges overlap on one file, with a write among them, run in arrival order; and&lt;code&gt;OPEN&lt;/code&gt;, &lt;code&gt;CLOSE&lt;/code&gt;, &lt;code&gt;READDIR&lt;/code&gt; and every metadata request wait for what is in
 flight and run alone, so a &lt;code&gt;CLOSE&lt;/code&gt; always follows the operations pending on its

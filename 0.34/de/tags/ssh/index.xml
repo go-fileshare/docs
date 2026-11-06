@@ -502,8 +502,12 @@ Dateien und Verzeichnisse gleichzeitig offen halten; bei einer
 Verzeichnisfreigabe ist jede ein Deskriptor des Hosts, und die Grenze hält
 einen Benutzer davon ab, alle zu verbrauchen.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="requests-in-flight"&gt;Anfragen in Bearbeitung&lt;span class="hx:absolute hx:-mt-20" id="requests-in-flight"&gt;&lt;/span&gt;
-&lt;a href="#requests-in-flight" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Seit go-filesystems/sftp v0.8.0 beantwortet eine Sitzung bis zu 64 Anfragen
-gleichzeitig und antwortet nach Anfrage-ID, was das &lt;code&gt;sftp&lt;/code&gt; von OpenSSH verlangt(standardmäßig 64 ausstehende Anfragen, &lt;code&gt;-R&lt;/code&gt;); frühere Versionen beantworteten
+&lt;a href="#requests-in-flight" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Seit go-filesystems/sftp v0.9.0 beantwortet eine Sitzung bis zu 64 Anfragen
+gleichzeitig und die Antworten verlassen den Server in der Reihenfolge, in der
+die Anfragen eintrafen, weil das &lt;code&gt;sftp&lt;/code&gt; von OpenSSH (standardmäßig 64
+ausstehende Anfragen, &lt;code&gt;-R&lt;/code&gt;) eine Übertragung nicht fortsetzt, deren Antworten
+umsortiert zurückkommen; seit v0.10.0 liegt der Mechanismus im gemeinsamen Modul
+go-filesystems/inflight, und seit v0.10.1 hat der Rest eines Pakets 30 s Zeit,einzutreffen, sobald es begonnen hat (&lt;code&gt;WithPacketTimeout&lt;/code&gt;). Frühere Versionen beantworteten
 ein Paket, bevor sie das nächste lasen. &lt;code&gt;READ&lt;/code&gt; und &lt;code&gt;WRITE&lt;/code&gt; laufen parallel; zwei
 Anfragen, deren Bytebereiche sich in derselben Datei überschneiden und von denen
 eine schreibt, laufen in der Reihenfolge ihres Eintreffens; und &lt;code&gt;OPEN&lt;/code&gt;, &lt;code&gt;CLOSE&lt;/code&gt;,&lt;code&gt;READDIR&lt;/code&gt; sowie jede Metadatenanfrage warten auf alles, was gerade läuft, und

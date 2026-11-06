@@ -507,9 +507,11 @@ que le fournisseur a émis pour la personne avant un &lt;code&gt;session-revoked
 fichiers et répertoires ouverts à la fois ; sur un partage de répertoire,chacun est un descripteur de l&amp;rsquo;hôte, et la limite empêche un utilisateur de
 tous les prendre.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="requests-in-flight"&gt;Requêtes en vol&lt;span class="hx:absolute hx:-mt-20" id="requests-in-flight"&gt;&lt;/span&gt;
-&lt;a href="#requests-in-flight" class="subheading-anchor" aria-label="Lien permanent vers cette section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Depuis go-filesystems/sftp v0.8.0, une session répond à jusqu&amp;rsquo;à 64 requêtes à
-la fois et répond par identifiant de requête, ce que demande le &lt;code&gt;sftp&lt;/code&gt;
-d&amp;rsquo;OpenSSH (64 requêtes en attente par défaut, &lt;code&gt;-R&lt;/code&gt;) ; les versions précédentes
+&lt;a href="#requests-in-flight" class="subheading-anchor" aria-label="Lien permanent vers cette section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Depuis go-filesystems/sftp v0.9.0, une session répond à jusqu&amp;rsquo;à 64 requêtes à
+la fois et les réponses partent dans l&amp;rsquo;ordre d&amp;rsquo;arrivée des requêtes, car le&lt;code&gt;sftp&lt;/code&gt; d&amp;rsquo;OpenSSH (64 requêtes en attente par défaut, &lt;code&gt;-R&lt;/code&gt;) refuse de reprendre
+un transfert dont les réponses reviennent dans le désordre ; depuis v0.10.0, le
+mécanisme vit dans le module partagé go-filesystems/inflight, et depuis v0.10.1
+le reste d&amp;rsquo;un paquet dispose de 30 s pour arriver une fois commencé(&lt;code&gt;WithPacketTimeout&lt;/code&gt;). Les versions précédentes
 répondaient à un paquet avant de lire le suivant. &lt;code&gt;READ&lt;/code&gt; et &lt;code&gt;WRITE&lt;/code&gt; s&amp;rsquo;exécutent
 en parallèle ; deux requêtes dont les plages d&amp;rsquo;octets se recouvrent sur un même
 fichier, dont l&amp;rsquo;une est une écriture, s&amp;rsquo;exécutent dans l&amp;rsquo;ordre d&amp;rsquo;arrivée ; et&lt;code&gt;OPEN&lt;/code&gt;, &lt;code&gt;CLOSE&lt;/code&gt;, &lt;code&gt;READDIR&lt;/code&gt; et toute requête de métadonnées attendent ce qui est

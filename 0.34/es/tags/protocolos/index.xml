@@ -42,7 +42,9 @@ conexión; pero cualquier cosa que se retire —una persona, una credencial, las
 expandidas de un recurso compartido— es una nueva generación, y las conexiones SMB
 abiertas se cierran, de modo que una revocación alcanza también a las sesiones ya
 abiertas. Un recurso compartido cuyo grupo &lt;code&gt;allow&lt;/code&gt; se ha vaciado &lt;strong&gt;no se ofrece por
-SMB en absoluto&lt;/strong&gt;: su &lt;code&gt;AllowUsers&lt;/code&gt; vacío se interpretaría como «todo el mundo».&lt;/p&gt;</description></item><item><title>Lo que un protocolo puede prometer</title><link>https://go-fileshare.github.io/docs/0.34/es/protocols/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.34/es/protocols/</guid><description>
+SMB en absoluto&lt;/strong&gt;: su &lt;code&gt;AllowUsers&lt;/code&gt; vacío se interpretaría como «todo el mundo».&lt;/p&gt;
+&lt;h2 data-hextra-search-id="requests-in-flight"&gt;Solicitudes en vuelo&lt;span class="hx:absolute hx:-mt-20" id="requests-in-flight"&gt;&lt;/span&gt;
+&lt;a href="#requests-in-flight" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Desde go-filesystems/smb v0.8.1, una conexión mantiene hasta 32 solicitudes en vuelo, y el servidor hasta 128 entre todas las conexiones. Las respuestas se asocian por &lt;code&gt;MessageId&lt;/code&gt;. Una trama que contiene un único &lt;code&gt;READ&lt;/code&gt; de un archivo normal se ejecuta junto a otras; las cadenas compuestas (respondidas enteras y en orden), las solicitudes asíncronas y &lt;code&gt;WRITE&lt;/code&gt; se ejecutan solas. Una trama dispone de 30 s para llegar una vez iniciada. El mecanismo es el módulo compartido go-filesystems/inflight, que también usan SFTP y NFS.&lt;/p&gt;</description></item><item><title>Lo que un protocolo puede prometer</title><link>https://go-fileshare.github.io/docs/0.34/es/protocols/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.34/es/protocols/</guid><description>
 &lt;p&gt;Los protocolos no coinciden en lo único que necesita el control de acceso: si el
 servidor puede saber &lt;strong&gt;quién&lt;/strong&gt; pregunta.&lt;/p&gt;
 &lt;table&gt;
@@ -628,9 +630,12 @@ como mucho 1024 archivos y directorios abiertos a la vez; en un recurso
 compartido de directorio cada uno es un descriptor del host, y el límite
 impide que un usuario los gaste todos.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="requests-in-flight"&gt;Solicitudes en vuelo&lt;span class="hx:absolute hx:-mt-20" id="requests-in-flight"&gt;&lt;/span&gt;
-&lt;a href="#requests-in-flight" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Desde go-filesystems/sftp v0.8.0, una sesión responde hasta 64 solicitudes a la
-vez y responde por identificador de solicitud, que es lo que pide el &lt;code&gt;sftp&lt;/code&gt; de
-OpenSSH (64 pendientes por defecto, &lt;code&gt;-R&lt;/code&gt;); las versiones anteriores respondían
+&lt;a href="#requests-in-flight" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Desde go-filesystems/sftp v0.9.0, una sesión responde hasta 64 solicitudes a la
+vez y las respuestas salen en el orden en que llegaron las solicitudes, porque
+el &lt;code&gt;sftp&lt;/code&gt; de OpenSSH (64 pendientes por defecto, &lt;code&gt;-R&lt;/code&gt;) se niega a reanudar una
+transferencia cuyas respuestas vuelven reordenadas; desde v0.10.0 el mecanismo
+vive en el módulo compartido go-filesystems/inflight, y desde v0.10.1 el resto
+de un paquete dispone de 30 s para llegar una vez iniciado(&lt;code&gt;WithPacketTimeout&lt;/code&gt;). Las versiones anteriores respondían
 a un paquete antes de leer el siguiente. &lt;code&gt;READ&lt;/code&gt; y &lt;code&gt;WRITE&lt;/code&gt; se ejecutan en
 paralelo; dos solicitudes cuyos rangos de bytes se solapan en un mismo archivo,con una escritura entre ellas, se ejecutan en orden de llegada; y &lt;code&gt;OPEN&lt;/code&gt;,&lt;code&gt;CLOSE&lt;/code&gt;, &lt;code&gt;READDIR&lt;/code&gt; y toda solicitud de metadatos esperan a lo que está en vuelo
 y se ejecutan solas, de modo que un &lt;code&gt;CLOSE&lt;/code&gt; siempre sigue a las operaciones
@@ -916,4 +921,6 @@ certificado. Correcto en una estación de trabajo que usa una sola persona;incor
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;p&gt;Lo que transporta el certificado, la CRL que se exige y lo que se midió con un
-cliente Linux real (&lt;code&gt;MNT&lt;/code&gt; sin cifrar, las trampas de &lt;code&gt;tlshd&lt;/code&gt;) se encuentran en&lt;a href="https://go-fileshare.github.io/docs/0.34/es/security/nfs-certificates/"&gt;NFS, con identidades a partir de certificados&lt;/a&gt;.&lt;/p&gt;</description></item></channel></rss>
+cliente Linux real (&lt;code&gt;MNT&lt;/code&gt; sin cifrar, las trampas de &lt;code&gt;tlshd&lt;/code&gt;) se encuentran en&lt;a href="https://go-fileshare.github.io/docs/0.34/es/security/nfs-certificates/"&gt;NFS, con identidades a partir de certificados&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="requests-in-flight"&gt;Solicitudes en vuelo&lt;span class="hx:absolute hx:-mt-20" id="requests-in-flight"&gt;&lt;/span&gt;
+&lt;a href="#requests-in-flight" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Desde go-filesystems/nfs v0.11.1, una conexión mantiene hasta 32 llamadas RPC en vuelo, y el servidor hasta 128 entre todas las conexiones, contadas antes de leer el registro. Las respuestas se asocian por xid. Las llamadas &lt;code&gt;READ&lt;/code&gt; de una conexión se responden unas junto a otras; el &lt;code&gt;ReadAt&lt;/code&gt; del controlador de cada una solo se solapa si la exportación lo activa con &lt;code&gt;WithConcurrentReads&lt;/code&gt; (desactivado por defecto: en un directorio del host, donde &lt;code&gt;ReadAt&lt;/code&gt; es un único &lt;code&gt;pread&lt;/code&gt;, midió un 25 % más lento con 4 y 8 conexiones; compensa con un controlador cuyo &lt;code&gt;ReadAt&lt;/code&gt; es costoso); cualquier otra llamada, incluida &lt;code&gt;WRITE&lt;/code&gt; porque abre su propio archivo en cada llamada, espera a las anteriores y se ejecuta sola. Un registro dispone de 30 s para llegar una vez iniciado. El mecanismo es el módulo compartido go-filesystems/inflight, que también usan SFTP y SMB.&lt;/p&gt;</description></item></channel></rss>

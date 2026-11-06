@@ -225,4 +225,6 @@ data-copied-label="已复制！"
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;证书携带什么、必需的 CRL，以及用真实 Linux 客户端实测得到的结果（明文的 &lt;code&gt;MNT&lt;/code&gt;、&lt;code&gt;tlshd&lt;/code&gt; 的陷阱），见&lt;a href="https://go-fileshare.github.io/docs/0.34/zh-cn/security/nfs-certificates/"&gt;NFS 与基于证书的身份&lt;/a&gt;。&lt;/p&gt;</description></item></channel></rss>
+&lt;p&gt;证书携带什么、必需的 CRL，以及用真实 Linux 客户端实测得到的结果（明文的 &lt;code&gt;MNT&lt;/code&gt;、&lt;code&gt;tlshd&lt;/code&gt; 的陷阱），见&lt;a href="https://go-fileshare.github.io/docs/0.34/zh-cn/security/nfs-certificates/"&gt;NFS 与基于证书的身份&lt;/a&gt;。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="requests-in-flight"&gt;并发处理的请求&lt;span class="hx:absolute hx:-mt-20" id="requests-in-flight"&gt;&lt;/span&gt;
+&lt;a href="#requests-in-flight" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;自 go-filesystems/nfs v0.11.1 起，一个连接最多同时处理 32 个 RPC 调用，整个服务器跨所有连接最多 128 个，该额度在读取记录之前占用。回复按 xid 匹配。同一连接的 &lt;code&gt;READ&lt;/code&gt; 调用并排应答；各自对驱动的 &lt;code&gt;ReadAt&lt;/code&gt; 调用只有在导出通过 &lt;code&gt;WithConcurrentReads&lt;/code&gt; 选择启用时才会重叠（默认关闭：在主机目录上，&lt;code&gt;ReadAt&lt;/code&gt; 只是一次 &lt;code&gt;pread&lt;/code&gt;，在 4 个和 8 个连接下实测慢 25%；对 &lt;code&gt;ReadAt&lt;/code&gt; 开销大的驱动才划算）；其他所有调用，包括每次调用都会打开自己文件的 &lt;code&gt;WRITE&lt;/code&gt;，都要等待其前面的调用完成后单独执行。一条记录开始后须在 30 秒内到达。该机制是共享模块 go-filesystems/inflight，SFTP 和 SMB 也使用它。&lt;/p&gt;</description></item></channel></rss>

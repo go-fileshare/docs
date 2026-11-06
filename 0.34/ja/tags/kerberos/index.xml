@@ -114,4 +114,6 @@ data-copied-label="コピーしました！"
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;証明書が運ぶもの、必須となる CRL、そして実際の Linux クライアントで計測したこと(平文の &lt;code&gt;MNT&lt;/code&gt;、&lt;code&gt;tlshd&lt;/code&gt; の落とし穴)は、&lt;a href="https://go-fileshare.github.io/docs/0.34/ja/security/nfs-certificates/"&gt;証明書による ID を使う NFS&lt;/a&gt;にあります。&lt;/p&gt;</description></item></channel></rss>
+&lt;p&gt;証明書が運ぶもの、必須となる CRL、そして実際の Linux クライアントで計測したこと(平文の &lt;code&gt;MNT&lt;/code&gt;、&lt;code&gt;tlshd&lt;/code&gt; の落とし穴)は、&lt;a href="https://go-fileshare.github.io/docs/0.34/ja/security/nfs-certificates/"&gt;証明書による ID を使う NFS&lt;/a&gt;にあります。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="requests-in-flight"&gt;処理中のリクエスト&lt;span class="hx:absolute hx:-mt-20" id="requests-in-flight"&gt;&lt;/span&gt;
+&lt;a href="#requests-in-flight" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;go-filesystems/nfs v0.11.1 以降、1 つの接続は最大 32 個の RPC 呼び出しを同時に処理し、サーバー全体では全接続で最大 128 個です。この数はレコードを読む前に確保されます。応答は xid で対応付けられます。1 つの接続の &lt;code&gt;READ&lt;/code&gt; 呼び出しは互いに並んで応答されます。各ドライバーの &lt;code&gt;ReadAt&lt;/code&gt; が重なるのは、エクスポートが &lt;code&gt;WithConcurrentReads&lt;/code&gt; で有効にした場合だけです(既定では無効。ホストのディレクトリでは &lt;code&gt;ReadAt&lt;/code&gt; が &lt;code&gt;pread&lt;/code&gt; 1 回なので、4 接続と 8 接続で 25% 遅くなると計測されました。&lt;code&gt;ReadAt&lt;/code&gt; が高価なドライバーでは効果があります)。それ以外の呼び出しは、&lt;code&gt;WRITE&lt;/code&gt; も呼び出しごとに自身のファイルを開くため、先行する呼び出しを待って単独で実行されます。レコードは受信が始まってから 30 秒以内に届く必要があります。この仕組みは共有モジュール go-filesystems/inflight で、SFTP と SMB も使っています。&lt;/p&gt;</description></item></channel></rss>

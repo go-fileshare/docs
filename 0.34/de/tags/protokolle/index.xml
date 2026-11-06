@@ -38,7 +38,9 @@ einmal pro Tree Connect. Wer also neu ist und von einem &lt;a href="https://go-f
 gefunden wird, wird an Ort und Stelle hinzugefügt, einschließlich des laufenden SMB-Servers, ohne dass eine Verbindung
 angetastet wird; alles hingegen, was entzogen wird – eine Person, Zugangsdaten, die expandierten Listen einer Freigabe –,ist eine neue Generation, und die offenen SMB-Verbindungen werden geschlossen, sodass ein
 Widerruf die bereits offenen Sitzungen erreicht. Eine Freigabe, deren &lt;code&gt;allow&lt;/code&gt;-Gruppe sich
-geleert hat, wird &lt;strong&gt;überhaupt nicht über SMB angeboten&lt;/strong&gt;: Ihr leeres &lt;code&gt;AllowUsers&lt;/code&gt; würde als„alle“ gelesen.&lt;/p&gt;</description></item><item><title>Was ein Protokoll versprechen kann</title><link>https://go-fileshare.github.io/docs/0.34/de/protocols/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.34/de/protocols/</guid><description>
+geleert hat, wird &lt;strong&gt;überhaupt nicht über SMB angeboten&lt;/strong&gt;: Ihr leeres &lt;code&gt;AllowUsers&lt;/code&gt; würde als„alle“ gelesen.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="requests-in-flight"&gt;Anfragen in Bearbeitung&lt;span class="hx:absolute hx:-mt-20" id="requests-in-flight"&gt;&lt;/span&gt;
+&lt;a href="#requests-in-flight" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Seit go-filesystems/smb v0.8.1 hält eine Verbindung bis zu 32 Anfragen gleichzeitig in Bearbeitung, der Server insgesamt bis zu 128 über alle Verbindungen. Antworten werden über die &lt;code&gt;MessageId&lt;/code&gt; zugeordnet. Ein Frame mit einem einzelnen &lt;code&gt;READ&lt;/code&gt; einer normalen Datei läuft neben anderen; Compound-Ketten (als Ganzes und der Reihe nach beantwortet), asynchrone Anfragen und &lt;code&gt;WRITE&lt;/code&gt; laufen allein. Ein Frame hat 30 s Zeit, einzutreffen, sobald er begonnen hat. Der Mechanismus ist das gemeinsame Modul go-filesystems/inflight, das auch SFTP und NFS verwenden.&lt;/p&gt;</description></item><item><title>Was ein Protokoll versprechen kann</title><link>https://go-fileshare.github.io/docs/0.34/de/protocols/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.34/de/protocols/</guid><description>
 &lt;p&gt;Die Protokolle sind sich in dem einen Punkt nicht einig, den die Zugriffskontrolle braucht: ob
 der Server erkennen kann, &lt;strong&gt;wer&lt;/strong&gt; anfragt.&lt;/p&gt;
 &lt;table&gt;
@@ -588,8 +590,12 @@ Dateien und Verzeichnisse gleichzeitig offen halten; bei einer
 Verzeichnisfreigabe ist jede ein Deskriptor des Hosts, und die Grenze hält
 einen Benutzer davon ab, alle zu verbrauchen.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="requests-in-flight"&gt;Anfragen in Bearbeitung&lt;span class="hx:absolute hx:-mt-20" id="requests-in-flight"&gt;&lt;/span&gt;
-&lt;a href="#requests-in-flight" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Seit go-filesystems/sftp v0.8.0 beantwortet eine Sitzung bis zu 64 Anfragen
-gleichzeitig und antwortet nach Anfrage-ID, was das &lt;code&gt;sftp&lt;/code&gt; von OpenSSH verlangt(standardmäßig 64 ausstehende Anfragen, &lt;code&gt;-R&lt;/code&gt;); frühere Versionen beantworteten
+&lt;a href="#requests-in-flight" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Seit go-filesystems/sftp v0.9.0 beantwortet eine Sitzung bis zu 64 Anfragen
+gleichzeitig und die Antworten verlassen den Server in der Reihenfolge, in der
+die Anfragen eintrafen, weil das &lt;code&gt;sftp&lt;/code&gt; von OpenSSH (standardmäßig 64
+ausstehende Anfragen, &lt;code&gt;-R&lt;/code&gt;) eine Übertragung nicht fortsetzt, deren Antworten
+umsortiert zurückkommen; seit v0.10.0 liegt der Mechanismus im gemeinsamen Modul
+go-filesystems/inflight, und seit v0.10.1 hat der Rest eines Pakets 30 s Zeit,einzutreffen, sobald es begonnen hat (&lt;code&gt;WithPacketTimeout&lt;/code&gt;). Frühere Versionen beantworteten
 ein Paket, bevor sie das nächste lasen. &lt;code&gt;READ&lt;/code&gt; und &lt;code&gt;WRITE&lt;/code&gt; laufen parallel; zwei
 Anfragen, deren Bytebereiche sich in derselben Datei überschneiden und von denen
 eine schreibt, laufen in der Reihenfolge ihres Eintreffens; und &lt;code&gt;OPEN&lt;/code&gt;, &lt;code&gt;CLOSE&lt;/code&gt;,&lt;code&gt;READDIR&lt;/code&gt; sowie jede Metadatenanfrage warten auf alles, was gerade läuft, und
@@ -862,4 +868,6 @@ einem Arbeitsplatzrechner, den eine Person nutzt; falsch auf einer Maschine, an 
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;p&gt;Was das Zertifikat enthält, die erforderliche Sperrliste (CRL) und was mit einem
-echten Linux-Client gemessen wurde (&lt;code&gt;MNT&lt;/code&gt; unverschlüsselt, die Fallstricke von &lt;code&gt;tlshd&lt;/code&gt;), steht in&lt;a href="https://go-fileshare.github.io/docs/0.34/de/security/nfs-certificates/"&gt;NFS, mit Identitäten aus Zertifikaten&lt;/a&gt;.&lt;/p&gt;</description></item></channel></rss>
+echten Linux-Client gemessen wurde (&lt;code&gt;MNT&lt;/code&gt; unverschlüsselt, die Fallstricke von &lt;code&gt;tlshd&lt;/code&gt;), steht in&lt;a href="https://go-fileshare.github.io/docs/0.34/de/security/nfs-certificates/"&gt;NFS, mit Identitäten aus Zertifikaten&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="requests-in-flight"&gt;Anfragen in Bearbeitung&lt;span class="hx:absolute hx:-mt-20" id="requests-in-flight"&gt;&lt;/span&gt;
+&lt;a href="#requests-in-flight" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Seit go-filesystems/nfs v0.11.1 hält eine Verbindung bis zu 32 RPC-Aufrufe gleichzeitig in Bearbeitung, der Server insgesamt bis zu 128 über alle Verbindungen, gezählt, bevor der Record gelesen wird. Antworten werden über die xid zugeordnet. &lt;code&gt;READ&lt;/code&gt;-Aufrufe einer Verbindung werden nebeneinander beantwortet; das &lt;code&gt;ReadAt&lt;/code&gt; des Treibers überlappt dabei nur, wenn der Export sich mit &lt;code&gt;WithConcurrentReads&lt;/code&gt; dafür entscheidet (standardmäßig aus: auf einem Host-Verzeichnis, wo &lt;code&gt;ReadAt&lt;/code&gt; ein einzelnes &lt;code&gt;pread&lt;/code&gt; ist, war es über 4 und 8 Verbindungen 25 % langsamer; es lohnt sich für einen Treiber mit teurem &lt;code&gt;ReadAt&lt;/code&gt;); jeder andere Aufruf, auch &lt;code&gt;WRITE&lt;/code&gt;, weil es bei jedem Aufruf eine eigene Datei öffnet, wartet auf die vorangehenden Aufrufe und läuft allein. Ein Record hat 30 s Zeit, einzutreffen, sobald er begonnen hat. Der Mechanismus ist das gemeinsame Modul go-filesystems/inflight, das auch SFTP und SMB verwenden.&lt;/p&gt;</description></item></channel></rss>

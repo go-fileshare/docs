@@ -43,4 +43,6 @@ touched; but anything taken away — a person, a credential, a share&amp;rsquo;s
 lists — is a new generation, and SMB&amp;rsquo;s open connections are closed, so a
 revocation reaches the sessions already open. A share whose &lt;code&gt;allow&lt;/code&gt; group has
 emptied is &lt;strong&gt;not offered over SMB at all&lt;/strong&gt;: its empty &lt;code&gt;AllowUsers&lt;/code&gt; would read as
-everyone.&lt;/p&gt;</description></item></channel></rss>
+everyone.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="requests-in-flight"&gt;Requests in flight&lt;span class="hx:absolute hx:-mt-20" id="requests-in-flight"&gt;&lt;/span&gt;
+&lt;a href="#requests-in-flight" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Since go-filesystems/smb v0.8.1 a connection holds up to 32 requests in flight, and the server up to 128 across all connections. Replies are matched by &lt;code&gt;MessageId&lt;/code&gt;. A frame holding one &lt;code&gt;READ&lt;/code&gt; of a plain file runs beside others; compound chains (answered whole, in order), asynchronous requests and &lt;code&gt;WRITE&lt;/code&gt; run alone. A frame has 30 s to arrive once it has begun. The mechanism is the shared module go-filesystems/inflight, also used by SFTP and NFS.&lt;/p&gt;</description></item></channel></rss>
