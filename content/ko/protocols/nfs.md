@@ -97,3 +97,7 @@ serve "nfs" {
 인증서가 담는 것, 필수인 CRL, 실제 Linux 클라이언트로 측정한 내용(평문 `MNT`,
 `tlshd`의 함정)은
 [인증서 기반 ID를 쓰는 NFS]({{< relref "/security/nfs-certificates.md" >}})에 있습니다.
+
+## 처리 중인 요청 {#requests-in-flight}
+
+go-filesystems/nfs v0.11.1부터 하나의 연결은 최대 32개의 RPC 호출을 동시에 처리하며, 서버 전체로는 모든 연결을 합쳐 최대 128개입니다. 이 수는 레코드를 읽기 전에 확보됩니다. 응답은 xid로 짝지어집니다. 한 연결의 `READ` 호출은 서로 나란히 응답됩니다. 각 드라이버의 `ReadAt`은 내보내기가 `WithConcurrentReads`로 선택한 경우에만 겹칩니다(기본값은 꺼짐. `ReadAt`이 `pread` 한 번인 호스트 디렉터리에서는 4개와 8개 연결에서 25% 더 느리게 측정되었으며, `ReadAt`이 비싼 드라이버에서는 이득이 있습니다). 그 밖의 모든 호출은, 호출마다 자체 파일을 여는 `WRITE`도 포함하여, 앞선 호출을 기다린 뒤 단독으로 실행됩니다. 레코드는 시작된 뒤 30초 안에 도착해야 합니다. 이 메커니즘은 공유 모듈 go-filesystems/inflight이며 SFTP와 SMB도 사용합니다.

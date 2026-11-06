@@ -98,3 +98,7 @@ use `sec=krb5` there.
 What the certificate carries, the CRL that is required, and what was measured
 with a real Linux client (`MNT` in the clear, `tlshd`'s pitfalls) are in
 [NFS, with identities from certificates]({{< relref "/security/nfs-certificates.md" >}}).
+
+## Requests in flight
+
+Since go-filesystems/nfs v0.11.1 a connection holds up to 32 RPC calls in flight, and the server up to 128 across all connections, taken before the record is read. Replies are matched by xid. `READ` calls of a connection are answered beside each other; the driver's `ReadAt` of each overlaps only if the export opts in with `WithConcurrentReads` (off by default: on a host directory, where `ReadAt` is one `pread`, it measured 25% slower over 4 and 8 connections; it pays for a driver whose `ReadAt` is expensive); every other call, `WRITE` included because it opens its own file each time, waits for the calls before it and runs alone. A record has 30 s to arrive once it has begun. The mechanism is the shared module go-filesystems/inflight, also used by SFTP and SMB.

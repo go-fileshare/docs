@@ -55,3 +55,7 @@ expandidas de un recurso compartido— es una nueva generación, y las conexione
 abiertas se cierran, de modo que una revocación alcanza también a las sesiones ya
 abiertas. Un recurso compartido cuyo grupo `allow` se ha vaciado **no se ofrece por
 SMB en absoluto**: su `AllowUsers` vacío se interpretaría como «todo el mundo».
+
+## Solicitudes en vuelo {#requests-in-flight}
+
+Desde go-filesystems/smb v0.8.1, una conexión mantiene hasta 32 solicitudes en vuelo, y el servidor hasta 128 entre todas las conexiones. Las respuestas se asocian por `MessageId`. Una trama que contiene un único `READ` de un archivo normal se ejecuta junto a otras; las cadenas compuestas (respondidas enteras y en orden), las solicitudes asíncronas y `WRITE` se ejecutan solas. Una trama dispone de 30 s para llegar una vez iniciada. El mecanismo es el módulo compartido go-filesystems/inflight, que también usan SFTP y NFS.

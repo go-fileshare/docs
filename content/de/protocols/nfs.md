@@ -98,3 +98,7 @@ verwenden Sie dort `sec=krb5`.
 Was das Zertifikat enthält, die erforderliche Sperrliste (CRL) und was mit einem
 echten Linux-Client gemessen wurde (`MNT` unverschlüsselt, die Fallstricke von `tlshd`), steht in
 [NFS, mit Identitäten aus Zertifikaten]({{< relref "/security/nfs-certificates.md" >}}).
+
+## Anfragen in Bearbeitung {#requests-in-flight}
+
+Seit go-filesystems/nfs v0.11.1 hält eine Verbindung bis zu 32 RPC-Aufrufe gleichzeitig in Bearbeitung, der Server insgesamt bis zu 128 über alle Verbindungen, gezählt, bevor der Record gelesen wird. Antworten werden über die xid zugeordnet. `READ`-Aufrufe einer Verbindung werden nebeneinander beantwortet; das `ReadAt` des Treibers überlappt dabei nur, wenn der Export sich mit `WithConcurrentReads` dafür entscheidet (standardmäßig aus: auf einem Host-Verzeichnis, wo `ReadAt` ein einzelnes `pread` ist, war es über 4 und 8 Verbindungen 25 % langsamer; es lohnt sich für einen Treiber mit teurem `ReadAt`); jeder andere Aufruf, auch `WRITE`, weil es bei jedem Aufruf eine eigene Datei öffnet, wartet auf die vorangehenden Aufrufe und läuft allein. Ein Record hat 30 s Zeit, einzutreffen, sobald er begonnen hat. Der Mechanismus ist das gemeinsame Modul go-filesystems/inflight, das auch SFTP und SMB verwenden.

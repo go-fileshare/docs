@@ -288,9 +288,13 @@ einen Benutzer davon ab, alle zu verbrauchen.
 
 ## Anfragen in Bearbeitung {#requests-in-flight}
 
-Seit go-filesystems/sftp v0.8.0 beantwortet eine Sitzung bis zu 64 Anfragen
-gleichzeitig und antwortet nach Anfrage-ID, was das `sftp` von OpenSSH verlangt
-(standardmäßig 64 ausstehende Anfragen, `-R`); frühere Versionen beantworteten
+Seit go-filesystems/sftp v0.9.0 beantwortet eine Sitzung bis zu 64 Anfragen
+gleichzeitig und die Antworten verlassen den Server in der Reihenfolge, in der
+die Anfragen eintrafen, weil das `sftp` von OpenSSH (standardmäßig 64
+ausstehende Anfragen, `-R`) eine Übertragung nicht fortsetzt, deren Antworten
+umsortiert zurückkommen; seit v0.10.0 liegt der Mechanismus im gemeinsamen Modul
+go-filesystems/inflight, und seit v0.10.1 hat der Rest eines Pakets 30 s Zeit,
+einzutreffen, sobald es begonnen hat (`WithPacketTimeout`). Frühere Versionen beantworteten
 ein Paket, bevor sie das nächste lasen. `READ` und `WRITE` laufen parallel; zwei
 Anfragen, deren Bytebereiche sich in derselben Datei überschneiden und von denen
 eine schreibt, laufen in der Reihenfolge ihres Eintreffens; und `OPEN`, `CLOSE`,
