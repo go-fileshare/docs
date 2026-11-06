@@ -1,5 +1,5 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – 状态</title><link>https://go-fileshare.github.io/docs/0.34/zh-cn/tags/%E7%8A%B6%E6%80%81/</link><description>Recent content in 状态 on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><atom:link href="https://go-fileshare.github.io/docs/0.34/zh-cn/tags/%E7%8A%B6%E6%80%81/index.xml" rel="self" type="application/rss+xml"/><item><title>状态</title><link>https://go-fileshare.github.io/docs/0.34/zh-cn/status/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.34/zh-cn/status/</guid><description>
-&lt;p&gt;本文档描述的是 &lt;strong&gt;fileshare v0.32.0&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;本文档描述的是 &lt;strong&gt;fileshare v0.34.0&lt;/strong&gt;。&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
@@ -218,6 +218,10 @@ data-copied-label="已复制！"
 &lt;tr&gt;
 &lt;td&gt;v0.32.0&lt;/td&gt;
 &lt;td&gt;&lt;a href="../operations/build-tags/#as-a-webassembly-container-wasip1"&gt;可在 &lt;code&gt;GOOS=wasip1 GOARCH=wasm&lt;/code&gt; 上构建并提供服务&lt;/a&gt;，作为 go-wasmcontainers 引擎中的 WebAssembly 容器：WebDAV 通过 WasmEdge 套接字扩展 (&lt;code&gt;stealthrocket/net/wasip1&lt;/code&gt;) 监听。构建标签为 &lt;code&gt;nosql,noopenpubkey&lt;/code&gt;（完整，gzip 后 11.5 MB）或仅 WebDAV 的标签集（gzip 后 6.5 MB）；CI 同时构建两者。wasip1 上不处理信号：由宿主结束该模块&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.34.0&lt;/td&gt;
+&lt;td&gt;安全，来自一次审计：通过 SFTP 打开无随机访问驱动（hfsplus、ntfs、xfs、apfs、btrfs、zfs、ufs）上的文件不再读取任何内容；同一文件的句柄共享一份在最后一个关闭时释放的快照；超过 64 MiB（或快照总量超过 512 MiB）的文件会被拒绝，而此前每个句柄都持有整份副本（8 MiB 文件上 64 个句柄：原先分配 537 MB，现为 8.4 MB）；go-filesystems/nfs v0.10.0（对此类文件超过 64 MiB 的 READ 返回 &lt;code&gt;NFS3ERR_IO&lt;/code&gt;，部分 &lt;code&gt;SETATTR&lt;/code&gt; 所有者不再把另一个 id 置为 0）。门户 v0.4.0 在登出时对其 Cookie 的所有副本结束会话（“管理”页的“登出”）&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;

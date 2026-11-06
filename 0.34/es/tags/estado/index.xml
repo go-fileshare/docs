@@ -1,5 +1,5 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Estado</title><link>https://go-fileshare.github.io/docs/0.34/es/tags/estado/</link><description>Recent content in Estado on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>es</language><atom:link href="https://go-fileshare.github.io/docs/0.34/es/tags/estado/index.xml" rel="self" type="application/rss+xml"/><item><title>Estado</title><link>https://go-fileshare.github.io/docs/0.34/es/status/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.34/es/status/</guid><description>
-&lt;p&gt;Estas páginas describen &lt;strong&gt;fileshare v0.32.0&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;Estas páginas describen &lt;strong&gt;fileshare v0.34.0&lt;/strong&gt;.&lt;/p&gt;
 &lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
 &lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
@@ -218,6 +218,10 @@ data-copied-label="¡Copiado!"
 &lt;tr&gt;
 &lt;td&gt;v0.32.0&lt;/td&gt;
 &lt;td&gt;&lt;a href="../operations/build-tags/#as-a-webassembly-container-wasip1"&gt;se compila y sirve en &lt;code&gt;GOOS=wasip1 GOARCH=wasm&lt;/code&gt;&lt;/a&gt;, como contenedor WebAssembly en el motor go-wasmcontainers: WebDAV escucha mediante la extensión de sockets de WasmEdge (&lt;code&gt;stealthrocket/net/wasip1&lt;/code&gt;). Etiquetas de compilación &lt;code&gt;nosql,noopenpubkey&lt;/code&gt; (completa, 11,5 MB gzip) o el conjunto solo WebDAV (6,5 MB gzip); la CI compila ambas. Sin gestión de señales en wasip1: el anfitrión termina el módulo&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.34.0&lt;/td&gt;
+&lt;td&gt;seguridad, a raíz de una auditoría: abrir por SFTP un archivo de un controlador sin acceso aleatorio (hfsplus, ntfs, xfs, apfs, btrfs, zfs, ufs) no lee nada; los handles de un mismo archivo comparten una instantánea que se libera al cerrar el último; un archivo de más de 64 MiB (o más allá de 512 MiB de instantáneas) se rechaza, cuando antes cada handle guardaba su propia copia (64 handles sobre un archivo de 8 MiB: 537 MB reservados, ahora 8,4 MB); go-filesystems/nfs v0.10.0 (un READ de un archivo así de más de 64 MiB responde &lt;code&gt;NFS3ERR_IO&lt;/code&gt;; un &lt;code&gt;SETATTR&lt;/code&gt; parcial del propietario ya no pone el otro id a 0). El portal v0.4.0 termina la sesión para toda copia de su cookie al cerrar sesión (página Administración, «Cierre de sesión»)&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
