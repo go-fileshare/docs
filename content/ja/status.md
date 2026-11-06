@@ -5,7 +5,7 @@ description: "このページが説明している fileshare のリリース、�
 tags: [ステータス, リリース]
 ---
 
-このページは **fileshare v0.32.0** について説明しています。
+このページは **fileshare v0.34.0** について説明しています。
 
 {{< callout type="info" >}}
 **リリースバイナリを `govulncheck -mode binary` で確認する**
@@ -74,6 +74,7 @@ Go 1.27.2 では、`govulncheck` が fileshare で GO-2026-6809 に到達可能�
 | v0.31.1 | セキュリティ: GO-2026-6809（`crypto/x509`: `Certificate.Verify` が既知の侵害された中間証明書を拒否していなかった）を修正する Go 1.27.3 でビルド。`govulncheck` が到達可能と報告した。`go install` は Go 1.27.3 を要求し、自動的に切り替わる。依存関係の更新 |
 | v0.31.2 | リリースバイナリを `-s -w` ではなく `-w` でビルド。シンボルテーブルが残るため、ダウンロードしたバイナリに対する `govulncheck -mode binary` が正確になる。バイナリは 7〜10 % 大きくなる。機能の変更なし |
 | v0.32.0 | [`GOOS=wasip1 GOARCH=wasm` でビルドして提供できる](../operations/build-tags/#as-a-webassembly-container-wasip1)ようになった。go-wasmcontainers エンジン上の WebAssembly コンテナとして、WebDAV が WasmEdge のソケット拡張 (`stealthrocket/net/wasip1`) 経由で待ち受ける。ビルドタグは `nosql,noopenpubkey` (フル、gzip で 11.5 MB) または WebDAV のみのセット (gzip で 6.5 MB)。CI は両方をビルドする。wasip1 ではシグナル処理なし: ホストがモジュールを終了させる |
+| v0.34.0 | 監査に基づくセキュリティ修正: ランダムアクセスのないドライバー (hfsplus、ntfs、xfs、apfs、btrfs、zfs、ufs) 上のファイルを SFTP で開いても何も読まない。同じファイルのハンドルは最後に閉じたときに解放される 1 つのスナップショットを共有する。64 MiB を超えるファイル (またはスナップショットの合計が 512 MiB を超える場合) は、各ハンドルがファイル全体の複製を持つ代わりに拒否される (8 MiB のファイルに 64 ハンドル: 537 MB 確保されていたのが 8.4 MB に)。go-filesystems/nfs v0.10.0 (そのようなファイルへの 64 MiB 超の READ は `NFS3ERR_IO`、所有者の部分的な `SETATTR` がもう一方の ID を 0 にしなくなった)。ポータル v0.4.0 はログアウト時に、そのクッキーのすべての複製に対してセッションを終了する (「管理」ページの「ログアウト」) |
 
 {{< callout type="warning" >}}
 **v0.21.0 へのアップグレード**

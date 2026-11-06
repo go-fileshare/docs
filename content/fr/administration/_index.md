@@ -155,6 +155,8 @@ les serveurs à la fois. Elle tourne dans un navigateur derrière
 les personnes en OpenID Connect et garde leurs jetons : un par serveur, adressé
 à ce seul serveur. Le navigateur n'en détient jamais.
 
+**Déconnexion (portail v0.4.0).** Une session est scellée dans le cookie ; la copie d'un cookie faite avant une déconnexion la rouvrait jusqu'à la fin de la connexion. Chaque session a désormais un identifiant ; une déconnexion efface les cookies, inscrit l'identifiant dans un ensemble de révocations que chaque requête consulte, et révoque le jeton de rafraîchissement chez le fournisseur (RFC 7009) quand il annonce un `revocation_endpoint`. Avec `session { revocations_file = "/var/lib/portal/revoked" }` la déconnexion survit à un redémarrage comme les sessions (les copies du portail qui partagent le fichier voient les déconnexions des autres en une seconde) ; sans lui, l'ensemble est en mémoire et un redémarrage l'oublie. **Passer de v0.3.x met fin à toutes les sessions.** Deux serveurs de même audience (`resource`, `dav_resource` ou `scope`) sont refusés au démarrage : un jeton pour l'un vaudrait pour l'autre.
+
 ```hcl
 # portal.hcl
 server "paris" {

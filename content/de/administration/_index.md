@@ -156,6 +156,8 @@ zugleich. Sie läuft im Browser hinter
 OpenID Connect anmeldet und ihre Tokens verwahrt: eines je Server, an diesen
 Server allein adressiert. Der Browser hält nie eines.
 
+**Abmeldung (Portal v0.4.0).** Eine Sitzung ist im Cookie versiegelt; die Kopie eines Cookies, die vor einer Abmeldung gemacht wurde, öffnete sie bis zum Ende der Anmeldung wieder. Jede Sitzung hat jetzt eine Kennung; eine Abmeldung löscht die Cookies, trägt die Kennung in eine Widerrufsmenge ein, die jede Anfrage prüft, und widerruft das Refresh-Token beim Provider (RFC 7009), wenn dieser einen `revocation_endpoint` anbietet. Mit `session { revocations_file = "/var/lib/portal/revoked" }` überlebt eine Abmeldung einen Neustart wie die Sitzungen selbst (Portal-Instanzen mit derselben Datei sehen die Abmeldungen der anderen innerhalb einer Sekunde); ohne sie liegt die Menge im Speicher, und ein Neustart vergisst sie. **Das Upgrade von v0.3.x beendet alle Sitzungen.** Zwei Server mit derselben Audience (`resource`, `dav_resource` oder `scope`) werden beim Start abgelehnt: Ein Token für den einen wäre beim anderen gültig.
+
 ```hcl
 # portal.hcl
 server "paris" {

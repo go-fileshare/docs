@@ -5,7 +5,7 @@ description: "Qué versión de fileshare describen estas páginas, qué añadió
 tags: [estado, versiones]
 ---
 
-Estas páginas describen **fileshare v0.32.0**.
+Estas páginas describen **fileshare v0.34.0**.
 
 {{< callout type="info" >}}
 **Comprobar un binario de versión con `govulncheck -mode binary`**
@@ -74,6 +74,7 @@ Con Go 1.27.2, `govulncheck` señala GO-2026-6809 como alcanzable en fileshare: 
 | v0.31.1 | seguridad: compilado con Go 1.27.3, que corrige GO-2026-6809 (`crypto/x509`: `Certificate.Verify` no rechazaba certificados intermedios comprometidos conocidos), que `govulncheck` señala como alcanzable. `go install` ahora exige Go 1.27.3 y cambia a él por sí solo. Actualizaciones de dependencias |
 | v0.31.2 | los binarios de versión se compilan con `-w` en lugar de `-s -w`: se conserva la tabla de símbolos, de modo que `govulncheck -mode binary` sobre un binario descargado es preciso. Los binarios son entre un 7 y un 10 % más grandes. Sin cambios funcionales |
 | v0.32.0 | [se compila y sirve en `GOOS=wasip1 GOARCH=wasm`](../operations/build-tags/#as-a-webassembly-container-wasip1), como contenedor WebAssembly en el motor go-wasmcontainers: WebDAV escucha mediante la extensión de sockets de WasmEdge (`stealthrocket/net/wasip1`). Etiquetas de compilación `nosql,noopenpubkey` (completa, 11,5 MB gzip) o el conjunto solo WebDAV (6,5 MB gzip); la CI compila ambas. Sin gestión de señales en wasip1: el anfitrión termina el módulo |
+| v0.34.0 | seguridad, a raíz de una auditoría: abrir por SFTP un archivo de un controlador sin acceso aleatorio (hfsplus, ntfs, xfs, apfs, btrfs, zfs, ufs) no lee nada; los handles de un mismo archivo comparten una instantánea que se libera al cerrar el último; un archivo de más de 64 MiB (o más allá de 512 MiB de instantáneas) se rechaza, cuando antes cada handle guardaba su propia copia (64 handles sobre un archivo de 8 MiB: 537 MB reservados, ahora 8,4 MB); go-filesystems/nfs v0.10.0 (un READ de un archivo así de más de 64 MiB responde `NFS3ERR_IO`; un `SETATTR` parcial del propietario ya no pone el otro id a 0). El portal v0.4.0 termina la sesión para toda copia de su cookie al cerrar sesión (página Administración, «Cierre de sesión») |
 
 {{< callout type="warning" >}}
 **Actualizar a la v0.21.0**
