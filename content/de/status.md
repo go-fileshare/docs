@@ -5,7 +5,7 @@ description: "Welches fileshare-Release diese Seiten beschreiben, was jedes Rele
 tags: [stand, releases]
 ---
 
-Diese Seiten beschreiben **fileshare v0.34.0**.
+Diese Seiten beschreiben **fileshare v0.37.0**.
 
 {{< callout type="info" >}}
 **Ein Release-Binary mit `govulncheck -mode binary` prüfen**
@@ -75,6 +75,8 @@ Unter Go 1.27.2 meldet `govulncheck` GO-2026-6809 als erreichbar in fileshare: `
 | v0.31.2 | Release-Binaries werden mit `-w` statt `-s -w` gebaut: Die Symboltabelle bleibt erhalten, sodass `govulncheck -mode binary` auf einem heruntergeladenen Binary genau ist. Die Binaries sind 7 bis 10 % größer. Keine funktionale Änderung |
 | v0.32.0 | [baut und läuft unter `GOOS=wasip1 GOARCH=wasm`](../operations/build-tags/#as-a-webassembly-container-wasip1) als WebAssembly-Container in der go-wasmcontainers-Engine: WebDAV lauscht über die WasmEdge-Sockets-Erweiterung (`stealthrocket/net/wasip1`). Build-Tags `nosql,noopenpubkey` (vollständig, 11,5 MB gzip) oder der reine WebDAV-Satz (6,5 MB gzip); die CI baut beide. Keine Signalbehandlung unter wasip1: Der Host beendet das Modul |
 | v0.34.0 | Sicherheit, aus einem Audit: Das Öffnen einer Datei per SFTP auf einem Treiber ohne wahlfreien Zugriff (hfsplus, ntfs, xfs, apfs, btrfs, zfs, ufs) liest nichts; Handles auf dieselbe Datei teilen einen Schnappschuss, der beim letzten Schließen freigegeben wird; eine Datei über 64 MiB (oder jenseits von 512 MiB Schnappschüssen) wird abgelehnt, statt dass jedes Handle eine eigene Kopie hielt (64 Handles auf einer 8-MiB-Datei: 537 MB belegt, jetzt 8,4 MB); go-filesystems/nfs v0.10.0 (ein READ einer solchen Datei über 64 MiB antwortet `NFS3ERR_IO`, ein teilweises `SETATTR` des Besitzers setzt die andere Kennung nicht mehr auf 0). Das Portal v0.4.0 beendet bei der Abmeldung die Sitzung für jede Kopie ihres Cookies (Seite Administration, „Abmeldung“) |
+| v0.36.0 | Die sieben Treiber ohne wahlfreien Zugriff (hfsplus, ntfs, xfs, apfs, btrfs, zfs, ufs) lesen jetzt bereichsweise: ein SFTP-Öffnen oder ein NFS-READ liest nur die Extents seines Fensters (Löcher als Nullen), sodass eine Datei über 64 MiB gelesen wird, die v0.34.0 ablehnte (ein READ bei 66 MiB einer 72-MiB-Datei belegt 0 bis 5,5 MB statt 75 bis 538 MB); go-filesystems/nfs v0.11.1. Die 64-MiB-Grenzen bleiben das Sicherheitsnetz für einen Treiber ohne bereichsweises Lesen |
+| v0.37.0 | go-filesystems/ntfs v0.4.1: auch ein komprimierter (LZNT1) Strom eines echten NTFS-Volumes wird Einheit für Einheit gelesen, nicht beim ersten Lesen ganz; was ein Lesen belegt, ist durch sein Fenster begrenzt |
 
 {{< callout type="warning" >}}
 **Upgrade auf v0.21.0**
