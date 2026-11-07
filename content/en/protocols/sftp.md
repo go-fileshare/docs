@@ -301,6 +301,8 @@ flight and run alone, so a `CLOSE` always follows the operations pending on its
 handle. A client that pipelines faster than the server answers waits in the
 connection, not in the server's memory.
 
+Since go-filesystems/sftp v0.11.0 the replies to a burst of requests are written together, and the SSH transport (the go-filesystems/ssh fork of `golang.org/x/crypto/ssh`) flushes once per channel write instead of once per packet: 32 `write(2)` calls per MiB sent instead of 96.
+
 A **directory** share reaches the host's files with no lock of its own and
 gets the whole gain. A share backed by an **image** is still behind the one
 lock that keeps its driver correct, and stays serial. The `throughput_test.go`

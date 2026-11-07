@@ -314,6 +314,8 @@ y se ejecutan solas, de modo que un `CLOSE` siempre sigue a las operaciones
 pendientes de su descriptor. Un cliente que encadena más rápido de lo que el
 servidor responde espera en la conexión, no en la memoria del servidor.
 
+Desde go-filesystems/sftp v0.11.0, las respuestas a una ráfaga de solicitudes se escriben juntas, y el transporte SSH (el fork go-filesystems/ssh de `golang.org/x/crypto/ssh`) vacía el búfer una vez por escritura del canal en lugar de una vez por paquete: 32 llamadas `write(2)` por MiB enviada en lugar de 96.
+
 Un recurso de **directorio** llega a los archivos del host sin un bloqueo
 propio y aprovecha toda la mejora. Un recurso respaldado por una **imagen**
 sigue detrás del único bloqueo que mantiene correcto su controlador, y sigue

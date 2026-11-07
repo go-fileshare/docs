@@ -302,6 +302,8 @@ en vol et s'exécutent seules, de sorte qu'un `CLOSE` suit toujours les
 opérations en attente sur son descripteur. Un client qui enchaîne plus vite que
 le serveur ne répond attend dans la connexion, pas dans la mémoire du serveur.
 
+Depuis go-filesystems/sftp v0.11.0, les réponses à une rafale de requêtes sont écrites ensemble, et le transport SSH (le fork go-filesystems/ssh de `golang.org/x/crypto/ssh`) vide son tampon une fois par écriture de canal au lieu d'une fois par paquet : 32 appels `write(2)` par Mio envoyé au lieu de 96.
+
 Un partage de **répertoire** atteint les fichiers de l'hôte sans verrou propre
 et profite de tout le gain. Un partage adossé à une **image** reste derrière le
 verrou unique qui garde son pilote correct, et reste sériel. Le banc
