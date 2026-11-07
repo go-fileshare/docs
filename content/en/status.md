@@ -5,7 +5,7 @@ description: "Which fileshare release these pages describe, what each release ad
 tags: [status, releases]
 ---
 
-These pages describe **fileshare v0.34.0**.
+These pages describe **fileshare v0.37.0**.
 
 {{< callout type="info" >}}
 **Checking a release binary with `govulncheck -mode binary`**
@@ -75,6 +75,8 @@ Under Go 1.27.2, `govulncheck` reports GO-2026-6809 as reachable in fileshare: `
 | v0.31.2 | release binaries are built with `-w` instead of `-s -w`: the symbol table is kept, so `govulncheck -mode binary` on a downloaded binary is precise. Binaries are 7 to 10 % larger. No functional change |
 | v0.32.0 | [builds and serves on `GOOS=wasip1 GOARCH=wasm`](../operations/build-tags/#as-a-webassembly-container-wasip1), as a WebAssembly container in the go-wasmcontainers engine: WebDAV listening through the WasmEdge sockets extension (`stealthrocket/net/wasip1`). Build tags `nosql,noopenpubkey` (full, 11.5 MB gzip) or the WebDAV-only set (6.5 MB gzip); CI builds both. No signal handling on wasip1: the host ends the module |
 | v0.34.0 | security, from an audit: an SFTP open of a file on a driver without random access (hfsplus, ntfs, xfs, apfs, btrfs, zfs, ufs) reads nothing, handles on one file share one snapshot freed at the last close, and a file over 64 MiB (or past 512 MiB of snapshots) is refused, where every handle used to hold its own copy of the whole file (64 handles on an 8 MiB file: 537 MB allocated, now 8.4 MB); go-filesystems/nfs v0.10.0 (a READ of such a file over 64 MiB answers `NFS3ERR_IO`, a partial owner `SETATTR` no longer sets the other id to 0). The portal v0.4.0 ends a session for every copy of its cookie at logout (the Administration page, "Logout") |
+| v0.36.0 | the seven drivers that had no random access (hfsplus, ntfs, xfs, apfs, btrfs, zfs, ufs) now read by range: an SFTP open or an NFS READ reads only the extents of its window (holes as zeros), so a file over 64 MiB is read, where v0.34.0 refused it (a READ at 66 MiB of a 72 MiB file allocates 0 to 5.5 MB, against 75 to 538 MB). go-filesystems/nfs v0.11.1. The 64 MiB limits stay as the safety net for a driver without range reads |
+| v0.37.0 | go-filesystems/ntfs v0.4.1: a compressed (LZNT1) stream of a real NTFS volume is read unit by unit too, instead of whole on the first read; what a read allocates is bounded by its window |
 
 {{< callout type="warning" >}}
 **Upgrading to v0.21.0**

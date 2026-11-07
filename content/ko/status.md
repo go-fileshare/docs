@@ -5,7 +5,7 @@ description: "이 페이지들이 설명하는 fileshare 릴리스, 각 릴리�
 tags: [상태, 릴리스]
 ---
 
-이 페이지들은 **fileshare v0.34.0**을 설명합니다.
+이 페이지들은 **fileshare v0.37.0**을 설명합니다.
 
 {{< callout type="info" >}}
 **릴리스 바이너리를 `govulncheck -mode binary`로 확인하기**
@@ -75,6 +75,8 @@ Go 1.27.2에서 `govulncheck`는 fileshare에서 GO-2026-6809에 도달할 수 �
 | v0.31.2 | 릴리스 바이너리를 `-s -w` 대신 `-w`로 빌드. 심볼 테이블이 유지되므로 내려받은 바이너리에 대한 `govulncheck -mode binary`가 정확해짐. 바이너리는 7~10 % 커짐. 기능상 변경 없음 |
 | v0.32.0 | [`GOOS=wasip1 GOARCH=wasm`에서 빌드되고 서비스됨](../operations/build-tags/#as-a-webassembly-container-wasip1). go-wasmcontainers 엔진의 WebAssembly 컨테이너로서, WebDAV가 WasmEdge 소켓 확장(`stealthrocket/net/wasip1`)을 통해 수신 대기. 빌드 태그 `nosql,noopenpubkey`(전체, gzip 11.5 MB) 또는 WebDAV 전용 세트(gzip 6.5 MB). CI가 둘 다 빌드. wasip1에서는 시그널 처리 없음: 호스트가 모듈을 종료 |
 | v0.34.0 | 감사에 따른 보안 수정: 임의 접근이 없는 드라이버(hfsplus, ntfs, xfs, apfs, btrfs, zfs, ufs)의 파일을 SFTP 로 열어도 아무것도 읽지 않습니다. 같은 파일의 핸들은 마지막으로 닫을 때 해제되는 스냅샷 하나를 공유합니다. 64 MiB 를 넘는 파일(또는 스냅샷 합계가 512 MiB 를 넘는 경우)은 거부되며, 전에는 핸들마다 파일 전체의 사본을 가졌습니다(8 MiB 파일에 핸들 64개: 537 MB 할당이 8.4 MB 로). go-filesystems/nfs v0.10.0(이런 파일의 64 MiB 초과 READ 는 `NFS3ERR_IO`, 소유자의 부분 `SETATTR` 이 다른 id 를 0 으로 만들지 않음). 포털 v0.4.0 은 로그아웃할 때 쿠키의 모든 사본에 대해 세션을 끝냅니다(관리 페이지의 "로그아웃") |
+| v0.36.0 | 임의 접근이 없던 드라이버 7개(hfsplus, ntfs, xfs, apfs, btrfs, zfs, ufs)가 이제 범위 단위로 읽습니다. SFTP 열기나 NFS READ 는 자신의 창에 해당하는 extent 만 읽으며(구멍은 0), v0.34.0 이 거부하던 64 MiB 초과 파일도 읽힙니다(72 MiB 파일의 66 MiB 위치 READ 의 할당이 75~538 MB 에서 0~5.5 MB 로). go-filesystems/nfs v0.11.1. 64 MiB 한도는 범위 읽기가 없는 드라이버를 위한 안전망으로 남습니다 |
+| v0.37.0 | go-filesystems/ntfs v0.4.1: 실제 NTFS 볼륨의 압축(LZNT1) 스트림도 첫 읽기에 통째로가 아니라 단위별로 읽습니다. 한 번의 읽기가 할당하는 양은 그 창으로 제한됩니다 |
 
 {{< callout type="warning" >}}
 **v0.21.0으로 업그레이드할 때**
