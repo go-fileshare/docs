@@ -521,6 +521,7 @@ ranges overlap on one file, with a write among them, run in arrival order; and&l
 flight and run alone, so a &lt;code&gt;CLOSE&lt;/code&gt; always follows the operations pending on its
 handle. A client that pipelines faster than the server answers waits in the
 connection, not in the server&amp;rsquo;s memory.&lt;/p&gt;
+&lt;p&gt;Since go-filesystems/sftp v0.11.0 the replies to a burst of requests are written together, and the SSH transport (the go-filesystems/ssh fork of &lt;code&gt;golang.org/x/crypto/ssh&lt;/code&gt;) flushes once per channel write instead of once per packet: 32 &lt;code&gt;write(2)&lt;/code&gt; calls per MiB sent instead of 96.&lt;/p&gt;
 &lt;p&gt;A &lt;strong&gt;directory&lt;/strong&gt; share reaches the host&amp;rsquo;s files with no lock of its own and
 gets the whole gain. A share backed by an &lt;strong&gt;image&lt;/strong&gt; is still behind the one
 lock that keeps its driver correct, and stays serial. The &lt;code&gt;throughput_test.go&lt;/code&gt;

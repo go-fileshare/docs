@@ -537,6 +537,7 @@ paralelo; dos solicitudes cuyos rangos de bytes se solapan en un mismo archivo,c
 y se ejecutan solas, de modo que un &lt;code&gt;CLOSE&lt;/code&gt; siempre sigue a las operaciones
 pendientes de su descriptor. Un cliente que encadena más rápido de lo que el
 servidor responde espera en la conexión, no en la memoria del servidor.&lt;/p&gt;
+&lt;p&gt;Desde go-filesystems/sftp v0.11.0, las respuestas a una ráfaga de solicitudes se escriben juntas, y el transporte SSH (el fork go-filesystems/ssh de &lt;code&gt;golang.org/x/crypto/ssh&lt;/code&gt;) vacía el búfer una vez por escritura del canal en lugar de una vez por paquete: 32 llamadas &lt;code&gt;write(2)&lt;/code&gt; por MiB enviada en lugar de 96.&lt;/p&gt;
 &lt;p&gt;Un recurso de &lt;strong&gt;directorio&lt;/strong&gt; llega a los archivos del host sin un bloqueo
 propio y aprovecha toda la mejora. Un recurso respaldado por una &lt;strong&gt;imagen&lt;/strong&gt;
 sigue detrás del único bloqueo que mantiene correcto su controlador, y sigue

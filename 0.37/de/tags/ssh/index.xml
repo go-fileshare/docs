@@ -514,6 +514,7 @@ eine schreibt, laufen in der Reihenfolge ihres Eintreffens; und &lt;code&gt;OPEN
 laufen allein, sodass ein &lt;code&gt;CLOSE&lt;/code&gt; immer auf die ausstehenden Operationen seines
 Handles folgt. Ein Client, der schneller Anfragen aneinanderreiht, als der
 Server antwortet, wartet in der Verbindung, nicht im Speicher des Servers.&lt;/p&gt;
+&lt;p&gt;Seit go-filesystems/sftp v0.11.0 werden die Antworten auf eine Anfragenfolge zusammen geschrieben, und der SSH-Transport (der Fork go-filesystems/ssh von &lt;code&gt;golang.org/x/crypto/ssh&lt;/code&gt;) leert den Puffer einmal pro Kanal-Write statt einmal pro Paket: 32 &lt;code&gt;write(2)&lt;/code&gt;-Aufrufe pro gesendeter MiB statt 96.&lt;/p&gt;
 &lt;p&gt;Eine &lt;strong&gt;Verzeichnis&lt;/strong&gt;-Freigabe erreicht die Dateien des Hosts ohne eigene Sperre
 und profitiert vollständig. Eine &lt;strong&gt;Image&lt;/strong&gt;-Freigabe bleibt hinter der einen
 Sperre, die ihren Treiber korrekt hält, und bleibt seriell. Der Messaufbau&lt;code&gt;throughput_test.go&lt;/code&gt; im Repository misst es (&lt;code&gt;FILESHARE_THROUGHPUT_MIB&lt;/code&gt;): sftp

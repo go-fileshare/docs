@@ -518,6 +518,7 @@ fichier, dont l&amp;rsquo;une est une écriture, s&amp;rsquo;exécutent dans l&a
 en vol et s&amp;rsquo;exécutent seules, de sorte qu&amp;rsquo;un &lt;code&gt;CLOSE&lt;/code&gt; suit toujours les
 opérations en attente sur son descripteur. Un client qui enchaîne plus vite que
 le serveur ne répond attend dans la connexion, pas dans la mémoire du serveur.&lt;/p&gt;
+&lt;p&gt;Depuis go-filesystems/sftp v0.11.0, les réponses à une rafale de requêtes sont écrites ensemble, et le transport SSH (le fork go-filesystems/ssh de &lt;code&gt;golang.org/x/crypto/ssh&lt;/code&gt;) vide son tampon une fois par écriture de canal au lieu d&amp;rsquo;une fois par paquet : 32 appels &lt;code&gt;write(2)&lt;/code&gt; par Mio envoyé au lieu de 96.&lt;/p&gt;
 &lt;p&gt;Un partage de &lt;strong&gt;répertoire&lt;/strong&gt; atteint les fichiers de l&amp;rsquo;hôte sans verrou propre
 et profite de tout le gain. Un partage adossé à une &lt;strong&gt;image&lt;/strong&gt; reste derrière le
 verrou unique qui garde son pilote correct, et reste sériel. Le banc&lt;code&gt;throughput_test.go&lt;/code&gt; du dépôt le mesure (&lt;code&gt;FILESHARE_THROUGHPUT_MIB&lt;/code&gt;) : sftp avec
