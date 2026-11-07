@@ -303,6 +303,8 @@ laufen allein, sodass ein `CLOSE` immer auf die ausstehenden Operationen seines
 Handles folgt. Ein Client, der schneller Anfragen aneinanderreiht, als der
 Server antwortet, wartet in der Verbindung, nicht im Speicher des Servers.
 
+Seit go-filesystems/sftp v0.11.0 werden die Antworten auf eine Anfragenfolge zusammen geschrieben, und der SSH-Transport (der Fork go-filesystems/ssh von `golang.org/x/crypto/ssh`) leert den Puffer einmal pro Kanal-Write statt einmal pro Paket: 32 `write(2)`-Aufrufe pro gesendeter MiB statt 96.
+
 Eine **Verzeichnis**-Freigabe erreicht die Dateien des Hosts ohne eigene Sperre
 und profitiert vollständig. Eine **Image**-Freigabe bleibt hinter der einen
 Sperre, die ihren Treiber korrekt hält, und bleibt seriell. Der Messaufbau

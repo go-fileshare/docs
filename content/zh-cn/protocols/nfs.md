@@ -101,4 +101,6 @@ serve "nfs" {
 
 ## 并发处理的请求 {#requests-in-flight}
 
-自 go-filesystems/nfs v0.11.1 起，一个连接最多同时处理 32 个 RPC 调用，整个服务器跨所有连接最多 128 个，该额度在读取记录之前占用。回复按 xid 匹配。同一连接的 `READ` 调用并排应答；各自对驱动的 `ReadAt` 调用只有在导出通过 `WithConcurrentReads` 选择启用时才会重叠（默认关闭：在主机目录上，`ReadAt` 只是一次 `pread`，在 4 个和 8 个连接下实测慢 25%；对 `ReadAt` 开销大的驱动才划算）；其他所有调用，包括每次调用都会打开自己文件的 `WRITE`，都要等待其前面的调用完成后单独执行。一条记录开始后须在 30 秒内到达。该机制是共享模块 go-filesystems/inflight，SFTP 和 SMB 也使用它。
+自 go-filesystems/nfs v0.12.0 起，一个连接最多同时处理 32 个 RPC 调用，整个服务器跨所有连接最多 128 个，该额度在读取记录之前占用。回复按 xid 匹配。同一连接的 `READ` 调用并排应答；各自对驱动的 `ReadAt` 调用只有在导出通过 `WithConcurrentReads` 选择启用时才会重叠（默认关闭：在主机目录上，`ReadAt` 只是一次 `pread`，在 4 个和 8 个连接下实测慢 25%；对 `ReadAt` 开销大的驱动才划算）；其他所有调用，包括每次调用都会打开自己文件的 `WRITE`，都要等待其前面的调用完成后单独执行。一条记录开始后须在 30 秒内到达。该机制是共享模块 go-filesystems/inflight，SFTP 和 SMB 也使用它。
+
+导出还可以通过 `WithConcurrentPathOps` 选择启用，这是嵌入方的保证：驱动的只读路径调用（`Stat`、`Open`、`Close`）彼此并行是安全的。此时一个 `READ` 只取一把共享锁，覆盖属性查询、打开、`ReadAt`、关闭和 post-op 属性，因此任何连接的 `READ` 调用都不会互相等待，而每个会修改内容的调用仍单独执行：`WRITE` 在驱动中绝不会与 `READ` 重叠。它在该导出上包含 `WithConcurrentReads`。fileshare 只对**目录**共享启用它（主机目录树可安全并发使用）；**镜像**共享仍在其唯一的锁之后，不会获得该选项。
