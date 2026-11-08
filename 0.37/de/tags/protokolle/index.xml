@@ -872,4 +872,69 @@ einem Arbeitsplatzrechner, den eine Person nutzt; falsch auf einer Maschine, an 
 echten Linux-Client gemessen wurde (&lt;code&gt;MNT&lt;/code&gt; unverschlüsselt, die Fallstricke von &lt;code&gt;tlshd&lt;/code&gt;), steht in&lt;a href="https://go-fileshare.github.io/docs/0.37/de/security/nfs-certificates/"&gt;NFS, mit Identitäten aus Zertifikaten&lt;/a&gt;.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="requests-in-flight"&gt;Anfragen in Bearbeitung&lt;span class="hx:absolute hx:-mt-20" id="requests-in-flight"&gt;&lt;/span&gt;
 &lt;a href="#requests-in-flight" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Seit go-filesystems/nfs v0.12.0 hält eine Verbindung bis zu 32 RPC-Aufrufe gleichzeitig in Bearbeitung, der Server insgesamt bis zu 128 über alle Verbindungen, gezählt, bevor der Record gelesen wird. Antworten werden über die xid zugeordnet. &lt;code&gt;READ&lt;/code&gt;-Aufrufe einer Verbindung werden nebeneinander beantwortet; das &lt;code&gt;ReadAt&lt;/code&gt; des Treibers überlappt dabei nur, wenn der Export sich mit &lt;code&gt;WithConcurrentReads&lt;/code&gt; dafür entscheidet (standardmäßig aus: auf einem Host-Verzeichnis, wo &lt;code&gt;ReadAt&lt;/code&gt; ein einzelnes &lt;code&gt;pread&lt;/code&gt; ist, war es über 4 und 8 Verbindungen 25 % langsamer; es lohnt sich für einen Treiber mit teurem &lt;code&gt;ReadAt&lt;/code&gt;); jeder andere Aufruf, auch &lt;code&gt;WRITE&lt;/code&gt;, weil es bei jedem Aufruf eine eigene Datei öffnet, wartet auf die vorangehenden Aufrufe und läuft allein. Ein Record hat 30 s Zeit, einzutreffen, sobald er begonnen hat. Der Mechanismus ist das gemeinsame Modul go-filesystems/inflight, das auch SFTP und SMB verwenden.&lt;/p&gt;
-&lt;p&gt;Ein Export kann sich außerdem mit &lt;code&gt;WithConcurrentPathOps&lt;/code&gt; entscheiden: das Wort des Einbettenden, dass die lesenden Pfadaufrufe des Treibers (&lt;code&gt;Stat&lt;/code&gt;, &lt;code&gt;Open&lt;/code&gt;, &lt;code&gt;Close&lt;/code&gt;) nebeneinander sicher sind. Ein &lt;code&gt;READ&lt;/code&gt; nimmt dann eine gemeinsame Sperre um Attribute, Öffnen, &lt;code&gt;ReadAt&lt;/code&gt;, Schließen und die Post-op-Attribute, sodass &lt;code&gt;READ&lt;/code&gt;-Aufrufe jeder Verbindung nie aufeinander warten, während jeder Aufruf, der etwas ändert, weiter allein läuft: ein &lt;code&gt;WRITE&lt;/code&gt; überlappt im Treiber nie ein &lt;code&gt;READ&lt;/code&gt;. Das schließt &lt;code&gt;WithConcurrentReads&lt;/code&gt; auf diesem Export ein. fileshare schaltet es nur für &lt;strong&gt;Verzeichnis&lt;/strong&gt;-Freigaben ein, deren Host-Baum nebenläufig sicher ist; eine &lt;strong&gt;Image&lt;/strong&gt;-Freigabe bleibt hinter ihrer einen Sperre und bekommt es nicht.&lt;/p&gt;</description></item></channel></rss>
+&lt;p&gt;Ein Export kann sich außerdem mit &lt;code&gt;WithConcurrentPathOps&lt;/code&gt; entscheiden: das Wort des Einbettenden, dass die lesenden Pfadaufrufe des Treibers (&lt;code&gt;Stat&lt;/code&gt;, &lt;code&gt;Open&lt;/code&gt;, &lt;code&gt;Close&lt;/code&gt;) nebeneinander sicher sind. Ein &lt;code&gt;READ&lt;/code&gt; nimmt dann eine gemeinsame Sperre um Attribute, Öffnen, &lt;code&gt;ReadAt&lt;/code&gt;, Schließen und die Post-op-Attribute, sodass &lt;code&gt;READ&lt;/code&gt;-Aufrufe jeder Verbindung nie aufeinander warten, während jeder Aufruf, der etwas ändert, weiter allein läuft: ein &lt;code&gt;WRITE&lt;/code&gt; überlappt im Treiber nie ein &lt;code&gt;READ&lt;/code&gt;. Das schließt &lt;code&gt;WithConcurrentReads&lt;/code&gt; auf diesem Export ein. fileshare schaltet es nur für &lt;strong&gt;Verzeichnis&lt;/strong&gt;-Freigaben ein, deren Host-Baum nebenläufig sicher ist; eine &lt;strong&gt;Image&lt;/strong&gt;-Freigabe bleibt hinter ihrer einen Sperre und bekommt es nicht.&lt;/p&gt;</description></item><item><title>Die echten Dateizeiten</title><link>https://go-fileshare.github.io/docs/0.37/de/protocols/times/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.37/de/protocols/times/</guid><description>
+&lt;p&gt;Seit v0.39.0 sind die Zeiten einer Datei die, die ihr Dateisystem erfasst hat,und nicht der Zeitpunkt der Anfrage. Das setzt die optionale Fähigkeit&lt;code&gt;TimesReader&lt;/code&gt; aus &lt;code&gt;go-filesystems/interface&lt;/code&gt; v0.6.0 voraus, die ein Treiber
+hat oder nicht hat.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="which-shares-report-real-times"&gt;Welche Freigaben echte Zeiten melden&lt;span class="hx:absolute hx:-mt-20" id="which-shares-report-real-times"&gt;&lt;/span&gt;
+&lt;a href="#which-shares-report-real-times" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Freigabe&lt;/th&gt;
+&lt;th&gt;Echte Zeiten&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Verzeichnis&lt;/strong&gt; (Host)&lt;/td&gt;
+&lt;td&gt;ja: Zugriff, Änderung, Statusänderung und, wo der Host sie führt, Erstellung, auf die Nanosekunde&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;FAT-Abbild&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;ja, in der Auflösung von FAT: Änderung 2 s, Zugriff ein Tag, Erstellung 10 ms; keine Statusänderungszeit&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;exFAT-, NTFS-, ext4-, HFS+-Abbilder&lt;/td&gt;
+&lt;td&gt;noch nicht (exfat#29, ntfs#32, ext4#41, hfsplus#25): Antwort wie bisher&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Andere Abbildtypen&lt;/td&gt;
+&lt;td&gt;Antwort wie bisher&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Als die Person bereitgestellte Freigabe (&lt;code&gt;remote&lt;/code&gt;-Worker)&lt;/td&gt;
+&lt;td&gt;ja, wenn das Verzeichnis des Workers ein Host-Verzeichnis ist: die Zeit überquert die Grenze des Workers&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Eine Zeit wird in der &lt;strong&gt;gröberen&lt;/strong&gt; der Auflösung des Formats und der des
+Protokolls verglichen: SFTP überträgt ganze Sekunden, ein WebDAV-&lt;code&gt;getlastmodified&lt;/code&gt; ebenso, SMB 100 ns, NFS 1 ns.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="when-a-time-is-not-recorded"&gt;Wenn eine Zeit nicht erfasst ist&lt;span class="hx:absolute hx:-mt-20" id="when-a-time-is-not-recorded"&gt;&lt;/span&gt;
+&lt;a href="#when-a-time-is-not-recorded" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Protokoll&lt;/th&gt;
+&lt;th&gt;Was gesendet wird&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;SMB&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;0, „nicht angegeben&amp;quot;. Ein Treiber &lt;strong&gt;ohne&lt;/strong&gt; die Fähigkeit antwortet weiterhin mit der aktuellen Zeit.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;NFS&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Eine fehlende Zugriffs- oder Statusänderungszeit wird zur Änderungszeit; eine fehlende Änderungszeit wird zur Startzeit des Servers.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;SFTP&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Eine fehlende Änderungszeit löscht das Flag &lt;code&gt;ACMODTIME&lt;/code&gt;: der Client sieht keine Zeit statt einer falschen.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;WebDAV&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;creationdate&lt;/code&gt; ist die Erstellungszeit; eine nicht erfasste Zeit fehlt in der Antwort.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2 data-hextra-search-id="not-supported-yet"&gt;Noch nicht unterstützt&lt;span class="hx:absolute hx:-mt-20" id="not-supported-yet"&gt;&lt;/span&gt;
+&lt;a href="#not-supported-yet" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Ein Client, der über SMB eine Zeit &lt;strong&gt;setzt&lt;/strong&gt; (&lt;code&gt;SET_INFO&lt;/code&gt;), wird nicht
+befolgt: die Zeit bleibt die, die das Dateisystem erfasst hat(go-filesystems/smb#45).&lt;/p&gt;</description></item></channel></rss>

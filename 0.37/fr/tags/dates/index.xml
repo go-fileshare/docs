@@ -1,0 +1,68 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Dates</title><link>https://go-fileshare.github.io/docs/0.37/fr/tags/dates/</link><description>Recent content in Dates on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>fr</language><atom:link href="https://go-fileshare.github.io/docs/0.37/fr/tags/dates/index.xml" rel="self" type="application/rss+xml"/><item><title>Les vraies dates des fichiers</title><link>https://go-fileshare.github.io/docs/0.37/fr/protocols/times/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.37/fr/protocols/times/</guid><description>
+&lt;p&gt;Depuis la v0.39.0, les dates d&amp;rsquo;un fichier sont celles que son système de
+fichiers a enregistrées, et non l&amp;rsquo;heure de la requête. Cela demande la
+capacité optionnelle &lt;code&gt;TimesReader&lt;/code&gt; de &lt;code&gt;go-filesystems/interface&lt;/code&gt; v0.6.0, qu&amp;rsquo;un
+pilote a ou n&amp;rsquo;a pas.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="which-shares-report-real-times"&gt;Quels partages indiquent les vraies dates&lt;span class="hx:absolute hx:-mt-20" id="which-shares-report-real-times"&gt;&lt;/span&gt;
+&lt;a href="#which-shares-report-real-times" class="subheading-anchor" aria-label="Lien permanent vers cette section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Partage&lt;/th&gt;
+&lt;th&gt;Vraies dates&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Répertoire&lt;/strong&gt; (hôte)&lt;/td&gt;
+&lt;td&gt;oui : accès, modification, changement et, si l&amp;rsquo;hôte la garde, création, à la nanoseconde&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Image FAT&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;oui, à la résolution de FAT : modification 2 s, accès un jour, création 10 ms ; pas de date de changement&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Images exFAT, NTFS, ext4, HFS+&lt;/td&gt;
+&lt;td&gt;pas encore (exfat#29, ntfs#32, ext4#41, hfsplus#25) : répondu comme avant&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Autres types d&amp;rsquo;image&lt;/td&gt;
+&lt;td&gt;répondu comme avant&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Partage servi sous l&amp;rsquo;identité de la personne (worker &lt;code&gt;remote&lt;/code&gt;)&lt;/td&gt;
+&lt;td&gt;oui, si le répertoire du worker est un répertoire de l&amp;rsquo;hôte : la date traverse la frontière du worker&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Une date est comparée à la résolution la &lt;strong&gt;plus grossière&lt;/strong&gt; entre celle du
+format et celle du protocole : SFTP transporte des secondes entières, le&lt;code&gt;getlastmodified&lt;/code&gt; de WebDAV aussi, SMB 100 ns, NFS 1 ns.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="when-a-time-is-not-recorded"&gt;Quand une date n&amp;rsquo;est pas enregistrée&lt;span class="hx:absolute hx:-mt-20" id="when-a-time-is-not-recorded"&gt;&lt;/span&gt;
+&lt;a href="#when-a-time-is-not-recorded" class="subheading-anchor" aria-label="Lien permanent vers cette section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Protocole&lt;/th&gt;
+&lt;th&gt;Ce qui est envoyé&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;SMB&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;0, « non spécifié ». Un pilote &lt;strong&gt;sans&lt;/strong&gt; la capacité répond toujours l&amp;rsquo;heure courante.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;NFS&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Une date d&amp;rsquo;accès ou de changement manquante devient la date de modification ; une date de modification manquante devient l&amp;rsquo;heure de démarrage du serveur.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;SFTP&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Une date de modification manquante efface le drapeau &lt;code&gt;ACMODTIME&lt;/code&gt; : le client ne voit aucune date plutôt qu&amp;rsquo;une fausse.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;WebDAV&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;creationdate&lt;/code&gt; est la date de création ; une date non enregistrée est absente de la réponse.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2 data-hextra-search-id="not-supported-yet"&gt;Pas encore pris en charge&lt;span class="hx:absolute hx:-mt-20" id="not-supported-yet"&gt;&lt;/span&gt;
+&lt;a href="#not-supported-yet" class="subheading-anchor" aria-label="Lien permanent vers cette section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Un client qui &lt;strong&gt;modifie&lt;/strong&gt; une date en SMB (&lt;code&gt;SET_INFO&lt;/code&gt;) n&amp;rsquo;est pas obéi : la date
+reste celle que le système de fichiers avait enregistrée(go-filesystems/smb#45).&lt;/p&gt;</description></item></channel></rss>

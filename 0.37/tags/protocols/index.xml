@@ -892,4 +892,70 @@ a workstation one person uses; wrong on a machine several people log into —use
 with a real Linux client (&lt;code&gt;MNT&lt;/code&gt; in the clear, &lt;code&gt;tlshd&lt;/code&gt;&amp;rsquo;s pitfalls) are in&lt;a href="https://go-fileshare.github.io/docs/0.37/security/nfs-certificates/"&gt;NFS, with identities from certificates&lt;/a&gt;.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="requests-in-flight"&gt;Requests in flight&lt;span class="hx:absolute hx:-mt-20" id="requests-in-flight"&gt;&lt;/span&gt;
 &lt;a href="#requests-in-flight" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Since go-filesystems/nfs v0.12.0 a connection holds up to 32 RPC calls in flight, and the server up to 128 across all connections, taken before the record is read. Replies are matched by xid. &lt;code&gt;READ&lt;/code&gt; calls of a connection are answered beside each other; the driver&amp;rsquo;s &lt;code&gt;ReadAt&lt;/code&gt; of each overlaps only if the export opts in with &lt;code&gt;WithConcurrentReads&lt;/code&gt; (off by default: on a host directory, where &lt;code&gt;ReadAt&lt;/code&gt; is one &lt;code&gt;pread&lt;/code&gt;, it measured 25% slower over 4 and 8 connections; it pays for a driver whose &lt;code&gt;ReadAt&lt;/code&gt; is expensive); every other call, &lt;code&gt;WRITE&lt;/code&gt; included because it opens its own file each time, waits for the calls before it and runs alone. A record has 30 s to arrive once it has begun. The mechanism is the shared module go-filesystems/inflight, also used by SFTP and SMB.&lt;/p&gt;
-&lt;p&gt;An export may also opt in with &lt;code&gt;WithConcurrentPathOps&lt;/code&gt;, the embedder&amp;rsquo;s word that the driver&amp;rsquo;s read-only path calls (&lt;code&gt;Stat&lt;/code&gt;, &lt;code&gt;Open&lt;/code&gt;, &lt;code&gt;Close&lt;/code&gt;) are safe beside each other. A &lt;code&gt;READ&lt;/code&gt; then takes one shared lock around the attributes, the open, the &lt;code&gt;ReadAt&lt;/code&gt;, the close and the post-op attributes, so &lt;code&gt;READ&lt;/code&gt; calls of any connection never wait for each other, while every call that changes something still runs alone: a &lt;code&gt;WRITE&lt;/code&gt; never overlaps a &lt;code&gt;READ&lt;/code&gt; in the driver. It subsumes &lt;code&gt;WithConcurrentReads&lt;/code&gt; on that export. fileshare turns it on for &lt;strong&gt;directory&lt;/strong&gt; shares only, where the host&amp;rsquo;s tree is safe for concurrent use; an &lt;strong&gt;image&lt;/strong&gt; share stays behind its one lock and does not get it.&lt;/p&gt;</description></item></channel></rss>
+&lt;p&gt;An export may also opt in with &lt;code&gt;WithConcurrentPathOps&lt;/code&gt;, the embedder&amp;rsquo;s word that the driver&amp;rsquo;s read-only path calls (&lt;code&gt;Stat&lt;/code&gt;, &lt;code&gt;Open&lt;/code&gt;, &lt;code&gt;Close&lt;/code&gt;) are safe beside each other. A &lt;code&gt;READ&lt;/code&gt; then takes one shared lock around the attributes, the open, the &lt;code&gt;ReadAt&lt;/code&gt;, the close and the post-op attributes, so &lt;code&gt;READ&lt;/code&gt; calls of any connection never wait for each other, while every call that changes something still runs alone: a &lt;code&gt;WRITE&lt;/code&gt; never overlaps a &lt;code&gt;READ&lt;/code&gt; in the driver. It subsumes &lt;code&gt;WithConcurrentReads&lt;/code&gt; on that export. fileshare turns it on for &lt;strong&gt;directory&lt;/strong&gt; shares only, where the host&amp;rsquo;s tree is safe for concurrent use; an &lt;strong&gt;image&lt;/strong&gt; share stays behind its one lock and does not get it.&lt;/p&gt;</description></item><item><title>Real file times</title><link>https://go-fileshare.github.io/docs/0.37/protocols/times/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.37/protocols/times/</guid><description>
+&lt;p&gt;Since v0.39.0 a file&amp;rsquo;s times are the ones its filesystem recorded, not the time
+of the request. This needs the optional &lt;code&gt;TimesReader&lt;/code&gt; capability of&lt;code&gt;go-filesystems/interface&lt;/code&gt; v0.6.0, which a driver either has or does not.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="which-shares-report-real-times"&gt;Which shares report real times&lt;span class="hx:absolute hx:-mt-20" id="which-shares-report-real-times"&gt;&lt;/span&gt;
+&lt;a href="#which-shares-report-real-times" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Share&lt;/th&gt;
+&lt;th&gt;Real times&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Directory&lt;/strong&gt; (host)&lt;/td&gt;
+&lt;td&gt;yes: access, modification, change and, where the host keeps it, birth time, to the nanosecond&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;FAT image&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;yes, at FAT&amp;rsquo;s resolution: modification 2 s, access one day, creation 10 ms; there is no change time&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;exFAT, NTFS, ext4, HFS+ images&lt;/td&gt;
+&lt;td&gt;not yet (exfat#29, ntfs#32, ext4#41, hfsplus#25): answered as before&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Other image types&lt;/td&gt;
+&lt;td&gt;answered as before&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Share served as its people (&lt;code&gt;remote&lt;/code&gt; worker)&lt;/td&gt;
+&lt;td&gt;yes, when the worker&amp;rsquo;s directory is a host directory: the time crosses the worker boundary&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;A time is compared at the &lt;strong&gt;coarser&lt;/strong&gt; of the format&amp;rsquo;s resolution and the
+protocol&amp;rsquo;s own: SFTP carries whole seconds, a WebDAV &lt;code&gt;getlastmodified&lt;/code&gt; whole
+seconds, SMB 100 ns, NFS 1 ns.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="when-a-time-is-not-recorded"&gt;When a time is not recorded&lt;span class="hx:absolute hx:-mt-20" id="when-a-time-is-not-recorded"&gt;&lt;/span&gt;
+&lt;a href="#when-a-time-is-not-recorded" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Protocol&lt;/th&gt;
+&lt;th&gt;What is sent&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;SMB&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;0, &amp;ldquo;not specified&amp;rdquo;. A driver &lt;strong&gt;without&lt;/strong&gt; the capability still answers the current time.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;NFS&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;An access or change time that is missing becomes the modification time; a missing modification time becomes the time the server started.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;SFTP&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;A missing modification time clears the &lt;code&gt;ACMODTIME&lt;/code&gt; flag: the client sees no time rather than a wrong one.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;WebDAV&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;creationdate&lt;/code&gt; is the birth time; a time that is not recorded is absent from the answer.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2 data-hextra-search-id="not-supported-yet"&gt;Not supported yet&lt;span class="hx:absolute hx:-mt-20" id="not-supported-yet"&gt;&lt;/span&gt;
+&lt;a href="#not-supported-yet" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;A client that &lt;strong&gt;sets&lt;/strong&gt; a time over SMB (&lt;code&gt;SET_INFO&lt;/code&gt;) is not obeyed: the time
+stays what the filesystem recorded (go-filesystems/smb#45).&lt;/p&gt;</description></item></channel></rss>

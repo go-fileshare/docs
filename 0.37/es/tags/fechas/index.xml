@@ -1,0 +1,68 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Fechas</title><link>https://go-fileshare.github.io/docs/0.37/es/tags/fechas/</link><description>Recent content in Fechas on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>es</language><atom:link href="https://go-fileshare.github.io/docs/0.37/es/tags/fechas/index.xml" rel="self" type="application/rss+xml"/><item><title>Las fechas reales de los archivos</title><link>https://go-fileshare.github.io/docs/0.37/es/protocols/times/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.37/es/protocols/times/</guid><description>
+&lt;p&gt;Desde la v0.39.0, las fechas de un archivo son las que su sistema de archivos
+registró, no la hora de la petición. Esto requiere la capacidad opcional&lt;code&gt;TimesReader&lt;/code&gt; de &lt;code&gt;go-filesystems/interface&lt;/code&gt; v0.6.0, que un controlador tiene o
+no tiene.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="which-shares-report-real-times"&gt;Qué recursos informan fechas reales&lt;span class="hx:absolute hx:-mt-20" id="which-shares-report-real-times"&gt;&lt;/span&gt;
+&lt;a href="#which-shares-report-real-times" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Recurso&lt;/th&gt;
+&lt;th&gt;Fechas reales&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Directorio&lt;/strong&gt; (anfitrión)&lt;/td&gt;
+&lt;td&gt;sí: acceso, modificación, cambio y, si el anfitrión la guarda, creación, al nanosegundo&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Imagen FAT&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;sí, con la resolución de FAT: modificación 2 s, acceso un día, creación 10 ms; no hay fecha de cambio&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Imágenes exFAT, NTFS, ext4, HFS+&lt;/td&gt;
+&lt;td&gt;todavía no (exfat#29, ntfs#32, ext4#41, hfsplus#25): se responde como antes&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Otros tipos de imagen&lt;/td&gt;
+&lt;td&gt;se responde como antes&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Recurso servido como la persona (worker &lt;code&gt;remote&lt;/code&gt;)&lt;/td&gt;
+&lt;td&gt;sí, si el directorio del worker es un directorio del anfitrión: la fecha cruza la frontera del worker&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Una fecha se compara con la resolución &lt;strong&gt;más gruesa&lt;/strong&gt; entre la del formato y
+la del protocolo: SFTP transporta segundos enteros, el &lt;code&gt;getlastmodified&lt;/code&gt; de
+WebDAV también, SMB 100 ns, NFS 1 ns.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="when-a-time-is-not-recorded"&gt;Cuando una fecha no está registrada&lt;span class="hx:absolute hx:-mt-20" id="when-a-time-is-not-recorded"&gt;&lt;/span&gt;
+&lt;a href="#when-a-time-is-not-recorded" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Protocolo&lt;/th&gt;
+&lt;th&gt;Qué se envía&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;SMB&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;0, «no especificado». Un controlador &lt;strong&gt;sin&lt;/strong&gt; la capacidad sigue respondiendo la hora actual.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;NFS&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Una fecha de acceso o de cambio ausente pasa a ser la de modificación; una fecha de modificación ausente pasa a ser la hora de arranque del servidor.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;SFTP&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Una fecha de modificación ausente borra el indicador &lt;code&gt;ACMODTIME&lt;/code&gt;: el cliente no ve ninguna fecha en lugar de una falsa.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;WebDAV&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;creationdate&lt;/code&gt; es la fecha de creación; una fecha no registrada no aparece en la respuesta.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2 data-hextra-search-id="not-supported-yet"&gt;Aún no se admite&lt;span class="hx:absolute hx:-mt-20" id="not-supported-yet"&gt;&lt;/span&gt;
+&lt;a href="#not-supported-yet" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Un cliente que &lt;strong&gt;establece&lt;/strong&gt; una fecha por SMB (&lt;code&gt;SET_INFO&lt;/code&gt;) no es obedecido: la
+fecha sigue siendo la que registró el sistema de archivos(go-filesystems/smb#45).&lt;/p&gt;</description></item></channel></rss>
