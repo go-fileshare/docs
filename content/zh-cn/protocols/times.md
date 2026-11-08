@@ -10,7 +10,7 @@ tags: [协议, 时间戳]
 这需要 `go-filesystems/interface` v0.6.0 的可选能力 `TimesReader`,驱动程序
 可能具备,也可能不具备。
 
-## 哪些共享报告真实时间
+## 哪些共享报告真实时间 {#which-shares-report-real-times}
 
 | 共享 | 真实时间 |
 |---|---|
@@ -23,7 +23,7 @@ tags: [协议, 时间戳]
 时间按格式精度与协议精度中**较粗**的一个进行比较:SFTP 传送整秒,WebDAV 的
 `getlastmodified` 也是整秒,SMB 为 100 ns,NFS 为 1 ns。
 
-## 时间未记录时
+## 时间未记录时 {#when-a-time-is-not-recorded}
 
 | 协议 | 发送的内容 |
 |---|---|
@@ -32,7 +32,7 @@ tags: [协议, 时间戳]
 | **SFTP** | 缺失的修改时间会清除 `ACMODTIME` 标志:客户端看到的是没有时间,而不是错误的时间。 |
 | **WebDAV** | `creationdate` 是创建时间;未记录的时间不会出现在应答中。 |
 
-## 尚不支持
+## 尚不支持 {#not-supported-yet}
 
 客户端通过 SMB **设置**时间(`SET_INFO`)不会被执行:时间保持文件系统记录的
 值(go-filesystems/smb#45)。

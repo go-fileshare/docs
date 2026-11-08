@@ -11,7 +11,7 @@ und nicht der Zeitpunkt der Anfrage. Das setzt die optionale Fähigkeit
 `TimesReader` aus `go-filesystems/interface` v0.6.0 voraus, die ein Treiber
 hat oder nicht hat.
 
-## Welche Freigaben echte Zeiten melden
+## Welche Freigaben echte Zeiten melden {#which-shares-report-real-times}
 
 | Freigabe | Echte Zeiten |
 |---|---|
@@ -25,7 +25,7 @@ Eine Zeit wird in der **gröberen** der Auflösung des Formats und der des
 Protokolls verglichen: SFTP überträgt ganze Sekunden, ein WebDAV-
 `getlastmodified` ebenso, SMB 100 ns, NFS 1 ns.
 
-## Wenn eine Zeit nicht erfasst ist
+## Wenn eine Zeit nicht erfasst ist {#when-a-time-is-not-recorded}
 
 | Protokoll | Was gesendet wird |
 |---|---|
@@ -34,7 +34,7 @@ Protokolls verglichen: SFTP überträgt ganze Sekunden, ein WebDAV-
 | **SFTP** | Eine fehlende Änderungszeit löscht das Flag `ACMODTIME`: der Client sieht keine Zeit statt einer falschen. |
 | **WebDAV** | `creationdate` ist die Erstellungszeit; eine nicht erfasste Zeit fehlt in der Antwort. |
 
-## Noch nicht unterstützt
+## Noch nicht unterstützt {#not-supported-yet}
 
 Ein Client, der über SMB eine Zeit **setzt** (`SET_INFO`), wird nicht
 befolgt: die Zeit bleibt die, die das Dateisystem erfasst hat

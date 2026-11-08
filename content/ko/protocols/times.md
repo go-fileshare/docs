@@ -10,7 +10,7 @@ v0.39.0부터 파일의 시간은 요청 시각이 아니라 해당 파일 시�
 시간입니다. 이를 위해서는 `go-filesystems/interface` v0.6.0의 선택적 기능인
 `TimesReader`가 필요하며, 드라이버가 이를 갖고 있을 수도 없을 수도 있습니다.
 
-## 실제 시간을 알려 주는 공유
+## 실제 시간을 알려 주는 공유 {#which-shares-report-real-times}
 
 | 공유 | 실제 시간 |
 |---|---|
@@ -24,7 +24,7 @@ v0.39.0부터 파일의 시간은 요청 시각이 아니라 해당 파일 시�
 SFTP는 정수 초, WebDAV의 `getlastmodified`도 정수 초, SMB는 100ns, NFS는
 1ns입니다.
 
-## 시간이 기록되지 않았을 때
+## 시간이 기록되지 않았을 때 {#when-a-time-is-not-recorded}
 
 | 프로토콜 | 전송되는 값 |
 |---|---|
@@ -33,7 +33,7 @@ SFTP는 정수 초, WebDAV의 `getlastmodified`도 정수 초, SMB는 100ns, NFS
 | **SFTP** | 수정 시간이 없으면 `ACMODTIME` 플래그를 지웁니다. 클라이언트는 잘못된 시간 대신 시간 없음으로 봅니다. |
 | **WebDAV** | `creationdate`는 생성 시간입니다. 기록되지 않은 시간은 응답에 나타나지 않습니다. |
 
-## 아직 지원되지 않는 부분
+## 아직 지원되지 않는 부분 {#not-supported-yet}
 
 SMB에서 클라이언트가 시간을 **설정**하는 요청(`SET_INFO`)은 따르지 않습니다.
 시간은 파일 시스템이 기록한 그대로 유지됩니다(go-filesystems/smb#45).

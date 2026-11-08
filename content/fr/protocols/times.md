@@ -11,7 +11,7 @@ fichiers a enregistrées, et non l'heure de la requête. Cela demande la
 capacité optionnelle `TimesReader` de `go-filesystems/interface` v0.6.0, qu'un
 pilote a ou n'a pas.
 
-## Quels partages indiquent les vraies dates
+## Quels partages indiquent les vraies dates {#which-shares-report-real-times}
 
 | Partage | Vraies dates |
 |---|---|
@@ -25,7 +25,7 @@ Une date est comparée à la résolution la **plus grossière** entre celle du
 format et celle du protocole : SFTP transporte des secondes entières, le
 `getlastmodified` de WebDAV aussi, SMB 100 ns, NFS 1 ns.
 
-## Quand une date n'est pas enregistrée
+## Quand une date n'est pas enregistrée {#when-a-time-is-not-recorded}
 
 | Protocole | Ce qui est envoyé |
 |---|---|
@@ -34,7 +34,7 @@ format et celle du protocole : SFTP transporte des secondes entières, le
 | **SFTP** | Une date de modification manquante efface le drapeau `ACMODTIME` : le client ne voit aucune date plutôt qu'une fausse. |
 | **WebDAV** | `creationdate` est la date de création ; une date non enregistrée est absente de la réponse. |
 
-## Pas encore pris en charge
+## Pas encore pris en charge {#not-supported-yet}
 
 Un client qui **modifie** une date en SMB (`SET_INFO`) n'est pas obéi : la date
 reste celle que le système de fichiers avait enregistrée
