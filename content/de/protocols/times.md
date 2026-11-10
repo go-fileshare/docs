@@ -50,5 +50,28 @@ Eine Zeit, die nicht gespeichert werden kann, wird **standardmäßig ignoriert**
 die Anfrage gelingt und dieses Feld wird verworfen, wie Samba es tut, damit
 Kopien, die Zeiten erhalten, nicht scheitern. Das betrifft die Erstellungszeit,
 eine allein gesendete Statusänderungszeit und jede Zeit bei einem Treiber, der
-keine Zeiten setzen kann. fileshare bietet dafür keine Einstellung an: alle
-Freigaben verwenden den Standard.
+keine Zeiten setzen kann.
+
+### Festlegen, was geschieht: `unstorable_times` {#unstorable-times}
+
+Seit v0.42.0 legt eine Freigabe mit `unstorable_times` fest, was mit einer
+solchen Zeit geschieht (die Option `UnstorableTimes` von `go-filesystems/smb`):
+
+```hcl
+share "attic" {
+  directory        = "/srv/attic"
+  unstorable_times = "refuse"   # "ignore" (Standard), "refuse" oder "log"
+}
+```
+
+| Wert | Was der Client hört | Was behalten wird |
+|---|---|---|
+| `ignore` (auch ohne die Einstellung) | Erfolg | das Feld wird verworfen, wie Samba es tut |
+| `refuse` | `STATUS_NOT_SUPPORTED`, damit ein Backup-Werkzeug nie glaubt, eine Zeit sei erhalten geblieben | nichts aus dieser Anfrage wird angewendet |
+| `log` | Erfolg | das Feld wird verworfen, und pro Anfrage nennt eine Zeile die Freigabe, den Pfad und die Felder, geschrieben dorthin, wo der Server seine eigenen Zeilen schreibt |
+
+Jeder andere Wert wird beim Lesen der Konfiguration abgelehnt, mit einem Fehler,
+der die Freigabe und die drei Wörter nennt. Die Einstellung gehört zu SMB: eine
+Freigabe, deren `protocols` SMB auslassen, wird abgelehnt, wenn sie sie setzt.
+Einen serverweiten Standard gibt es nicht; sie wird pro Freigabe angegeben. Eine
+über die Admin-API angelegte Freigabe verwendet `ignore`.

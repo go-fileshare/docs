@@ -180,3 +180,20 @@ und zugleich `writers` auflistet, wird abgelehnt, weil `read_only` gewinnen wür
 Die Kapazität, die einem Client mitgeteilt wird, ist die des Dateisystems, auf dem der Baum liegt; eine
 Plattform, die das nicht angeben kann, lässt sie bei null, was die Protokolle als
 „unbekannt" lesen statt als „voll".
+
+## Was SMB mit einer Zeit macht, die es nicht speichern kann
+
+Setzt ein Client eine Zeit, die der Speicher nicht behalten kann (etwa eine
+Erstellungszeit), wird das standardmäßig **ignoriert**. Seit v0.42.0 kann eine
+Freigabe das mit `unstorable_times` festlegen:
+
+```hcl
+share "photos" {
+  directory        = "/data/photos"
+  unstorable_times = "log"      # "ignore" (Standard), "refuse" oder "log"
+}
+```
+
+`refuse` beantwortet die Anfrage des Clients mit einem Fehler, `log` schreibt
+eine Zeile mit der Freigabe und dem Pfad. Siehe
+[Echte Dateizeiten]({{< relref "/protocols/times.md#unstorable-times" >}}).

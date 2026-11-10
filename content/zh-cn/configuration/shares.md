@@ -180,3 +180,18 @@ share "photos" {
 告知客户端的容量是目录树所在文件系统的容量；无法提供该信息的
 平台会将其保留为零，协议会把它理解为
 “未知”而不是“已满”。
+
+## SMB 如何处理无法存储的时间
+
+客户端设置了存储无法保留的时间（例如创建时间）时，默认会被**忽略**。
+自 v0.42.0 起，共享可以用 `unstorable_times` 来选择：
+
+```hcl
+share "photos" {
+  directory        = "/data/photos"
+  unstorable_times = "log"      # "ignore"（默认）、"refuse" 或 "log"
+}
+```
+
+`refuse` 会向客户端返回错误，`log` 会写一行，写明共享和路径。
+参见[真实的文件时间]({{< relref "/protocols/times.md#unstorable-times" >}})。

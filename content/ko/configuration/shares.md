@@ -175,3 +175,18 @@ share "photos" {
 클라이언트에 알려 주는 용량은 트리가 있는 파일 시스템의 용량입니다. 이를 알 수
 없는 플랫폼은 0으로 두며, 프로토콜은 이를 "가득 참"이 아니라 "알 수 없음"으로
 해석합니다.
+
+## 저장할 수 없는 시간을 SMB가 처리하는 방식
+
+클라이언트가 저장소가 보존할 수 없는 시간(예: 생성 시간)을 설정하면 기본적으로
+**무시됩니다**. v0.42.0부터 공유마다 `unstorable_times`로 선택할 수 있습니다.
+
+```hcl
+share "photos" {
+  directory        = "/data/photos"
+  unstorable_times = "log"      # "ignore"(기본값), "refuse", "log"
+}
+```
+
+`refuse`는 클라이언트에 오류로 응답하고, `log`는 공유 이름과 경로를 적은 한 줄을
+기록합니다. [실제 파일 시간]({{< relref "/protocols/times.md#unstorable-times" >}})을 참고하세요.

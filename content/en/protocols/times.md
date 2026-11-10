@@ -47,5 +47,28 @@ it is; -1 freezes it and -2 resumes it, per open handle.
 A time that cannot be stored is **ignored by default**: the request succeeds and
 that field is dropped, as Samba does, so that copies which preserve times do not
 fail. This covers the creation time, a change time sent alone, and any time on a
-driver that cannot set times. fileshare does not offer a setting for this: every
-share uses the default.
+driver that cannot set times.
+
+### Choosing what happens: `unstorable_times` {#unstorable-times}
+
+Since v0.42.0 a share says what happens to such a time, with `unstorable_times`
+(the `UnstorableTimes` option of `go-filesystems/smb`):
+
+```hcl
+share "attic" {
+  directory        = "/srv/attic"
+  unstorable_times = "refuse"   # "ignore" (the default), "refuse" or "log"
+}
+```
+
+| Value | What the client hears | What is kept |
+|---|---|---|
+| `ignore` (also when the setting is absent) | success | the field is dropped, as Samba does |
+| `refuse` | `STATUS_NOT_SUPPORTED`, so a backup tool never believes a time was kept | nothing of that request is applied |
+| `log` | success | the field is dropped, and one line per request names the share, the path and the fields, written where the server writes its own lines |
+
+Any other value is refused when the configuration is read, with an error that
+names the share and the three words. The setting belongs to SMB: a share whose
+`protocols` leave SMB out is refused if it sets it. There is no server-wide
+default; say it on each share. A share created through the admin API uses
+`ignore`.

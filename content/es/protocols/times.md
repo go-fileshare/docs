@@ -50,5 +50,28 @@ Una fecha que no se puede almacenar se **ignora por defecto**: la solicitud
 tiene éxito y ese campo se descarta, como hace Samba, para que las copias que
 conservan las fechas no fallen. Esto abarca la fecha de creación, una fecha de
 cambio enviada sola y cualquier fecha en un controlador que no puede
-establecer fechas. fileshare no ofrece un ajuste para esto: todos los recursos
-compartidos usan el valor por defecto.
+establecer fechas.
+
+### Elegir qué ocurre: `unstorable_times` {#unstorable-times}
+
+Desde la v0.42.0, un recurso compartido indica qué ocurre con una fecha así
+mediante `unstorable_times` (la opción `UnstorableTimes` de `go-filesystems/smb`):
+
+```hcl
+share "attic" {
+  directory        = "/srv/attic"
+  unstorable_times = "refuse"   # "ignore" (por defecto), "refuse" o "log"
+}
+```
+
+| Valor | Lo que oye el cliente | Lo que se conserva |
+|---|---|---|
+| `ignore` (también si falta el ajuste) | éxito | el campo se descarta, como hace Samba |
+| `refuse` | `STATUS_NOT_SUPPORTED`, para que una herramienta de copia de seguridad nunca crea que se conservó una fecha | no se aplica nada de esa solicitud |
+| `log` | éxito | el campo se descarta, y una línea por solicitud nombra el recurso, la ruta y los campos, escrita donde el servidor escribe sus propias líneas |
+
+Cualquier otro valor se rechaza al leer la configuración, con un error que
+nombra el recurso y las tres palabras. El ajuste pertenece a SMB: se rechaza un
+recurso cuyo `protocols` excluye SMB si lo establece. No hay un valor por
+defecto para todo el servidor; se indica en cada recurso. Un recurso creado
+mediante la API de administración usa `ignore`.

@@ -180,3 +180,20 @@ et liste aussi des `writers` est refusé, parce que `read_only` l'emporterait.
 La capacité annoncée à un client est celle du système de fichiers sur lequel se trouve l'arborescence ; une
 plateforme qui ne sait pas la dire la laisse à zéro, ce que les protocoles lisent comme
 « inconnue » plutôt que « pleine ».
+
+## Ce que fait SMB d'une date qu'il ne peut pas enregistrer
+
+Quand un client fixe une date que le stockage ne peut pas conserver (une date de
+création, par exemple), elle est **ignorée** par défaut. Depuis la v0.42.0, un
+partage peut choisir, avec `unstorable_times` :
+
+```hcl
+share "photos" {
+  directory        = "/data/photos"
+  unstorable_times = "log"      # "ignore" (par défaut), "refuse" ou "log"
+}
+```
+
+`refuse` répond au client par une erreur, et `log` écrit une ligne qui nomme le
+partage et le chemin. Voir
+[Dates réelles des fichiers]({{< relref "/protocols/times.md#unstorable-times" >}}).

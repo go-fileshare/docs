@@ -47,3 +47,25 @@ go-filesystems/smb#45),客户端通过 SMB 设置的访问时间和修改时间
 这样保留时间的复制就不会失败。这包括创建时间、单独发送的变更时间,以及
 无法设置时间的驱动程序上的任何时间。fileshare 没有为此提供设置:所有共享都
 使用默认值。
+
+### 选择如何处理:`unstorable_times` {#unstorable-times}
+
+自 v0.42.0 起，共享可以用 `unstorable_times` 指定如何处理这样的时间
+（即 `go-filesystems/smb` 的 `UnstorableTimes` 选项）：
+
+```hcl
+share "attic" {
+  directory        = "/srv/attic"
+  unstorable_times = "refuse"   # "ignore"（默认）、"refuse" 或 "log"
+}
+```
+
+| 取值 | 客户端收到的响应 | 保留的内容 |
+|---|---|---|
+| `ignore`（未设置时同样如此） | 成功 | 该字段被丢弃，与 Samba 一致 |
+| `refuse` | `STATUS_NOT_SUPPORTED`，这样备份工具就不会误以为时间已被保留 | 该请求中的任何内容都不会被应用 |
+| `log` | 成功 | 该字段被丢弃，并且每个请求写一行，写明共享、路径和字段，输出到服务器自己写日志的地方 |
+
+其他任何取值都会在读取配置时被拒绝，错误信息会指出共享名和这三个取值。
+该设置属于 SMB：`protocols` 不含 SMB 的共享若设置它，会被拒绝。
+没有服务器级的默认值，需在每个共享上分别设置。通过管理 API 创建的共享使用 `ignore`。

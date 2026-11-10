@@ -50,5 +50,28 @@ Une date qui ne peut pas être enregistrée est **ignorée par défaut** : la
 requête réussit et ce champ est abandonné, comme le fait Samba, afin que les
 copies qui conservent les dates n'échouent pas. Cela vise la date de création,
 une date de changement envoyée seule, et toute date sur un pilote qui ne sait
-pas fixer les dates. fileshare n'offre pas de réglage pour cela : tous les
-partages utilisent la valeur par défaut.
+pas fixer les dates.
+
+### Choisir ce qui se passe : `unstorable_times` {#unstorable-times}
+
+Depuis la v0.42.0, un partage dit ce qu'il advient d'une telle date avec
+`unstorable_times` (l'option `UnstorableTimes` de `go-filesystems/smb`) :
+
+```hcl
+share "attic" {
+  directory        = "/srv/attic"
+  unstorable_times = "refuse"   # "ignore" (par défaut), "refuse" ou "log"
+}
+```
+
+| Valeur | Ce qu'entend le client | Ce qui est conservé |
+|---|---|---|
+| `ignore` (aussi quand le réglage est absent) | succès | le champ est abandonné, comme le fait Samba |
+| `refuse` | `STATUS_NOT_SUPPORTED`, pour qu'un outil de sauvegarde ne croie jamais qu'une date a été conservée | rien de cette requête n'est appliqué |
+| `log` | succès | le champ est abandonné, et une ligne par requête nomme le partage, le chemin et les champs, écrite là où le serveur écrit ses propres lignes |
+
+Toute autre valeur est refusée à la lecture de la configuration, par une erreur
+qui nomme le partage et les trois mots. Le réglage appartient à SMB : un partage
+dont `protocols` exclut SMB est refusé s'il le fixe. Il n'y a pas de valeur par
+défaut pour tout le serveur ; on la dit sur chaque partage. Un partage créé par
+l'API d'administration utilise `ignore`.

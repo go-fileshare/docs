@@ -49,3 +49,26 @@ go-filesystems/smb#45) 클라이언트가 SMB로 설정한 접근 시간과 수�
 위해서입니다). 대상은 생성 시간, 단독으로 전송된 변경 시간, 시간을 설정할 수
 없는 드라이버의 모든 시간입니다. fileshare에는 이를 위한 설정이 없으며 모든
 공유가 기본값을 사용합니다.
+
+### 동작 선택: `unstorable_times` {#unstorable-times}
+
+v0.42.0부터 공유마다 `unstorable_times`로 이런 시간을 어떻게 처리할지 정할 수
+있습니다(`go-filesystems/smb`의 `UnstorableTimes` 옵션).
+
+```hcl
+share "attic" {
+  directory        = "/srv/attic"
+  unstorable_times = "refuse"   # "ignore"(기본값), "refuse", "log"
+}
+```
+
+| 값 | 클라이언트가 받는 응답 | 유지되는 것 |
+|---|---|---|
+| `ignore`(설정이 없을 때도) | 성공 | 해당 필드는 버려짐(Samba와 동일) |
+| `refuse` | `STATUS_NOT_SUPPORTED`. 백업 도구가 시간이 보존되었다고 오해하지 않도록 하기 위함 | 해당 요청의 내용은 아무것도 적용되지 않음 |
+| `log` | 성공 | 해당 필드는 버려지고, 요청마다 공유 이름, 경로, 필드를 적은 한 줄이 서버가 자신의 줄을 쓰는 곳에 기록됨 |
+
+그 밖의 값은 구성을 읽을 때 공유 이름과 세 가지 값을 밝히는 오류로 거부됩니다.
+이 설정은 SMB의 것입니다. `protocols`에 SMB가 빠진 공유가 이를 설정하면
+거부됩니다. 서버 전체의 기본값은 없으며 공유마다 지정합니다. 관리 API로 만든
+공유는 `ignore`를 사용합니다.

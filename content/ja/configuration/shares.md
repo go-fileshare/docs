@@ -176,3 +176,18 @@ share "photos" {
 クライアントに通知される容量は、ツリーが置かれているファイルシステムのものです。
 取得できないプラットフォームでは 0 のままとなり、プロトコル側はこれを「満杯」ではなく
 「不明」として扱います。
+
+## 保存できない時刻を SMB はどう扱うか
+
+ストレージが保持できない時刻(たとえば作成時刻)をクライアントが設定した場合、
+既定では**無視されます**。v0.42.0 から、共有ごとに `unstorable_times` で選べます。
+
+```hcl
+share "photos" {
+  directory        = "/data/photos"
+  unstorable_times = "log"      # "ignore"(既定)、"refuse"、"log"
+}
+```
+
+`refuse` はクライアントにエラーを返し、`log` は共有名とパスを記した 1 行を書きます。
+[実際のファイル時刻]({{< relref "/protocols/times.md#unstorable-times" >}})を参照してください。
