@@ -17,7 +17,10 @@ hat oder nicht hat.
 |---|---|
 | **Verzeichnis** (Host) | ja: Zugriff, Änderung, Statusänderung und, wo der Host sie führt, Erstellung, auf die Nanosekunde |
 | **FAT-Abbild** | ja, in der Auflösung von FAT: Änderung 2 s, Zugriff ein Tag, Erstellung 10 ms; keine Statusänderungszeit |
-| exFAT-, NTFS-, ext4-, HFS+-Abbilder | noch nicht (exfat#29, ntfs#32, ext4#41, hfsplus#25): Antwort wie bisher |
+| **exFAT-Abbild** (seit v0.40.0) | ja: Erstellung und Änderung 10 ms, Zugriff 2 s; keine Statusänderungszeit |
+| **NTFS-Abbild** (seit v0.40.0) | ja: Erstellung, Änderung, Statusänderung und Zugriff, 100 ns |
+| **ext4-Abbild** (seit v0.40.0) | ja: Zugriff, Änderung und Statusänderung auf 1 ns (1 s bei 128-Byte-Inodes von ext2/ext3); Erstellung nur, wenn der Inode groß genug ist |
+| **HFS+-Abbild** (seit v0.40.0) | ja: Erstellung, Änderung, Statusänderung und Zugriff, 1 s |
 | Andere Abbildtypen | Antwort wie bisher |
 | Als die Person bereitgestellte Freigabe (`remote`-Worker) | ja, wenn das Verzeichnis des Workers ein Host-Verzeichnis ist: die Zeit überquert die Grenze des Workers |
 

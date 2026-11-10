@@ -17,7 +17,10 @@ no tiene.
 |---|---|
 | **Directorio** (anfitrión) | sí: acceso, modificación, cambio y, si el anfitrión la guarda, creación, al nanosegundo |
 | **Imagen FAT** | sí, con la resolución de FAT: modificación 2 s, acceso un día, creación 10 ms; no hay fecha de cambio |
-| Imágenes exFAT, NTFS, ext4, HFS+ | todavía no (exfat#29, ntfs#32, ext4#41, hfsplus#25): se responde como antes |
+| **Imagen exFAT** (desde v0.40.0) | sí: creación y modificación 10 ms, acceso 2 s; no hay fecha de cambio |
+| **Imagen NTFS** (desde v0.40.0) | sí: creación, modificación, cambio y acceso, 100 ns |
+| **Imagen ext4** (desde v0.40.0) | sí: acceso, modificación y cambio a 1 ns (1 s en los inodos ext2/ext3 de 128 bytes); creación solo si el inodo es lo bastante grande |
+| **Imagen HFS+** (desde v0.40.0) | sí: creación, modificación, cambio y acceso, 1 s |
 | Otros tipos de imagen | se responde como antes |
 | Recurso servido como la persona (worker `remote`) | sí, si el directorio del worker es un directorio del anfitrión: la fecha cruza la frontera del worker |
 
