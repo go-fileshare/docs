@@ -16,7 +16,10 @@ of the request. This needs the optional `TimesReader` capability of
 |---|---|
 | **Directory** (host) | yes: access, modification, change and, where the host keeps it, birth time, to the nanosecond |
 | **FAT image** | yes, at FAT's resolution: modification 2 s, access one day, creation 10 ms; there is no change time |
-| exFAT, NTFS, ext4, HFS+ images | not yet (exfat#29, ntfs#32, ext4#41, hfsplus#25): answered as before |
+| **exFAT image** (since v0.40.0) | yes: creation and modification 10 ms, access 2 s; there is no change time |
+| **NTFS image** (since v0.40.0) | yes: creation, modification, change and access, 100 ns |
+| **ext4 image** (since v0.40.0) | yes: access, modification and change to 1 ns (1 s on 128-byte ext2/ext3 inodes); creation only where the inode is large enough |
+| **HFS+ image** (since v0.40.0) | yes: creation, modification, change and access, 1 s |
 | Other image types | answered as before |
 | Share served as its people (`remote` worker) | yes, when the worker's directory is a host directory: the time crosses the worker boundary |
 

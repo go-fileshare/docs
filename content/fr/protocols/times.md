@@ -17,7 +17,10 @@ pilote a ou n'a pas.
 |---|---|
 | **Répertoire** (hôte) | oui : accès, modification, changement et, si l'hôte la garde, création, à la nanoseconde |
 | **Image FAT** | oui, à la résolution de FAT : modification 2 s, accès un jour, création 10 ms ; pas de date de changement |
-| Images exFAT, NTFS, ext4, HFS+ | pas encore (exfat#29, ntfs#32, ext4#41, hfsplus#25) : répondu comme avant |
+| **Image exFAT** (depuis v0.40.0) | oui : création et modification 10 ms, accès 2 s ; pas de date de changement |
+| **Image NTFS** (depuis v0.40.0) | oui : création, modification, changement et accès, 100 ns |
+| **Image ext4** (depuis v0.40.0) | oui : accès, modification et changement à 1 ns (1 s sur les inodes ext2/ext3 de 128 octets) ; création seulement si l'inode est assez grand |
+| **Image HFS+** (depuis v0.40.0) | oui : création, modification, changement et accès, 1 s |
 | Autres types d'image | répondu comme avant |
 | Partage servi sous l'identité de la personne (worker `remote`) | oui, si le répertoire du worker est un répertoire de l'hôte : la date traverse la frontière du worker |
 
