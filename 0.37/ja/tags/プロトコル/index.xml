@@ -785,5 +785,6 @@ data-copied-label="コピーしました！"
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;h2 data-hextra-search-id="not-supported-yet"&gt;まだ未対応の点&lt;span class="hx:absolute hx:-mt-20" id="not-supported-yet"&gt;&lt;/span&gt;
-&lt;a href="#not-supported-yet" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;SMB でクライアントが時刻を&lt;strong&gt;設定&lt;/strong&gt;する操作(&lt;code&gt;SET_INFO&lt;/code&gt;)には従いません。時刻はファイルシステムが記録したままです(go-filesystems/smb#45)。&lt;/p&gt;</description></item></channel></rss>
+&lt;h2 data-hextra-search-id="setting-times"&gt;SMB でクライアントが設定する時刻&lt;span class="hx:absolute hx:-mt-20" id="setting-times"&gt;&lt;/span&gt;
+&lt;a href="#setting-times" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;v0.41.0 から(&lt;code&gt;go-filesystems/smb&lt;/code&gt; v0.10.0、go-filesystems/smb#45)、クライアントが SMB で設定したアクセス時刻と更新時刻(&lt;code&gt;SET_INFO&lt;/code&gt;。&lt;code&gt;touch&lt;/code&gt;、&lt;code&gt;robocopy /COPY:T&lt;/code&gt;、エクスプローラーでのコピーが行う操作)が、&lt;strong&gt;ディレクトリ&lt;/strong&gt;共有のファイルに反映されます。値が 0 の時刻はそのままです。-1 はその時刻を固定し、-2 で再開します(開いているハンドルごと)。&lt;/p&gt;
+&lt;p&gt;保存できない時刻は&lt;strong&gt;既定では無視されます&lt;/strong&gt;。要求は成功し、そのフィールドだけが捨てられます(Samba と同じ動作で、時刻を保つコピーが失敗しないようにするためです)。対象は、作成時刻、単独で送られた変更時刻、時刻を設定できないドライバー上のすべての時刻です。fileshare にはこのための設定はなく、すべての共有が既定を使います。&lt;/p&gt;</description></item></channel></rss>

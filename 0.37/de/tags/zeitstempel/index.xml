@@ -73,6 +73,12 @@ Protokolls verglichen: SFTP überträgt ganze Sekunden, ein WebDAV-&lt;code&gt;g
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;h2 data-hextra-search-id="not-supported-yet"&gt;Noch nicht unterstützt&lt;span class="hx:absolute hx:-mt-20" id="not-supported-yet"&gt;&lt;/span&gt;
-&lt;a href="#not-supported-yet" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Ein Client, der über SMB eine Zeit &lt;strong&gt;setzt&lt;/strong&gt; (&lt;code&gt;SET_INFO&lt;/code&gt;), wird nicht
-befolgt: die Zeit bleibt die, die das Dateisystem erfasst hat(go-filesystems/smb#45).&lt;/p&gt;</description></item></channel></rss>
+&lt;h2 data-hextra-search-id="setting-times"&gt;Zeiten, die ein Client über SMB setzt&lt;span class="hx:absolute hx:-mt-20" id="setting-times"&gt;&lt;/span&gt;
+&lt;a href="#setting-times" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Seit v0.41.0 (&lt;code&gt;go-filesystems/smb&lt;/code&gt; v0.10.0,go-filesystems/smb#45) werden die Zugriffs- und Änderungszeiten, die ein Client
+über SMB setzt (&lt;code&gt;SET_INFO&lt;/code&gt;, wie es &lt;code&gt;touch&lt;/code&gt;, &lt;code&gt;robocopy /COPY:T&lt;/code&gt; und ein Kopieren
+im Explorer tun), auf die Datei angewendet, bei einer &lt;strong&gt;Verzeichnis&lt;/strong&gt;-Freigabe.Eine Zeit von 0 lässt diese Zeit unverändert; -1 friert sie ein und -2 hebt das
+wieder auf, je geöffnetem Handle.&lt;/p&gt;
+&lt;p&gt;Eine Zeit, die nicht gespeichert werden kann, wird &lt;strong&gt;standardmäßig ignoriert&lt;/strong&gt;:die Anfrage gelingt und dieses Feld wird verworfen, wie Samba es tut, damit
+Kopien, die Zeiten erhalten, nicht scheitern. Das betrifft die Erstellungszeit,eine allein gesendete Statusänderungszeit und jede Zeit bei einem Treiber, der
+keine Zeiten setzen kann. fileshare bietet dafür keine Einstellung an: alle
+Freigaben verwenden den Standard.&lt;/p&gt;</description></item></channel></rss>

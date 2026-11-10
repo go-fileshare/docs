@@ -74,6 +74,12 @@ seconds, SMB 100 ns, NFS 1 ns.&lt;/p&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;h2 data-hextra-search-id="not-supported-yet"&gt;Not supported yet&lt;span class="hx:absolute hx:-mt-20" id="not-supported-yet"&gt;&lt;/span&gt;
-&lt;a href="#not-supported-yet" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;A client that &lt;strong&gt;sets&lt;/strong&gt; a time over SMB (&lt;code&gt;SET_INFO&lt;/code&gt;) is not obeyed: the time
-stays what the filesystem recorded (go-filesystems/smb#45).&lt;/p&gt;</description></item></channel></rss>
+&lt;h2 data-hextra-search-id="setting-times"&gt;Times a client sets over SMB&lt;span class="hx:absolute hx:-mt-20" id="setting-times"&gt;&lt;/span&gt;
+&lt;a href="#setting-times" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Since v0.41.0 (&lt;code&gt;go-filesystems/smb&lt;/code&gt; v0.10.0,go-filesystems/smb#45), the access and write times a client sets over SMB(&lt;code&gt;SET_INFO&lt;/code&gt;, as &lt;code&gt;touch&lt;/code&gt;, &lt;code&gt;robocopy /COPY:T&lt;/code&gt; and a copy in Explorer do) are
+applied to the file, on a &lt;strong&gt;directory&lt;/strong&gt; share. A time of 0 leaves that time as
+it is; -1 freezes it and -2 resumes it, per open handle.&lt;/p&gt;
+&lt;p&gt;A time that cannot be stored is &lt;strong&gt;ignored by default&lt;/strong&gt;: the request succeeds and
+that field is dropped, as Samba does, so that copies which preserve times do not
+fail. This covers the creation time, a change time sent alone, and any time on a
+driver that cannot set times. fileshare does not offer a setting for this: every
+share uses the default.&lt;/p&gt;</description></item></channel></rss>

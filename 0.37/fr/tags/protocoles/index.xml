@@ -958,6 +958,14 @@ format et celle du protocole : SFTP transporte des secondes entières, le&lt;cod
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;h2 data-hextra-search-id="not-supported-yet"&gt;Pas encore pris en charge&lt;span class="hx:absolute hx:-mt-20" id="not-supported-yet"&gt;&lt;/span&gt;
-&lt;a href="#not-supported-yet" class="subheading-anchor" aria-label="Lien permanent vers cette section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Un client qui &lt;strong&gt;modifie&lt;/strong&gt; une date en SMB (&lt;code&gt;SET_INFO&lt;/code&gt;) n&amp;rsquo;est pas obéi : la date
-reste celle que le système de fichiers avait enregistrée(go-filesystems/smb#45).&lt;/p&gt;</description></item></channel></rss>
+&lt;h2 data-hextra-search-id="setting-times"&gt;Dates fixées par un client en SMB&lt;span class="hx:absolute hx:-mt-20" id="setting-times"&gt;&lt;/span&gt;
+&lt;a href="#setting-times" class="subheading-anchor" aria-label="Lien permanent vers cette section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Depuis la v0.41.0 (&lt;code&gt;go-filesystems/smb&lt;/code&gt; v0.10.0,go-filesystems/smb#45), les dates d&amp;rsquo;accès et de modification qu&amp;rsquo;un client fixe
+en SMB (&lt;code&gt;SET_INFO&lt;/code&gt;, comme le font &lt;code&gt;touch&lt;/code&gt;, &lt;code&gt;robocopy /COPY:T&lt;/code&gt; et une copie dans
+l&amp;rsquo;Explorateur) sont appliquées au fichier, sur un partage de &lt;strong&gt;répertoire&lt;/strong&gt;. Une
+date à 0 la laisse telle quelle ; -1 la fige et -2 la libère, par descripteur
+ouvert.&lt;/p&gt;
+&lt;p&gt;Une date qui ne peut pas être enregistrée est &lt;strong&gt;ignorée par défaut&lt;/strong&gt; : la
+requête réussit et ce champ est abandonné, comme le fait Samba, afin que les
+copies qui conservent les dates n&amp;rsquo;échouent pas. Cela vise la date de création,une date de changement envoyée seule, et toute date sur un pilote qui ne sait
+pas fixer les dates. fileshare n&amp;rsquo;offre pas de réglage pour cela : tous les
+partages utilisent la valeur par défaut.&lt;/p&gt;</description></item></channel></rss>

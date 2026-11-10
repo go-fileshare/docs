@@ -71,5 +71,6 @@
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;h2 data-hextra-search-id="not-supported-yet"&gt;尚不支持&lt;span class="hx:absolute hx:-mt-20" id="not-supported-yet"&gt;&lt;/span&gt;
-&lt;a href="#not-supported-yet" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;客户端通过 SMB &lt;strong&gt;设置&lt;/strong&gt;时间(&lt;code&gt;SET_INFO&lt;/code&gt;)不会被执行:时间保持文件系统记录的值(go-filesystems/smb#45)。&lt;/p&gt;</description></item></channel></rss>
+&lt;h2 data-hextra-search-id="setting-times"&gt;客户端通过 SMB 设置的时间&lt;span class="hx:absolute hx:-mt-20" id="setting-times"&gt;&lt;/span&gt;
+&lt;a href="#setting-times" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;自 v0.41.0 起(&lt;code&gt;go-filesystems/smb&lt;/code&gt; v0.10.0,go-filesystems/smb#45),客户端通过 SMB 设置的访问时间和修改时间(&lt;code&gt;SET_INFO&lt;/code&gt;,&lt;code&gt;touch&lt;/code&gt;、&lt;code&gt;robocopy /COPY:T&lt;/code&gt; 以及资源管理器中的复制都会这样做)会应用到&lt;strong&gt;目录&lt;/strong&gt;共享中的文件上。值为 0 的时间保持不变;-1 冻结该时间,-2 恢复,按每个打开的句柄生效。&lt;/p&gt;
+&lt;p&gt;无法存储的时间&lt;strong&gt;默认被忽略&lt;/strong&gt;:请求成功,该字段被丢弃,与 Samba 的做法一致,这样保留时间的复制就不会失败。这包括创建时间、单独发送的变更时间,以及无法设置时间的驱动程序上的任何时间。fileshare 没有为此提供设置:所有共享都使用默认值。&lt;/p&gt;</description></item></channel></rss>

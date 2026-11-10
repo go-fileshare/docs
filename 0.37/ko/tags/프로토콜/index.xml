@@ -952,5 +952,11 @@ data-copied-label="복사됨!"
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;h2 data-hextra-search-id="not-supported-yet"&gt;아직 지원되지 않는 부분&lt;span class="hx:absolute hx:-mt-20" id="not-supported-yet"&gt;&lt;/span&gt;
-&lt;a href="#not-supported-yet" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;SMB에서 클라이언트가 시간을 &lt;strong&gt;설정&lt;/strong&gt;하는 요청(&lt;code&gt;SET_INFO&lt;/code&gt;)은 따르지 않습니다.시간은 파일 시스템이 기록한 그대로 유지됩니다(go-filesystems/smb#45).&lt;/p&gt;</description></item></channel></rss>
+&lt;h2 data-hextra-search-id="setting-times"&gt;SMB에서 클라이언트가 설정하는 시간&lt;span class="hx:absolute hx:-mt-20" id="setting-times"&gt;&lt;/span&gt;
+&lt;a href="#setting-times" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;v0.41.0부터(&lt;code&gt;go-filesystems/smb&lt;/code&gt; v0.10.0,go-filesystems/smb#45) 클라이언트가 SMB로 설정한 접근 시간과 수정 시간(&lt;code&gt;SET_INFO&lt;/code&gt;. &lt;code&gt;touch&lt;/code&gt;, &lt;code&gt;robocopy /COPY:T&lt;/code&gt;, 탐색기에서의 복사가 하는 동작)이&lt;strong&gt;디렉터리&lt;/strong&gt; 공유의 파일에 적용됩니다. 값이 0인 시간은 그대로 둡니다. -1은 그
+시간을 고정하고 -2는 다시 재개합니다(열린 핸들마다).&lt;/p&gt;
+&lt;p&gt;저장할 수 없는 시간은 &lt;strong&gt;기본적으로 무시됩니다&lt;/strong&gt;. 요청은 성공하고 해당 필드만
+버려집니다(Samba와 같은 동작이며, 시간을 보존하는 복사가 실패하지 않게 하기
+위해서입니다). 대상은 생성 시간, 단독으로 전송된 변경 시간, 시간을 설정할 수
+없는 드라이버의 모든 시간입니다. fileshare에는 이를 위한 설정이 없으며 모든
+공유가 기본값을 사용합니다.&lt;/p&gt;</description></item></channel></rss>

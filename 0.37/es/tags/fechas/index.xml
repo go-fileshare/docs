@@ -75,6 +75,14 @@ WebDAV también, SMB 100 ns, NFS 1 ns.&lt;/p&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;h2 data-hextra-search-id="not-supported-yet"&gt;Aún no se admite&lt;span class="hx:absolute hx:-mt-20" id="not-supported-yet"&gt;&lt;/span&gt;
-&lt;a href="#not-supported-yet" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Un cliente que &lt;strong&gt;establece&lt;/strong&gt; una fecha por SMB (&lt;code&gt;SET_INFO&lt;/code&gt;) no es obedecido: la
-fecha sigue siendo la que registró el sistema de archivos(go-filesystems/smb#45).&lt;/p&gt;</description></item></channel></rss>
+&lt;h2 data-hextra-search-id="setting-times"&gt;Fechas que un cliente establece por SMB&lt;span class="hx:absolute hx:-mt-20" id="setting-times"&gt;&lt;/span&gt;
+&lt;a href="#setting-times" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Desde la v0.41.0 (&lt;code&gt;go-filesystems/smb&lt;/code&gt; v0.10.0,go-filesystems/smb#45), las fechas de acceso y de modificación que un cliente
+establece por SMB (&lt;code&gt;SET_INFO&lt;/code&gt;, como hacen &lt;code&gt;touch&lt;/code&gt;, &lt;code&gt;robocopy /COPY:T&lt;/code&gt; y una
+copia en el Explorador) se aplican al archivo, en un recurso compartido de&lt;strong&gt;directorio&lt;/strong&gt;. Una fecha de 0 la deja como está; -1 la congela y -2 la
+reanuda, por identificador abierto.&lt;/p&gt;
+&lt;p&gt;Una fecha que no se puede almacenar se &lt;strong&gt;ignora por defecto&lt;/strong&gt;: la solicitud
+tiene éxito y ese campo se descarta, como hace Samba, para que las copias que
+conservan las fechas no fallen. Esto abarca la fecha de creación, una fecha de
+cambio enviada sola y cualquier fecha en un controlador que no puede
+establecer fechas. fileshare no ofrece un ajuste para esto: todos los recursos
+compartidos usan el valor por defecto.&lt;/p&gt;</description></item></channel></rss>
