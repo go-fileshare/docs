@@ -2,7 +2,7 @@
 title: "文件的真实时间"
 linkTitle: "文件时间"
 weight: 60
-description: "哪些共享会通过 NFS、SMB、SFTP 和 WebDAV 报告每个文件自己的时间,时间未记录时各协议的行为,以及尚不支持的部分。"
+description: "哪些共享会通过 NFS、SMB、SFTP 和 WebDAV 报告每个文件自己的时间,时间未记录时各协议的行为,以及客户端通过 SMB 设置时间时的行为。"
 tags: [协议, 时间戳]
 ---
 
@@ -35,7 +35,15 @@ tags: [协议, 时间戳]
 | **SFTP** | 缺失的修改时间会清除 `ACMODTIME` 标志:客户端看到的是没有时间,而不是错误的时间。 |
 | **WebDAV** | `creationdate` 是创建时间;未记录的时间不会出现在应答中。 |
 
-## 尚不支持 {#not-supported-yet}
+## 客户端通过 SMB 设置的时间 {#setting-times}
 
-客户端通过 SMB **设置**时间(`SET_INFO`)不会被执行:时间保持文件系统记录的
-值(go-filesystems/smb#45)。
+自 v0.41.0 起(`go-filesystems/smb` v0.10.0,
+go-filesystems/smb#45),客户端通过 SMB 设置的访问时间和修改时间
+(`SET_INFO`,`touch`、`robocopy /COPY:T` 以及资源管理器中的复制都会这样做)
+会应用到**目录**共享中的文件上。值为 0 的时间保持不变;-1 冻结该时间,-2 恢复,
+按每个打开的句柄生效。
+
+无法存储的时间**默认被忽略**:请求成功,该字段被丢弃,与 Samba 的做法一致,
+这样保留时间的复制就不会失败。这包括创建时间、单独发送的变更时间,以及
+无法设置时间的驱动程序上的任何时间。fileshare 没有为此提供设置:所有共享都
+使用默认值。

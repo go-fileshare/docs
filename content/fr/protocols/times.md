@@ -2,7 +2,7 @@
 title: "Les vraies dates des fichiers"
 linkTitle: "Dates des fichiers"
 weight: 60
-description: "Quels partages indiquent les dates propres à chaque fichier en NFS, SMB, SFTP et WebDAV, ce que dit chaque protocole quand une date n'est pas enregistrée, et ce qui n'est pas encore pris en charge."
+description: "Quels partages indiquent les dates propres à chaque fichier en NFS, SMB, SFTP et WebDAV, ce que dit chaque protocole quand une date n'est pas enregistrée, et ce qui se passe quand un client fixe une date en SMB."
 tags: [protocoles, dates]
 ---
 
@@ -37,8 +37,18 @@ format et celle du protocole : SFTP transporte des secondes entières, le
 | **SFTP** | Une date de modification manquante efface le drapeau `ACMODTIME` : le client ne voit aucune date plutôt qu'une fausse. |
 | **WebDAV** | `creationdate` est la date de création ; une date non enregistrée est absente de la réponse. |
 
-## Pas encore pris en charge {#not-supported-yet}
+## Dates fixées par un client en SMB {#setting-times}
 
-Un client qui **modifie** une date en SMB (`SET_INFO`) n'est pas obéi : la date
-reste celle que le système de fichiers avait enregistrée
-(go-filesystems/smb#45).
+Depuis la v0.41.0 (`go-filesystems/smb` v0.10.0,
+go-filesystems/smb#45), les dates d'accès et de modification qu'un client fixe
+en SMB (`SET_INFO`, comme le font `touch`, `robocopy /COPY:T` et une copie dans
+l'Explorateur) sont appliquées au fichier, sur un partage de **répertoire**. Une
+date à 0 la laisse telle quelle ; -1 la fige et -2 la libère, par descripteur
+ouvert.
+
+Une date qui ne peut pas être enregistrée est **ignorée par défaut** : la
+requête réussit et ce champ est abandonné, comme le fait Samba, afin que les
+copies qui conservent les dates n'échouent pas. Cela vise la date de création,
+une date de changement envoyée seule, et toute date sur un pilote qui ne sait
+pas fixer les dates. fileshare n'offre pas de réglage pour cela : tous les
+partages utilisent la valeur par défaut.

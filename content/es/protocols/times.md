@@ -2,7 +2,7 @@
 title: "Las fechas reales de los archivos"
 linkTitle: "Fechas de archivos"
 weight: 60
-description: "Qué recursos compartidos informan las fechas propias de cada archivo por NFS, SMB, SFTP y WebDAV, qué dice cada protocolo cuando una fecha no está registrada y qué aún no se admite."
+description: "Qué recursos compartidos informan las fechas propias de cada archivo por NFS, SMB, SFTP y WebDAV, qué dice cada protocolo cuando una fecha no está registrada y qué ocurre cuando un cliente establece una fecha por SMB."
 tags: [protocolos, fechas]
 ---
 
@@ -37,8 +37,18 @@ WebDAV también, SMB 100 ns, NFS 1 ns.
 | **SFTP** | Una fecha de modificación ausente borra el indicador `ACMODTIME`: el cliente no ve ninguna fecha en lugar de una falsa. |
 | **WebDAV** | `creationdate` es la fecha de creación; una fecha no registrada no aparece en la respuesta. |
 
-## Aún no se admite {#not-supported-yet}
+## Fechas que un cliente establece por SMB {#setting-times}
 
-Un cliente que **establece** una fecha por SMB (`SET_INFO`) no es obedecido: la
-fecha sigue siendo la que registró el sistema de archivos
-(go-filesystems/smb#45).
+Desde la v0.41.0 (`go-filesystems/smb` v0.10.0,
+go-filesystems/smb#45), las fechas de acceso y de modificación que un cliente
+establece por SMB (`SET_INFO`, como hacen `touch`, `robocopy /COPY:T` y una
+copia en el Explorador) se aplican al archivo, en un recurso compartido de
+**directorio**. Una fecha de 0 la deja como está; -1 la congela y -2 la
+reanuda, por identificador abierto.
+
+Una fecha que no se puede almacenar se **ignora por defecto**: la solicitud
+tiene éxito y ese campo se descarta, como hace Samba, para que las copias que
+conservan las fechas no fallen. Esto abarca la fecha de creación, una fecha de
+cambio enviada sola y cualquier fecha en un controlador que no puede
+establecer fechas. fileshare no ofrece un ajuste para esto: todos los recursos
+compartidos usan el valor por defecto.

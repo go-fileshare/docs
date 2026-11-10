@@ -2,7 +2,7 @@
 title: "Die echten Dateizeiten"
 linkTitle: "Dateizeiten"
 weight: 60
-description: "Welche Freigaben über NFS, SMB, SFTP und WebDAV die eigenen Zeiten jeder Datei melden, was jedes Protokoll sagt, wenn eine Zeit nicht erfasst ist, und was noch nicht unterstützt wird."
+description: "Welche Freigaben über NFS, SMB, SFTP und WebDAV die eigenen Zeiten jeder Datei melden, was jedes Protokoll sagt, wenn eine Zeit nicht erfasst ist, und was geschieht, wenn ein Client über SMB eine Zeit setzt."
 tags: [protokolle, zeitstempel]
 ---
 
@@ -37,8 +37,18 @@ Protokolls verglichen: SFTP überträgt ganze Sekunden, ein WebDAV-
 | **SFTP** | Eine fehlende Änderungszeit löscht das Flag `ACMODTIME`: der Client sieht keine Zeit statt einer falschen. |
 | **WebDAV** | `creationdate` ist die Erstellungszeit; eine nicht erfasste Zeit fehlt in der Antwort. |
 
-## Noch nicht unterstützt {#not-supported-yet}
+## Zeiten, die ein Client über SMB setzt {#setting-times}
 
-Ein Client, der über SMB eine Zeit **setzt** (`SET_INFO`), wird nicht
-befolgt: die Zeit bleibt die, die das Dateisystem erfasst hat
-(go-filesystems/smb#45).
+Seit v0.41.0 (`go-filesystems/smb` v0.10.0,
+go-filesystems/smb#45) werden die Zugriffs- und Änderungszeiten, die ein Client
+über SMB setzt (`SET_INFO`, wie es `touch`, `robocopy /COPY:T` und ein Kopieren
+im Explorer tun), auf die Datei angewendet, bei einer **Verzeichnis**-Freigabe.
+Eine Zeit von 0 lässt diese Zeit unverändert; -1 friert sie ein und -2 hebt das
+wieder auf, je geöffnetem Handle.
+
+Eine Zeit, die nicht gespeichert werden kann, wird **standardmäßig ignoriert**:
+die Anfrage gelingt und dieses Feld wird verworfen, wie Samba es tut, damit
+Kopien, die Zeiten erhalten, nicht scheitern. Das betrifft die Erstellungszeit,
+eine allein gesendete Statusänderungszeit und jede Zeit bei einem Treiber, der
+keine Zeiten setzen kann. fileshare bietet dafür keine Einstellung an: alle
+Freigaben verwenden den Standard.
