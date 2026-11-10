@@ -50,5 +50,80 @@ Une date qui ne peut pas être enregistrée est **ignorée par défaut** : la
 requête réussit et ce champ est abandonné, comme le fait Samba, afin que les
 copies qui conservent les dates n'échouent pas. Cela vise la date de création,
 une date de changement envoyée seule, et toute date sur un pilote qui ne sait
-pas fixer les dates. fileshare n'offre pas de réglage pour cela : tous les
-partages utilisent la valeur par défaut.
+pas fixer les dates.
+
+### Choisir ce qui se passe : `unstorable_times` {#unstorable-times}
+
+Depuis la v0.42.0, un partage dit ce qu'il advient d'une telle date avec
+`unstorable_times` (l'option `UnstorableTimes` de `go-filesystems/smb`) :
+
+```hcl
+share "attic" {
+  directory        = "/srv/attic"
+  unstorable_times = "refuse"   # "ignore" (par défaut), "refuse" ou "log"
+}
+```
+
+| Valeur | Ce qu'entend le client | Ce qui est conservé |
+|---|---|---|
+| `ignore` (aussi quand le réglage est absent) | succès | le champ est abandonné, comme le fait Samba |
+| `refuse` | `STATUS_NOT_SUPPORTED`, pour qu'un outil de sauvegarde ne croie jamais qu'une date a été conservée | rien de cette requête n'est appliqué |
+| `log` | succès | le champ est abandonné, et une ligne par requête nomme le partage, le chemin et les champs, écrite là où le serveur écrit ses propres lignes |
+
+Toute autre valeur est refusée à la lecture de la configuration, par une erreur
+qui nomme le partage et les trois mots. Le réglage appartient à SMB : un partage
+dont `protocols` exclut SMB est refusé s'il le fixe. Il n'y a pas de valeur par
+défaut pour tout le serveur ; on la dit sur chaque partage. Un partage créé par
+l'API d'administration utilise `ignore`.
+
+### Quand une date ne peut pas être enregistrée {#when-unstorable}
+
+Une requête est jugée champ par champ, et un seul champ non enregistrable
+suffit : `refuse` refuse toute la requête, `log` écrit sa ligne. Une date n'est
+pas enregistrable quand :
+
+1. **CreationTime** est fixée à une valeur différente de celle que le pilote
+   annonce (ou le pilote n'en annonce aucune). Il n'existe aucun moyen de fixer
+   une date de création. Une valeur égale à celle annoncée est acceptée : il n'y
+   a rien à changer.
+2. **ChangeTime** est envoyée **seule**, avec une valeur différente de celle
+   annoncée. Envoyée avec une date d'accès ou d'écriture, elle est acceptée si
+   le pilote sait fixer les dates, parce que les fixer remet la date de
+   changement à « maintenant ».
+3. **Une date d'accès ou d'écriture** est fixée sur un partage dont le pilote ne
+   sait pas fixer les dates (`Chtimes`) : toute valeur réelle, égale à la
+   courante ou non.
+
+Trois choses ne sont pas décidées par la politique. Une date de 0 (conserver),
+-1 (figer) ou -2 (reprendre) n'est jamais non enregistrable. -1 sur un pilote qui
+sait fixer les dates mais pas les annoncer donne toujours
+`STATUS_NOT_SUPPORTED`, dans tous les modes : c'est une capacité absente, pas un
+champ abandonné (cela concerne les images ufs, btrfs, xfs et zfs). Et une
+requête sur un partage **en lecture seule** (`read_only = true`, un périphérique,
+un partage qui a choisi une partition, une personne sans droit d'écriture)
+reçoit `STATUS_MEDIA_WRITE_PROTECTED` avant tout cela, dans tous les modes.
+
+Ce qu'un partage peut enregistrer dépend de son pilote, dans les versions
+qu'épingle cette version :
+
+| Partage | CreationTime | ChangeTime seule | Date d'accès ou d'écriture |
+|---|---|---|---|
+| **Répertoire** (hôte) | non enregistrable sauf si égale à la date de création annoncée | non enregistrable sauf si égale à l'annoncée | enregistrée (une ChangeTime envoyée avec elle est acceptée) |
+| **Image, pilote avec `Chtimes`** : ext4, ufs, btrfs, xfs, zfs | non enregistrable sauf si égale à l'annoncée (seul ext4 en annonce une : pour les autres, toujours) | idem | enregistrée (une ChangeTime envoyée avec elle est acceptée) |
+| **Image, pilote sans `Chtimes`** : FAT, exFAT, NTFS, HFS+, APFS, ISO 9660, SquashFS | idem (FAT, exFAT, NTFS et HFS+ en annoncent une ; les autres jamais) | idem, **y compris** envoyée avec une date d'accès ou d'écriture | **toujours non enregistrable** |
+
+Les pilotes avec `Chtimes` sont osfs (`osfs.go:383`), ext4 (`metadata.go:93`), ufs
+(`metadata.go:63`), btrfs (`fs.go:382`), xfs (`fs.go:521`) et zfs
+(`metadata.go:94`) ; les autres n'en ont pas. Avant la v0.42.0, le verrou que
+fileshare place devant chaque pilote d'image masquait `Chtimes`, si bien que
+toute image abandonnait les dates d'accès et d'écriture d'un client, ext4
+comprise ; depuis la v0.42.0 il le transmet exactement quand le pilote en a un.
+Les images NTFS sont lues par un pilote en lecture seule : rien n'est enregistré
+quelle que soit la politique, qui décide seulement de ce que le client apprend.
+
+Quels clients déclenchent quel cas : l'Explorateur Windows et `robocopy /COPY:T`
+envoient une CreationTime, qu'un partage de n'importe quel type ne peut pas
+conserver si elle change ; `touch -d` et `cp -p` sous Linux n'envoient que des
+dates d'accès et d'écriture (le client du noyau ajoute une ChangeTime
+« maintenant »), qu'un répertoire et un pilote avec `Chtimes` enregistrent, et
+un pilote sans lui non.

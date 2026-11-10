@@ -188,3 +188,23 @@ rechaza, porque `read_only` ganaría.
 La capacidad que se comunica a un cliente es la del sistema de archivos en el que se
 encuentra el árbol; una plataforma que no puede indicarla la deja a cero, que los
 protocolos interpretan como «desconocida» y no como «llena».
+
+## Qué hace SMB con una fecha que no puede almacenar {#what-smb-does-with-a-time-it-cannot-store}
+
+Una fecha que establece un cliente y que el almacenamiento no puede conservar se
+**ignora** por defecto. Desde la v0.42.0 un recurso compartido puede elegir, con
+`unstorable_times`. No es almacenable una CreationTime distinta de la informada,
+una ChangeTime enviada sola, o una fecha de acceso o de escritura en una imagen
+cuyo controlador no puede establecer fechas (FAT, exFAT, NTFS, HFS+, APFS; un
+directorio del host y una imagen ext4 las almacenan):
+
+```hcl
+share "photos" {
+  directory        = "/data/photos"
+  unstorable_times = "log"      # "ignore" (por defecto), "refuse" o "log"
+}
+```
+
+`refuse` responde al cliente con un error y `log` escribe una línea con el
+recurso y la ruta. Los casos exactos, según el tipo de recurso, están en
+[Fechas reales de los archivos]({{< relref "/protocols/times.md#when-unstorable" >}}).

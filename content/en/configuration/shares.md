@@ -180,3 +180,22 @@ and also lists `writers` is refused, because `read_only` would win.
 The capacity a client is told is that of the filesystem the tree lives on; a
 platform that cannot say leaves it at zero, which the protocols read as
 "unknown" rather than "full".
+
+## What SMB does with a time it cannot store {#what-smb-does-with-a-time-it-cannot-store}
+
+A time a client sets that the storage cannot keep is **ignored** by default.
+Since v0.42.0 a share can choose, with `unstorable_times`. A time is unstorable
+when it is a CreationTime that differs from the reported one, a ChangeTime sent
+alone, or an access or write time on an image whose driver cannot set times
+(FAT, exFAT, NTFS, HFS+, APFS; a host directory and an ext4 image store those):
+
+```hcl
+share "photos" {
+  directory        = "/data/photos"
+  unstorable_times = "log"      # "ignore" (the default), "refuse" or "log"
+}
+```
+
+`refuse` answers the client with an error, and `log` writes one line naming the
+share and the path. The exact cases, per kind of share, are in
+[Real file times]({{< relref "/protocols/times.md#when-unstorable" >}}).

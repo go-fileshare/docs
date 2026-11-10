@@ -47,5 +47,72 @@ it is; -1 freezes it and -2 resumes it, per open handle.
 A time that cannot be stored is **ignored by default**: the request succeeds and
 that field is dropped, as Samba does, so that copies which preserve times do not
 fail. This covers the creation time, a change time sent alone, and any time on a
-driver that cannot set times. fileshare does not offer a setting for this: every
-share uses the default.
+driver that cannot set times.
+
+### Choosing what happens: `unstorable_times` {#unstorable-times}
+
+Since v0.42.0 a share says what happens to such a time, with `unstorable_times`
+(the `UnstorableTimes` option of `go-filesystems/smb`):
+
+```hcl
+share "attic" {
+  directory        = "/srv/attic"
+  unstorable_times = "refuse"   # "ignore" (the default), "refuse" or "log"
+}
+```
+
+| Value | What the client hears | What is kept |
+|---|---|---|
+| `ignore` (also when the setting is absent) | success | the field is dropped, as Samba does |
+| `refuse` | `STATUS_NOT_SUPPORTED`, so a backup tool never believes a time was kept | nothing of that request is applied |
+| `log` | success | the field is dropped, and one line per request names the share, the path and the fields, written where the server writes its own lines |
+
+Any other value is refused when the configuration is read, with an error that
+names the share and the three words. The setting belongs to SMB: a share whose
+`protocols` leave SMB out is refused if it sets it. There is no server-wide
+default; say it on each share. A share created through the admin API uses
+`ignore`.
+
+### When a time cannot be stored {#when-unstorable}
+
+A request is judged field by field, and one unstorable field is enough: `refuse`
+refuses the whole request, `log` writes its line. A time is unstorable when:
+
+1. **CreationTime** is set to a value different from the one the driver reports
+   (or the driver reports none). There is no way to set a creation time. A value
+   equal to the reported one is accepted: there is nothing to change.
+2. **ChangeTime** is sent **alone**, with a value different from the reported
+   one. Sent together with an access or write time it is accepted, when the
+   driver can set times, because setting them refreshes the change time to now.
+3. **An access or write time**, on a share whose driver cannot set times
+   (`Chtimes`): any real value, equal to the current one or not.
+
+Three things are not decided by the policy. A time of 0 (keep), -1 (freeze) or
+-2 (resume) is never unstorable. -1 on a driver that can set times but cannot
+report them (ufs, btrfs, xfs and zfs images) is always `STATUS_NOT_SUPPORTED`,
+in every mode: that is a missing capability, not a dropped field. And
+a request on a **read-only** share (`read_only = true`, a device, a share that
+chose a partition, a person who may not write) is answered
+`STATUS_MEDIA_WRITE_PROTECTED` before any of this, in every mode.
+
+What a share can store depends on its driver, at the versions this release pins:
+
+| Share | CreationTime | ChangeTime alone | Access or write time |
+|---|---|---|---|
+| **Directory** (host) | unstorable unless equal to the reported birth time | unstorable unless equal to the reported one | stored (a ChangeTime sent with it is accepted) |
+| **Image, driver with `Chtimes`**: ext4, ufs, btrfs, xfs, zfs | unstorable unless equal to the reported one (only ext4 reports one: for the others, always) | the same | stored (a ChangeTime sent with it is accepted) |
+| **Image, driver without `Chtimes`**: FAT, exFAT, NTFS, HFS+, APFS, ISO 9660, SquashFS | the same (FAT, exFAT, NTFS and HFS+ report one; the others never) | the same, **also** when sent with an access or write time | **always unstorable** |
+
+The drivers with `Chtimes` are osfs (`osfs.go:383`), ext4 (`metadata.go:93`), ufs
+(`metadata.go:63`), btrfs (`fs.go:382`), xfs (`fs.go:521`) and zfs
+(`metadata.go:94`); the others have none. Before v0.42.0 the lock fileshare puts
+in front of every image driver hid `Chtimes`, so every image dropped a client's
+access and write times, ext4 included; since v0.42.0 it carries `Chtimes` exactly
+when the driver has it. NTFS images are read by a read-only driver, so nothing is
+stored whatever the policy says; the policy decides only what the client is told.
+
+Which clients hit which case: Windows Explorer and `robocopy /COPY:T` send a
+CreationTime, which a share of any kind cannot keep unless it is unchanged; Linux
+`touch -d` and `cp -p` send only access and write times (the kernel client adds a
+ChangeTime of "now"), which a directory and a driver with `Chtimes` store, and a
+driver without it does not.
