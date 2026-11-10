@@ -37,7 +37,7 @@ v0.39.0 から、ファイルの時刻はリクエスト時刻ではなく、そ
 
 ## SMB でクライアントが設定する時刻 {#setting-times}
 
-v0.40.0 の次のリリースから(`go-filesystems/smb` v0.10.0、
+v0.41.0 から(`go-filesystems/smb` v0.10.0、
 go-filesystems/smb#45)、クライアントが SMB で設定したアクセス時刻と更新時刻
 (`SET_INFO`。`touch`、`robocopy /COPY:T`、エクスプローラーでのコピーが行う操作)
 が、**ディレクトリ**共有のファイルに反映されます。値が 0 の時刻はそのまま

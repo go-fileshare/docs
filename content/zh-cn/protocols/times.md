@@ -37,7 +37,7 @@ tags: [协议, 时间戳]
 
 ## 客户端通过 SMB 设置的时间 {#setting-times}
 
-从 v0.40.0 之后的版本起(`go-filesystems/smb` v0.10.0,
+自 v0.41.0 起(`go-filesystems/smb` v0.10.0,
 go-filesystems/smb#45),客户端通过 SMB 设置的访问时间和修改时间
 (`SET_INFO`,`touch`、`robocopy /COPY:T` 以及资源管理器中的复制都会这样做)
 会应用到**目录**共享中的文件上。值为 0 的时间保持不变;-1 冻结该时间,-2 恢复,

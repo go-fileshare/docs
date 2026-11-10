@@ -38,7 +38,7 @@ seconds, SMB 100 ns, NFS 1 ns.
 
 ## Times a client sets over SMB {#setting-times}
 
-From the release that follows v0.40.0 (`go-filesystems/smb` v0.10.0,
+Since v0.41.0 (`go-filesystems/smb` v0.10.0,
 go-filesystems/smb#45), the access and write times a client sets over SMB
 (`SET_INFO`, as `touch`, `robocopy /COPY:T` and a copy in Explorer do) are
 applied to the file, on a **directory** share. A time of 0 leaves that time as

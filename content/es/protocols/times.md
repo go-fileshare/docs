@@ -39,7 +39,7 @@ WebDAV también, SMB 100 ns, NFS 1 ns.
 
 ## Fechas que un cliente establece por SMB {#setting-times}
 
-A partir de la versión que sigue a la v0.40.0 (`go-filesystems/smb` v0.10.0,
+Desde la v0.41.0 (`go-filesystems/smb` v0.10.0,
 go-filesystems/smb#45), las fechas de acceso y de modificación que un cliente
 establece por SMB (`SET_INFO`, como hacen `touch`, `robocopy /COPY:T` y una
 copia en el Explorador) se aplican al archivo, en un recurso compartido de

@@ -38,7 +38,7 @@ SFTP는 정수 초, WebDAV의 `getlastmodified`도 정수 초, SMB는 100ns, NFS
 
 ## SMB에서 클라이언트가 설정하는 시간 {#setting-times}
 
-v0.40.0 다음 릴리스부터(`go-filesystems/smb` v0.10.0,
+v0.41.0부터(`go-filesystems/smb` v0.10.0,
 go-filesystems/smb#45) 클라이언트가 SMB로 설정한 접근 시간과 수정 시간
 (`SET_INFO`. `touch`, `robocopy /COPY:T`, 탐색기에서의 복사가 하는 동작)이
 **디렉터리** 공유의 파일에 적용됩니다. 값이 0인 시간은 그대로 둡니다. -1은 그

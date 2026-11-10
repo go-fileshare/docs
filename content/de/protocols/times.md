@@ -39,7 +39,7 @@ Protokolls verglichen: SFTP überträgt ganze Sekunden, ein WebDAV-
 
 ## Zeiten, die ein Client über SMB setzt {#setting-times}
 
-Ab dem Release nach v0.40.0 (`go-filesystems/smb` v0.10.0,
+Seit v0.41.0 (`go-filesystems/smb` v0.10.0,
 go-filesystems/smb#45) werden die Zugriffs- und Änderungszeiten, die ein Client
 über SMB setzt (`SET_INFO`, wie es `touch`, `robocopy /COPY:T` und ein Kopieren
 im Explorer tun), auf die Datei angewendet, bei einer **Verzeichnis**-Freigabe.

@@ -39,7 +39,7 @@ format et celle du protocole : SFTP transporte des secondes entières, le
 
 ## Dates fixées par un client en SMB {#setting-times}
 
-À partir de la version qui suit la v0.40.0 (`go-filesystems/smb` v0.10.0,
+Depuis la v0.41.0 (`go-filesystems/smb` v0.10.0,
 go-filesystems/smb#45), les dates d'accès et de modification qu'un client fixe
 en SMB (`SET_INFO`, comme le font `touch`, `robocopy /COPY:T` et une copie dans
 l'Explorateur) sont appliquées au fichier, sur un partage de **répertoire**. Une
