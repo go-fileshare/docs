@@ -2,7 +2,7 @@
 title: "Real file times"
 linkTitle: "File times"
 weight: 60
-description: "Which shares report each file's own times over NFS, SMB, SFTP and WebDAV, what each protocol says when a time is not recorded, and what is not supported yet."
+description: "Which shares report each file's own times over NFS, SMB, SFTP and WebDAV, what each protocol says when a time is not recorded, and what happens when a client sets a time over SMB."
 tags: [protocols, timestamps]
 ---
 
@@ -36,7 +36,16 @@ seconds, SMB 100 ns, NFS 1 ns.
 | **SFTP** | A missing modification time clears the `ACMODTIME` flag: the client sees no time rather than a wrong one. |
 | **WebDAV** | `creationdate` is the birth time; a time that is not recorded is absent from the answer. |
 
-## Not supported yet
+## Times a client sets over SMB {#setting-times}
 
-A client that **sets** a time over SMB (`SET_INFO`) is not obeyed: the time
-stays what the filesystem recorded (go-filesystems/smb#45).
+From the release that follows v0.40.0 (`go-filesystems/smb` v0.10.0,
+go-filesystems/smb#45), the access and write times a client sets over SMB
+(`SET_INFO`, as `touch`, `robocopy /COPY:T` and a copy in Explorer do) are
+applied to the file, on a **directory** share. A time of 0 leaves that time as
+it is; -1 freezes it and -2 resumes it, per open handle.
+
+A time that cannot be stored is **ignored by default**: the request succeeds and
+that field is dropped, as Samba does, so that copies which preserve times do not
+fail. This covers the creation time, a change time sent alone, and any time on a
+driver that cannot set times. fileshare does not offer a setting for this: every
+share uses the default.
