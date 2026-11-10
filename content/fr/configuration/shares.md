@@ -187,7 +187,8 @@ Une date qu'un client fixe et que le stockage ne peut pas conserver est
 **ignorée** par défaut. Depuis la v0.42.0, un partage peut choisir, avec
 `unstorable_times`. Ne sont pas enregistrables : une CreationTime différente de
 celle annoncée, une ChangeTime envoyée seule, ou une date d'accès ou d'écriture
-sur une image (un répertoire de l'hôte les enregistre) :
+sur une image dont le pilote ne sait pas fixer les dates (FAT, exFAT, NTFS, HFS+,
+APFS ; un répertoire de l'hôte et une image ext4 les enregistrent) :
 
 ```hcl
 share "photos" {

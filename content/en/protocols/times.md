@@ -89,24 +89,30 @@ refuses the whole request, `log` writes its line. A time is unstorable when:
 
 Three things are not decided by the policy. A time of 0 (keep), -1 (freeze) or
 -2 (resume) is never unstorable. -1 on a driver that can set times but cannot
-report them is always `STATUS_NOT_SUPPORTED`, in every mode: that is a missing
-capability, not a dropped field (no share fileshare serves is of that kind). And
+report them (ufs, btrfs, xfs and zfs images) is always `STATUS_NOT_SUPPORTED`,
+in every mode: that is a missing capability, not a dropped field. And
 a request on a **read-only** share (`read_only = true`, a device, a share that
 chose a partition, a person who may not write) is answered
 `STATUS_MEDIA_WRITE_PROTECTED` before any of this, in every mode.
 
+What a share can store depends on its driver, at the versions this release pins:
+
 | Share | CreationTime | ChangeTime alone | Access or write time |
 |---|---|---|---|
 | **Directory** (host) | unstorable unless equal to the reported birth time | unstorable unless equal to the reported one | stored (a ChangeTime sent with it is accepted) |
-| **Image**: FAT, exFAT, NTFS, ext4, HFS+ | unstorable unless equal to the reported one | unstorable unless equal, **also** when sent with an access or write time | **always unstorable** |
-| **Other image types** | always unstorable (nothing is reported to compare with) | always unstorable | **always unstorable** |
+| **Image, driver with `Chtimes`**: ext4, ufs, btrfs, xfs, zfs | unstorable unless equal to the reported one (only ext4 reports one: for the others, always) | the same | stored (a ChangeTime sent with it is accepted) |
+| **Image, driver without `Chtimes`**: FAT, exFAT, NTFS, HFS+, APFS, ISO 9660, SquashFS | the same (FAT, exFAT, NTFS and HFS+ report one; the others never) | the same, **also** when sent with an access or write time | **always unstorable** |
 
-An image's access and write times are unstorable because the lock fileshare puts
-in front of every image driver does not carry `Chtimes`, even for ext4, whose
-driver has one. NTFS images are read by a read-only driver, so nothing is stored
-whatever the policy says; the policy decides only what the client is told.
+The drivers with `Chtimes` are osfs (`osfs.go:383`), ext4 (`metadata.go:93`), ufs
+(`metadata.go:63`), btrfs (`fs.go:382`), xfs (`fs.go:521`) and zfs
+(`metadata.go:94`); the others have none. Before v0.42.0 the lock fileshare puts
+in front of every image driver hid `Chtimes`, so every image dropped a client's
+access and write times, ext4 included; since v0.42.0 it carries `Chtimes` exactly
+when the driver has it. NTFS images are read by a read-only driver, so nothing is
+stored whatever the policy says; the policy decides only what the client is told.
 
 Which clients hit which case: Windows Explorer and `robocopy /COPY:T` send a
 CreationTime, which a share of any kind cannot keep unless it is unchanged; Linux
 `touch -d` and `cp -p` send only access and write times (the kernel client adds a
-ChangeTime of "now"), which a directory stores and an image cannot.
+ChangeTime of "now"), which a directory and a driver with `Chtimes` store, and a
+driver without it does not.

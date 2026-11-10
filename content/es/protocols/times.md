@@ -97,26 +97,33 @@ almacenable cuando:
 Tres cosas no las decide la política. Una fecha de 0 (conservar), -1 (congelar)
 o -2 (reanudar) nunca es no almacenable. -1 en un controlador que puede
 establecer fechas pero no informar de ellas es siempre `STATUS_NOT_SUPPORTED`,
-en todos los modos: es una capacidad que falta, no un campo descartado (ningún
-recurso que sirve fileshare es así). Y una solicitud sobre un recurso de **solo
+en todos los modos: es una capacidad que falta, no un campo descartado (afecta a
+las imágenes ufs, btrfs, xfs y zfs). Y una solicitud sobre un recurso de **solo
 lectura** (`read_only = true`, un dispositivo, un recurso que eligió una
 partición, una persona sin permiso de escritura) se responde con
 `STATUS_MEDIA_WRITE_PROTECTED` antes de todo esto, en todos los modos.
 
+Lo que un recurso puede almacenar depende de su controlador, en las versiones
+que fija esta versión:
+
 | Recurso | CreationTime | ChangeTime sola | Fecha de acceso o de escritura |
 |---|---|---|---|
 | **Directorio** (host) | no almacenable salvo que sea igual a la fecha de creación informada | no almacenable salvo que sea igual a la informada | almacenada (una ChangeTime enviada con ella se acepta) |
-| **Imagen**: FAT, exFAT, NTFS, ext4, HFS+ | no almacenable salvo que sea igual a la informada | no almacenable salvo que sea igual, **también** cuando se envía con una fecha de acceso o de escritura | **siempre no almacenable** |
-| **Otros tipos de imagen** | siempre no almacenable (no se informa nada con qué comparar) | siempre no almacenable | **siempre no almacenable** |
+| **Imagen, controlador con `Chtimes`**: ext4, ufs, btrfs, xfs, zfs | no almacenable salvo que sea igual a la informada (solo ext4 informa una: en los demás, siempre) | igual | almacenada (una ChangeTime enviada con ella se acepta) |
+| **Imagen, controlador sin `Chtimes`**: FAT, exFAT, NTFS, HFS+, APFS, ISO 9660, SquashFS | igual (FAT, exFAT, NTFS y HFS+ informan una; los demás nunca) | igual, **también** cuando se envía con una fecha de acceso o de escritura | **siempre no almacenable** |
 
-Las fechas de acceso y de escritura de una imagen no son almacenables porque el
-bloqueo que fileshare coloca delante de cada controlador de imagen no transmite
-`Chtimes`, ni siquiera para ext4, cuyo controlador lo tiene. Las imágenes NTFS
-las lee un controlador de solo lectura, así que no se almacena nada diga lo que
-diga la política; esta solo decide lo que se le comunica al cliente.
+Los controladores con `Chtimes` son osfs (`osfs.go:383`), ext4 (`metadata.go:93`),
+ufs (`metadata.go:63`), btrfs (`fs.go:382`), xfs (`fs.go:521`) y zfs
+(`metadata.go:94`); los demás no tienen. Antes de la v0.42.0 el bloqueo que
+fileshare coloca delante de cada controlador de imagen ocultaba `Chtimes`, de
+modo que toda imagen descartaba las fechas de acceso y de escritura de un
+cliente, ext4 incluida; desde la v0.42.0 lo transmite exactamente cuando el
+controlador lo tiene. Las imágenes NTFS las lee un controlador de solo lectura,
+así que no se almacena nada diga lo que diga la política; esta solo decide lo que
+se le comunica al cliente.
 
 Qué clientes provocan cada caso: el Explorador de Windows y `robocopy /COPY:T`
 envían una CreationTime, que un recurso de cualquier tipo no puede conservar si
 cambia; `touch -d` y `cp -p` de Linux envían solo fechas de acceso y de
 escritura (el cliente del kernel añade una ChangeTime de «ahora»), que un
-directorio almacena y una imagen no.
+directorio y un controlador con `Chtimes` almacenan, y uno sin él no.

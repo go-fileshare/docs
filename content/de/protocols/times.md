@@ -98,25 +98,31 @@ Drei Dinge entscheidet die Richtlinie nicht. Eine Zeit von 0 (beibehalten), -1
 (einfrieren) oder -2 (fortsetzen) ist nie nicht speicherbar. -1 bei einem
 Treiber, der Zeiten setzen, aber nicht melden kann, ergibt in jedem Modus immer
 `STATUS_NOT_SUPPORTED`: das ist eine fehlende Fähigkeit, kein verworfenes Feld
-(keine von fileshare bereitgestellte Freigabe ist so). Und eine Anfrage an eine
+(betrifft ufs-, btrfs-, xfs- und zfs-Images). Und eine Anfrage an eine
 **schreibgeschützte** Freigabe (`read_only = true`, ein Gerät, eine Freigabe mit
 gewählter Partition, eine Person ohne Schreibrecht) wird in jedem Modus vor all
 dem mit `STATUS_MEDIA_WRITE_PROTECTED` beantwortet.
 
+Was eine Freigabe speichern kann, hängt von ihrem Treiber ab, in den Versionen,
+die dieses Release festschreibt:
+
 | Freigabe | CreationTime | ChangeTime allein | Zugriffs- oder Änderungszeit |
 |---|---|---|---|
 | **Verzeichnis** (Host) | nicht speicherbar, außer sie entspricht der gemeldeten Erstellungszeit | nicht speicherbar, außer sie entspricht der gemeldeten | gespeichert (eine mitgesendete ChangeTime wird akzeptiert) |
-| **Image**: FAT, exFAT, NTFS, ext4, HFS+ | nicht speicherbar, außer sie entspricht der gemeldeten | nicht speicherbar, außer sie entspricht ihr, **auch** wenn sie mit einer Zugriffs- oder Änderungszeit gesendet wird | **immer nicht speicherbar** |
-| **Andere Image-Typen** | immer nicht speicherbar (es wird nichts zum Vergleichen gemeldet) | immer nicht speicherbar | **immer nicht speicherbar** |
+| **Image, Treiber mit `Chtimes`**: ext4, ufs, btrfs, xfs, zfs | nicht speicherbar, außer sie entspricht der gemeldeten (nur ext4 meldet eine: bei den anderen immer) | ebenso | gespeichert (eine mitgesendete ChangeTime wird akzeptiert) |
+| **Image, Treiber ohne `Chtimes`**: FAT, exFAT, NTFS, HFS+, APFS, ISO 9660, SquashFS | ebenso (FAT, exFAT, NTFS und HFS+ melden eine; die anderen nie) | ebenso, **auch** wenn sie mit einer Zugriffs- oder Änderungszeit gesendet wird | **immer nicht speicherbar** |
 
-Die Zugriffs- und Änderungszeiten eines Images sind nicht speicherbar, weil die
-Sperre, die fileshare vor jeden Image-Treiber setzt, `Chtimes` nicht
-durchreicht, auch nicht bei ext4, dessen Treiber eines hat. NTFS-Images liest ein
-schreibgeschützter Treiber, daher wird unabhängig von der Richtlinie nichts
+Treiber mit `Chtimes` sind osfs (`osfs.go:383`), ext4 (`metadata.go:93`), ufs
+(`metadata.go:63`), btrfs (`fs.go:382`), xfs (`fs.go:521`) und zfs
+(`metadata.go:94`); die übrigen haben keines. Vor v0.42.0 verbarg die Sperre, die
+fileshare vor jeden Image-Treiber setzt, `Chtimes`, sodass jedes Image die
+Zugriffs- und Änderungszeiten eines Clients verwarf, auch ext4; seit v0.42.0
+reicht sie `Chtimes` genau dann durch, wenn der Treiber es hat. NTFS-Images liest
+ein schreibgeschützter Treiber, daher wird unabhängig von der Richtlinie nichts
 gespeichert; die Richtlinie bestimmt nur, was der Client erfährt.
 
 Welche Clients welchen Fall auslösen: Windows-Explorer und `robocopy /COPY:T`
 senden eine CreationTime, die keine Freigabe behalten kann, außer sie ist
 unverändert; Linux `touch -d` und `cp -p` senden nur Zugriffs- und
 Änderungszeiten (der Kernel-Client fügt eine ChangeTime „jetzt" hinzu), die ein
-Verzeichnis speichert und ein Image nicht.
+Verzeichnis und ein Treiber mit `Chtimes` speichern, ein Treiber ohne es nicht.

@@ -187,8 +187,9 @@ Eine Zeit, die ein Client setzt und der Speicher nicht behalten kann, wird
 standardmäßig **ignoriert**. Seit v0.42.0 kann eine Freigabe das mit
 `unstorable_times` festlegen. Nicht speicherbar ist eine CreationTime, die sich
 von der gemeldeten unterscheidet, eine allein gesendete ChangeTime oder eine
-Zugriffs- oder Änderungszeit bei einem Image (ein Host-Verzeichnis speichert
-diese):
+Zugriffs- oder Änderungszeit bei einem Image, dessen Treiber keine Zeiten setzen
+kann (FAT, exFAT, NTFS, HFS+, APFS; ein Host-Verzeichnis und ein ext4-Image
+speichern diese):
 
 ```hcl
 share "photos" {

@@ -98,25 +98,32 @@ Trois choses ne sont pas décidées par la politique. Une date de 0 (conserver),
 -1 (figer) ou -2 (reprendre) n'est jamais non enregistrable. -1 sur un pilote qui
 sait fixer les dates mais pas les annoncer donne toujours
 `STATUS_NOT_SUPPORTED`, dans tous les modes : c'est une capacité absente, pas un
-champ abandonné (aucun partage servi par fileshare n'est de ce genre). Et une
+champ abandonné (cela concerne les images ufs, btrfs, xfs et zfs). Et une
 requête sur un partage **en lecture seule** (`read_only = true`, un périphérique,
 un partage qui a choisi une partition, une personne sans droit d'écriture)
 reçoit `STATUS_MEDIA_WRITE_PROTECTED` avant tout cela, dans tous les modes.
 
+Ce qu'un partage peut enregistrer dépend de son pilote, dans les versions
+qu'épingle cette version :
+
 | Partage | CreationTime | ChangeTime seule | Date d'accès ou d'écriture |
 |---|---|---|---|
 | **Répertoire** (hôte) | non enregistrable sauf si égale à la date de création annoncée | non enregistrable sauf si égale à l'annoncée | enregistrée (une ChangeTime envoyée avec elle est acceptée) |
-| **Image** : FAT, exFAT, NTFS, ext4, HFS+ | non enregistrable sauf si égale à l'annoncée | non enregistrable sauf si égale, **y compris** envoyée avec une date d'accès ou d'écriture | **toujours non enregistrable** |
-| **Autres types d'image** | toujours non enregistrable (rien d'annoncé à comparer) | toujours non enregistrable | **toujours non enregistrable** |
+| **Image, pilote avec `Chtimes`** : ext4, ufs, btrfs, xfs, zfs | non enregistrable sauf si égale à l'annoncée (seul ext4 en annonce une : pour les autres, toujours) | idem | enregistrée (une ChangeTime envoyée avec elle est acceptée) |
+| **Image, pilote sans `Chtimes`** : FAT, exFAT, NTFS, HFS+, APFS, ISO 9660, SquashFS | idem (FAT, exFAT, NTFS et HFS+ en annoncent une ; les autres jamais) | idem, **y compris** envoyée avec une date d'accès ou d'écriture | **toujours non enregistrable** |
 
-Les dates d'accès et d'écriture d'une image ne sont pas enregistrables parce que
-le verrou que fileshare place devant chaque pilote d'image ne transmet pas
-`Chtimes`, même pour ext4, dont le pilote en a un. Les images NTFS sont lues par
-un pilote en lecture seule : rien n'est enregistré quelle que soit la politique,
-qui décide seulement de ce que le client apprend.
+Les pilotes avec `Chtimes` sont osfs (`osfs.go:383`), ext4 (`metadata.go:93`), ufs
+(`metadata.go:63`), btrfs (`fs.go:382`), xfs (`fs.go:521`) et zfs
+(`metadata.go:94`) ; les autres n'en ont pas. Avant la v0.42.0, le verrou que
+fileshare place devant chaque pilote d'image masquait `Chtimes`, si bien que
+toute image abandonnait les dates d'accès et d'écriture d'un client, ext4
+comprise ; depuis la v0.42.0 il le transmet exactement quand le pilote en a un.
+Les images NTFS sont lues par un pilote en lecture seule : rien n'est enregistré
+quelle que soit la politique, qui décide seulement de ce que le client apprend.
 
 Quels clients déclenchent quel cas : l'Explorateur Windows et `robocopy /COPY:T`
 envoient une CreationTime, qu'un partage de n'importe quel type ne peut pas
 conserver si elle change ; `touch -d` et `cp -p` sous Linux n'envoient que des
 dates d'accès et d'écriture (le client du noyau ajoute une ChangeTime
-« maintenant »), qu'un répertoire enregistre et qu'une image ne peut pas.
+« maintenant »), qu'un répertoire et un pilote avec `Chtimes` enregistrent, et
+un pilote sans lui non.

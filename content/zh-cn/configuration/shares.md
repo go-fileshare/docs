@@ -185,7 +185,8 @@ share "photos" {
 
 客户端设置了存储无法保留的时间时，默认会被**忽略**。自 v0.42.0 起，共享可以用
 `unstorable_times` 来选择。无法存储的有：与所报告的值不同的 CreationTime、单独
-发送的 ChangeTime，以及对镜像设置的访问时间或修改时间（主机目录可以存储它们）：
+发送的 ChangeTime，以及对驱动程序无法设置时间的镜像（FAT、exFAT、NTFS、HFS+、APFS）设置的访问时间或修改时间
+（主机目录和 ext4 镜像可以存储它们）：
 
 ```hcl
 share "photos" {

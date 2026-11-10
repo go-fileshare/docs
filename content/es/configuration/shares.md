@@ -195,7 +195,8 @@ Una fecha que establece un cliente y que el almacenamiento no puede conservar se
 **ignora** por defecto. Desde la v0.42.0 un recurso compartido puede elegir, con
 `unstorable_times`. No es almacenable una CreationTime distinta de la informada,
 una ChangeTime enviada sola, o una fecha de acceso o de escritura en una imagen
-(un directorio del host las almacena):
+cuyo controlador no puede establecer fechas (FAT, exFAT, NTFS, HFS+, APFS; un
+directorio del host y una imagen ext4 las almacenan):
 
 ```hcl
 share "photos" {
