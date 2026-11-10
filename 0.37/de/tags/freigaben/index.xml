@@ -212,7 +212,33 @@ das Langsamste, was ein Dateiserver tun kann.&lt;/p&gt;
 abgelehnt, weil die Angabe bedeutet, dass die Freigabe als Image gedacht war.&lt;code&gt;read_only = true&lt;/code&gt; funktioniert bei einem Verzeichnis wie bei einem Image; eine Freigabe, die das sagt
 und zugleich &lt;code&gt;writers&lt;/code&gt; auflistet, wird abgelehnt, weil &lt;code&gt;read_only&lt;/code&gt; gewinnen würde.&lt;/p&gt;
 &lt;p&gt;Die Kapazität, die einem Client mitgeteilt wird, ist die des Dateisystems, auf dem der Baum liegt; eine
-Plattform, die das nicht angeben kann, lässt sie bei null, was die Protokolle als„unbekannt&amp;quot; lesen statt als „voll&amp;quot;.&lt;/p&gt;</description></item><item><title>Verzeichnisse unter der Identität jeder Person</title><link>https://go-fileshare.github.io/docs/0.37/de/configuration/as-each-person/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.37/de/configuration/as-each-person/</guid><description>
+Plattform, die das nicht angeben kann, lässt sie bei null, was die Protokolle als„unbekannt&amp;quot; lesen statt als „voll&amp;quot;.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-smb-does-with-a-time-it-cannot-store"&gt;Was SMB mit einer Zeit macht, die es nicht speichern kann&lt;span class="hx:absolute hx:-mt-20" id="what-smb-does-with-a-time-it-cannot-store"&gt;&lt;/span&gt;
+&lt;a href="#what-smb-does-with-a-time-it-cannot-store" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Eine Zeit, die ein Client setzt und der Speicher nicht behalten kann, wird
+standardmäßig &lt;strong&gt;ignoriert&lt;/strong&gt;. Seit v0.42.0 kann eine Freigabe das mit&lt;code&gt;unstorable_times&lt;/code&gt; festlegen. Nicht speicherbar ist eine CreationTime, die sich
+von der gemeldeten unterscheidet, eine allein gesendete ChangeTime oder eine
+Zugriffs- oder Änderungszeit bei einem Image, dessen Treiber keine Zeiten setzen
+kann (FAT, exFAT, NTFS, HFS+, APFS; ein Host-Verzeichnis und ein ext4-Image
+speichern diese):&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;photos&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; directory&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/data/photos&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; unstorable_times&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;log&amp;#34; # &amp;#34;ignore&amp;#34; (Standard), &amp;#34;refuse&amp;#34; oder &amp;#34;log&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Code kopieren"
+aria-label="Code kopieren"
+data-copied-label="Kopiert!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;refuse&lt;/code&gt; beantwortet die Anfrage des Clients mit einem Fehler, &lt;code&gt;log&lt;/code&gt; schreibt
+eine Zeile mit der Freigabe und dem Pfad. Die genauen Fälle je Art der Freigabe
+stehen unter&lt;a href="https://go-fileshare.github.io/docs/0.37/de/protocols/times/#when-unstorable"&gt;Echte Dateizeiten&lt;/a&gt;.&lt;/p&gt;</description></item><item><title>Verzeichnisse unter der Identität jeder Person</title><link>https://go-fileshare.github.io/docs/0.37/de/configuration/as-each-person/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.37/de/configuration/as-each-person/</guid><description>
 &lt;p&gt;Gewöhnlich bedient ein einziger fileshare-Prozess alle unter einem einzigen
 Konto: fileshare entscheidet, wer was darf, und jede Datei, die er anlegt,gehört diesem Konto. Eine Verzeichnisfreigabe kann stattdessen &lt;strong&gt;unter der
 Identität jeder Person&lt;/strong&gt; bedient werden. Die Dateien der angemeldeten Person

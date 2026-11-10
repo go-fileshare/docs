@@ -791,4 +791,91 @@ data-copied-label="已复制！"
 &lt;/table&gt;
 &lt;h2 data-hextra-search-id="setting-times"&gt;客户端通过 SMB 设置的时间&lt;span class="hx:absolute hx:-mt-20" id="setting-times"&gt;&lt;/span&gt;
 &lt;a href="#setting-times" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;自 v0.41.0 起(&lt;code&gt;go-filesystems/smb&lt;/code&gt; v0.10.0,go-filesystems/smb#45),客户端通过 SMB 设置的访问时间和修改时间(&lt;code&gt;SET_INFO&lt;/code&gt;,&lt;code&gt;touch&lt;/code&gt;、&lt;code&gt;robocopy /COPY:T&lt;/code&gt; 以及资源管理器中的复制都会这样做)会应用到&lt;strong&gt;目录&lt;/strong&gt;共享中的文件上。值为 0 的时间保持不变;-1 冻结该时间,-2 恢复,按每个打开的句柄生效。&lt;/p&gt;
-&lt;p&gt;无法存储的时间&lt;strong&gt;默认被忽略&lt;/strong&gt;:请求成功,该字段被丢弃,与 Samba 的做法一致,这样保留时间的复制就不会失败。这包括创建时间、单独发送的变更时间,以及无法设置时间的驱动程序上的任何时间。fileshare 没有为此提供设置:所有共享都使用默认值。&lt;/p&gt;</description></item></channel></rss>
+&lt;p&gt;无法存储的时间&lt;strong&gt;默认被忽略&lt;/strong&gt;:请求成功,该字段被丢弃,与 Samba 的做法一致,这样保留时间的复制就不会失败。这包括创建时间、单独发送的变更时间,以及无法设置时间的驱动程序上的任何时间。fileshare 没有为此提供设置:所有共享都使用默认值。&lt;/p&gt;
+&lt;h3 data-hextra-search-id="unstorable-times"&gt;选择如何处理:&lt;code&gt;unstorable_times&lt;/code&gt;&lt;span class="hx:absolute hx:-mt-20" id="unstorable-times"&gt;&lt;/span&gt;
+&lt;a href="#unstorable-times" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;自 v0.42.0 起，共享可以用 &lt;code&gt;unstorable_times&lt;/code&gt; 指定如何处理这样的时间（即 &lt;code&gt;go-filesystems/smb&lt;/code&gt; 的 &lt;code&gt;UnstorableTimes&lt;/code&gt; 选项）：&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;attic&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; directory&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/attic&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; unstorable_times&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;refuse&amp;#34; # &amp;#34;ignore&amp;#34;（默认）、&amp;#34;refuse&amp;#34; 或 &amp;#34;log&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="复制代码"
+aria-label="复制代码"
+data-copied-label="已复制！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;取值&lt;/th&gt;
+&lt;th&gt;客户端收到的响应&lt;/th&gt;
+&lt;th&gt;保留的内容&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ignore&lt;/code&gt;（未设置时同样如此）&lt;/td&gt;
+&lt;td&gt;成功&lt;/td&gt;
+&lt;td&gt;该字段被丢弃，与 Samba 一致&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;refuse&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;STATUS_NOT_SUPPORTED&lt;/code&gt;，这样备份工具就不会误以为时间已被保留&lt;/td&gt;
+&lt;td&gt;该请求中的任何内容都不会被应用&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;log&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;成功&lt;/td&gt;
+&lt;td&gt;该字段被丢弃，并且每个请求写一行，写明共享、路径和字段，输出到服务器自己写日志的地方&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;其他任何取值都会在读取配置时被拒绝，错误信息会指出共享名和这三个取值。该设置属于 SMB：&lt;code&gt;protocols&lt;/code&gt; 不含 SMB 的共享若设置它，会被拒绝。没有服务器级的默认值，需在每个共享上分别设置。通过管理 API 创建的共享使用 &lt;code&gt;ignore&lt;/code&gt;。&lt;/p&gt;
+&lt;h3 data-hextra-search-id="when-unstorable"&gt;什么时候时间无法存储&lt;span class="hx:absolute hx:-mt-20" id="when-unstorable"&gt;&lt;/span&gt;
+&lt;a href="#when-unstorable" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;请求按字段逐个判断，只要有一个字段无法存储就够了：&lt;code&gt;refuse&lt;/code&gt; 会拒绝整个请求，&lt;code&gt;log&lt;/code&gt; 会写一行。在以下情况下，时间无法存储：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;CreationTime&lt;/strong&gt; 被设置为与驱动程序所报告的值不同的值（或驱动程序没有报告任何值）。没有办法设置创建时间。与所报告的值相同的值会被接受：没有需要改变的内容。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;ChangeTime&lt;/strong&gt; &lt;strong&gt;单独&lt;/strong&gt;发送，且其值与所报告的值不同。与访问时间或修改时间一起发送时，如果驱动程序能设置时间，则会被接受，因为设置时间会把变更时间刷新为“现在”。&lt;/li&gt;
+&lt;li&gt;在驱动程序无法设置时间（没有 &lt;code&gt;Chtimes&lt;/code&gt;）的共享上设置&lt;strong&gt;访问时间或修改时间&lt;/strong&gt;：任何真实的值都算，无论是否与当前值相同。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;有三件事不由该策略决定。值为 0（保持）、-1（冻结）或 -2（恢复）的时间永远不会被视为无法存储。在能设置时间但无法报告时间的驱动程序上，-1 在所有模式下始终是&lt;code&gt;STATUS_NOT_SUPPORTED&lt;/code&gt;：这是缺少某项能力，而不是被丢弃的字段（ufs、btrfs、xfs 和 zfs 镜像属于这种情况）。而对&lt;strong&gt;只读&lt;/strong&gt;共享（&lt;code&gt;read_only = true&lt;/code&gt;、设备、选择了分区的共享、没有写权限的人）的请求，在所有这些之前、在所有模式下都会得到&lt;code&gt;STATUS_MEDIA_WRITE_PROTECTED&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;共享能存储什么取决于它的驱动程序（以本版本锁定的版本为准）：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;共享&lt;/th&gt;
+&lt;th&gt;CreationTime&lt;/th&gt;
+&lt;th&gt;单独的 ChangeTime&lt;/th&gt;
+&lt;th&gt;访问时间或修改时间&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;目录&lt;/strong&gt;（主机）&lt;/td&gt;
+&lt;td&gt;除非等于所报告的创建时间，否则无法存储&lt;/td&gt;
+&lt;td&gt;除非等于所报告的值，否则无法存储&lt;/td&gt;
+&lt;td&gt;可存储（一起发送的 ChangeTime 会被接受）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;镜像，驱动程序带 &lt;code&gt;Chtimes&lt;/code&gt;&lt;/strong&gt;：ext4、ufs、btrfs、xfs、zfs&lt;/td&gt;
+&lt;td&gt;除非等于所报告的值，否则无法存储（只有 ext4 会报告；其他的始终无法存储）&lt;/td&gt;
+&lt;td&gt;同左&lt;/td&gt;
+&lt;td&gt;可存储（一起发送的 ChangeTime 会被接受）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;镜像，驱动程序不带 &lt;code&gt;Chtimes&lt;/code&gt;&lt;/strong&gt;：FAT、exFAT、NTFS、HFS+、APFS、ISO 9660、SquashFS&lt;/td&gt;
+&lt;td&gt;同左（FAT、exFAT、NTFS 和 HFS+ 会报告；其他的从不报告）&lt;/td&gt;
+&lt;td&gt;同左；与访问时间或修改时间一起发送时&lt;strong&gt;同样如此&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;始终无法存储&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;带 &lt;code&gt;Chtimes&lt;/code&gt; 的驱动程序有 osfs（&lt;code&gt;osfs.go:383&lt;/code&gt;）、ext4（&lt;code&gt;metadata.go:93&lt;/code&gt;）、ufs（&lt;code&gt;metadata.go:63&lt;/code&gt;）、btrfs（&lt;code&gt;fs.go:382&lt;/code&gt;）、xfs（&lt;code&gt;fs.go:521&lt;/code&gt;）和 zfs（&lt;code&gt;metadata.go:94&lt;/code&gt;），其余都没有。在 v0.42.0 之前，fileshare 放在每个镜像驱动程序前面的锁隐藏了 &lt;code&gt;Chtimes&lt;/code&gt;，因此包括 ext4 在内的所有镜像都会丢弃客户端的访问时间和修改时间；自 v0.42.0 起，只有驱动程序本身带有 &lt;code&gt;Chtimes&lt;/code&gt; 时，锁才会传递它。NTFS 镜像由只读驱动程序读取，因此无论策略如何都不会存储任何内容；策略只决定告诉客户端什么。&lt;/p&gt;
+&lt;p&gt;哪些客户端触发哪种情况：Windows 资源管理器和 &lt;code&gt;robocopy /COPY:T&lt;/code&gt; 会发送CreationTime，除非它没有变化，否则任何类型的共享都无法保留；Linux 的 &lt;code&gt;touch -d&lt;/code&gt;
+和 &lt;code&gt;cp -p&lt;/code&gt; 只发送访问时间和修改时间（内核客户端还会附带一个“现在”的 ChangeTime），目录和带 &lt;code&gt;Chtimes&lt;/code&gt; 的驱动程序可以存储它们，不带的则不能。&lt;/p&gt;</description></item></channel></rss>

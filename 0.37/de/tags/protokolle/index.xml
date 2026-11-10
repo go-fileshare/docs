@@ -954,5 +954,114 @@ im Explorer tun), auf die Datei angewendet, bei einer &lt;strong&gt;Verzeichnis&
 wieder auf, je geöffnetem Handle.&lt;/p&gt;
 &lt;p&gt;Eine Zeit, die nicht gespeichert werden kann, wird &lt;strong&gt;standardmäßig ignoriert&lt;/strong&gt;:die Anfrage gelingt und dieses Feld wird verworfen, wie Samba es tut, damit
 Kopien, die Zeiten erhalten, nicht scheitern. Das betrifft die Erstellungszeit,eine allein gesendete Statusänderungszeit und jede Zeit bei einem Treiber, der
-keine Zeiten setzen kann. fileshare bietet dafür keine Einstellung an: alle
-Freigaben verwenden den Standard.&lt;/p&gt;</description></item></channel></rss>
+keine Zeiten setzen kann.&lt;/p&gt;
+&lt;h3 data-hextra-search-id="unstorable-times"&gt;Festlegen, was geschieht: &lt;code&gt;unstorable_times&lt;/code&gt;&lt;span class="hx:absolute hx:-mt-20" id="unstorable-times"&gt;&lt;/span&gt;
+&lt;a href="#unstorable-times" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Seit v0.42.0 legt eine Freigabe mit &lt;code&gt;unstorable_times&lt;/code&gt; fest, was mit einer
+solchen Zeit geschieht (die Option &lt;code&gt;UnstorableTimes&lt;/code&gt; von &lt;code&gt;go-filesystems/smb&lt;/code&gt;):&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;attic&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; directory&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/attic&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; unstorable_times&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;refuse&amp;#34; # &amp;#34;ignore&amp;#34; (Standard), &amp;#34;refuse&amp;#34; oder &amp;#34;log&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Code kopieren"
+aria-label="Code kopieren"
+data-copied-label="Kopiert!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Wert&lt;/th&gt;
+&lt;th&gt;Was der Client hört&lt;/th&gt;
+&lt;th&gt;Was behalten wird&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ignore&lt;/code&gt; (auch ohne die Einstellung)&lt;/td&gt;
+&lt;td&gt;Erfolg&lt;/td&gt;
+&lt;td&gt;das Feld wird verworfen, wie Samba es tut&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;refuse&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;STATUS_NOT_SUPPORTED&lt;/code&gt;, damit ein Backup-Werkzeug nie glaubt, eine Zeit sei erhalten geblieben&lt;/td&gt;
+&lt;td&gt;nichts aus dieser Anfrage wird angewendet&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;log&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Erfolg&lt;/td&gt;
+&lt;td&gt;das Feld wird verworfen, und pro Anfrage nennt eine Zeile die Freigabe, den Pfad und die Felder, geschrieben dorthin, wo der Server seine eigenen Zeilen schreibt&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Jeder andere Wert wird beim Lesen der Konfiguration abgelehnt, mit einem Fehler,der die Freigabe und die drei Wörter nennt. Die Einstellung gehört zu SMB: eine
+Freigabe, deren &lt;code&gt;protocols&lt;/code&gt; SMB auslassen, wird abgelehnt, wenn sie sie setzt.Einen serverweiten Standard gibt es nicht; sie wird pro Freigabe angegeben. Eine
+über die Admin-API angelegte Freigabe verwendet &lt;code&gt;ignore&lt;/code&gt;.&lt;/p&gt;
+&lt;h3 data-hextra-search-id="when-unstorable"&gt;Wann eine Zeit nicht gespeichert werden kann&lt;span class="hx:absolute hx:-mt-20" id="when-unstorable"&gt;&lt;/span&gt;
+&lt;a href="#when-unstorable" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Eine Anfrage wird Feld für Feld beurteilt, und ein nicht speicherbares Feld
+genügt: &lt;code&gt;refuse&lt;/code&gt; lehnt die ganze Anfrage ab, &lt;code&gt;log&lt;/code&gt; schreibt seine Zeile. Eine
+Zeit ist nicht speicherbar, wenn:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;CreationTime&lt;/strong&gt; auf einen Wert gesetzt wird, der sich von dem unterscheidet,den der Treiber meldet (oder der Treiber meldet keinen). Eine Erstellungszeit
+lässt sich nicht setzen. Ein Wert, der dem gemeldeten entspricht, wird
+akzeptiert: es gibt nichts zu ändern.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;ChangeTime&lt;/strong&gt; &lt;strong&gt;allein&lt;/strong&gt; gesendet wird, mit einem Wert, der sich vom
+gemeldeten unterscheidet. Zusammen mit einer Zugriffs- oder Änderungszeit wird
+sie akzeptiert, wenn der Treiber Zeiten setzen kann, weil deren Setzen die
+Statusänderungszeit auf „jetzt&amp;quot; aktualisiert.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Eine Zugriffs- oder Änderungszeit&lt;/strong&gt; bei einer Freigabe gesetzt wird, deren
+Treiber keine Zeiten setzen kann (&lt;code&gt;Chtimes&lt;/code&gt;): jeder echte Wert, ob gleich dem
+aktuellen oder nicht.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Drei Dinge entscheidet die Richtlinie nicht. Eine Zeit von 0 (beibehalten), -1(einfrieren) oder -2 (fortsetzen) ist nie nicht speicherbar. -1 bei einem
+Treiber, der Zeiten setzen, aber nicht melden kann, ergibt in jedem Modus immer&lt;code&gt;STATUS_NOT_SUPPORTED&lt;/code&gt;: das ist eine fehlende Fähigkeit, kein verworfenes Feld(betrifft ufs-, btrfs-, xfs- und zfs-Images). Und eine Anfrage an eine&lt;strong&gt;schreibgeschützte&lt;/strong&gt; Freigabe (&lt;code&gt;read_only = true&lt;/code&gt;, ein Gerät, eine Freigabe mit
+gewählter Partition, eine Person ohne Schreibrecht) wird in jedem Modus vor all
+dem mit &lt;code&gt;STATUS_MEDIA_WRITE_PROTECTED&lt;/code&gt; beantwortet.&lt;/p&gt;
+&lt;p&gt;Was eine Freigabe speichern kann, hängt von ihrem Treiber ab, in den Versionen,die dieses Release festschreibt:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Freigabe&lt;/th&gt;
+&lt;th&gt;CreationTime&lt;/th&gt;
+&lt;th&gt;ChangeTime allein&lt;/th&gt;
+&lt;th&gt;Zugriffs- oder Änderungszeit&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Verzeichnis&lt;/strong&gt; (Host)&lt;/td&gt;
+&lt;td&gt;nicht speicherbar, außer sie entspricht der gemeldeten Erstellungszeit&lt;/td&gt;
+&lt;td&gt;nicht speicherbar, außer sie entspricht der gemeldeten&lt;/td&gt;
+&lt;td&gt;gespeichert (eine mitgesendete ChangeTime wird akzeptiert)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Image, Treiber mit &lt;code&gt;Chtimes&lt;/code&gt;&lt;/strong&gt;: ext4, ufs, btrfs, xfs, zfs&lt;/td&gt;
+&lt;td&gt;nicht speicherbar, außer sie entspricht der gemeldeten (nur ext4 meldet eine: bei den anderen immer)&lt;/td&gt;
+&lt;td&gt;ebenso&lt;/td&gt;
+&lt;td&gt;gespeichert (eine mitgesendete ChangeTime wird akzeptiert)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Image, Treiber ohne &lt;code&gt;Chtimes&lt;/code&gt;&lt;/strong&gt;: FAT, exFAT, NTFS, HFS+, APFS, ISO 9660, SquashFS&lt;/td&gt;
+&lt;td&gt;ebenso (FAT, exFAT, NTFS und HFS+ melden eine; die anderen nie)&lt;/td&gt;
+&lt;td&gt;ebenso, &lt;strong&gt;auch&lt;/strong&gt; wenn sie mit einer Zugriffs- oder Änderungszeit gesendet wird&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;immer nicht speicherbar&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Treiber mit &lt;code&gt;Chtimes&lt;/code&gt; sind osfs (&lt;code&gt;osfs.go:383&lt;/code&gt;), ext4 (&lt;code&gt;metadata.go:93&lt;/code&gt;), ufs(&lt;code&gt;metadata.go:63&lt;/code&gt;), btrfs (&lt;code&gt;fs.go:382&lt;/code&gt;), xfs (&lt;code&gt;fs.go:521&lt;/code&gt;) und zfs(&lt;code&gt;metadata.go:94&lt;/code&gt;); die übrigen haben keines. Vor v0.42.0 verbarg die Sperre, die
+fileshare vor jeden Image-Treiber setzt, &lt;code&gt;Chtimes&lt;/code&gt;, sodass jedes Image die
+Zugriffs- und Änderungszeiten eines Clients verwarf, auch ext4; seit v0.42.0
+reicht sie &lt;code&gt;Chtimes&lt;/code&gt; genau dann durch, wenn der Treiber es hat. NTFS-Images liest
+ein schreibgeschützter Treiber, daher wird unabhängig von der Richtlinie nichts
+gespeichert; die Richtlinie bestimmt nur, was der Client erfährt.&lt;/p&gt;
+&lt;p&gt;Welche Clients welchen Fall auslösen: Windows-Explorer und &lt;code&gt;robocopy /COPY:T&lt;/code&gt;
+senden eine CreationTime, die keine Freigabe behalten kann, außer sie ist
+unverändert; Linux &lt;code&gt;touch -d&lt;/code&gt; und &lt;code&gt;cp -p&lt;/code&gt; senden nur Zugriffs- und
+Änderungszeiten (der Kernel-Client fügt eine ChangeTime „jetzt&amp;quot; hinzu), die ein
+Verzeichnis und ein Treiber mit &lt;code&gt;Chtimes&lt;/code&gt; speichern, ein Treiber ohne es nicht.&lt;/p&gt;</description></item></channel></rss>

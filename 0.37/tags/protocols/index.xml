@@ -975,5 +975,107 @@ it is; -1 freezes it and -2 resumes it, per open handle.&lt;/p&gt;
 &lt;p&gt;A time that cannot be stored is &lt;strong&gt;ignored by default&lt;/strong&gt;: the request succeeds and
 that field is dropped, as Samba does, so that copies which preserve times do not
 fail. This covers the creation time, a change time sent alone, and any time on a
-driver that cannot set times. fileshare does not offer a setting for this: every
-share uses the default.&lt;/p&gt;</description></item></channel></rss>
+driver that cannot set times.&lt;/p&gt;
+&lt;h3 data-hextra-search-id="unstorable-times"&gt;Choosing what happens: &lt;code&gt;unstorable_times&lt;/code&gt;&lt;span class="hx:absolute hx:-mt-20" id="unstorable-times"&gt;&lt;/span&gt;
+&lt;a href="#unstorable-times" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Since v0.42.0 a share says what happens to such a time, with &lt;code&gt;unstorable_times&lt;/code&gt;
+(the &lt;code&gt;UnstorableTimes&lt;/code&gt; option of &lt;code&gt;go-filesystems/smb&lt;/code&gt;):&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;attic&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; directory&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/attic&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; unstorable_times&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;refuse&amp;#34; # &amp;#34;ignore&amp;#34; (the default), &amp;#34;refuse&amp;#34; or &amp;#34;log&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Value&lt;/th&gt;
+&lt;th&gt;What the client hears&lt;/th&gt;
+&lt;th&gt;What is kept&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ignore&lt;/code&gt; (also when the setting is absent)&lt;/td&gt;
+&lt;td&gt;success&lt;/td&gt;
+&lt;td&gt;the field is dropped, as Samba does&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;refuse&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;STATUS_NOT_SUPPORTED&lt;/code&gt;, so a backup tool never believes a time was kept&lt;/td&gt;
+&lt;td&gt;nothing of that request is applied&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;log&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;success&lt;/td&gt;
+&lt;td&gt;the field is dropped, and one line per request names the share, the path and the fields, written where the server writes its own lines&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Any other value is refused when the configuration is read, with an error that
+names the share and the three words. The setting belongs to SMB: a share whose&lt;code&gt;protocols&lt;/code&gt; leave SMB out is refused if it sets it. There is no server-wide
+default; say it on each share. A share created through the admin API uses&lt;code&gt;ignore&lt;/code&gt;.&lt;/p&gt;
+&lt;h3 data-hextra-search-id="when-unstorable"&gt;When a time cannot be stored&lt;span class="hx:absolute hx:-mt-20" id="when-unstorable"&gt;&lt;/span&gt;
+&lt;a href="#when-unstorable" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;A request is judged field by field, and one unstorable field is enough: &lt;code&gt;refuse&lt;/code&gt;
+refuses the whole request, &lt;code&gt;log&lt;/code&gt; writes its line. A time is unstorable when:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;CreationTime&lt;/strong&gt; is set to a value different from the one the driver reports(or the driver reports none). There is no way to set a creation time. A value
+equal to the reported one is accepted: there is nothing to change.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;ChangeTime&lt;/strong&gt; is sent &lt;strong&gt;alone&lt;/strong&gt;, with a value different from the reported
+one. Sent together with an access or write time it is accepted, when the
+driver can set times, because setting them refreshes the change time to now.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;An access or write time&lt;/strong&gt;, on a share whose driver cannot set times(&lt;code&gt;Chtimes&lt;/code&gt;): any real value, equal to the current one or not.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Three things are not decided by the policy. A time of 0 (keep), -1 (freeze) or-2 (resume) is never unstorable. -1 on a driver that can set times but cannot
+report them (ufs, btrfs, xfs and zfs images) is always &lt;code&gt;STATUS_NOT_SUPPORTED&lt;/code&gt;,in every mode: that is a missing capability, not a dropped field. And
+a request on a &lt;strong&gt;read-only&lt;/strong&gt; share (&lt;code&gt;read_only = true&lt;/code&gt;, a device, a share that
+chose a partition, a person who may not write) is answered&lt;code&gt;STATUS_MEDIA_WRITE_PROTECTED&lt;/code&gt; before any of this, in every mode.&lt;/p&gt;
+&lt;p&gt;What a share can store depends on its driver, at the versions this release pins:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Share&lt;/th&gt;
+&lt;th&gt;CreationTime&lt;/th&gt;
+&lt;th&gt;ChangeTime alone&lt;/th&gt;
+&lt;th&gt;Access or write time&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Directory&lt;/strong&gt; (host)&lt;/td&gt;
+&lt;td&gt;unstorable unless equal to the reported birth time&lt;/td&gt;
+&lt;td&gt;unstorable unless equal to the reported one&lt;/td&gt;
+&lt;td&gt;stored (a ChangeTime sent with it is accepted)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Image, driver with &lt;code&gt;Chtimes&lt;/code&gt;&lt;/strong&gt;: ext4, ufs, btrfs, xfs, zfs&lt;/td&gt;
+&lt;td&gt;unstorable unless equal to the reported one (only ext4 reports one: for the others, always)&lt;/td&gt;
+&lt;td&gt;the same&lt;/td&gt;
+&lt;td&gt;stored (a ChangeTime sent with it is accepted)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Image, driver without &lt;code&gt;Chtimes&lt;/code&gt;&lt;/strong&gt;: FAT, exFAT, NTFS, HFS+, APFS, ISO 9660, SquashFS&lt;/td&gt;
+&lt;td&gt;the same (FAT, exFAT, NTFS and HFS+ report one; the others never)&lt;/td&gt;
+&lt;td&gt;the same, &lt;strong&gt;also&lt;/strong&gt; when sent with an access or write time&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;always unstorable&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;The drivers with &lt;code&gt;Chtimes&lt;/code&gt; are osfs (&lt;code&gt;osfs.go:383&lt;/code&gt;), ext4 (&lt;code&gt;metadata.go:93&lt;/code&gt;), ufs(&lt;code&gt;metadata.go:63&lt;/code&gt;), btrfs (&lt;code&gt;fs.go:382&lt;/code&gt;), xfs (&lt;code&gt;fs.go:521&lt;/code&gt;) and zfs(&lt;code&gt;metadata.go:94&lt;/code&gt;); the others have none. Before v0.42.0 the lock fileshare puts
+in front of every image driver hid &lt;code&gt;Chtimes&lt;/code&gt;, so every image dropped a client&amp;rsquo;s
+access and write times, ext4 included; since v0.42.0 it carries &lt;code&gt;Chtimes&lt;/code&gt; exactly
+when the driver has it. NTFS images are read by a read-only driver, so nothing is
+stored whatever the policy says; the policy decides only what the client is told.&lt;/p&gt;
+&lt;p&gt;Which clients hit which case: Windows Explorer and &lt;code&gt;robocopy /COPY:T&lt;/code&gt; send a
+CreationTime, which a share of any kind cannot keep unless it is unchanged; Linux&lt;code&gt;touch -d&lt;/code&gt; and &lt;code&gt;cp -p&lt;/code&gt; send only access and write times (the kernel client adds a
+ChangeTime of &amp;ldquo;now&amp;rdquo;), which a directory and a driver with &lt;code&gt;Chtimes&lt;/code&gt; store, and a
+driver without it does not.&lt;/p&gt;</description></item></channel></rss>

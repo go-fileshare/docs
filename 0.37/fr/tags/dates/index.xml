@@ -84,5 +84,116 @@ ouvert.&lt;/p&gt;
 &lt;p&gt;Une date qui ne peut pas être enregistrée est &lt;strong&gt;ignorée par défaut&lt;/strong&gt; : la
 requête réussit et ce champ est abandonné, comme le fait Samba, afin que les
 copies qui conservent les dates n&amp;rsquo;échouent pas. Cela vise la date de création,une date de changement envoyée seule, et toute date sur un pilote qui ne sait
-pas fixer les dates. fileshare n&amp;rsquo;offre pas de réglage pour cela : tous les
-partages utilisent la valeur par défaut.&lt;/p&gt;</description></item></channel></rss>
+pas fixer les dates.&lt;/p&gt;
+&lt;h3 data-hextra-search-id="unstorable-times"&gt;Choisir ce qui se passe : &lt;code&gt;unstorable_times&lt;/code&gt;&lt;span class="hx:absolute hx:-mt-20" id="unstorable-times"&gt;&lt;/span&gt;
+&lt;a href="#unstorable-times" class="subheading-anchor" aria-label="Lien permanent vers cette section"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Depuis la v0.42.0, un partage dit ce qu&amp;rsquo;il advient d&amp;rsquo;une telle date avec&lt;code&gt;unstorable_times&lt;/code&gt; (l&amp;rsquo;option &lt;code&gt;UnstorableTimes&lt;/code&gt; de &lt;code&gt;go-filesystems/smb&lt;/code&gt;) :&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;attic&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; directory&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/attic&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; unstorable_times&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;refuse&amp;#34; # &amp;#34;ignore&amp;#34; (par défaut), &amp;#34;refuse&amp;#34; ou &amp;#34;log&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copier le code"
+aria-label="Copier le code"
+data-copied-label="Copié !"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Valeur&lt;/th&gt;
+&lt;th&gt;Ce qu&amp;rsquo;entend le client&lt;/th&gt;
+&lt;th&gt;Ce qui est conservé&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ignore&lt;/code&gt; (aussi quand le réglage est absent)&lt;/td&gt;
+&lt;td&gt;succès&lt;/td&gt;
+&lt;td&gt;le champ est abandonné, comme le fait Samba&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;refuse&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;STATUS_NOT_SUPPORTED&lt;/code&gt;, pour qu&amp;rsquo;un outil de sauvegarde ne croie jamais qu&amp;rsquo;une date a été conservée&lt;/td&gt;
+&lt;td&gt;rien de cette requête n&amp;rsquo;est appliqué&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;log&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;succès&lt;/td&gt;
+&lt;td&gt;le champ est abandonné, et une ligne par requête nomme le partage, le chemin et les champs, écrite là où le serveur écrit ses propres lignes&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Toute autre valeur est refusée à la lecture de la configuration, par une erreur
+qui nomme le partage et les trois mots. Le réglage appartient à SMB : un partage
+dont &lt;code&gt;protocols&lt;/code&gt; exclut SMB est refusé s&amp;rsquo;il le fixe. Il n&amp;rsquo;y a pas de valeur par
+défaut pour tout le serveur ; on la dit sur chaque partage. Un partage créé par
+l&amp;rsquo;API d&amp;rsquo;administration utilise &lt;code&gt;ignore&lt;/code&gt;.&lt;/p&gt;
+&lt;h3 data-hextra-search-id="when-unstorable"&gt;Quand une date ne peut pas être enregistrée&lt;span class="hx:absolute hx:-mt-20" id="when-unstorable"&gt;&lt;/span&gt;
+&lt;a href="#when-unstorable" class="subheading-anchor" aria-label="Lien permanent vers cette section"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Une requête est jugée champ par champ, et un seul champ non enregistrable
+suffit : &lt;code&gt;refuse&lt;/code&gt; refuse toute la requête, &lt;code&gt;log&lt;/code&gt; écrit sa ligne. Une date n&amp;rsquo;est
+pas enregistrable quand :&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;CreationTime&lt;/strong&gt; est fixée à une valeur différente de celle que le pilote
+annonce (ou le pilote n&amp;rsquo;en annonce aucune). Il n&amp;rsquo;existe aucun moyen de fixer
+une date de création. Une valeur égale à celle annoncée est acceptée : il n&amp;rsquo;y
+a rien à changer.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;ChangeTime&lt;/strong&gt; est envoyée &lt;strong&gt;seule&lt;/strong&gt;, avec une valeur différente de celle
+annoncée. Envoyée avec une date d&amp;rsquo;accès ou d&amp;rsquo;écriture, elle est acceptée si
+le pilote sait fixer les dates, parce que les fixer remet la date de
+changement à « maintenant ».&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Une date d&amp;rsquo;accès ou d&amp;rsquo;écriture&lt;/strong&gt; est fixée sur un partage dont le pilote ne
+sait pas fixer les dates (&lt;code&gt;Chtimes&lt;/code&gt;) : toute valeur réelle, égale à la
+courante ou non.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Trois choses ne sont pas décidées par la politique. Une date de 0 (conserver),-1 (figer) ou -2 (reprendre) n&amp;rsquo;est jamais non enregistrable. -1 sur un pilote qui
+sait fixer les dates mais pas les annoncer donne toujours&lt;code&gt;STATUS_NOT_SUPPORTED&lt;/code&gt;, dans tous les modes : c&amp;rsquo;est une capacité absente, pas un
+champ abandonné (cela concerne les images ufs, btrfs, xfs et zfs). Et une
+requête sur un partage &lt;strong&gt;en lecture seule&lt;/strong&gt; (&lt;code&gt;read_only = true&lt;/code&gt;, un périphérique,un partage qui a choisi une partition, une personne sans droit d&amp;rsquo;écriture)reçoit &lt;code&gt;STATUS_MEDIA_WRITE_PROTECTED&lt;/code&gt; avant tout cela, dans tous les modes.&lt;/p&gt;
+&lt;p&gt;Ce qu&amp;rsquo;un partage peut enregistrer dépend de son pilote, dans les versions
+qu&amp;rsquo;épingle cette version :&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Partage&lt;/th&gt;
+&lt;th&gt;CreationTime&lt;/th&gt;
+&lt;th&gt;ChangeTime seule&lt;/th&gt;
+&lt;th&gt;Date d&amp;rsquo;accès ou d&amp;rsquo;écriture&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Répertoire&lt;/strong&gt; (hôte)&lt;/td&gt;
+&lt;td&gt;non enregistrable sauf si égale à la date de création annoncée&lt;/td&gt;
+&lt;td&gt;non enregistrable sauf si égale à l&amp;rsquo;annoncée&lt;/td&gt;
+&lt;td&gt;enregistrée (une ChangeTime envoyée avec elle est acceptée)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Image, pilote avec &lt;code&gt;Chtimes&lt;/code&gt;&lt;/strong&gt; : ext4, ufs, btrfs, xfs, zfs&lt;/td&gt;
+&lt;td&gt;non enregistrable sauf si égale à l&amp;rsquo;annoncée (seul ext4 en annonce une : pour les autres, toujours)&lt;/td&gt;
+&lt;td&gt;idem&lt;/td&gt;
+&lt;td&gt;enregistrée (une ChangeTime envoyée avec elle est acceptée)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Image, pilote sans &lt;code&gt;Chtimes&lt;/code&gt;&lt;/strong&gt; : FAT, exFAT, NTFS, HFS+, APFS, ISO 9660, SquashFS&lt;/td&gt;
+&lt;td&gt;idem (FAT, exFAT, NTFS et HFS+ en annoncent une ; les autres jamais)&lt;/td&gt;
+&lt;td&gt;idem, &lt;strong&gt;y compris&lt;/strong&gt; envoyée avec une date d&amp;rsquo;accès ou d&amp;rsquo;écriture&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;toujours non enregistrable&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Les pilotes avec &lt;code&gt;Chtimes&lt;/code&gt; sont osfs (&lt;code&gt;osfs.go:383&lt;/code&gt;), ext4 (&lt;code&gt;metadata.go:93&lt;/code&gt;), ufs(&lt;code&gt;metadata.go:63&lt;/code&gt;), btrfs (&lt;code&gt;fs.go:382&lt;/code&gt;), xfs (&lt;code&gt;fs.go:521&lt;/code&gt;) et zfs(&lt;code&gt;metadata.go:94&lt;/code&gt;) ; les autres n&amp;rsquo;en ont pas. Avant la v0.42.0, le verrou que
+fileshare place devant chaque pilote d&amp;rsquo;image masquait &lt;code&gt;Chtimes&lt;/code&gt;, si bien que
+toute image abandonnait les dates d&amp;rsquo;accès et d&amp;rsquo;écriture d&amp;rsquo;un client, ext4
+comprise ; depuis la v0.42.0 il le transmet exactement quand le pilote en a un.Les images NTFS sont lues par un pilote en lecture seule : rien n&amp;rsquo;est enregistré
+quelle que soit la politique, qui décide seulement de ce que le client apprend.&lt;/p&gt;
+&lt;p&gt;Quels clients déclenchent quel cas : l&amp;rsquo;Explorateur Windows et &lt;code&gt;robocopy /COPY:T&lt;/code&gt;
+envoient une CreationTime, qu&amp;rsquo;un partage de n&amp;rsquo;importe quel type ne peut pas
+conserver si elle change ; &lt;code&gt;touch -d&lt;/code&gt; et &lt;code&gt;cp -p&lt;/code&gt; sous Linux n&amp;rsquo;envoient que des
+dates d&amp;rsquo;accès et d&amp;rsquo;écriture (le client du noyau ajoute une ChangeTime« maintenant »), qu&amp;rsquo;un répertoire et un pilote avec &lt;code&gt;Chtimes&lt;/code&gt; enregistrent, et
+un pilote sans lui non.&lt;/p&gt;</description></item></channel></rss>

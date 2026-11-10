@@ -173,7 +173,26 @@ data-copied-label="コピーしました！"
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;p&gt;⛔ 共有には &lt;code&gt;image&lt;/code&gt; &lt;strong&gt;または&lt;/strong&gt; &lt;code&gt;directory&lt;/code&gt; のどちらか一方が必要で、両方を指定することも、どちらも指定しないこともできません。&lt;code&gt;filesystem&lt;/code&gt; と &lt;code&gt;partition&lt;/code&gt; はイメージ用です。これらを指定したディレクトリ共有は拒否されます。指定したということは、その共有がイメージのつもりだったことを意味するためです。&lt;code&gt;read_only = true&lt;/code&gt; はイメージと同様にディレクトリでも機能します。これを指定しながら&lt;code&gt;writers&lt;/code&gt; も列挙した共有は、&lt;code&gt;read_only&lt;/code&gt; が優先されてしまうため拒否されます。&lt;/p&gt;
-&lt;p&gt;クライアントに通知される容量は、ツリーが置かれているファイルシステムのものです。取得できないプラットフォームでは 0 のままとなり、プロトコル側はこれを「満杯」ではなく「不明」として扱います。&lt;/p&gt;</description></item><item><title>各人として提供されるディレクトリ</title><link>https://go-fileshare.github.io/docs/0.37/ja/configuration/as-each-person/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.37/ja/configuration/as-each-person/</guid><description>
+&lt;p&gt;クライアントに通知される容量は、ツリーが置かれているファイルシステムのものです。取得できないプラットフォームでは 0 のままとなり、プロトコル側はこれを「満杯」ではなく「不明」として扱います。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-smb-does-with-a-time-it-cannot-store"&gt;保存できない時刻を SMB はどう扱うか&lt;span class="hx:absolute hx:-mt-20" id="what-smb-does-with-a-time-it-cannot-store"&gt;&lt;/span&gt;
+&lt;a href="#what-smb-does-with-a-time-it-cannot-store" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;クライアントが設定した時刻をストレージが保持できない場合、既定では&lt;strong&gt;無視されます&lt;/strong&gt;。v0.42.0 から、共有ごとに &lt;code&gt;unstorable_times&lt;/code&gt; で選べます。保存できないのは、報告された値と異なる CreationTime、単独で送られた ChangeTime、イメージに対するアクセス時刻または更新時刻のうち、時刻を設定できないドライバー(FAT、exFAT、NTFS、HFS+、APFS)のイメージに対するものです(ホストのディレクトリと ext4 イメージはこれらを保存します)。&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;photos&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; directory&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/data/photos&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; unstorable_times&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;log&amp;#34; # &amp;#34;ignore&amp;#34;(既定)、&amp;#34;refuse&amp;#34;、&amp;#34;log&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="コードをコピー"
+aria-label="コードをコピー"
+data-copied-label="コピーしました！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;refuse&lt;/code&gt; はクライアントにエラーを返し、&lt;code&gt;log&lt;/code&gt; は共有名とパスを記した 1 行を書きます。共有の種類ごとの正確な場合分けは&lt;a href="https://go-fileshare.github.io/docs/0.37/ja/protocols/times/#when-unstorable"&gt;実際のファイル時刻&lt;/a&gt;を参照してください。&lt;/p&gt;</description></item><item><title>各人として提供されるディレクトリ</title><link>https://go-fileshare.github.io/docs/0.37/ja/configuration/as-each-person/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.37/ja/configuration/as-each-person/</guid><description>
 &lt;p&gt;通常、1 つの fileshare プロセスが、1 つのアカウントとして全員にサービスを提供します。誰に何を許可するかは fileshare が決め、作成されるファイルはすべてそのアカウントの所有になります。ディレクトリ共有は、これに代えて&lt;strong&gt;各人として&lt;/strong&gt;提供することもできます。ログインした人のファイルは、その人の uid、gid、グループで動作するプロセスによって開かれるため、ツリーのパーミッションはカーネルが適用し、作成されたものはその人の所有になります。&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;identity&lt;/span&gt; {

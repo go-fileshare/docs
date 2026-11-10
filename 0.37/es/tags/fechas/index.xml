@@ -84,5 +84,117 @@ reanuda, por identificador abierto.&lt;/p&gt;
 tiene éxito y ese campo se descarta, como hace Samba, para que las copias que
 conservan las fechas no fallen. Esto abarca la fecha de creación, una fecha de
 cambio enviada sola y cualquier fecha en un controlador que no puede
-establecer fechas. fileshare no ofrece un ajuste para esto: todos los recursos
-compartidos usan el valor por defecto.&lt;/p&gt;</description></item></channel></rss>
+establecer fechas.&lt;/p&gt;
+&lt;h3 data-hextra-search-id="unstorable-times"&gt;Elegir qué ocurre: &lt;code&gt;unstorable_times&lt;/code&gt;&lt;span class="hx:absolute hx:-mt-20" id="unstorable-times"&gt;&lt;/span&gt;
+&lt;a href="#unstorable-times" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Desde la v0.42.0, un recurso compartido indica qué ocurre con una fecha así
+mediante &lt;code&gt;unstorable_times&lt;/code&gt; (la opción &lt;code&gt;UnstorableTimes&lt;/code&gt; de &lt;code&gt;go-filesystems/smb&lt;/code&gt;):&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;attic&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; directory&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/attic&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; unstorable_times&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;refuse&amp;#34; # &amp;#34;ignore&amp;#34; (por defecto), &amp;#34;refuse&amp;#34; o &amp;#34;log&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Valor&lt;/th&gt;
+&lt;th&gt;Lo que oye el cliente&lt;/th&gt;
+&lt;th&gt;Lo que se conserva&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ignore&lt;/code&gt; (también si falta el ajuste)&lt;/td&gt;
+&lt;td&gt;éxito&lt;/td&gt;
+&lt;td&gt;el campo se descarta, como hace Samba&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;refuse&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;STATUS_NOT_SUPPORTED&lt;/code&gt;, para que una herramienta de copia de seguridad nunca crea que se conservó una fecha&lt;/td&gt;
+&lt;td&gt;no se aplica nada de esa solicitud&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;log&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;éxito&lt;/td&gt;
+&lt;td&gt;el campo se descarta, y una línea por solicitud nombra el recurso, la ruta y los campos, escrita donde el servidor escribe sus propias líneas&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Cualquier otro valor se rechaza al leer la configuración, con un error que
+nombra el recurso y las tres palabras. El ajuste pertenece a SMB: se rechaza un
+recurso cuyo &lt;code&gt;protocols&lt;/code&gt; excluye SMB si lo establece. No hay un valor por
+defecto para todo el servidor; se indica en cada recurso. Un recurso creado
+mediante la API de administración usa &lt;code&gt;ignore&lt;/code&gt;.&lt;/p&gt;
+&lt;h3 data-hextra-search-id="when-unstorable"&gt;Cuándo no se puede almacenar una fecha&lt;span class="hx:absolute hx:-mt-20" id="when-unstorable"&gt;&lt;/span&gt;
+&lt;a href="#when-unstorable" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Una solicitud se juzga campo por campo, y basta un campo no almacenable:&lt;code&gt;refuse&lt;/code&gt; rechaza toda la solicitud y &lt;code&gt;log&lt;/code&gt; escribe su línea. Una fecha no es
+almacenable cuando:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;CreationTime&lt;/strong&gt; se establece en un valor distinto del que informa el
+controlador (o el controlador no informa ninguno). No hay forma de establecer
+una fecha de creación. Un valor igual al informado se acepta: no hay nada que
+cambiar.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;ChangeTime&lt;/strong&gt; se envía &lt;strong&gt;sola&lt;/strong&gt;, con un valor distinto del informado.Enviada junto con una fecha de acceso o de escritura se acepta, si el
+controlador puede establecer fechas, porque al establecerlas se actualiza la
+fecha de cambio a «ahora».&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Una fecha de acceso o de escritura&lt;/strong&gt;, en un recurso cuyo controlador no
+puede establecer fechas (&lt;code&gt;Chtimes&lt;/code&gt;): cualquier valor real, igual al actual o
+no.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Tres cosas no las decide la política. Una fecha de 0 (conservar), -1 (congelar)o -2 (reanudar) nunca es no almacenable. -1 en un controlador que puede
+establecer fechas pero no informar de ellas es siempre &lt;code&gt;STATUS_NOT_SUPPORTED&lt;/code&gt;,en todos los modos: es una capacidad que falta, no un campo descartado (afecta a
+las imágenes ufs, btrfs, xfs y zfs). Y una solicitud sobre un recurso de &lt;strong&gt;solo
+lectura&lt;/strong&gt; (&lt;code&gt;read_only = true&lt;/code&gt;, un dispositivo, un recurso que eligió una
+partición, una persona sin permiso de escritura) se responde con&lt;code&gt;STATUS_MEDIA_WRITE_PROTECTED&lt;/code&gt; antes de todo esto, en todos los modos.&lt;/p&gt;
+&lt;p&gt;Lo que un recurso puede almacenar depende de su controlador, en las versiones
+que fija esta versión:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Recurso&lt;/th&gt;
+&lt;th&gt;CreationTime&lt;/th&gt;
+&lt;th&gt;ChangeTime sola&lt;/th&gt;
+&lt;th&gt;Fecha de acceso o de escritura&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Directorio&lt;/strong&gt; (host)&lt;/td&gt;
+&lt;td&gt;no almacenable salvo que sea igual a la fecha de creación informada&lt;/td&gt;
+&lt;td&gt;no almacenable salvo que sea igual a la informada&lt;/td&gt;
+&lt;td&gt;almacenada (una ChangeTime enviada con ella se acepta)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Imagen, controlador con &lt;code&gt;Chtimes&lt;/code&gt;&lt;/strong&gt;: ext4, ufs, btrfs, xfs, zfs&lt;/td&gt;
+&lt;td&gt;no almacenable salvo que sea igual a la informada (solo ext4 informa una: en los demás, siempre)&lt;/td&gt;
+&lt;td&gt;igual&lt;/td&gt;
+&lt;td&gt;almacenada (una ChangeTime enviada con ella se acepta)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Imagen, controlador sin &lt;code&gt;Chtimes&lt;/code&gt;&lt;/strong&gt;: FAT, exFAT, NTFS, HFS+, APFS, ISO 9660, SquashFS&lt;/td&gt;
+&lt;td&gt;igual (FAT, exFAT, NTFS y HFS+ informan una; los demás nunca)&lt;/td&gt;
+&lt;td&gt;igual, &lt;strong&gt;también&lt;/strong&gt; cuando se envía con una fecha de acceso o de escritura&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;siempre no almacenable&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Los controladores con &lt;code&gt;Chtimes&lt;/code&gt; son osfs (&lt;code&gt;osfs.go:383&lt;/code&gt;), ext4 (&lt;code&gt;metadata.go:93&lt;/code&gt;),ufs (&lt;code&gt;metadata.go:63&lt;/code&gt;), btrfs (&lt;code&gt;fs.go:382&lt;/code&gt;), xfs (&lt;code&gt;fs.go:521&lt;/code&gt;) y zfs(&lt;code&gt;metadata.go:94&lt;/code&gt;); los demás no tienen. Antes de la v0.42.0 el bloqueo que
+fileshare coloca delante de cada controlador de imagen ocultaba &lt;code&gt;Chtimes&lt;/code&gt;, de
+modo que toda imagen descartaba las fechas de acceso y de escritura de un
+cliente, ext4 incluida; desde la v0.42.0 lo transmite exactamente cuando el
+controlador lo tiene. Las imágenes NTFS las lee un controlador de solo lectura,así que no se almacena nada diga lo que diga la política; esta solo decide lo que
+se le comunica al cliente.&lt;/p&gt;
+&lt;p&gt;Qué clientes provocan cada caso: el Explorador de Windows y &lt;code&gt;robocopy /COPY:T&lt;/code&gt;
+envían una CreationTime, que un recurso de cualquier tipo no puede conservar si
+cambia; &lt;code&gt;touch -d&lt;/code&gt; y &lt;code&gt;cp -p&lt;/code&gt; de Linux envían solo fechas de acceso y de
+escritura (el cliente del kernel añade una ChangeTime de «ahora»), que un
+directorio y un controlador con &lt;code&gt;Chtimes&lt;/code&gt; almacenan, y uno sin él no.&lt;/p&gt;</description></item></channel></rss>

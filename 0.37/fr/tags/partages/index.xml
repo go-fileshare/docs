@@ -214,7 +214,29 @@ la chose la plus lente que puisse faire un serveur de fichiers.&lt;/p&gt;
 refusé, parce que le dire signifie que le partage devait être une image.&lt;code&gt;read_only = true&lt;/code&gt; fonctionne sur un répertoire comme sur une image ; un partage qui le dit
 et liste aussi des &lt;code&gt;writers&lt;/code&gt; est refusé, parce que &lt;code&gt;read_only&lt;/code&gt; l&amp;rsquo;emporterait.&lt;/p&gt;
 &lt;p&gt;La capacité annoncée à un client est celle du système de fichiers sur lequel se trouve l&amp;rsquo;arborescence ; une
-plateforme qui ne sait pas la dire la laisse à zéro, ce que les protocoles lisent comme« inconnue » plutôt que « pleine ».&lt;/p&gt;</description></item><item><title>Des répertoires servis sous l'identité de chacun</title><link>https://go-fileshare.github.io/docs/0.37/fr/configuration/as-each-person/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.37/fr/configuration/as-each-person/</guid><description>
+plateforme qui ne sait pas la dire la laisse à zéro, ce que les protocoles lisent comme« inconnue » plutôt que « pleine ».&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-smb-does-with-a-time-it-cannot-store"&gt;Ce que fait SMB d&amp;rsquo;une date qu&amp;rsquo;il ne peut pas enregistrer&lt;span class="hx:absolute hx:-mt-20" id="what-smb-does-with-a-time-it-cannot-store"&gt;&lt;/span&gt;
+&lt;a href="#what-smb-does-with-a-time-it-cannot-store" class="subheading-anchor" aria-label="Lien permanent vers cette section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Une date qu&amp;rsquo;un client fixe et que le stockage ne peut pas conserver est&lt;strong&gt;ignorée&lt;/strong&gt; par défaut. Depuis la v0.42.0, un partage peut choisir, avec&lt;code&gt;unstorable_times&lt;/code&gt;. Ne sont pas enregistrables : une CreationTime différente de
+celle annoncée, une ChangeTime envoyée seule, ou une date d&amp;rsquo;accès ou d&amp;rsquo;écriture
+sur une image dont le pilote ne sait pas fixer les dates (FAT, exFAT, NTFS, HFS+,APFS ; un répertoire de l&amp;rsquo;hôte et une image ext4 les enregistrent) :&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;photos&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; directory&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/data/photos&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; unstorable_times&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;log&amp;#34; # &amp;#34;ignore&amp;#34; (par défaut), &amp;#34;refuse&amp;#34; ou &amp;#34;log&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copier le code"
+aria-label="Copier le code"
+data-copied-label="Copié !"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;refuse&lt;/code&gt; répond au client par une erreur, et &lt;code&gt;log&lt;/code&gt; écrit une ligne qui nomme le
+partage et le chemin. Les cas exacts, selon le type de partage, sont dans&lt;a href="https://go-fileshare.github.io/docs/0.37/fr/protocols/times/#when-unstorable"&gt;Dates réelles des fichiers&lt;/a&gt;.&lt;/p&gt;</description></item><item><title>Des répertoires servis sous l'identité de chacun</title><link>https://go-fileshare.github.io/docs/0.37/fr/configuration/as-each-person/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.37/fr/configuration/as-each-person/</guid><description>
 &lt;p&gt;D&amp;rsquo;ordinaire, un seul processus fileshare sert tout le monde sous un seul
 compte : fileshare décide qui peut faire quoi, et chaque fichier qu&amp;rsquo;il crée
 appartient à ce compte. Un partage de répertoire peut au contraire être servi&lt;strong&gt;sous l&amp;rsquo;identité de chacun&lt;/strong&gt;. Les fichiers de la personne connectée sont

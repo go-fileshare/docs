@@ -214,7 +214,29 @@ the slowest thing a file server can do.&lt;/p&gt;
 refused, because saying one means the share was meant to be an image.&lt;code&gt;read_only = true&lt;/code&gt; works on a directory as on an image; a share that says it
 and also lists &lt;code&gt;writers&lt;/code&gt; is refused, because &lt;code&gt;read_only&lt;/code&gt; would win.&lt;/p&gt;
 &lt;p&gt;The capacity a client is told is that of the filesystem the tree lives on; a
-platform that cannot say leaves it at zero, which the protocols read as&amp;ldquo;unknown&amp;rdquo; rather than &amp;ldquo;full&amp;rdquo;.&lt;/p&gt;</description></item><item><title>Directories served as each person</title><link>https://go-fileshare.github.io/docs/0.37/configuration/as-each-person/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.37/configuration/as-each-person/</guid><description>
+platform that cannot say leaves it at zero, which the protocols read as&amp;ldquo;unknown&amp;rdquo; rather than &amp;ldquo;full&amp;rdquo;.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-smb-does-with-a-time-it-cannot-store"&gt;What SMB does with a time it cannot store&lt;span class="hx:absolute hx:-mt-20" id="what-smb-does-with-a-time-it-cannot-store"&gt;&lt;/span&gt;
+&lt;a href="#what-smb-does-with-a-time-it-cannot-store" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;A time a client sets that the storage cannot keep is &lt;strong&gt;ignored&lt;/strong&gt; by default.Since v0.42.0 a share can choose, with &lt;code&gt;unstorable_times&lt;/code&gt;. A time is unstorable
+when it is a CreationTime that differs from the reported one, a ChangeTime sent
+alone, or an access or write time on an image whose driver cannot set times(FAT, exFAT, NTFS, HFS+, APFS; a host directory and an ext4 image store those):&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;photos&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; directory&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/data/photos&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; unstorable_times&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;log&amp;#34; # &amp;#34;ignore&amp;#34; (the default), &amp;#34;refuse&amp;#34; or &amp;#34;log&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;refuse&lt;/code&gt; answers the client with an error, and &lt;code&gt;log&lt;/code&gt; writes one line naming the
+share and the path. The exact cases, per kind of share, are in&lt;a href="https://go-fileshare.github.io/docs/0.37/protocols/times/#when-unstorable"&gt;Real file times&lt;/a&gt;.&lt;/p&gt;</description></item><item><title>Directories served as each person</title><link>https://go-fileshare.github.io/docs/0.37/configuration/as-each-person/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.37/configuration/as-each-person/</guid><description>
 &lt;p&gt;Ordinarily one fileshare process serves everybody as one account: fileshare
 decides who may do what, and every file it creates belongs to that account.A directory share can instead be served &lt;strong&gt;as each person&lt;/strong&gt;. Whoever logged
 in has their files opened by a process running with their uid, gid and
