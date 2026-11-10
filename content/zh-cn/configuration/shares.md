@@ -181,10 +181,11 @@ share "photos" {
 平台会将其保留为零，协议会把它理解为
 “未知”而不是“已满”。
 
-## SMB 如何处理无法存储的时间
+## SMB 如何处理无法存储的时间 {#what-smb-does-with-a-time-it-cannot-store}
 
-客户端设置了存储无法保留的时间（例如创建时间）时，默认会被**忽略**。
-自 v0.42.0 起，共享可以用 `unstorable_times` 来选择：
+客户端设置了存储无法保留的时间时，默认会被**忽略**。自 v0.42.0 起，共享可以用
+`unstorable_times` 来选择。无法存储的有：与所报告的值不同的 CreationTime、单独
+发送的 ChangeTime，以及对镜像设置的访问时间或修改时间（主机目录可以存储它们）：
 
 ```hcl
 share "photos" {
@@ -194,4 +195,5 @@ share "photos" {
 ```
 
 `refuse` 会向客户端返回错误，`log` 会写一行，写明共享和路径。
-参见[真实的文件时间]({{< relref "/protocols/times.md#unstorable-times" >}})。
+按共享类型划分的确切情形见
+[真实的文件时间]({{< relref "/protocols/times.md#when-unstorable" >}})。

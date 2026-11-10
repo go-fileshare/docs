@@ -176,10 +176,12 @@ share "photos" {
 없는 플랫폼은 0으로 두며, 프로토콜은 이를 "가득 참"이 아니라 "알 수 없음"으로
 해석합니다.
 
-## 저장할 수 없는 시간을 SMB가 처리하는 방식
+## 저장할 수 없는 시간을 SMB가 처리하는 방식 {#what-smb-does-with-a-time-it-cannot-store}
 
-클라이언트가 저장소가 보존할 수 없는 시간(예: 생성 시간)을 설정하면 기본적으로
-**무시됩니다**. v0.42.0부터 공유마다 `unstorable_times`로 선택할 수 있습니다.
+클라이언트가 설정한 시간을 저장소가 보존할 수 없으면 기본적으로 **무시됩니다**.
+v0.42.0부터 공유마다 `unstorable_times`로 선택할 수 있습니다. 저장할 수 없는 것은
+보고된 값과 다른 CreationTime, 단독으로 전송된 ChangeTime, 이미지에 대한 접근 시간
+또는 수정 시간입니다(호스트 디렉터리는 이를 저장합니다).
 
 ```hcl
 share "photos" {
@@ -189,4 +191,5 @@ share "photos" {
 ```
 
 `refuse`는 클라이언트에 오류로 응답하고, `log`는 공유 이름과 경로를 적은 한 줄을
-기록합니다. [실제 파일 시간]({{< relref "/protocols/times.md#unstorable-times" >}})을 참고하세요.
+기록합니다. 공유 종류별 정확한 경우는
+[실제 파일 시간]({{< relref "/protocols/times.md#when-unstorable" >}})을 참고하세요.

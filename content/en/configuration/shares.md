@@ -181,11 +181,12 @@ The capacity a client is told is that of the filesystem the tree lives on; a
 platform that cannot say leaves it at zero, which the protocols read as
 "unknown" rather than "full".
 
-## What SMB does with a time it cannot store
+## What SMB does with a time it cannot store {#what-smb-does-with-a-time-it-cannot-store}
 
-A client that sets a time the storage cannot keep (a creation time, say) is
-**ignored** by default. Since v0.42.0 a share can choose, with
-`unstorable_times`:
+A time a client sets that the storage cannot keep is **ignored** by default.
+Since v0.42.0 a share can choose, with `unstorable_times`. A time is unstorable
+when it is a CreationTime that differs from the reported one, a ChangeTime sent
+alone, or an access or write time on an image (a host directory stores those):
 
 ```hcl
 share "photos" {
@@ -195,4 +196,5 @@ share "photos" {
 ```
 
 `refuse` answers the client with an error, and `log` writes one line naming the
-share and the path. See [Real file times]({{< relref "/protocols/times.md#unstorable-times" >}}).
+share and the path. The exact cases, per kind of share, are in
+[Real file times]({{< relref "/protocols/times.md#when-unstorable" >}}).

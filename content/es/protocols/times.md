@@ -75,3 +75,48 @@ nombra el recurso y las tres palabras. El ajuste pertenece a SMB: se rechaza un
 recurso cuyo `protocols` excluye SMB si lo establece. No hay un valor por
 defecto para todo el servidor; se indica en cada recurso. Un recurso creado
 mediante la API de administración usa `ignore`.
+
+### Cuándo no se puede almacenar una fecha {#when-unstorable}
+
+Una solicitud se juzga campo por campo, y basta un campo no almacenable:
+`refuse` rechaza toda la solicitud y `log` escribe su línea. Una fecha no es
+almacenable cuando:
+
+1. **CreationTime** se establece en un valor distinto del que informa el
+   controlador (o el controlador no informa ninguno). No hay forma de establecer
+   una fecha de creación. Un valor igual al informado se acepta: no hay nada que
+   cambiar.
+2. **ChangeTime** se envía **sola**, con un valor distinto del informado.
+   Enviada junto con una fecha de acceso o de escritura se acepta, si el
+   controlador puede establecer fechas, porque al establecerlas se actualiza la
+   fecha de cambio a «ahora».
+3. **Una fecha de acceso o de escritura**, en un recurso cuyo controlador no
+   puede establecer fechas (`Chtimes`): cualquier valor real, igual al actual o
+   no.
+
+Tres cosas no las decide la política. Una fecha de 0 (conservar), -1 (congelar)
+o -2 (reanudar) nunca es no almacenable. -1 en un controlador que puede
+establecer fechas pero no informar de ellas es siempre `STATUS_NOT_SUPPORTED`,
+en todos los modos: es una capacidad que falta, no un campo descartado (ningún
+recurso que sirve fileshare es así). Y una solicitud sobre un recurso de **solo
+lectura** (`read_only = true`, un dispositivo, un recurso que eligió una
+partición, una persona sin permiso de escritura) se responde con
+`STATUS_MEDIA_WRITE_PROTECTED` antes de todo esto, en todos los modos.
+
+| Recurso | CreationTime | ChangeTime sola | Fecha de acceso o de escritura |
+|---|---|---|---|
+| **Directorio** (host) | no almacenable salvo que sea igual a la fecha de creación informada | no almacenable salvo que sea igual a la informada | almacenada (una ChangeTime enviada con ella se acepta) |
+| **Imagen**: FAT, exFAT, NTFS, ext4, HFS+ | no almacenable salvo que sea igual a la informada | no almacenable salvo que sea igual, **también** cuando se envía con una fecha de acceso o de escritura | **siempre no almacenable** |
+| **Otros tipos de imagen** | siempre no almacenable (no se informa nada con qué comparar) | siempre no almacenable | **siempre no almacenable** |
+
+Las fechas de acceso y de escritura de una imagen no son almacenables porque el
+bloqueo que fileshare coloca delante de cada controlador de imagen no transmite
+`Chtimes`, ni siquiera para ext4, cuyo controlador lo tiene. Las imágenes NTFS
+las lee un controlador de solo lectura, así que no se almacena nada diga lo que
+diga la política; esta solo decide lo que se le comunica al cliente.
+
+Qué clientes provocan cada caso: el Explorador de Windows y `robocopy /COPY:T`
+envían una CreationTime, que un recurso de cualquier tipo no puede conservar si
+cambia; `touch -d` y `cp -p` de Linux envían solo fechas de acceso y de
+escritura (el cliente del kernel añade una ChangeTime de «ahora»), que un
+directorio almacena y una imagen no.

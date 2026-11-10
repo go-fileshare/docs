@@ -72,3 +72,41 @@ names the share and the three words. The setting belongs to SMB: a share whose
 `protocols` leave SMB out is refused if it sets it. There is no server-wide
 default; say it on each share. A share created through the admin API uses
 `ignore`.
+
+### When a time cannot be stored {#when-unstorable}
+
+A request is judged field by field, and one unstorable field is enough: `refuse`
+refuses the whole request, `log` writes its line. A time is unstorable when:
+
+1. **CreationTime** is set to a value different from the one the driver reports
+   (or the driver reports none). There is no way to set a creation time. A value
+   equal to the reported one is accepted: there is nothing to change.
+2. **ChangeTime** is sent **alone**, with a value different from the reported
+   one. Sent together with an access or write time it is accepted, when the
+   driver can set times, because setting them refreshes the change time to now.
+3. **An access or write time**, on a share whose driver cannot set times
+   (`Chtimes`): any real value, equal to the current one or not.
+
+Three things are not decided by the policy. A time of 0 (keep), -1 (freeze) or
+-2 (resume) is never unstorable. -1 on a driver that can set times but cannot
+report them is always `STATUS_NOT_SUPPORTED`, in every mode: that is a missing
+capability, not a dropped field (no share fileshare serves is of that kind). And
+a request on a **read-only** share (`read_only = true`, a device, a share that
+chose a partition, a person who may not write) is answered
+`STATUS_MEDIA_WRITE_PROTECTED` before any of this, in every mode.
+
+| Share | CreationTime | ChangeTime alone | Access or write time |
+|---|---|---|---|
+| **Directory** (host) | unstorable unless equal to the reported birth time | unstorable unless equal to the reported one | stored (a ChangeTime sent with it is accepted) |
+| **Image**: FAT, exFAT, NTFS, ext4, HFS+ | unstorable unless equal to the reported one | unstorable unless equal, **also** when sent with an access or write time | **always unstorable** |
+| **Other image types** | always unstorable (nothing is reported to compare with) | always unstorable | **always unstorable** |
+
+An image's access and write times are unstorable because the lock fileshare puts
+in front of every image driver does not carry `Chtimes`, even for ext4, whose
+driver has one. NTFS images are read by a read-only driver, so nothing is stored
+whatever the policy says; the policy decides only what the client is told.
+
+Which clients hit which case: Windows Explorer and `robocopy /COPY:T` send a
+CreationTime, which a share of any kind cannot keep unless it is unchanged; Linux
+`touch -d` and `cp -p` send only access and write times (the kernel client adds a
+ChangeTime of "now"), which a directory stores and an image cannot.

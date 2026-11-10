@@ -75,3 +75,48 @@ qui nomme le partage et les trois mots. Le réglage appartient à SMB : un parta
 dont `protocols` exclut SMB est refusé s'il le fixe. Il n'y a pas de valeur par
 défaut pour tout le serveur ; on la dit sur chaque partage. Un partage créé par
 l'API d'administration utilise `ignore`.
+
+### Quand une date ne peut pas être enregistrée {#when-unstorable}
+
+Une requête est jugée champ par champ, et un seul champ non enregistrable
+suffit : `refuse` refuse toute la requête, `log` écrit sa ligne. Une date n'est
+pas enregistrable quand :
+
+1. **CreationTime** est fixée à une valeur différente de celle que le pilote
+   annonce (ou le pilote n'en annonce aucune). Il n'existe aucun moyen de fixer
+   une date de création. Une valeur égale à celle annoncée est acceptée : il n'y
+   a rien à changer.
+2. **ChangeTime** est envoyée **seule**, avec une valeur différente de celle
+   annoncée. Envoyée avec une date d'accès ou d'écriture, elle est acceptée si
+   le pilote sait fixer les dates, parce que les fixer remet la date de
+   changement à « maintenant ».
+3. **Une date d'accès ou d'écriture** est fixée sur un partage dont le pilote ne
+   sait pas fixer les dates (`Chtimes`) : toute valeur réelle, égale à la
+   courante ou non.
+
+Trois choses ne sont pas décidées par la politique. Une date de 0 (conserver),
+-1 (figer) ou -2 (reprendre) n'est jamais non enregistrable. -1 sur un pilote qui
+sait fixer les dates mais pas les annoncer donne toujours
+`STATUS_NOT_SUPPORTED`, dans tous les modes : c'est une capacité absente, pas un
+champ abandonné (aucun partage servi par fileshare n'est de ce genre). Et une
+requête sur un partage **en lecture seule** (`read_only = true`, un périphérique,
+un partage qui a choisi une partition, une personne sans droit d'écriture)
+reçoit `STATUS_MEDIA_WRITE_PROTECTED` avant tout cela, dans tous les modes.
+
+| Partage | CreationTime | ChangeTime seule | Date d'accès ou d'écriture |
+|---|---|---|---|
+| **Répertoire** (hôte) | non enregistrable sauf si égale à la date de création annoncée | non enregistrable sauf si égale à l'annoncée | enregistrée (une ChangeTime envoyée avec elle est acceptée) |
+| **Image** : FAT, exFAT, NTFS, ext4, HFS+ | non enregistrable sauf si égale à l'annoncée | non enregistrable sauf si égale, **y compris** envoyée avec une date d'accès ou d'écriture | **toujours non enregistrable** |
+| **Autres types d'image** | toujours non enregistrable (rien d'annoncé à comparer) | toujours non enregistrable | **toujours non enregistrable** |
+
+Les dates d'accès et d'écriture d'une image ne sont pas enregistrables parce que
+le verrou que fileshare place devant chaque pilote d'image ne transmet pas
+`Chtimes`, même pour ext4, dont le pilote en a un. Les images NTFS sont lues par
+un pilote en lecture seule : rien n'est enregistré quelle que soit la politique,
+qui décide seulement de ce que le client apprend.
+
+Quels clients déclenchent quel cas : l'Explorateur Windows et `robocopy /COPY:T`
+envoient une CreationTime, qu'un partage de n'importe quel type ne peut pas
+conserver si elle change ; `touch -d` et `cp -p` sous Linux n'envoient que des
+dates d'accès et d'écriture (le client du noyau ajoute une ChangeTime
+« maintenant »), qu'un répertoire enregistre et qu'une image ne peut pas.

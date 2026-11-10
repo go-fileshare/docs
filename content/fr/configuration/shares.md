@@ -181,11 +181,13 @@ La capacité annoncée à un client est celle du système de fichiers sur lequel
 plateforme qui ne sait pas la dire la laisse à zéro, ce que les protocoles lisent comme
 « inconnue » plutôt que « pleine ».
 
-## Ce que fait SMB d'une date qu'il ne peut pas enregistrer
+## Ce que fait SMB d'une date qu'il ne peut pas enregistrer {#what-smb-does-with-a-time-it-cannot-store}
 
-Quand un client fixe une date que le stockage ne peut pas conserver (une date de
-création, par exemple), elle est **ignorée** par défaut. Depuis la v0.42.0, un
-partage peut choisir, avec `unstorable_times` :
+Une date qu'un client fixe et que le stockage ne peut pas conserver est
+**ignorée** par défaut. Depuis la v0.42.0, un partage peut choisir, avec
+`unstorable_times`. Ne sont pas enregistrables : une CreationTime différente de
+celle annoncée, une ChangeTime envoyée seule, ou une date d'accès ou d'écriture
+sur une image (un répertoire de l'hôte les enregistre) :
 
 ```hcl
 share "photos" {
@@ -195,5 +197,5 @@ share "photos" {
 ```
 
 `refuse` répond au client par une erreur, et `log` écrit une ligne qui nomme le
-partage et le chemin. Voir
-[Dates réelles des fichiers]({{< relref "/protocols/times.md#unstorable-times" >}}).
+partage et le chemin. Les cas exacts, selon le type de partage, sont dans
+[Dates réelles des fichiers]({{< relref "/protocols/times.md#when-unstorable" >}}).

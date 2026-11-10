@@ -75,3 +75,48 @@ der die Freigabe und die drei Wörter nennt. Die Einstellung gehört zu SMB: ein
 Freigabe, deren `protocols` SMB auslassen, wird abgelehnt, wenn sie sie setzt.
 Einen serverweiten Standard gibt es nicht; sie wird pro Freigabe angegeben. Eine
 über die Admin-API angelegte Freigabe verwendet `ignore`.
+
+### Wann eine Zeit nicht gespeichert werden kann {#when-unstorable}
+
+Eine Anfrage wird Feld für Feld beurteilt, und ein nicht speicherbares Feld
+genügt: `refuse` lehnt die ganze Anfrage ab, `log` schreibt seine Zeile. Eine
+Zeit ist nicht speicherbar, wenn:
+
+1. **CreationTime** auf einen Wert gesetzt wird, der sich von dem unterscheidet,
+   den der Treiber meldet (oder der Treiber meldet keinen). Eine Erstellungszeit
+   lässt sich nicht setzen. Ein Wert, der dem gemeldeten entspricht, wird
+   akzeptiert: es gibt nichts zu ändern.
+2. **ChangeTime** **allein** gesendet wird, mit einem Wert, der sich vom
+   gemeldeten unterscheidet. Zusammen mit einer Zugriffs- oder Änderungszeit wird
+   sie akzeptiert, wenn der Treiber Zeiten setzen kann, weil deren Setzen die
+   Statusänderungszeit auf „jetzt" aktualisiert.
+3. **Eine Zugriffs- oder Änderungszeit** bei einer Freigabe gesetzt wird, deren
+   Treiber keine Zeiten setzen kann (`Chtimes`): jeder echte Wert, ob gleich dem
+   aktuellen oder nicht.
+
+Drei Dinge entscheidet die Richtlinie nicht. Eine Zeit von 0 (beibehalten), -1
+(einfrieren) oder -2 (fortsetzen) ist nie nicht speicherbar. -1 bei einem
+Treiber, der Zeiten setzen, aber nicht melden kann, ergibt in jedem Modus immer
+`STATUS_NOT_SUPPORTED`: das ist eine fehlende Fähigkeit, kein verworfenes Feld
+(keine von fileshare bereitgestellte Freigabe ist so). Und eine Anfrage an eine
+**schreibgeschützte** Freigabe (`read_only = true`, ein Gerät, eine Freigabe mit
+gewählter Partition, eine Person ohne Schreibrecht) wird in jedem Modus vor all
+dem mit `STATUS_MEDIA_WRITE_PROTECTED` beantwortet.
+
+| Freigabe | CreationTime | ChangeTime allein | Zugriffs- oder Änderungszeit |
+|---|---|---|---|
+| **Verzeichnis** (Host) | nicht speicherbar, außer sie entspricht der gemeldeten Erstellungszeit | nicht speicherbar, außer sie entspricht der gemeldeten | gespeichert (eine mitgesendete ChangeTime wird akzeptiert) |
+| **Image**: FAT, exFAT, NTFS, ext4, HFS+ | nicht speicherbar, außer sie entspricht der gemeldeten | nicht speicherbar, außer sie entspricht ihr, **auch** wenn sie mit einer Zugriffs- oder Änderungszeit gesendet wird | **immer nicht speicherbar** |
+| **Andere Image-Typen** | immer nicht speicherbar (es wird nichts zum Vergleichen gemeldet) | immer nicht speicherbar | **immer nicht speicherbar** |
+
+Die Zugriffs- und Änderungszeiten eines Images sind nicht speicherbar, weil die
+Sperre, die fileshare vor jeden Image-Treiber setzt, `Chtimes` nicht
+durchreicht, auch nicht bei ext4, dessen Treiber eines hat. NTFS-Images liest ein
+schreibgeschützter Treiber, daher wird unabhängig von der Richtlinie nichts
+gespeichert; die Richtlinie bestimmt nur, was der Client erfährt.
+
+Welche Clients welchen Fall auslösen: Windows-Explorer und `robocopy /COPY:T`
+senden eine CreationTime, die keine Freigabe behalten kann, außer sie ist
+unverändert; Linux `touch -d` und `cp -p` senden nur Zugriffs- und
+Änderungszeiten (der Kernel-Client fügt eine ChangeTime „jetzt" hinzu), die ein
+Verzeichnis speichert und ein Image nicht.

@@ -181,11 +181,14 @@ Die Kapazität, die einem Client mitgeteilt wird, ist die des Dateisystems, auf 
 Plattform, die das nicht angeben kann, lässt sie bei null, was die Protokolle als
 „unbekannt" lesen statt als „voll".
 
-## Was SMB mit einer Zeit macht, die es nicht speichern kann
+## Was SMB mit einer Zeit macht, die es nicht speichern kann {#what-smb-does-with-a-time-it-cannot-store}
 
-Setzt ein Client eine Zeit, die der Speicher nicht behalten kann (etwa eine
-Erstellungszeit), wird das standardmäßig **ignoriert**. Seit v0.42.0 kann eine
-Freigabe das mit `unstorable_times` festlegen:
+Eine Zeit, die ein Client setzt und der Speicher nicht behalten kann, wird
+standardmäßig **ignoriert**. Seit v0.42.0 kann eine Freigabe das mit
+`unstorable_times` festlegen. Nicht speicherbar ist eine CreationTime, die sich
+von der gemeldeten unterscheidet, eine allein gesendete ChangeTime oder eine
+Zugriffs- oder Änderungszeit bei einem Image (ein Host-Verzeichnis speichert
+diese):
 
 ```hcl
 share "photos" {
@@ -195,5 +198,6 @@ share "photos" {
 ```
 
 `refuse` beantwortet die Anfrage des Clients mit einem Fehler, `log` schreibt
-eine Zeile mit der Freigabe und dem Pfad. Siehe
-[Echte Dateizeiten]({{< relref "/protocols/times.md#unstorable-times" >}}).
+eine Zeile mit der Freigabe und dem Pfad. Die genauen Fälle je Art der Freigabe
+stehen unter
+[Echte Dateizeiten]({{< relref "/protocols/times.md#when-unstorable" >}}).
