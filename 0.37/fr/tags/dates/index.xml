@@ -180,14 +180,26 @@ qu&amp;rsquo;épingle cette version :&lt;/p&gt;
 &lt;td&gt;enregistrée (une ChangeTime envoyée avec elle est acceptée)&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
-&lt;td&gt;&lt;strong&gt;Image, pilote sans &lt;code&gt;Chtimes&lt;/code&gt;&lt;/strong&gt; : FAT, exFAT, NTFS, HFS+, APFS, ISO 9660, SquashFS&lt;/td&gt;
-&lt;td&gt;idem (FAT, exFAT, NTFS et HFS+ en annoncent une ; les autres jamais)&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;Image, FAT ou exFAT&lt;/strong&gt; (depuis la v0.43.0)&lt;/td&gt;
+&lt;td&gt;non enregistrable sauf si égale à l&amp;rsquo;annoncée (les deux en annoncent une)&lt;/td&gt;
+&lt;td&gt;idem&lt;/td&gt;
+&lt;td&gt;enregistrée à la résolution du format : date d&amp;rsquo;écriture FAT à 2 s (arrondie vers le bas) et date d&amp;rsquo;accès au jour seulement ; date d&amp;rsquo;écriture exFAT à 10 ms et date d&amp;rsquo;accès à 2 s (une ChangeTime envoyée avec elle est acceptée)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Image, pilote sans &lt;code&gt;Chtimes&lt;/code&gt;&lt;/strong&gt; : NTFS, HFS+, APFS, ISO 9660, SquashFS&lt;/td&gt;
+&lt;td&gt;idem (NTFS et HFS+ en annoncent une ; les autres jamais)&lt;/td&gt;
 &lt;td&gt;idem, &lt;strong&gt;y compris&lt;/strong&gt; envoyée avec une date d&amp;rsquo;accès ou d&amp;rsquo;écriture&lt;/td&gt;
 &lt;td&gt;&lt;strong&gt;toujours non enregistrable&lt;/strong&gt;&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;Les pilotes avec &lt;code&gt;Chtimes&lt;/code&gt; sont osfs (&lt;code&gt;osfs.go:383&lt;/code&gt;), ext4 (&lt;code&gt;metadata.go:93&lt;/code&gt;), ufs(&lt;code&gt;metadata.go:63&lt;/code&gt;), btrfs (&lt;code&gt;fs.go:382&lt;/code&gt;), xfs (&lt;code&gt;fs.go:521&lt;/code&gt;) et zfs(&lt;code&gt;metadata.go:94&lt;/code&gt;) ; les autres n&amp;rsquo;en ont pas. Avant la v0.42.0, le verrou que
+&lt;p&gt;Les pilotes avec &lt;code&gt;Chtimes&lt;/code&gt; sont osfs (&lt;code&gt;osfs.go:383&lt;/code&gt;), ext4 (&lt;code&gt;metadata.go:93&lt;/code&gt;), ufs(&lt;code&gt;metadata.go:63&lt;/code&gt;), btrfs (&lt;code&gt;fs.go:382&lt;/code&gt;), xfs (&lt;code&gt;fs.go:521&lt;/code&gt;) et zfs(&lt;code&gt;metadata.go:94&lt;/code&gt;) et, depuis la v0.43.0, fat32 v0.13.0 et exFAT v0.6.0 (le&lt;code&gt;MetadataSetter&lt;/code&gt; complet : leurs &lt;code&gt;Chmod&lt;/code&gt; et &lt;code&gt;Chown&lt;/code&gt; répondent « non pris en charge »,FAT n&amp;rsquo;ayant ni bits de mode ni propriétaires), si bien que &lt;code&gt;touch -d&lt;/code&gt; et &lt;code&gt;cp -p&lt;/code&gt; sur un
+partage d&amp;rsquo;image FAT ou exFAT sont enregistrés ; les autres n&amp;rsquo;en ont pas. HFS+ reste dans
+cette liste : hfsplus v0.8.0 (épinglé depuis la v0.43.0) implémente &lt;code&gt;Chtimes&lt;/code&gt;, &lt;code&gt;Chmod&lt;/code&gt;
+et &lt;code&gt;Chown&lt;/code&gt;, mais une image HFS+ servie est ouverte par le &lt;code&gt;OpenReader&lt;/code&gt; en lecture seule
+du pilote, si bien qu&amp;rsquo;une date fixée par SMB n&amp;rsquo;y est toujours pas enregistrée. Ce que le
+pilote écrit dans une image HFS+ créée par &lt;code&gt;hdiutil&lt;/code&gt; avec journal n&amp;rsquo;est pas encore vu par
+macOS (Refs go-filesystems/hfsplus#29). Avant la v0.42.0, le verrou que
 fileshare place devant chaque pilote d&amp;rsquo;image masquait &lt;code&gt;Chtimes&lt;/code&gt;, si bien que
 toute image abandonnait les dates d&amp;rsquo;accès et d&amp;rsquo;écriture d&amp;rsquo;un client, ext4
 comprise ; depuis la v0.42.0 il le transmet exactement quand le pilote en a un.Les images NTFS sont lues par un pilote en lecture seule : rien n&amp;rsquo;est enregistré

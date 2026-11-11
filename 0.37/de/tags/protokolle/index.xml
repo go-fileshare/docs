@@ -1047,14 +1047,24 @@ dem mit &lt;code&gt;STATUS_MEDIA_WRITE_PROTECTED&lt;/code&gt; beantwortet.&lt;/p
 &lt;td&gt;gespeichert (eine mitgesendete ChangeTime wird akzeptiert)&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
-&lt;td&gt;&lt;strong&gt;Image, Treiber ohne &lt;code&gt;Chtimes&lt;/code&gt;&lt;/strong&gt;: FAT, exFAT, NTFS, HFS+, APFS, ISO 9660, SquashFS&lt;/td&gt;
-&lt;td&gt;ebenso (FAT, exFAT, NTFS und HFS+ melden eine; die anderen nie)&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;Image, FAT oder exFAT&lt;/strong&gt; (seit v0.43.0)&lt;/td&gt;
+&lt;td&gt;nicht speicherbar, außer sie entspricht der gemeldeten (beide melden eine)&lt;/td&gt;
+&lt;td&gt;ebenso&lt;/td&gt;
+&lt;td&gt;gespeichert in der Auflösung des Formats: FAT-Schreibzeit 2 s (abgerundet) und Zugriffszeit nur das Datum; exFAT-Schreibzeit 10 ms und Zugriffszeit 2 s (eine mitgesendete ChangeTime wird akzeptiert)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Image, Treiber ohne &lt;code&gt;Chtimes&lt;/code&gt;&lt;/strong&gt;: NTFS, HFS+, APFS, ISO 9660, SquashFS&lt;/td&gt;
+&lt;td&gt;ebenso (NTFS und HFS+ melden eine; die anderen nie)&lt;/td&gt;
 &lt;td&gt;ebenso, &lt;strong&gt;auch&lt;/strong&gt; wenn sie mit einer Zugriffs- oder Änderungszeit gesendet wird&lt;/td&gt;
 &lt;td&gt;&lt;strong&gt;immer nicht speicherbar&lt;/strong&gt;&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;Treiber mit &lt;code&gt;Chtimes&lt;/code&gt; sind osfs (&lt;code&gt;osfs.go:383&lt;/code&gt;), ext4 (&lt;code&gt;metadata.go:93&lt;/code&gt;), ufs(&lt;code&gt;metadata.go:63&lt;/code&gt;), btrfs (&lt;code&gt;fs.go:382&lt;/code&gt;), xfs (&lt;code&gt;fs.go:521&lt;/code&gt;) und zfs(&lt;code&gt;metadata.go:94&lt;/code&gt;); die übrigen haben keines. Vor v0.42.0 verbarg die Sperre, die
+&lt;p&gt;Treiber mit &lt;code&gt;Chtimes&lt;/code&gt; sind osfs (&lt;code&gt;osfs.go:383&lt;/code&gt;), ext4 (&lt;code&gt;metadata.go:93&lt;/code&gt;), ufs(&lt;code&gt;metadata.go:63&lt;/code&gt;), btrfs (&lt;code&gt;fs.go:382&lt;/code&gt;), xfs (&lt;code&gt;fs.go:521&lt;/code&gt;) und zfs(&lt;code&gt;metadata.go:94&lt;/code&gt;) sowie seit v0.43.0 fat32 v0.13.0 und exFAT v0.6.0 (der vollständige&lt;code&gt;MetadataSetter&lt;/code&gt;: ihre &lt;code&gt;Chmod&lt;/code&gt; und &lt;code&gt;Chown&lt;/code&gt; melden „nicht unterstützt“, da FAT weder
+Modus-Bits noch Eigentümer kennt), sodass &lt;code&gt;touch -d&lt;/code&gt; und &lt;code&gt;cp -p&lt;/code&gt; auf einer FAT- oder
+exFAT-Image-Freigabe gespeichert werden; die übrigen haben keines. HFS+ bleibt in dieser Liste:hfsplus v0.8.0 (gepinnt seit v0.43.0) implementiert &lt;code&gt;Chtimes&lt;/code&gt;, &lt;code&gt;Chmod&lt;/code&gt; und &lt;code&gt;Chown&lt;/code&gt;,aber ein bereitgestelltes HFS+-Image wird über das schreibgeschützte &lt;code&gt;OpenReader&lt;/code&gt;
+des Treibers geöffnet, sodass eine per SMB gesetzte Zeit weiterhin nicht gespeichert
+wird. Was der Treiber in ein mit &lt;code&gt;hdiutil&lt;/code&gt; und Journal erzeugtes HFS+-Image schreibt,sieht macOS noch nicht (Refs go-filesystems/hfsplus#29). Vor v0.42.0 verbarg die Sperre, die
 fileshare vor jeden Image-Treiber setzt, &lt;code&gt;Chtimes&lt;/code&gt;, sodass jedes Image die
 Zugriffs- und Änderungszeiten eines Clients verwarf, auch ext4; seit v0.42.0
 reicht sie &lt;code&gt;Chtimes&lt;/code&gt; genau dann durch, wenn der Treiber es hat. NTFS-Images liest
