@@ -101,11 +101,20 @@ What a share can store depends on its driver, at the versions this release pins:
 |---|---|---|---|
 | **Directory** (host) | unstorable unless equal to the reported birth time | unstorable unless equal to the reported one | stored (a ChangeTime sent with it is accepted) |
 | **Image, driver with `Chtimes`**: ext4, ufs, btrfs, xfs, zfs | unstorable unless equal to the reported one (only ext4 reports one: for the others, always) | the same | stored (a ChangeTime sent with it is accepted) |
-| **Image, driver without `Chtimes`**: FAT, exFAT, NTFS, HFS+, APFS, ISO 9660, SquashFS | the same (FAT, exFAT, NTFS and HFS+ report one; the others never) | the same, **also** when sent with an access or write time | **always unstorable** |
+| **Image, FAT or exFAT** (since v0.43.0) | unstorable unless equal to the reported one (both report one) | the same | stored at the format's resolution: FAT write time 2 s (rounded down) and access time the date only; exFAT write time 10 ms and access time 2 s (a ChangeTime sent with it is accepted) |
+| **Image, driver without `Chtimes`**: NTFS, HFS+, APFS, ISO 9660, SquashFS | the same (NTFS and HFS+ report one; the others never) | the same, **also** when sent with an access or write time | **always unstorable** |
 
 The drivers with `Chtimes` are osfs (`osfs.go:383`), ext4 (`metadata.go:93`), ufs
-(`metadata.go:63`), btrfs (`fs.go:382`), xfs (`fs.go:521`) and zfs
-(`metadata.go:94`); the others have none. Before v0.42.0 the lock fileshare puts
+(`metadata.go:63`), btrfs (`fs.go:382`), xfs (`fs.go:521`), zfs
+(`metadata.go:94`) and, since v0.43.0, fat32 v0.13.0 and exFAT v0.6.0 (the full
+`MetadataSetter`: their `Chmod` and `Chown` return "not supported", since FAT has
+no mode bits or owners), so `touch -d` and `cp -p` on a FAT or exFAT image share
+are stored; the others have none. HFS+ stays on that list: hfsplus v0.8.0
+(pinned since v0.43.0) implements `Chtimes`, `Chmod` and `Chown`, but a served HFS+
+image is opened through the driver's read-only `OpenReader`, so a time set over SMB
+is still not stored. What the driver writes into an HFS+ image created by `hdiutil`
+with a journal is not yet seen by macOS (Refs go-filesystems/hfsplus#29).
+Before v0.42.0 the lock fileshare puts
 in front of every image driver hid `Chtimes`, so every image dropped a client's
 access and write times, ext4 included; since v0.42.0 it carries `Chtimes` exactly
 when the driver has it. NTFS images are read by a read-only driver, so nothing is

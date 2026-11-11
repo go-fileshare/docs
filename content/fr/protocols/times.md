@@ -110,11 +110,20 @@ qu'épingle cette version :
 |---|---|---|---|
 | **Répertoire** (hôte) | non enregistrable sauf si égale à la date de création annoncée | non enregistrable sauf si égale à l'annoncée | enregistrée (une ChangeTime envoyée avec elle est acceptée) |
 | **Image, pilote avec `Chtimes`** : ext4, ufs, btrfs, xfs, zfs | non enregistrable sauf si égale à l'annoncée (seul ext4 en annonce une : pour les autres, toujours) | idem | enregistrée (une ChangeTime envoyée avec elle est acceptée) |
-| **Image, pilote sans `Chtimes`** : FAT, exFAT, NTFS, HFS+, APFS, ISO 9660, SquashFS | idem (FAT, exFAT, NTFS et HFS+ en annoncent une ; les autres jamais) | idem, **y compris** envoyée avec une date d'accès ou d'écriture | **toujours non enregistrable** |
+| **Image, FAT ou exFAT** (depuis la v0.43.0) | non enregistrable sauf si égale à l'annoncée (les deux en annoncent une) | idem | enregistrée à la résolution du format : date d'écriture FAT à 2 s (arrondie vers le bas) et date d'accès au jour seulement ; date d'écriture exFAT à 10 ms et date d'accès à 2 s (une ChangeTime envoyée avec elle est acceptée) |
+| **Image, pilote sans `Chtimes`** : NTFS, HFS+, APFS, ISO 9660, SquashFS | idem (NTFS et HFS+ en annoncent une ; les autres jamais) | idem, **y compris** envoyée avec une date d'accès ou d'écriture | **toujours non enregistrable** |
 
 Les pilotes avec `Chtimes` sont osfs (`osfs.go:383`), ext4 (`metadata.go:93`), ufs
 (`metadata.go:63`), btrfs (`fs.go:382`), xfs (`fs.go:521`) et zfs
-(`metadata.go:94`) ; les autres n'en ont pas. Avant la v0.42.0, le verrou que
+(`metadata.go:94`) et, depuis la v0.43.0, fat32 v0.13.0 et exFAT v0.6.0 (le
+`MetadataSetter` complet : leurs `Chmod` et `Chown` répondent « non pris en charge »,
+FAT n'ayant ni bits de mode ni propriétaires), si bien que `touch -d` et `cp -p` sur un
+partage d'image FAT ou exFAT sont enregistrés ; les autres n'en ont pas. HFS+ reste dans
+cette liste : hfsplus v0.8.0 (épinglé depuis la v0.43.0) implémente `Chtimes`, `Chmod`
+et `Chown`, mais une image HFS+ servie est ouverte par le `OpenReader` en lecture seule
+du pilote, si bien qu'une date fixée par SMB n'y est toujours pas enregistrée. Ce que le
+pilote écrit dans une image HFS+ créée par `hdiutil` avec journal n'est pas encore vu par
+macOS (Refs go-filesystems/hfsplus#29). Avant la v0.42.0, le verrou que
 fileshare place devant chaque pilote d'image masquait `Chtimes`, si bien que
 toute image abandonnait les dates d'accès et d'écriture d'un client, ext4
 comprise ; depuis la v0.42.0 il le transmet exactement quand le pilote en a un.
