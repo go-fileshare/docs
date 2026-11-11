@@ -110,11 +110,20 @@ que fija esta versión:
 |---|---|---|---|
 | **Directorio** (host) | no almacenable salvo que sea igual a la fecha de creación informada | no almacenable salvo que sea igual a la informada | almacenada (una ChangeTime enviada con ella se acepta) |
 | **Imagen, controlador con `Chtimes`**: ext4, ufs, btrfs, xfs, zfs | no almacenable salvo que sea igual a la informada (solo ext4 informa una: en los demás, siempre) | igual | almacenada (una ChangeTime enviada con ella se acepta) |
-| **Imagen, controlador sin `Chtimes`**: FAT, exFAT, NTFS, HFS+, APFS, ISO 9660, SquashFS | igual (FAT, exFAT, NTFS y HFS+ informan una; los demás nunca) | igual, **también** cuando se envía con una fecha de acceso o de escritura | **siempre no almacenable** |
+| **Imagen, FAT o exFAT** (desde la v0.43.0) | no almacenable salvo que sea igual a la informada (ambas informan una) | igual | almacenada con la resolución del formato: fecha de escritura de FAT a 2 s (redondeada hacia abajo) y fecha de acceso solo el día; fecha de escritura de exFAT a 10 ms y fecha de acceso a 2 s (una ChangeTime enviada con ella se acepta) |
+| **Imagen, controlador sin `Chtimes`**: NTFS, HFS+, APFS, ISO 9660, SquashFS | igual (NTFS y HFS+ informan una; los demás nunca) | igual, **también** cuando se envía con una fecha de acceso o de escritura | **siempre no almacenable** |
 
 Los controladores con `Chtimes` son osfs (`osfs.go:383`), ext4 (`metadata.go:93`),
 ufs (`metadata.go:63`), btrfs (`fs.go:382`), xfs (`fs.go:521`) y zfs
-(`metadata.go:94`); los demás no tienen. Antes de la v0.42.0 el bloqueo que
+(`metadata.go:94`) y, desde la v0.43.0, fat32 v0.13.0 y exFAT v0.6.0 (el
+`MetadataSetter` completo: su `Chmod` y su `Chown` responden «no compatible», pues FAT
+no tiene bits de modo ni propietarios), de modo que `touch -d` y `cp -p` sobre un
+recurso de imagen FAT o exFAT se almacenan; los demás no tienen. HFS+ sigue en esa lista:
+hfsplus v0.8.0 (fijado desde la v0.43.0) implementa `Chtimes`, `Chmod` y `Chown`, pero
+una imagen HFS+ servida se abre con el `OpenReader` de solo lectura del controlador,
+de modo que una fecha establecida por SMB sigue sin almacenarse. macOS aún no ve lo que
+el controlador escribe en una imagen HFS+ creada con `hdiutil` con diario
+(Refs go-filesystems/hfsplus#29). Antes de la v0.42.0 el bloqueo que
 fileshare coloca delante de cada controlador de imagen ocultaba `Chtimes`, de
 modo que toda imagen descartaba las fechas de acceso y de escritura de un
 cliente, ext4 incluida; desde la v0.42.0 lo transmite exactamente cuando el

@@ -104,11 +104,18 @@ share "attic" {
 |---|---|---|---|
 | **디렉터리**(호스트) | 보고된 생성 시간과 같지 않으면 저장 불가 | 보고된 값과 같지 않으면 저장 불가 | 저장됨(함께 전송된 ChangeTime은 허용) |
 | **이미지, `Chtimes`가 있는 드라이버**: ext4, ufs, btrfs, xfs, zfs | 보고된 값과 같지 않으면 저장 불가(보고하는 것은 ext4뿐이며 나머지는 항상 불가) | 동일 | 저장됨(함께 전송된 ChangeTime은 허용) |
-| **이미지, `Chtimes`가 없는 드라이버**: FAT, exFAT, NTFS, HFS+, APFS, ISO 9660, SquashFS | 동일(FAT, exFAT, NTFS, HFS+는 보고하고 나머지는 보고하지 않음) | 동일. 접근 시간 또는 수정 시간과 함께여도 **마찬가지** | **항상 저장 불가** |
+| **이미지, FAT 또는 exFAT** (v0.43.0부터) | 보고된 값과 같지 않으면 저장 불가(둘 다 보고함) | 동일 | 형식의 해상도로 저장됨: FAT는 수정 시간 2초(내림), 접근 시간은 날짜만; exFAT는 수정 시간 10 ms, 접근 시간 2초(함께 전송된 ChangeTime은 허용) |
+| **이미지, `Chtimes`가 없는 드라이버**: NTFS, HFS+, APFS, ISO 9660, SquashFS | 동일(NTFS, HFS+는 보고하고 나머지는 보고하지 않음) | 동일. 접근 시간 또는 수정 시간과 함께여도 **마찬가지** | **항상 저장 불가** |
 
 `Chtimes`가 있는 드라이버는 osfs(`osfs.go:383`), ext4(`metadata.go:93`), ufs
-(`metadata.go:63`), btrfs(`fs.go:382`), xfs(`fs.go:521`), zfs(`metadata.go:94`)이며
-나머지에는 없습니다. v0.42.0 이전에는 fileshare가 모든 이미지 드라이버 앞에 두는
+(`metadata.go:63`), btrfs(`fs.go:382`), xfs(`fs.go:521`), zfs(`metadata.go:94`)이며,
+v0.43.0부터는 fat32 v0.13.0과 exFAT v0.6.0도 포함됩니다(전체 `MetadataSetter`: FAT에는
+모드 비트와 소유자가 없으므로 이들의 `Chmod`와 `Chown`은 "지원되지 않음"을 반환합니다).
+따라서 FAT 또는 exFAT 이미지 공유에서의 `touch -d`와 `cp -p`는 저장됩니다. 나머지에는 없습니다.
+HFS+는 계속 이 목록에 있습니다. hfsplus v0.8.0(v0.43.0부터 고정)은 `Chtimes`, `Chmod`,
+`Chown`을 구현하지만, 제공되는 HFS+ 이미지는 드라이버의 읽기 전용 `OpenReader`로 열리므로
+SMB로 설정한 시간은 아직 저장되지 않습니다. `hdiutil`이 저널과 함께 만든 HFS+ 이미지에 드라이버가
+쓴 내용은 아직 macOS에서 보이지 않습니다(Refs go-filesystems/hfsplus#29). v0.42.0 이전에는 fileshare가 모든 이미지 드라이버 앞에 두는
 잠금이 `Chtimes`를 숨겨서 ext4를 포함한 모든 이미지가 클라이언트의 접근 시간과 수정
 시간을 버렸습니다. v0.42.0부터는 드라이버에 있을 때에 한해 `Chtimes`를 전달합니다.
 NTFS 이미지는 읽기 전용 드라이버가 읽으므로 정책과 관계없이 아무것도 저장되지 않으며,

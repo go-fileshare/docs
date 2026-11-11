@@ -96,11 +96,18 @@ share "attic" {
 |---|---|---|---|
 | **目录**（主机） | 除非等于所报告的创建时间，否则无法存储 | 除非等于所报告的值，否则无法存储 | 可存储（一起发送的 ChangeTime 会被接受） |
 | **镜像，驱动程序带 `Chtimes`**：ext4、ufs、btrfs、xfs、zfs | 除非等于所报告的值，否则无法存储（只有 ext4 会报告；其他的始终无法存储） | 同左 | 可存储（一起发送的 ChangeTime 会被接受） |
-| **镜像，驱动程序不带 `Chtimes`**：FAT、exFAT、NTFS、HFS+、APFS、ISO 9660、SquashFS | 同左（FAT、exFAT、NTFS 和 HFS+ 会报告；其他的从不报告） | 同左；与访问时间或修改时间一起发送时**同样如此** | **始终无法存储** |
+| **镜像，FAT 或 exFAT**（自 v0.43.0 起） | 除非等于所报告的值，否则无法存储（两者都会报告） | 同左 | 按格式的精度存储：FAT 的修改时间为 2 秒（向下取整），访问时间只保留日期；exFAT 的修改时间为 10 毫秒，访问时间为 2 秒（一起发送的 ChangeTime 会被接受） |
+| **镜像，驱动程序不带 `Chtimes`**：NTFS、HFS+、APFS、ISO 9660、SquashFS | 同左（NTFS 和 HFS+ 会报告；其他的从不报告） | 同左；与访问时间或修改时间一起发送时**同样如此** | **始终无法存储** |
 
 带 `Chtimes` 的驱动程序有 osfs（`osfs.go:383`）、ext4（`metadata.go:93`）、ufs
 （`metadata.go:63`）、btrfs（`fs.go:382`）、xfs（`fs.go:521`）和 zfs
-（`metadata.go:94`），其余都没有。在 v0.42.0 之前，fileshare 放在每个镜像驱动程序前面的锁
+（`metadata.go:94`），自 v0.43.0 起还有 fat32 v0.13.0 和 exFAT v0.6.0（完整的
+`MetadataSetter`：由于 FAT 没有权限位和所有者，它们的 `Chmod` 与 `Chown` 返回“不支持”），
+因此 FAT 或 exFAT 镜像共享上的 `touch -d` 和 `cp -p` 会被存储；其余都没有。
+HFS+ 仍在此列：hfsplus v0.8.0（自 v0.43.0 起固定）实现了 `Chtimes`、`Chmod` 和 `Chown`，
+但提供的 HFS+ 镜像是通过驱动程序只读的 `OpenReader` 打开的，因此通过 SMB 设置的时间仍不会被存储。
+驱动程序写入由 `hdiutil` 创建的带日志的 HFS+ 镜像的内容，macOS 目前仍看不到
+（Refs go-filesystems/hfsplus#29）。在 v0.42.0 之前，fileshare 放在每个镜像驱动程序前面的锁
 隐藏了 `Chtimes`，因此包括 ext4 在内的所有镜像都会丢弃客户端的访问时间和修改时间；
 自 v0.42.0 起，只有驱动程序本身带有 `Chtimes` 时，锁才会传递它。NTFS 镜像由只读驱动程序
 读取，因此无论策略如何都不会存储任何内容；策略只决定告诉客户端什么。

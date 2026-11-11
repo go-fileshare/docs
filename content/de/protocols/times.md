@@ -110,11 +110,20 @@ die dieses Release festschreibt:
 |---|---|---|---|
 | **Verzeichnis** (Host) | nicht speicherbar, außer sie entspricht der gemeldeten Erstellungszeit | nicht speicherbar, außer sie entspricht der gemeldeten | gespeichert (eine mitgesendete ChangeTime wird akzeptiert) |
 | **Image, Treiber mit `Chtimes`**: ext4, ufs, btrfs, xfs, zfs | nicht speicherbar, außer sie entspricht der gemeldeten (nur ext4 meldet eine: bei den anderen immer) | ebenso | gespeichert (eine mitgesendete ChangeTime wird akzeptiert) |
-| **Image, Treiber ohne `Chtimes`**: FAT, exFAT, NTFS, HFS+, APFS, ISO 9660, SquashFS | ebenso (FAT, exFAT, NTFS und HFS+ melden eine; die anderen nie) | ebenso, **auch** wenn sie mit einer Zugriffs- oder Änderungszeit gesendet wird | **immer nicht speicherbar** |
+| **Image, FAT oder exFAT** (seit v0.43.0) | nicht speicherbar, außer sie entspricht der gemeldeten (beide melden eine) | ebenso | gespeichert in der Auflösung des Formats: FAT-Schreibzeit 2 s (abgerundet) und Zugriffszeit nur das Datum; exFAT-Schreibzeit 10 ms und Zugriffszeit 2 s (eine mitgesendete ChangeTime wird akzeptiert) |
+| **Image, Treiber ohne `Chtimes`**: NTFS, HFS+, APFS, ISO 9660, SquashFS | ebenso (NTFS und HFS+ melden eine; die anderen nie) | ebenso, **auch** wenn sie mit einer Zugriffs- oder Änderungszeit gesendet wird | **immer nicht speicherbar** |
 
 Treiber mit `Chtimes` sind osfs (`osfs.go:383`), ext4 (`metadata.go:93`), ufs
 (`metadata.go:63`), btrfs (`fs.go:382`), xfs (`fs.go:521`) und zfs
-(`metadata.go:94`); die übrigen haben keines. Vor v0.42.0 verbarg die Sperre, die
+(`metadata.go:94`) sowie seit v0.43.0 fat32 v0.13.0 und exFAT v0.6.0 (der vollständige
+`MetadataSetter`: ihre `Chmod` und `Chown` melden „nicht unterstützt“, da FAT weder
+Modus-Bits noch Eigentümer kennt), sodass `touch -d` und `cp -p` auf einer FAT- oder
+exFAT-Image-Freigabe gespeichert werden; die übrigen haben keines. HFS+ bleibt in dieser Liste:
+hfsplus v0.8.0 (gepinnt seit v0.43.0) implementiert `Chtimes`, `Chmod` und `Chown`,
+aber ein bereitgestelltes HFS+-Image wird über das schreibgeschützte `OpenReader`
+des Treibers geöffnet, sodass eine per SMB gesetzte Zeit weiterhin nicht gespeichert
+wird. Was der Treiber in ein mit `hdiutil` und Journal erzeugtes HFS+-Image schreibt,
+sieht macOS noch nicht (Refs go-filesystems/hfsplus#29). Vor v0.42.0 verbarg die Sperre, die
 fileshare vor jeden Image-Treiber setzt, `Chtimes`, sodass jedes Image die
 Zugriffs- und Änderungszeiten eines Clients verwarf, auch ext4; seit v0.42.0
 reicht sie `Chtimes` genau dann durch, wenn der Treiber es hat. NTFS-Images liest
