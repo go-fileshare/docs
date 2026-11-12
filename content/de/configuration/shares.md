@@ -93,6 +93,75 @@ Plattformen gibt es keine Sperre.
 noch mit etwas anderem: keine Seite weiß von den Änderungen der anderen.
 Stellen Sie ein Image bereit, das sonst nichts geöffnet hat.
 
+## Ein beschreibbares Image, das das Betriebssystem eingehängt hat, wird schreibgeschützt bereitgestellt {#an-image-the-os-has-mounted}
+
+Seit v0.45.0 fragt der Server, bevor ein beschreibbares Image-Share (FAT32,
+exFAT, ext4, UFS, btrfs, XFS, ZFS, HFS+, unabhängig vom Treiber) zum Schreiben
+geöffnet wird, das Betriebssystem, ob es dieses Image angehängt oder eingehängt
+hat. Falls ja, wird das Share **schreibgeschützt** geöffnet, entsprechend
+markiert, und der Server schreibt eine Zeile mit Image, Gerät und Einhängepunkt
+des Betriebssystems sowie dem Share:
+
+```text
+/srv/disk.img is in use by the OS (/dev/loop3, mounted at /mnt/disk), and a second writer would corrupt it, so disk is read-only
+```
+
+Das oben beschriebene `flock` kann das nicht leisten: Das Betriebssystem nimmt
+beim Einhängen eines Images keine Sperre. Das Image wird über Gerät und Inode
+erkannt, nie über den Vergleich von Pfadzeichenketten; ein symbolischer oder
+harter Link auf die eingehängte Datei wird also ebenfalls erkannt.
+
+| Betriebssystem | Wie gefragt wird |
+| --- | --- |
+| Linux | `/sys/block/loop*/loop/backing_file` jedes Loop-Geräts (was `mount -o loop`, `losetup` und udisks anlegen); der Einhängepunkt stammt aus `/proc/self/mountinfo`. Ein angehängtes Loop-Gerät zählt auch, wenn nichts darauf eingehängt ist. |
+| macOS | `hdiutil info -plist`, der `image-path` jedes angehängten Images, ein Aufruf pro Ladevorgang, mit 15 s Zeitlimit. Ein mit `-nomount` angehängtes Image zählt. |
+| FreeBSD, andere BSDs, Windows | **Nicht erkennbar.** Das Share ist wie bisher beschreibbar. |
+
+**Wenn die Prüfung selbst fehlschlägt** (kein `/sys/block` in einem Container,
+`hdiutil` fehlt oder überschreitet das Zeitlimit, Ausgabe ist keine Property
+List), weiß niemand, ob das Image eingehängt ist. `image_mount_unknown`
+entscheidet:
+
+```hcl
+share "disk" {
+  image               = "/srv/disk.img"
+  image_mount_unknown = "read_only"   # der Standard; "write" stellt es trotzdem beschreibbar bereit
+}
+```
+
+Der Standard ist `read_only`: Ein schreibgeschütztes Share ist ein sichtbarer
+Zustand mit einer Logzeile, die die Ursache nennt, und lässt sich beheben; ein
+beschreibbares Share unter einem Mount beschädigt die Daten beider Seiten, und
+es fällt erst später auf. `write` ist für einen Host, auf dem die Prüfung nicht
+funktionieren kann (ein Container ohne sysfs) und auf dem niemand Images
+einhängt. Ein Image, das nachweislich vom Betriebssystem eingehängt ist, bleibt
+schreibgeschützt, was auch immer hier steht. Ein Backing-Pfad, den die Prüfung
+nicht lesen kann (Zugriff verweigert, Symlink-Schleife), gilt als „nicht
+beurteilbar“, nicht als „anderes Image“: Er geht an dieselbe Einstellung. Nur
+ein nicht vorhandener Pfad wird übersprungen. Unter Linux wird ein Loop-Gerät,
+dessen Backing-Datei gelöscht wurde, über den Kernel-Eintrag
+(`LOOP_GET_STATUS64`) erkannt, wenn der Prozess `/dev/loopN` öffnen darf, sonst
+nicht.
+
+**Was die Prüfung nicht sieht**
+
+- **Ein Mount, der nach dem Öffnen des Images erfolgt.** Die Prüfung läuft, wenn
+  ein Image geöffnet wird: beim Start, für ein über die Admin-API erstelltes
+  Share und wenn ein Reload die Shares neu aufbaut (Änderung von Personen oder
+  Listen) und das Image inzwischen eingehängt findet; dann erhält dieses Share
+  eine eigene schreibgeschützte Öffnung. Ein Reload ohne Änderungen prüft nicht
+  erneut, und nichts überwacht ein späteres `hdiutil attach` oder
+  `mount -o loop`. Halten Sie das Share an oder starten Sie den Server neu,
+  bevor Sie ein beschreibbar bereitgestelltes Image einhängen.
+- **Mounts ohne Loop-Gerät oder `hdiutil`:** `qemu-nbd -c` (nbd-Gerät),
+  FUSE-Mounts (`fuse2fs`, `guestmount`) sowie eine virtuelle Maschine oder ein
+  anderes Programm, das das Image geöffnet hält.
+- Andere Betriebssysteme (siehe Tabelle) und ein Loop-Gerät, das in einem anderen
+  Mount-Namespace angehängt wurde.
+- Ein wegen eines Mounts schreibgeschütztes Share bleibt bei einem Reload
+  schreibgeschützt, auch wenn der Mount verschwunden ist; starten Sie es neu, um
+  es wieder zum Schreiben zu öffnen.
+
 ## Eine Partition, für jedes Dateisystem {#a-partition-for-any-filesystem}
 
 Ein Disk-Image mit FAT32, ext4 oder exFAT hat ebenso oft eine Partitionstabelle davor

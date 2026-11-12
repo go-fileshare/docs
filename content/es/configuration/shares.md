@@ -92,6 +92,73 @@ de macOS no lo toma, y en otras plataformas no hay bloqueo.
 cosa: ninguna de las partes conoce los cambios de la otra. Sirva una imagen que
 nada más tenga abierta.
 
+## Una imagen escribible que el SO tiene montada se sirve en solo lectura {#an-image-the-os-has-mounted}
+
+Desde v0.45.0, antes de abrir para escritura **cualquier** recurso compartido de
+imagen escribible (FAT32, exFAT, ext4, UFS, btrfs, XFS, ZFS, HFS+, sea cual sea
+el controlador), el servidor pregunta al sistema operativo si tiene esa imagen
+asociada o montada. Si es así, el recurso se abre en **solo lectura**, se marca
+como tal, y el servidor escribe una línea con la imagen, el dispositivo y el
+montaje del SO, y el recurso:
+
+```text
+/srv/disk.img is in use by the OS (/dev/loop3, mounted at /mnt/disk), and a second writer would corrupt it, so disk is read-only
+```
+
+El `flock` consultivo descrito arriba no puede lograrlo: el SO no toma ningún
+bloqueo al montar una imagen. La imagen se identifica por dispositivo e inodo,
+nunca comparando cadenas de ruta, de modo que también se detecta un enlace
+simbólico o físico al archivo montado.
+
+| SO | Cómo se pregunta |
+| --- | --- |
+| Linux | `/sys/block/loop*/loop/backing_file` de cada dispositivo loop (lo que crean `mount -o loop`, `losetup` y udisks); el punto de montaje sale de `/proc/self/mountinfo`. Un dispositivo loop asociado cuenta aunque no haya nada montado en él. |
+| macOS | `hdiutil info -plist`, el `image-path` de cada imagen asociada, una llamada por carga, con un límite de 15 s. Una imagen asociada con `-nomount` cuenta. |
+| FreeBSD, otros BSD, Windows | **No se puede detectar.** El recurso es escribible, como antes. |
+
+**Cuando falla la propia comprobación** (no hay `/sys/block` en un contenedor,
+falta `hdiutil` o supera el límite, la salida no es una lista de propiedades),
+nadie sabe si la imagen está montada. Decide `image_mount_unknown`:
+
+```hcl
+share "disk" {
+  image               = "/srv/disk.img"
+  image_mount_unknown = "read_only"   # el valor por defecto; "write" la sirve escribible igualmente
+}
+```
+
+El valor por defecto es `read_only`: un recurso de solo lectura es un estado
+visible con una línea de registro que nombra su causa, y una persona puede
+corregirlo; un recurso escribible bajo un montaje corrompe los datos de ambos
+lados, y nadie lo ve hasta más tarde. `write` es para un host donde la
+comprobación no puede funcionar (un contenedor sin sysfs) y nadie monta
+imágenes. Una imagen que se sabe montada por el SO es de solo lectura diga lo que
+diga este ajuste. Una ruta de respaldo que la comprobación no puede leer
+(permiso denegado, un bucle de enlaces simbólicos) es «no se pudo juzgar», no
+«otra imagen»: va al mismo ajuste. Solo se omite una ruta que no existe. En Linux,
+un dispositivo loop cuyo archivo de respaldo se borró se identifica mediante el
+registro del propio kernel (`LOOP_GET_STATUS64`) si el proceso puede abrir
+`/dev/loopN`; si no, no se identifica.
+
+**Lo que la comprobación no ve**
+
+- **Un montaje hecho después de que el recurso abrió la imagen.** La
+  comprobación se ejecuta al abrir una imagen: al arrancar, para un recurso
+  creado mediante la API de administración, y cuando una recarga reconstruye los
+  recursos (un cambio de personas o listas) y encuentra la imagen montada desde
+  entonces; ese recurso recibe entonces una apertura propia en solo lectura. Una
+  recarga que no cambia nada no vuelve a mirar, y nada vigila un
+  `hdiutil attach` o `mount -o loop` posterior. Detenga el recurso o reinicie el
+  servidor antes de montar una imagen que sirve como escribible.
+- **Montajes que no pasan por un dispositivo loop ni por `hdiutil`:**
+  `qemu-nbd -c` (un dispositivo nbd), montajes FUSE (`fuse2fs`, `guestmount`) y
+  una máquina virtual u otro programa que tenga la imagen abierta.
+- Otros sistemas operativos (véase la tabla) y un dispositivo loop asociado en
+  otro espacio de nombres de montaje.
+- Un recurso puesto en solo lectura a causa de un montaje sigue en solo lectura
+  tras una recarga aunque el montaje haya desaparecido; reinícielo para abrirlo
+  de nuevo para escritura.
+
 ## Una partición, para cualquier sistema de archivos {#a-partition-for-any-filesystem}
 
 Una imagen de disco que contiene FAT32, ext4 o exFAT tiene una tabla de particiones

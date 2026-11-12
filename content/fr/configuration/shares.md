@@ -92,6 +92,75 @@ verrou.
 chose : aucun des deux ne connaît les modifications de l'autre. Servez une image
 que rien d'autre n'a ouverte.
 
+## Une image inscriptible que l'OS a montée est servie en lecture seule {#an-image-the-os-has-mounted}
+
+Depuis v0.45.0, avant d'ouvrir en écriture **n'importe quel** partage d'image
+inscriptible (FAT32, exFAT, ext4, UFS, btrfs, XFS, ZFS, HFS+, quel que soit le
+pilote), le serveur demande à l'OS s'il a cette image attachée ou montée. Si
+oui, le partage s'ouvre en **lecture seule**, est marqué comme tel, et le
+serveur écrit une ligne nommant l'image, le périphérique et le montage de l'OS,
+et le partage :
+
+```text
+/srv/disk.img is in use by the OS (/dev/loop3, mounted at /mnt/disk), and a second writer would corrupt it, so disk is read-only
+```
+
+Le `flock` consultatif décrit plus haut ne peut pas le faire : l'OS ne prend
+aucun verrou quand il monte une image. L'image est reconnue par périphérique et
+inode, jamais en comparant des chaînes de chemin ; un lien symbolique ou un lien
+physique vers le fichier monté est donc aussi détecté.
+
+| OS | Comment on le demande |
+| --- | --- |
+| Linux | `/sys/block/loop*/loop/backing_file` de chaque périphérique loop (ce que créent `mount -o loop`, `losetup` et udisks) ; le point de montage vient de `/proc/self/mountinfo`. Un périphérique loop attaché compte même si rien n'y est monté. |
+| macOS | `hdiutil info -plist`, le `image-path` de chaque image attachée, un appel par chargement, borné à 15 s. Une image attachée avec `-nomount` compte. |
+| FreeBSD, autres BSD, Windows | **Détection impossible.** Le partage est inscriptible, comme avant. |
+
+**Quand la vérification elle-même échoue** (pas de `/sys/block` dans un
+conteneur, `hdiutil` absent ou dépassant le délai, sortie qui n'est pas une liste
+de propriétés), personne ne sait si l'image est montée. `image_mount_unknown`
+tranche :
+
+```hcl
+share "disk" {
+  image               = "/srv/disk.img"
+  image_mount_unknown = "read_only"   # la valeur par défaut ; "write" la sert quand même inscriptible
+}
+```
+
+La valeur par défaut est `read_only` : un partage en lecture seule est un état
+visible, avec une ligne de journal qui en nomme la cause, et qu'on peut corriger ;
+un partage inscriptible sous un montage corrompt les données des deux côtés, et
+personne ne le voit avant plus tard. `write` convient à un hôte où la
+vérification ne peut pas fonctionner (un conteneur sans sysfs) et où personne ne
+monte d'images. Une image que l'OS a, à coup sûr, montée reste en lecture seule
+quoi que dise ce réglage. Un chemin de support que la vérification ne peut pas
+lire (permission refusée, boucle de liens symboliques) est « non jugé », pas
+« une autre image » : il va au même réglage. Seul un chemin qui n'existe pas est
+ignoré. Sous Linux, un périphérique loop dont le fichier de support a été
+supprimé est reconnu par l'enregistrement du noyau (`LOOP_GET_STATUS64`) si le
+processus peut ouvrir `/dev/loopN`, sinon il n'est pas reconnu.
+
+**Ce que la vérification ne voit pas**
+
+- **Un montage fait après l'ouverture de l'image par le partage.** La
+  vérification a lieu à l'ouverture d'une image : au démarrage, pour un partage
+  créé par l'API d'administration, et quand un rechargement reconstruit les
+  partages (changement de personnes ou de listes) et trouve l'image montée entre
+  temps ; ce partage reçoit alors sa propre ouverture en lecture seule. Un
+  rechargement qui ne change rien ne regarde pas à nouveau, et rien ne surveille
+  un `hdiutil attach` ou `mount -o loop` ultérieur. Arrêtez le partage, ou
+  redémarrez le serveur, avant de monter une image qu'il sert en écriture.
+- **Les montages qui ne passent ni par un périphérique loop ni par `hdiutil` :**
+  `qemu-nbd -c` (un périphérique nbd), les montages FUSE (`fuse2fs`,
+  `guestmount`), et une machine virtuelle ou un autre programme qui a l'image
+  ouverte.
+- Les autres systèmes d'exploitation (voir le tableau) et un périphérique loop
+  attaché dans un autre espace de noms de montage.
+- Un partage passé en lecture seule à cause d'un montage le reste après un
+  rechargement même si le montage a disparu ; redémarrez-le pour l'ouvrir de
+  nouveau en écriture.
+
 ## Une partition, pour n'importe quel système de fichiers {#a-partition-for-any-filesystem}
 
 Une image disque qui contient du FAT32, de l'ext4 ou de l'exFAT a une table de partitions devant elle
