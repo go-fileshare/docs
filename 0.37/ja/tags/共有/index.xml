@@ -21,6 +21,57 @@ data-copied-label="コピーしました！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
+&lt;h2 data-hextra-search-id="hfsplus-images-are-writable"&gt;HFS+ イメージは書き込み可能&lt;span class="hx:absolute hx:-mt-20" id="hfsplus-images-are-writable"&gt;&lt;/span&gt;
+&lt;a href="#hfsplus-images-are-writable" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;v0.44.0(hfsplus v0.9.0)以降、HFS+ を含むイメージの共有は、FAT、exFAT、ext4 と同様に書き込み可能で開かれます。クライアントはファイルを作成、変更、削除でき、設定した時刻、モード、所有者も保存されます。以前は HFS+ イメージは読み取り専用で開かれていました。イメージは共有を開くときにメモリへ読み込まれ、変更のたびにファイルへ書き戻されます。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;コスト。&lt;/strong&gt; hfsplus v0.9.0 はイメージ全体をメモリに保持し、操作(作成、書き込み、名前変更、&lt;code&gt;Chtimes&lt;/code&gt;)のたびにイメージ全体を書き直します。そのため共有のメモリ使用量はイメージの大きさに等しく、変更ごとの I/O も同じです(根本的な解決は go-filesystems/hfsplus#33)。したがって共有が HFS+ イメージを書き込み可能で開くのは &lt;code&gt;hfsplus_writable_max&lt;/code&gt; までで、既定は 256 MiB です(&lt;code&gt;&amp;quot;0&amp;quot;&lt;/code&gt; は常に開かない。バイト数、または K、M、G、T を付けた値):&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;mac&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/mac.img&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; hfsplus_writable_max&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;256M&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="コードをコピー"
+aria-label="コードをコピー"
+data-copied-label="コピーしました！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;これを超える場合、またはサイズが不明な場合、共有は&lt;strong&gt;読み取り専用&lt;/strong&gt;で開かれます(範囲読み取りと時刻は引き続き使えます)。サーバーはイメージ、サイズ、上限を示す 1 行を出力します。&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/srv/mac.img is an HFS+ volume and it is 1073741824 bytes, over hfsplus_writable_max (268435456 bytes): a writable HFS+ image is held in memory and rewritten whole on every change, so mac is read-only&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="コードをコピー"
+aria-label="コードをコピー"
+data-copied-label="コピーしました！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;ジャーナル付き&lt;/strong&gt;のボリューム(&lt;code&gt;hdiutil create -fs &amp;quot;Journaled HFS+&amp;quot;&lt;/code&gt; や macOS が作成するもの)は、ジャーナルが空のときだけ書き込まれます。これは正常にアンマウントした後の状態です。トランザクションを含むジャーナル、または検証できないジャーナルは、サーバーが書き込んだ内容の上から macOS が再生してしまうため、ドライバーはこれを拒否し、&lt;strong&gt;共有は代わりに読み取り専用で開かれます&lt;/strong&gt;。サーバーは起動を続けます。共有を開くときに、イメージ、共有、理由を示す1 行を出力します。&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/srv/mac.img is an HFS+ volume and its journal holds transactions (hfsplus: journaled volume with a journal that is not empty: transactions pending (start 17408, end 34816)), so mac is read-only&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="コードをコピー"
+aria-label="コードをコピー"
+data-copied-label="コピーしました！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;そのような共有を書き込み可能にするには、先にジャーナルを再生させます。イメージを Mac でマウントして正常に取り出すか、&lt;code&gt;fsck_hfs&lt;/code&gt; を実行してください。(ドライバーにはイメージをメモリに載せずにジャーナルを調べる方法がないため、この場合だけは上限までイメージを読み込んでからフォールバックします。)&lt;code&gt;read_only = true&lt;/code&gt; の共有、デバイス、パーティションは書き込み可能でのオープンを試みません。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;ほかの書き込み側。&lt;/strong&gt; イメージは全体が書き戻されるため、2 つ目の書き込み側は次の書き戻しで上書きされます。書き込み可能でのオープンはイメージに排他的な助言ロック &lt;code&gt;flock&lt;/code&gt;
+(Linux、macOS、BSD)を取ります。別のプロセス(たとえば同じイメージを使うもう 1 つの fileshare)が保持している場合、共有は読み取り専用で開かれ、その旨を出力します。ロックは助言的なのでmacOS のマウントはこれを取らず、ほかのプラットフォームにはロックがありません。&lt;/p&gt;
+&lt;p&gt;⛔ &lt;strong&gt;マウント中のイメージに書き込まないでください&lt;/strong&gt;。このサーバーでも他のものでも同じです。互いの変更を知りません。ほかに何も開いていないイメージを提供してください。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="a-partition-for-any-filesystem"&gt;任意のファイルシステムでのパーティション&lt;span class="hx:absolute hx:-mt-20" id="a-partition-for-any-filesystem"&gt;&lt;/span&gt;
 &lt;a href="#a-partition-for-any-filesystem" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;FAT32、ext4、exFAT を含むディスクイメージも、XFS を含むものと同じくらいの頻度で、先頭にパーティションテーブルを持ちます。ところが検出はオフセット 0 を読み、パーティション分割されたイメージのそこにあるのは&lt;em&gt;テーブル&lt;/em&gt;です。そのため先にパーティションを選び、ドライバーにはそのビューを渡します。&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
@@ -175,7 +226,7 @@ data-copied-label="コピーしました！"
 &lt;p&gt;⛔ 共有には &lt;code&gt;image&lt;/code&gt; &lt;strong&gt;または&lt;/strong&gt; &lt;code&gt;directory&lt;/code&gt; のどちらか一方が必要で、両方を指定することも、どちらも指定しないこともできません。&lt;code&gt;filesystem&lt;/code&gt; と &lt;code&gt;partition&lt;/code&gt; はイメージ用です。これらを指定したディレクトリ共有は拒否されます。指定したということは、その共有がイメージのつもりだったことを意味するためです。&lt;code&gt;read_only = true&lt;/code&gt; はイメージと同様にディレクトリでも機能します。これを指定しながら&lt;code&gt;writers&lt;/code&gt; も列挙した共有は、&lt;code&gt;read_only&lt;/code&gt; が優先されてしまうため拒否されます。&lt;/p&gt;
 &lt;p&gt;クライアントに通知される容量は、ツリーが置かれているファイルシステムのものです。取得できないプラットフォームでは 0 のままとなり、プロトコル側はこれを「満杯」ではなく「不明」として扱います。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="what-smb-does-with-a-time-it-cannot-store"&gt;保存できない時刻を SMB はどう扱うか&lt;span class="hx:absolute hx:-mt-20" id="what-smb-does-with-a-time-it-cannot-store"&gt;&lt;/span&gt;
-&lt;a href="#what-smb-does-with-a-time-it-cannot-store" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;クライアントが設定した時刻をストレージが保持できない場合、既定では&lt;strong&gt;無視されます&lt;/strong&gt;。v0.42.0 から、共有ごとに &lt;code&gt;unstorable_times&lt;/code&gt; で選べます。保存できないのは、報告された値と異なる CreationTime、単独で送られた ChangeTime、イメージに対するアクセス時刻または更新時刻のうち、時刻を設定できないドライバー(FAT、exFAT、NTFS、HFS+、APFS)のイメージに対するものです(ホストのディレクトリと ext4 イメージはこれらを保存します)。&lt;/p&gt;
+&lt;a href="#what-smb-does-with-a-time-it-cannot-store" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;クライアントが設定した時刻をストレージが保持できない場合、既定では&lt;strong&gt;無視されます&lt;/strong&gt;。v0.42.0 から、共有ごとに &lt;code&gt;unstorable_times&lt;/code&gt; で選べます。保存できないのは、報告された値と異なる CreationTime、単独で送られた ChangeTime、イメージに対するアクセス時刻または更新時刻のうち、時刻を設定できないドライバー(NTFS、APFS、ISO 9660、SquashFS)のイメージに対するものです(ホストのディレクトリと FAT、exFAT、ext4、HFS+ のイメージはこれらを保存します)。&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;photos&amp;#34;&lt;/span&gt; {
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; directory&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/data/photos&amp;#34;&lt;/span&gt;

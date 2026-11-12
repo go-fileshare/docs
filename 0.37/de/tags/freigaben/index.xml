@@ -23,6 +23,84 @@ data-copied-label="Kopiert!"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
+&lt;h2 data-hextra-search-id="hfsplus-images-are-writable"&gt;HFS+-Images sind schreibbar&lt;span class="hx:absolute hx:-mt-20" id="hfsplus-images-are-writable"&gt;&lt;/span&gt;
+&lt;a href="#hfsplus-images-are-writable" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Seit v0.44.0 (hfsplus v0.9.0) wird eine Freigabe, deren Image HFS+ enthält, zum
+Schreiben geöffnet, wie FAT, exFAT und ext4: Ein Client kann Dateien anlegen,ändern und löschen, und die Zeiten, Modi und Eigentümer, die er setzt, werden
+gespeichert. Vorher wurde ein HFS+-Image schreibgeschützt geöffnet. Das Image
+wird beim Öffnen der Freigabe in den Speicher gelesen, und jede Änderung wird in
+die Datei zurückgeschrieben.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Was das kostet.&lt;/strong&gt; hfsplus v0.9.0 hält das ganze Image im Speicher und schreibt
+bei jeder Operation (Anlegen, Schreiben, Umbenennen, &lt;code&gt;Chtimes&lt;/code&gt;) das ganze Image
+neu; der Speicher einer Freigabe ist also die Größe ihres Images, und ebenso der
+E/A-Aufwand jeder Änderung (go-filesystems/hfsplus#33 ist die eigentliche
+Lösung). Eine Freigabe öffnet ein HFS+-Image deshalb nur bis zu&lt;code&gt;hfsplus_writable_max&lt;/code&gt; zum Schreiben, standardmäßig 256 MiB (&lt;code&gt;&amp;quot;0&amp;quot;&lt;/code&gt; nie; eine
+Anzahl Bytes oder eine mit K, M, G oder T):&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;mac&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/mac.img&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; hfsplus_writable_max&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;256M&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Code kopieren"
+aria-label="Code kopieren"
+data-copied-label="Kopiert!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Darüber, oder wenn die Größe unbekannt ist, wird die Freigabe &lt;strong&gt;schreibgeschützt&lt;/strong&gt;
+geöffnet, weiterhin mit Bereichslesen und Zeiten, und der Server schreibt eine
+Zeile mit Image, Größe und Grenze:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/srv/mac.img is an HFS+ volume and it is 1073741824 bytes, over hfsplus_writable_max (268435456 bytes): a writable HFS+ image is held in memory and rewritten whole on every change, so mac is read-only&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Code kopieren"
+aria-label="Code kopieren"
+data-copied-label="Kopiert!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Ein Volume &lt;strong&gt;mit Journal&lt;/strong&gt; (erzeugt von &lt;code&gt;hdiutil create -fs &amp;quot;Journaled HFS+&amp;quot;&lt;/code&gt;
+oder von macOS) wird nur beschrieben, wenn sein Journal leer ist, wie es nach
+einem sauberen Aushängen zurückbleibt. Ein Journal mit Transaktionen oder eines,das sich nicht prüfen lässt, würde von macOS über das wiedergegeben, was der
+Server schreibt; deshalb lehnt der Treiber es ab, und &lt;strong&gt;die Freigabe wird
+stattdessen schreibgeschützt geöffnet&lt;/strong&gt;. Der Server startet trotzdem; beim
+Öffnen der Freigabe schreibt er eine Zeile mit Image, Freigabe und Grund:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/srv/mac.img is an HFS+ volume and its journal holds transactions (hfsplus: journaled volume with a journal that is not empty: transactions pending (start 17408, end 34816)), so mac is read-only&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Code kopieren"
+aria-label="Code kopieren"
+data-copied-label="Kopiert!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Damit eine solche Freigabe schreibbar wird, muss das Journal zuerst
+wiedergegeben werden: das Image an einem Mac einhängen und sauber auswerfen
+oder &lt;code&gt;fsck_hfs&lt;/code&gt; darauf ausführen. (Der Treiber hat keine Journalprüfung ohne das
+Image im Speicher; dieser eine Fall liest das Image bis zur Grenze, bevor er
+zurückfällt.) Eine Freigabe mit &lt;code&gt;read_only = true&lt;/code&gt;, ein Gerät und eine Partition
+versuchen das schreibbare Öffnen nie.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Ein anderer Schreiber.&lt;/strong&gt; Das Image wird ganz zurückgeschrieben, ein zweiter
+Schreiber würde also vom nächsten Zurückschreiben überschrieben. Das schreibbare
+Öffnen nimmt eine exklusive beratende &lt;code&gt;flock&lt;/code&gt;-Sperre auf das Image (Linux, macOS
+und die BSDs); hält sie ein anderer Prozess, etwa ein zweites fileshare auf
+demselben Image, wird die Freigabe schreibgeschützt geöffnet und sagt es. Die
+Sperre ist beratend: ein macOS-Einhängen nimmt sie nicht, und auf anderen
+Plattformen gibt es keine Sperre.&lt;/p&gt;
+&lt;p&gt;⛔ &lt;strong&gt;Schreiben Sie kein Image, das eingehängt ist&lt;/strong&gt;, weder mit diesem Server
+noch mit etwas anderem: keine Seite weiß von den Änderungen der anderen.Stellen Sie ein Image bereit, das sonst nichts geöffnet hat.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="a-partition-for-any-filesystem"&gt;Eine Partition, für jedes Dateisystem&lt;span class="hx:absolute hx:-mt-20" id="a-partition-for-any-filesystem"&gt;&lt;/span&gt;
 &lt;a href="#a-partition-for-any-filesystem" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Ein Disk-Image mit FAT32, ext4 oder exFAT hat ebenso oft eine Partitionstabelle davor
 wie eines mit XFS – und die Erkennung liest Offset null, wo ein
@@ -218,7 +296,7 @@ Plattform, die das nicht angeben kann, lässt sie bei null, was die Protokolle a
 standardmäßig &lt;strong&gt;ignoriert&lt;/strong&gt;. Seit v0.42.0 kann eine Freigabe das mit&lt;code&gt;unstorable_times&lt;/code&gt; festlegen. Nicht speicherbar ist eine CreationTime, die sich
 von der gemeldeten unterscheidet, eine allein gesendete ChangeTime oder eine
 Zugriffs- oder Änderungszeit bei einem Image, dessen Treiber keine Zeiten setzen
-kann (FAT, exFAT, NTFS, HFS+, APFS; ein Host-Verzeichnis und ein ext4-Image
+kann (NTFS, APFS, ISO 9660, SquashFS; ein Host-Verzeichnis und ein FAT-, exFAT-, ext4- oder HFS+-Image
 speichern diese):&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;photos&amp;#34;&lt;/span&gt; {

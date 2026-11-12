@@ -23,6 +23,69 @@ data-copied-label="복사됨!"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
+&lt;h2 data-hextra-search-id="hfsplus-images-are-writable"&gt;HFS+ 이미지는 쓰기 가능&lt;span class="hx:absolute hx:-mt-20" id="hfsplus-images-are-writable"&gt;&lt;/span&gt;
+&lt;a href="#hfsplus-images-are-writable" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;v0.44.0(hfsplus v0.9.0)부터 HFS+가 들어 있는 이미지의 공유는 FAT, exFAT, ext4처럼
+쓰기용으로 열립니다. 클라이언트는 파일을 만들고, 바꾸고, 지울 수 있으며, 설정한 시간,모드, 소유자도 저장됩니다. 이전에는 HFS+ 이미지가 읽기 전용으로 열렸습니다. 이미지는
+공유를 열 때 메모리로 읽히고 모든 변경은 파일에 다시 기록됩니다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;비용.&lt;/strong&gt; hfsplus v0.9.0은 이미지 전체를 메모리에 두고 작업(생성, 쓰기, 이름 변경, &lt;code&gt;Chtimes&lt;/code&gt;)마다
+이미지 전체를 다시 씁니다. 따라서 공유의 메모리는 이미지 크기와 같고 변경마다의 I/O도
+마찬가지입니다(근본적인 해결은 go-filesystems/hfsplus#33). 그래서 공유는 &lt;code&gt;hfsplus_writable_max&lt;/code&gt;
+이하의 HFS+ 이미지만 쓰기용으로 열며, 기본값은 256 MiB입니다(&lt;code&gt;&amp;quot;0&amp;quot;&lt;/code&gt;은 열지 않음. 바이트 수 또는
+K, M, G, T가 붙은 값):&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;mac&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/mac.img&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; hfsplus_writable_max&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;256M&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="코드 복사"
+aria-label="코드 복사"
+data-copied-label="복사됨!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;이를 넘거나 크기를 알 수 없으면 공유는 &lt;strong&gt;읽기 전용&lt;/strong&gt;으로 열리며(범위 읽기와 시간은 그대로),서버는 이미지, 크기, 한도를 밝히는 한 줄을 출력합니다.&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/srv/mac.img is an HFS+ volume and it is 1073741824 bytes, over hfsplus_writable_max (268435456 bytes): a writable HFS+ image is held in memory and rewritten whole on every change, so mac is read-only&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="코드 복사"
+aria-label="코드 복사"
+data-copied-label="복사됨!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;저널이 있는&lt;/strong&gt; 볼륨(&lt;code&gt;hdiutil create -fs &amp;quot;Journaled HFS+&amp;quot;&lt;/code&gt;나 macOS가 만든 것)은 저널이
+비어 있을 때만 기록됩니다. 정상적으로 마운트를 해제하면 그렇게 남습니다. 트랜잭션이
+들어 있는 저널이나 검증할 수 없는 저널은 서버가 쓴 내용 위에 macOS가 다시 재생해 버리므로
+드라이버가 거부하며, &lt;strong&gt;공유는 대신 읽기 전용으로 열립니다&lt;/strong&gt;. 서버는 계속 시작됩니다.공유를 열 때 이미지, 공유, 이유를 밝히는 한 줄을 출력합니다.&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/srv/mac.img is an HFS+ volume and its journal holds transactions (hfsplus: journaled volume with a journal that is not empty: transactions pending (start 17408, end 34816)), so mac is read-only&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="코드 복사"
+aria-label="코드 복사"
+data-copied-label="복사됨!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;이런 공유를 쓰기 가능하게 하려면 먼저 저널을 재생시켜야 합니다. 이미지를 Mac에 마운트한 뒤
+정상적으로 꺼내거나 &lt;code&gt;fsck_hfs&lt;/code&gt;를 실행하세요. (드라이버에는 이미지를 메모리에 올리지 않고
+저널을 확인하는 방법이 없어서, 이 경우에만 한도까지 이미지를 읽은 뒤 되돌아갑니다.)&lt;code&gt;read_only = true&lt;/code&gt;인 공유, 장치, 파티션은 쓰기용 열기를 시도하지 않습니다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;다른 쓰기 주체.&lt;/strong&gt; 이미지는 통째로 다시 기록되므로 두 번째 쓰기 주체는 다음 기록에 덮어써집니다.쓰기용 열기는 이미지에 배타적 권고 잠금 &lt;code&gt;flock&lt;/code&gt;을 겁니다(Linux, macOS, BSD). 다른 프로세스(예: 같은
+이미지를 쓰는 두 번째 fileshare)가 잠금을 쥐고 있으면 공유는 읽기 전용으로 열리고 그렇다고
+알립니다. 잠금은 권고용이라 macOS 마운트는 잠금을 걸지 않으며, 다른 플랫폼에는 잠금이 없습니다.&lt;/p&gt;
+&lt;p&gt;⛔ &lt;strong&gt;마운트된 이미지에는 쓰지 마세요&lt;/strong&gt;. 이 서버든 다른 무엇이든 마찬가지입니다.어느 쪽도 상대의 변경을 알지 못합니다. 다른 것이 열어 두지 않은 이미지를 제공하세요.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="a-partition-for-any-filesystem"&gt;어떤 파일 시스템이든 가능한 파티션&lt;span class="hx:absolute hx:-mt-20" id="a-partition-for-any-filesystem"&gt;&lt;/span&gt;
 &lt;a href="#a-partition-for-any-filesystem" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;FAT32, ext4, exFAT를 담은 디스크 이미지도 XFS를 담은 이미지만큼 자주 앞에
 파티션 테이블이 있으며, 탐지는 오프셋 0을 읽는데 파티션된 이미지는 그곳에&lt;em&gt;테이블&lt;/em&gt;이 있습니다. 그래서 파티션을 먼저 선택하고, 드라이버에는 그 파티션의
@@ -216,8 +279,8 @@ data-copied-label="복사됨!"
 &lt;h2 data-hextra-search-id="what-smb-does-with-a-time-it-cannot-store"&gt;저장할 수 없는 시간을 SMB가 처리하는 방식&lt;span class="hx:absolute hx:-mt-20" id="what-smb-does-with-a-time-it-cannot-store"&gt;&lt;/span&gt;
 &lt;a href="#what-smb-does-with-a-time-it-cannot-store" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;클라이언트가 설정한 시간을 저장소가 보존할 수 없으면 기본적으로 &lt;strong&gt;무시됩니다&lt;/strong&gt;.v0.42.0부터 공유마다 &lt;code&gt;unstorable_times&lt;/code&gt;로 선택할 수 있습니다. 저장할 수 없는 것은
 보고된 값과 다른 CreationTime, 단독으로 전송된 ChangeTime, 이미지에 대한 접근 시간
-또는 수정 시간 중 시간을 설정할 수 없는 드라이버(FAT, exFAT, NTFS, HFS+, APFS)의
-이미지에 대한 것입니다(호스트 디렉터리와 ext4 이미지는 이를 저장합니다).&lt;/p&gt;
+또는 수정 시간 중 시간을 설정할 수 없는 드라이버(NTFS, APFS, ISO 9660, SquashFS)의
+이미지에 대한 것입니다(호스트 디렉터리와 FAT, exFAT, ext4, HFS+ 이미지는 이를 저장합니다).&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;photos&amp;#34;&lt;/span&gt; {
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; directory&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/data/photos&amp;#34;&lt;/span&gt;

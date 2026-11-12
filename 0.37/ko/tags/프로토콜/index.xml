@@ -1056,17 +1056,23 @@ data-copied-label="복사됨!"
 &lt;td&gt;형식의 해상도로 저장됨: FAT는 수정 시간 2초(내림), 접근 시간은 날짜만; exFAT는 수정 시간 10 ms, 접근 시간 2초(함께 전송된 ChangeTime은 허용)&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
-&lt;td&gt;&lt;strong&gt;이미지, &lt;code&gt;Chtimes&lt;/code&gt;가 없는 드라이버&lt;/strong&gt;: NTFS, HFS+, APFS, ISO 9660, SquashFS&lt;/td&gt;
-&lt;td&gt;동일(NTFS, HFS+는 보고하고 나머지는 보고하지 않음)&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;이미지, HFS+&lt;/strong&gt; (v0.44.0부터)&lt;/td&gt;
+&lt;td&gt;보고된 값과 같지 않으면 저장 불가(보고함)&lt;/td&gt;
+&lt;td&gt;동일&lt;/td&gt;
+&lt;td&gt;1초 단위로 저장됨(함께 전송된 ChangeTime은 허용). 저널 때문에 공유가 &lt;a href="https://go-fileshare.github.io/docs/0.37/ko/configuration/shares/#hfsplus-images-are-writable"&gt;읽기 전용&lt;/a&gt;이 된 경우는 제외&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;이미지, &lt;code&gt;Chtimes&lt;/code&gt;가 없는 드라이버&lt;/strong&gt;: NTFS, APFS, ISO 9660, SquashFS&lt;/td&gt;
+&lt;td&gt;동일(NTFS는 보고하고 나머지는 보고하지 않음)&lt;/td&gt;
 &lt;td&gt;동일. 접근 시간 또는 수정 시간과 함께여도 &lt;strong&gt;마찬가지&lt;/strong&gt;&lt;/td&gt;
 &lt;td&gt;&lt;strong&gt;항상 저장 불가&lt;/strong&gt;&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;&lt;code&gt;Chtimes&lt;/code&gt;가 있는 드라이버는 osfs(&lt;code&gt;osfs.go:383&lt;/code&gt;), ext4(&lt;code&gt;metadata.go:93&lt;/code&gt;), ufs(&lt;code&gt;metadata.go:63&lt;/code&gt;), btrfs(&lt;code&gt;fs.go:382&lt;/code&gt;), xfs(&lt;code&gt;fs.go:521&lt;/code&gt;), zfs(&lt;code&gt;metadata.go:94&lt;/code&gt;)이며,v0.43.0부터는 fat32 v0.13.0과 exFAT v0.6.0도 포함됩니다(전체 &lt;code&gt;MetadataSetter&lt;/code&gt;: FAT에는
-모드 비트와 소유자가 없으므로 이들의 &lt;code&gt;Chmod&lt;/code&gt;와 &lt;code&gt;Chown&lt;/code&gt;은 &amp;ldquo;지원되지 않음&amp;quot;을 반환합니다).따라서 FAT 또는 exFAT 이미지 공유에서의 &lt;code&gt;touch -d&lt;/code&gt;와 &lt;code&gt;cp -p&lt;/code&gt;는 저장됩니다. 나머지에는 없습니다.HFS+는 계속 이 목록에 있습니다. hfsplus v0.8.0(v0.43.0부터 고정)은 &lt;code&gt;Chtimes&lt;/code&gt;, &lt;code&gt;Chmod&lt;/code&gt;,&lt;code&gt;Chown&lt;/code&gt;을 구현하지만, 제공되는 HFS+ 이미지는 드라이버의 읽기 전용 &lt;code&gt;OpenReader&lt;/code&gt;로 열리므로
-SMB로 설정한 시간은 아직 저장되지 않습니다. &lt;code&gt;hdiutil&lt;/code&gt;이 저널과 함께 만든 HFS+ 이미지에 드라이버가
-쓴 내용은 아직 macOS에서 보이지 않습니다(Refs go-filesystems/hfsplus#29). v0.42.0 이전에는 fileshare가 모든 이미지 드라이버 앞에 두는
+모드 비트와 소유자가 없으므로 이들의 &lt;code&gt;Chmod&lt;/code&gt;와 &lt;code&gt;Chown&lt;/code&gt;은 &amp;ldquo;지원되지 않음&amp;quot;을 반환합니다).따라서 FAT 또는 exFAT 이미지 공유에서의 &lt;code&gt;touch -d&lt;/code&gt;와 &lt;code&gt;cp -p&lt;/code&gt;는 저장됩니다. 나머지에는 없습니다.HFS+에도 있습니다. hfsplus v0.8.0은 &lt;code&gt;Chtimes&lt;/code&gt;, &lt;code&gt;Chmod&lt;/code&gt;, &lt;code&gt;Chown&lt;/code&gt;을 구현하며,v0.44.0(hfsplus v0.9.0)부터 제공되는 HFS+ 이미지는 쓰기 가능으로 열리므로
+SMB로 설정한 시간이 저장됩니다. 트랜잭션이 남아 있는 저널이 있는 이미지는
+대신 읽기 전용으로 열리며 아무것도 저장하지 않습니다(&lt;a href="https://go-fileshare.github.io/docs/0.37/ko/configuration/shares/#hfsplus-images-are-writable"&gt;HFS+ 이미지는 쓰기 가능&lt;/a&gt; 참조). v0.42.0 이전에는 fileshare가 모든 이미지 드라이버 앞에 두는
 잠금이 &lt;code&gt;Chtimes&lt;/code&gt;를 숨겨서 ext4를 포함한 모든 이미지가 클라이언트의 접근 시간과 수정
 시간을 버렸습니다. v0.42.0부터는 드라이버에 있을 때에 한해 &lt;code&gt;Chtimes&lt;/code&gt;를 전달합니다.NTFS 이미지는 읽기 전용 드라이버가 읽으므로 정책과 관계없이 아무것도 저장되지 않으며,정책은 클라이언트에 무엇을 알릴지만 결정합니다.&lt;/p&gt;
 &lt;p&gt;어떤 클라이언트가 어떤 경우에 해당하는가: Windows 탐색기와 &lt;code&gt;robocopy /COPY:T&lt;/code&gt;는

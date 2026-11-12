@@ -24,6 +24,82 @@ data-copied-label="¡Copiado!"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
+&lt;h2 data-hextra-search-id="hfsplus-images-are-writable"&gt;Las imágenes HFS+ son escribibles&lt;span class="hx:absolute hx:-mt-20" id="hfsplus-images-are-writable"&gt;&lt;/span&gt;
+&lt;a href="#hfsplus-images-are-writable" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Desde la v0.44.0 (hfsplus v0.9.0) un recurso cuya imagen contiene HFS+ se abre
+para escritura, como FAT, exFAT y ext4: un cliente puede crear, modificar y
+borrar archivos, y se almacenan las fechas, los modos y los propietarios que
+establece. Antes, una imagen HFS+ se abría en solo lectura. La imagen se lee en
+memoria al abrir el recurso y cada cambio se escribe de vuelta en el archivo.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Lo que cuesta.&lt;/strong&gt; hfsplus v0.9.0 mantiene toda la imagen en memoria y reescribe
+toda la imagen en cada operación (crear, escribir, renombrar, &lt;code&gt;Chtimes&lt;/code&gt;), de modo
+que la memoria de un recurso es el tamaño de su imagen, y también lo es la E/S de
+cada cambio (go-filesystems/hfsplus#33 es la solución de fondo). Por eso un
+recurso abre una imagen HFS+ para escritura solo hasta &lt;code&gt;hfsplus_writable_max&lt;/code&gt;,256 MiB por defecto (&lt;code&gt;&amp;quot;0&amp;quot;&lt;/code&gt; nunca; un número de bytes, o uno con K, M, G o T):&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;mac&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/mac.img&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; hfsplus_writable_max&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;256M&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Por encima, o si se desconoce el tamaño, el recurso se abre en &lt;strong&gt;solo lectura&lt;/strong&gt;,aún con lectura por rangos y fechas, y el servidor escribe una línea que nombra
+la imagen, el tamaño y el límite:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/srv/mac.img is an HFS+ volume and it is 1073741824 bytes, over hfsplus_writable_max (268435456 bytes): a writable HFS+ image is held in memory and rewritten whole on every change, so mac is read-only&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Un volumen &lt;strong&gt;con diario&lt;/strong&gt; (creado por &lt;code&gt;hdiutil create -fs &amp;quot;Journaled HFS+&amp;quot;&lt;/code&gt; o por
+macOS) solo se escribe cuando su diario está vacío, que es lo que deja un
+desmontaje limpio. Un diario con transacciones, o uno que no se puede
+verificar, sería reproducido por macOS sobre lo que escribe el servidor, así que
+el controlador lo rechaza y &lt;strong&gt;el recurso se abre en solo lectura&lt;/strong&gt;. El servidor
+sigue arrancando; al abrir el recurso escribe una línea que nombra la imagen, el
+recurso y el motivo:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/srv/mac.img is an HFS+ volume and its journal holds transactions (hfsplus: journaled volume with a journal that is not empty: transactions pending (start 17408, end 34816)), so mac is read-only&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Para que un recurso así sea escribible, hay que reproducir primero el diario:monte la imagen en un Mac y expúlsela limpiamente, o ejecute &lt;code&gt;fsck_hfs&lt;/code&gt; sobre
+ella. (El controlador no tiene una comprobación del diario que funcione sin la
+imagen en memoria, así que este caso lee la imagen, hasta el límite, antes de
+volver atrás.) Un recurso con &lt;code&gt;read_only = true&lt;/code&gt;, un dispositivo y una partición
+nunca intentan la apertura para escritura.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Otro escritor.&lt;/strong&gt; La imagen se vuelca entera, así que un segundo escritor sería
+sobrescrito por el siguiente volcado. La apertura para escritura toma un bloqueo
+consultivo exclusivo &lt;code&gt;flock&lt;/code&gt; sobre la imagen (Linux, macOS y los BSD); si otro
+proceso lo tiene, por ejemplo un segundo fileshare sobre la misma imagen, el
+recurso se abre en solo lectura y lo dice. El bloqueo es consultivo: un montaje
+de macOS no lo toma, y en otras plataformas no hay bloqueo.&lt;/p&gt;
+&lt;p&gt;⛔ &lt;strong&gt;No escriba una imagen que esté montada&lt;/strong&gt;, ni con este servidor ni con otra
+cosa: ninguna de las partes conoce los cambios de la otra. Sirva una imagen que
+nada más tenga abierta.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="a-partition-for-any-filesystem"&gt;Una partición, para cualquier sistema de archivos&lt;span class="hx:absolute hx:-mt-20" id="a-partition-for-any-filesystem"&gt;&lt;/span&gt;
 &lt;a href="#a-partition-for-any-filesystem" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Una imagen de disco que contiene FAT32, ext4 o exFAT tiene una tabla de particiones
 delante con la misma frecuencia que una que contiene XFS, y la detección lee el
@@ -235,8 +311,8 @@ encuentra el árbol; una plataforma que no puede indicarla la deja a cero, que l
 protocolos interpretan como «desconocida» y no como «llena».&lt;/p&gt;
 &lt;h2 data-hextra-search-id="what-smb-does-with-a-time-it-cannot-store"&gt;Qué hace SMB con una fecha que no puede almacenar&lt;span class="hx:absolute hx:-mt-20" id="what-smb-does-with-a-time-it-cannot-store"&gt;&lt;/span&gt;
 &lt;a href="#what-smb-does-with-a-time-it-cannot-store" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Una fecha que establece un cliente y que el almacenamiento no puede conservar se&lt;strong&gt;ignora&lt;/strong&gt; por defecto. Desde la v0.42.0 un recurso compartido puede elegir, con&lt;code&gt;unstorable_times&lt;/code&gt;. No es almacenable una CreationTime distinta de la informada,una ChangeTime enviada sola, o una fecha de acceso o de escritura en una imagen
-cuyo controlador no puede establecer fechas (FAT, exFAT, NTFS, HFS+, APFS; un
-directorio del host y una imagen ext4 las almacenan):&lt;/p&gt;
+cuyo controlador no puede establecer fechas (NTFS, APFS, ISO 9660, SquashFS; un
+directorio del host y una imagen FAT, exFAT, ext4 o HFS+ las almacenan):&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;photos&amp;#34;&lt;/span&gt; {
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; directory&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/data/photos&amp;#34;&lt;/span&gt;

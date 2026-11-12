@@ -1113,8 +1113,14 @@ que fija esta versión:&lt;/p&gt;
 &lt;td&gt;almacenada con la resolución del formato: fecha de escritura de FAT a 2 s (redondeada hacia abajo) y fecha de acceso solo el día; fecha de escritura de exFAT a 10 ms y fecha de acceso a 2 s (una ChangeTime enviada con ella se acepta)&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
-&lt;td&gt;&lt;strong&gt;Imagen, controlador sin &lt;code&gt;Chtimes&lt;/code&gt;&lt;/strong&gt;: NTFS, HFS+, APFS, ISO 9660, SquashFS&lt;/td&gt;
-&lt;td&gt;igual (NTFS y HFS+ informan una; los demás nunca)&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;Imagen, HFS+&lt;/strong&gt; (desde la v0.44.0)&lt;/td&gt;
+&lt;td&gt;no almacenable salvo que sea igual a la informada (informa una)&lt;/td&gt;
+&lt;td&gt;igual&lt;/td&gt;
+&lt;td&gt;almacenada al segundo (una ChangeTime enviada con ella se acepta), salvo que el diario haya dejado el recurso en &lt;a href="https://go-fileshare.github.io/docs/0.37/es/configuration/shares/#hfsplus-images-are-writable"&gt;solo lectura&lt;/a&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Imagen, controlador sin &lt;code&gt;Chtimes&lt;/code&gt;&lt;/strong&gt;: NTFS, APFS, ISO 9660, SquashFS&lt;/td&gt;
+&lt;td&gt;igual (NTFS informa una; los demás nunca)&lt;/td&gt;
 &lt;td&gt;igual, &lt;strong&gt;también&lt;/strong&gt; cuando se envía con una fecha de acceso o de escritura&lt;/td&gt;
 &lt;td&gt;&lt;strong&gt;siempre no almacenable&lt;/strong&gt;&lt;/td&gt;
 &lt;/tr&gt;
@@ -1122,9 +1128,9 @@ que fija esta versión:&lt;/p&gt;
 &lt;/table&gt;
 &lt;p&gt;Los controladores con &lt;code&gt;Chtimes&lt;/code&gt; son osfs (&lt;code&gt;osfs.go:383&lt;/code&gt;), ext4 (&lt;code&gt;metadata.go:93&lt;/code&gt;),ufs (&lt;code&gt;metadata.go:63&lt;/code&gt;), btrfs (&lt;code&gt;fs.go:382&lt;/code&gt;), xfs (&lt;code&gt;fs.go:521&lt;/code&gt;) y zfs(&lt;code&gt;metadata.go:94&lt;/code&gt;) y, desde la v0.43.0, fat32 v0.13.0 y exFAT v0.6.0 (el&lt;code&gt;MetadataSetter&lt;/code&gt; completo: su &lt;code&gt;Chmod&lt;/code&gt; y su &lt;code&gt;Chown&lt;/code&gt; responden «no compatible», pues FAT
 no tiene bits de modo ni propietarios), de modo que &lt;code&gt;touch -d&lt;/code&gt; y &lt;code&gt;cp -p&lt;/code&gt; sobre un
-recurso de imagen FAT o exFAT se almacenan; los demás no tienen. HFS+ sigue en esa lista:hfsplus v0.8.0 (fijado desde la v0.43.0) implementa &lt;code&gt;Chtimes&lt;/code&gt;, &lt;code&gt;Chmod&lt;/code&gt; y &lt;code&gt;Chown&lt;/code&gt;, pero
-una imagen HFS+ servida se abre con el &lt;code&gt;OpenReader&lt;/code&gt; de solo lectura del controlador,de modo que una fecha establecida por SMB sigue sin almacenarse. macOS aún no ve lo que
-el controlador escribe en una imagen HFS+ creada con &lt;code&gt;hdiutil&lt;/code&gt; con diario(Refs go-filesystems/hfsplus#29). Antes de la v0.42.0 el bloqueo que
+recurso de imagen FAT o exFAT se almacenan; los demás no tienen. HFS+ también lo tiene:hfsplus v0.8.0 implementa &lt;code&gt;Chtimes&lt;/code&gt;, &lt;code&gt;Chmod&lt;/code&gt; y &lt;code&gt;Chown&lt;/code&gt;, y desde la v0.44.0(hfsplus v0.9.0) una imagen HFS+ servida se abre para escritura, de modo que una
+fecha establecida por SMB se almacena. Una imagen con diario que contiene
+transacciones se abre en cambio en solo lectura y no almacena nada (véase&lt;a href="https://go-fileshare.github.io/docs/0.37/es/configuration/shares/#hfsplus-images-are-writable"&gt;Las imágenes HFS+ son escribibles&lt;/a&gt;). Antes de la v0.42.0 el bloqueo que
 fileshare coloca delante de cada controlador de imagen ocultaba &lt;code&gt;Chtimes&lt;/code&gt;, de
 modo que toda imagen descartaba las fechas de acceso y de escritura de un
 cliente, ext4 incluida; desde la v0.42.0 lo transmite exactamente cuando el

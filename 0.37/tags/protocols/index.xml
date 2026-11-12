@@ -1069,8 +1069,14 @@ chose a partition, a person who may not write) is answered&lt;code&gt;STATUS_MED
 &lt;td&gt;stored at the format&amp;rsquo;s resolution: FAT write time 2 s (rounded down) and access time the date only; exFAT write time 10 ms and access time 2 s (a ChangeTime sent with it is accepted)&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
-&lt;td&gt;&lt;strong&gt;Image, driver without &lt;code&gt;Chtimes&lt;/code&gt;&lt;/strong&gt;: NTFS, HFS+, APFS, ISO 9660, SquashFS&lt;/td&gt;
-&lt;td&gt;the same (NTFS and HFS+ report one; the others never)&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;Image, HFS+&lt;/strong&gt; (since v0.44.0)&lt;/td&gt;
+&lt;td&gt;unstorable unless equal to the reported one (it reports one)&lt;/td&gt;
+&lt;td&gt;the same&lt;/td&gt;
+&lt;td&gt;stored to the second (a ChangeTime sent with it is accepted), unless the journal made the share &lt;a href="https://go-fileshare.github.io/docs/0.37/configuration/shares/#hfsplus-images-are-writable"&gt;read-only&lt;/a&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Image, driver without &lt;code&gt;Chtimes&lt;/code&gt;&lt;/strong&gt;: NTFS, APFS, ISO 9660, SquashFS&lt;/td&gt;
+&lt;td&gt;the same (NTFS reports one; the others never)&lt;/td&gt;
 &lt;td&gt;the same, &lt;strong&gt;also&lt;/strong&gt; when sent with an access or write time&lt;/td&gt;
 &lt;td&gt;&lt;strong&gt;always unstorable&lt;/strong&gt;&lt;/td&gt;
 &lt;/tr&gt;
@@ -1078,10 +1084,9 @@ chose a partition, a person who may not write) is answered&lt;code&gt;STATUS_MED
 &lt;/table&gt;
 &lt;p&gt;The drivers with &lt;code&gt;Chtimes&lt;/code&gt; are osfs (&lt;code&gt;osfs.go:383&lt;/code&gt;), ext4 (&lt;code&gt;metadata.go:93&lt;/code&gt;), ufs(&lt;code&gt;metadata.go:63&lt;/code&gt;), btrfs (&lt;code&gt;fs.go:382&lt;/code&gt;), xfs (&lt;code&gt;fs.go:521&lt;/code&gt;), zfs(&lt;code&gt;metadata.go:94&lt;/code&gt;) and, since v0.43.0, fat32 v0.13.0 and exFAT v0.6.0 (the full&lt;code&gt;MetadataSetter&lt;/code&gt;: their &lt;code&gt;Chmod&lt;/code&gt; and &lt;code&gt;Chown&lt;/code&gt; return &amp;ldquo;not supported&amp;rdquo;, since FAT has
 no mode bits or owners), so &lt;code&gt;touch -d&lt;/code&gt; and &lt;code&gt;cp -p&lt;/code&gt; on a FAT or exFAT image share
-are stored; the others have none. HFS+ stays on that list: hfsplus v0.8.0(pinned since v0.43.0) implements &lt;code&gt;Chtimes&lt;/code&gt;, &lt;code&gt;Chmod&lt;/code&gt; and &lt;code&gt;Chown&lt;/code&gt;, but a served HFS+
-image is opened through the driver&amp;rsquo;s read-only &lt;code&gt;OpenReader&lt;/code&gt;, so a time set over SMB
-is still not stored. What the driver writes into an HFS+ image created by &lt;code&gt;hdiutil&lt;/code&gt;
-with a journal is not yet seen by macOS (Refs go-filesystems/hfsplus#29).Before v0.42.0 the lock fileshare puts
+are stored; the others have none. HFS+ has one too: hfsplus v0.8.0 implements&lt;code&gt;Chtimes&lt;/code&gt;, &lt;code&gt;Chmod&lt;/code&gt; and &lt;code&gt;Chown&lt;/code&gt;, and since v0.44.0 (hfsplus v0.9.0) a served HFS+
+image is opened writable, so a time set over SMB is stored. A journaled image
+whose journal holds transactions is opened read-only instead, and stores nothing(see &lt;a href="https://go-fileshare.github.io/docs/0.37/configuration/shares/#hfsplus-images-are-writable"&gt;HFS+ images are writable&lt;/a&gt;).Before v0.42.0 the lock fileshare puts
 in front of every image driver hid &lt;code&gt;Chtimes&lt;/code&gt;, so every image dropped a client&amp;rsquo;s
 access and write times, ext4 included; since v0.42.0 it carries &lt;code&gt;Chtimes&lt;/code&gt; exactly
 when the driver has it. NTFS images are read by a read-only driver, so nothing is

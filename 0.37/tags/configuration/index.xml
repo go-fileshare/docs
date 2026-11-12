@@ -230,6 +230,80 @@ data-copied-label="Copied!"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
+&lt;h2 data-hextra-search-id="hfsplus-images-are-writable"&gt;HFS+ images are writable&lt;span class="hx:absolute hx:-mt-20" id="hfsplus-images-are-writable"&gt;&lt;/span&gt;
+&lt;a href="#hfsplus-images-are-writable" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Since v0.44.0 (hfsplus v0.9.0) a share whose image holds HFS+ is opened for
+writing, like FAT, exFAT and ext4: a client can create, change and delete
+files, and the times, modes and owners it sets are stored. Before, an HFS+
+image was opened read-only. The image is read into memory when the share opens
+and every change is written back to the file.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;What it costs.&lt;/strong&gt; hfsplus v0.9.0 holds the whole image in memory and rewrites
+the whole image on every operation (a create, a write, a rename, a &lt;code&gt;Chtimes&lt;/code&gt;),so the memory of a share is the size of its image, and so is the I/O of every
+change (go-filesystems/hfsplus#33 is the real fix). A share therefore opens an
+HFS+ image for writing only up to &lt;code&gt;hfsplus_writable_max&lt;/code&gt;, 256 MiB by default(&lt;code&gt;&amp;quot;0&amp;quot;&lt;/code&gt; never; a number of bytes, or one with K, M, G or T):&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;mac&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/mac.img&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; hfsplus_writable_max&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;256M&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Above the cap, or when the size is unknown, the share opens &lt;strong&gt;read-only&lt;/strong&gt;, still
+with range reads and times, and the server writes one line naming the image, the
+size and the cap:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/srv/mac.img is an HFS+ volume and it is 1073741824 bytes, over hfsplus_writable_max (268435456 bytes): a writable HFS+ image is held in memory and rewritten whole on every change, so mac is read-only&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;A &lt;strong&gt;journaled&lt;/strong&gt; volume (made by &lt;code&gt;hdiutil create -fs &amp;quot;Journaled HFS+&amp;quot;&lt;/code&gt; or by
+macOS) is written only when its journal is empty, which is what a clean
+unmount leaves. A journal that holds transactions, or one that cannot be
+verified, would be replayed by macOS over what the server writes, so the driver
+refuses it and &lt;strong&gt;the share opens read-only instead&lt;/strong&gt;. The server keeps
+starting; it writes one line when the share opens, naming the image, the share
+and why:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/srv/mac.img is an HFS+ volume and its journal holds transactions (hfsplus: journaled volume with a journal that is not empty: transactions pending (start 17408, end 34816)), so mac is read-only&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;To make such a share writable, have the journal replayed first: mount the
+image on a Mac and eject it cleanly, or run &lt;code&gt;fsck_hfs&lt;/code&gt; on it. (The driver has no
+journal check that works without the image in memory, so this one case reads the
+image, up to the cap, before it falls back.) A share with &lt;code&gt;read_only = true&lt;/code&gt;, a
+device and a partition never try the writable open.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Another writer.&lt;/strong&gt; The image is flushed whole, so a second writer would be
+overwritten by the next flush. A writable open takes an exclusive advisory&lt;code&gt;flock&lt;/code&gt; on the image (Linux, macOS and the BSDs); if another process holds it,for instance a second fileshare on the same image, the share opens read-only and
+says so. The lock is advisory: a macOS mount does not take it, and on other
+platforms there is no lock.&lt;/p&gt;
+&lt;p&gt;⛔ &lt;strong&gt;Do not write an image that is mounted&lt;/strong&gt;, by this server or by anything
+else: neither side knows about the other&amp;rsquo;s changes. Serve an image that nothing
+else has open.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="a-partition-for-any-filesystem"&gt;A partition, for any filesystem&lt;span class="hx:absolute hx:-mt-20" id="a-partition-for-any-filesystem"&gt;&lt;/span&gt;
 &lt;a href="#a-partition-for-any-filesystem" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;A disk image holding FAT32, ext4 or exFAT has a partition table in front of it
 as often as one holding XFS does — and detection reads offset zero, where a
@@ -425,7 +499,7 @@ platform that cannot say leaves it at zero, which the protocols read as&amp;ldqu
 &lt;h2 data-hextra-search-id="what-smb-does-with-a-time-it-cannot-store"&gt;What SMB does with a time it cannot store&lt;span class="hx:absolute hx:-mt-20" id="what-smb-does-with-a-time-it-cannot-store"&gt;&lt;/span&gt;
 &lt;a href="#what-smb-does-with-a-time-it-cannot-store" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;A time a client sets that the storage cannot keep is &lt;strong&gt;ignored&lt;/strong&gt; by default.Since v0.42.0 a share can choose, with &lt;code&gt;unstorable_times&lt;/code&gt;. A time is unstorable
 when it is a CreationTime that differs from the reported one, a ChangeTime sent
-alone, or an access or write time on an image whose driver cannot set times(FAT, exFAT, NTFS, HFS+, APFS; a host directory and an ext4 image store those):&lt;/p&gt;
+alone, or an access or write time on an image whose driver cannot set times(NTFS, APFS, ISO 9660, SquashFS; a host directory and a FAT, exFAT, ext4 or HFS+ image store those):&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;photos&amp;#34;&lt;/span&gt; {
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; directory&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/data/photos&amp;#34;&lt;/span&gt;

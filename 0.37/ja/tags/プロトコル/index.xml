@@ -871,12 +871,18 @@ data-copied-label="コピーしました！"
 &lt;td&gt;形式の精度で保存される:FAT は更新時刻が 2 秒(切り捨て)、アクセス時刻は日付のみ。exFAT は更新時刻が 10 ms、アクセス時刻が 2 秒(一緒に送られた ChangeTime は受理)&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
-&lt;td&gt;&lt;strong&gt;イメージ、&lt;code&gt;Chtimes&lt;/code&gt; を持たないドライバー&lt;/strong&gt;:NTFS、HFS+、APFS、ISO 9660、SquashFS&lt;/td&gt;
-&lt;td&gt;同上(NTFS、HFS+ は報告し、他は報告しない)&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;イメージ、HFS+&lt;/strong&gt;(v0.44.0 以降)&lt;/td&gt;
+&lt;td&gt;報告された値と同じでない限り保存不可(報告する)&lt;/td&gt;
+&lt;td&gt;同上&lt;/td&gt;
+&lt;td&gt;1 秒単位で保存される(一緒に送られた ChangeTime は受理)。ジャーナルにより共有が&lt;a href="https://go-fileshare.github.io/docs/0.37/ja/configuration/shares/#hfsplus-images-are-writable"&gt;読み取り専用&lt;/a&gt;になった場合を除く&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;イメージ、&lt;code&gt;Chtimes&lt;/code&gt; を持たないドライバー&lt;/strong&gt;:NTFS、APFS、ISO 9660、SquashFS&lt;/td&gt;
+&lt;td&gt;同上(NTFS は報告し、他は報告しない)&lt;/td&gt;
 &lt;td&gt;同上。アクセス時刻または更新時刻と一緒でも&lt;strong&gt;同様&lt;/strong&gt;&lt;/td&gt;
 &lt;td&gt;&lt;strong&gt;常に保存不可&lt;/strong&gt;&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;&lt;code&gt;Chtimes&lt;/code&gt; を持つドライバーは osfs(&lt;code&gt;osfs.go:383&lt;/code&gt;)、ext4(&lt;code&gt;metadata.go:93&lt;/code&gt;)、ufs(&lt;code&gt;metadata.go:63&lt;/code&gt;)、btrfs(&lt;code&gt;fs.go:382&lt;/code&gt;)、xfs(&lt;code&gt;fs.go:521&lt;/code&gt;)、zfs(&lt;code&gt;metadata.go:94&lt;/code&gt;)、および v0.43.0 以降は fat32 v0.13.0 と exFAT v0.6.0 です(完全な &lt;code&gt;MetadataSetter&lt;/code&gt;。FAT にはモードビットも所有者もないため、これらの &lt;code&gt;Chmod&lt;/code&gt; と &lt;code&gt;Chown&lt;/code&gt; は「未対応」を返します)。そのため FAT・exFAT イメージの共有での &lt;code&gt;touch -d&lt;/code&gt; と &lt;code&gt;cp -p&lt;/code&gt; は保存されます。他にはありません。HFS+ は引き続きこの一覧にあります。hfsplus v0.8.0(v0.43.0 から固定)は &lt;code&gt;Chtimes&lt;/code&gt;、&lt;code&gt;Chmod&lt;/code&gt;、&lt;code&gt;Chown&lt;/code&gt; を実装していますが、提供される HFS+ イメージはドライバーの読み取り専用&lt;code&gt;OpenReader&lt;/code&gt; で開かれるため、SMB で設定した時刻はまだ保存されません。&lt;code&gt;hdiutil&lt;/code&gt; がジャーナル付きで作成した HFS+ イメージにドライバーが書き込んだ内容は、まだ macOS から見えません(Refs go-filesystems/hfsplus#29)。v0.42.0 より前は、fileshare がすべてのイメージドライバーの前に置くロックが &lt;code&gt;Chtimes&lt;/code&gt; を隠していたため、ext4 を含むすべてのイメージがクライアントのアクセス時刻と更新時刻を捨てていました。v0.42.0 からは、ドライバーが持つ場合にだけ&lt;code&gt;Chtimes&lt;/code&gt; を通します。NTFS イメージは読み取り専用のドライバーで読まれるため、ポリシーにかかわらず何も保存されません。ポリシーが決めるのは、クライアントに何を返すかだけです。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;Chtimes&lt;/code&gt; を持つドライバーは osfs(&lt;code&gt;osfs.go:383&lt;/code&gt;)、ext4(&lt;code&gt;metadata.go:93&lt;/code&gt;)、ufs(&lt;code&gt;metadata.go:63&lt;/code&gt;)、btrfs(&lt;code&gt;fs.go:382&lt;/code&gt;)、xfs(&lt;code&gt;fs.go:521&lt;/code&gt;)、zfs(&lt;code&gt;metadata.go:94&lt;/code&gt;)、および v0.43.0 以降は fat32 v0.13.0 と exFAT v0.6.0 です(完全な &lt;code&gt;MetadataSetter&lt;/code&gt;。FAT にはモードビットも所有者もないため、これらの &lt;code&gt;Chmod&lt;/code&gt; と &lt;code&gt;Chown&lt;/code&gt; は「未対応」を返します)。そのため FAT・exFAT イメージの共有での &lt;code&gt;touch -d&lt;/code&gt; と &lt;code&gt;cp -p&lt;/code&gt; は保存されます。他にはありません。HFS+ にもあります。hfsplus v0.8.0 は &lt;code&gt;Chtimes&lt;/code&gt;、&lt;code&gt;Chmod&lt;/code&gt;、&lt;code&gt;Chown&lt;/code&gt; を実装しており、v0.44.0(hfsplus v0.9.0)以降、提供される HFS+ イメージは書き込み可能で開かれるため、SMB で設定した時刻は保存されます。ジャーナルにトランザクションが残っているイメージは代わりに読み取り専用で開かれ、何も保存されません(&lt;a href="https://go-fileshare.github.io/docs/0.37/ja/configuration/shares/#hfsplus-images-are-writable"&gt;HFS+ イメージは書き込み可能&lt;/a&gt;を参照)。v0.42.0 より前は、fileshare がすべてのイメージドライバーの前に置くロックが &lt;code&gt;Chtimes&lt;/code&gt; を隠していたため、ext4 を含むすべてのイメージがクライアントのアクセス時刻と更新時刻を捨てていました。v0.42.0 からは、ドライバーが持つ場合にだけ&lt;code&gt;Chtimes&lt;/code&gt; を通します。NTFS イメージは読み取り専用のドライバーで読まれるため、ポリシーにかかわらず何も保存されません。ポリシーが決めるのは、クライアントに何を返すかだけです。&lt;/p&gt;
 &lt;p&gt;どのクライアントがどの場合に該当するか:Windows のエクスプローラーと&lt;code&gt;robocopy /COPY:T&lt;/code&gt; は CreationTime を送ります。これは、変更がなければ別ですが、どの種類の共有でも保持できません。Linux の &lt;code&gt;touch -d&lt;/code&gt; と &lt;code&gt;cp -p&lt;/code&gt; はアクセス時刻と更新時刻だけを送ります(カーネルのクライアントは「現在」の ChangeTime を加えます)。これらはディレクトリと &lt;code&gt;Chtimes&lt;/code&gt; を持つドライバーでは保存され、持たないドライバーでは保存されません。&lt;/p&gt;</description></item></channel></rss>
