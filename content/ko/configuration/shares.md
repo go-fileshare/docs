@@ -206,8 +206,8 @@ share "photos" {
 클라이언트가 설정한 시간을 저장소가 보존할 수 없으면 기본적으로 **무시됩니다**.
 v0.42.0부터 공유마다 `unstorable_times`로 선택할 수 있습니다. 저장할 수 없는 것은
 보고된 값과 다른 CreationTime, 단독으로 전송된 ChangeTime, 이미지에 대한 접근 시간
-또는 수정 시간 중 시간을 설정할 수 없는 드라이버(FAT, exFAT, NTFS, APFS)의
-이미지에 대한 것입니다(호스트 디렉터리와 ext4 이미지는 이를 저장합니다).
+또는 수정 시간 중 시간을 설정할 수 없는 드라이버(NTFS, APFS, ISO 9660, SquashFS)의
+이미지에 대한 것입니다(호스트 디렉터리와 FAT, exFAT, ext4, HFS+ 이미지는 이를 저장합니다).
 
 ```hcl
 share "photos" {

@@ -216,7 +216,7 @@ A time a client sets that the storage cannot keep is **ignored** by default.
 Since v0.42.0 a share can choose, with `unstorable_times`. A time is unstorable
 when it is a CreationTime that differs from the reported one, a ChangeTime sent
 alone, or an access or write time on an image whose driver cannot set times
-(FAT, exFAT, NTFS, APFS; a host directory and an ext4 image store those):
+(NTFS, APFS, ISO 9660, SquashFS; a host directory and a FAT, exFAT, ext4 or HFS+ image store those):
 
 ```hcl
 share "photos" {

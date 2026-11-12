@@ -219,7 +219,7 @@ standardmäßig **ignoriert**. Seit v0.42.0 kann eine Freigabe das mit
 `unstorable_times` festlegen. Nicht speicherbar ist eine CreationTime, die sich
 von der gemeldeten unterscheidet, eine allein gesendete ChangeTime oder eine
 Zugriffs- oder Änderungszeit bei einem Image, dessen Treiber keine Zeiten setzen
-kann (FAT, exFAT, NTFS, APFS; ein Host-Verzeichnis und ein ext4-Image
+kann (NTFS, APFS, ISO 9660, SquashFS; ein Host-Verzeichnis und ein FAT-, exFAT-, ext4- oder HFS+-Image
 speichern diese):
 
 ```hcl
