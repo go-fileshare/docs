@@ -30,6 +30,37 @@ share "photos" {
 }
 ```
 
+## HFS+-Images sind schreibbar {#hfsplus-images-are-writable}
+
+Seit v0.44.0 (hfsplus v0.9.0) wird eine Freigabe, deren Image HFS+ enthält, zum
+Schreiben geöffnet, wie FAT, exFAT und ext4: Ein Client kann Dateien anlegen,
+ändern und löschen, und die Zeiten, Modi und Eigentümer, die er setzt, werden
+gespeichert. Vorher wurde ein HFS+-Image schreibgeschützt geöffnet. Das Image
+wird beim Öffnen der Freigabe in den Speicher gelesen, und jede Änderung wird in
+die Datei zurückgeschrieben; ein Image über 64 GiB wird schreibgeschützt
+bereitgestellt.
+
+Ein Volume **mit Journal** (erzeugt von `hdiutil create -fs "Journaled HFS+"`
+oder von macOS) wird nur beschrieben, wenn sein Journal leer ist, wie es nach
+einem sauberen Aushängen zurückbleibt. Ein Journal mit Transaktionen oder eines,
+das sich nicht prüfen lässt, würde von macOS über das wiedergegeben, was der
+Server schreibt; deshalb lehnt der Treiber es ab, und **die Freigabe wird
+stattdessen schreibgeschützt geöffnet**. Der Server startet trotzdem; beim
+Öffnen der Freigabe schreibt er eine Zeile mit Image, Freigabe und Grund:
+
+```text
+/srv/mac.img is an HFS+ volume whose journal holds transactions, so mac is read-only: hfsplus: journaled volume with a journal that is not empty: transactions pending (start 17408, end 34816)
+```
+
+Damit eine solche Freigabe schreibbar wird, muss das Journal zuerst
+wiedergegeben werden: das Image an einem Mac einhängen und sauber auswerfen
+oder `fsck_hfs` darauf ausführen. Eine Freigabe mit `read_only = true`
+versucht das schreibbare Öffnen nie.
+
+⛔ **Schreiben Sie kein Image, das eingehängt ist**, weder mit diesem Server
+noch mit etwas anderem: keine Seite weiß von den Änderungen der anderen.
+Stellen Sie ein Image bereit, das sonst nichts geöffnet hat.
+
 ## Eine Partition, für jedes Dateisystem {#a-partition-for-any-filesystem}
 
 Ein Disk-Image mit FAT32, ext4 oder exFAT hat ebenso oft eine Partitionstabelle davor
@@ -188,7 +219,7 @@ standardmäßig **ignoriert**. Seit v0.42.0 kann eine Freigabe das mit
 `unstorable_times` festlegen. Nicht speicherbar ist eine CreationTime, die sich
 von der gemeldeten unterscheidet, eine allein gesendete ChangeTime oder eine
 Zugriffs- oder Änderungszeit bei einem Image, dessen Treiber keine Zeiten setzen
-kann (FAT, exFAT, NTFS, HFS+, APFS; ein Host-Verzeichnis und ein ext4-Image
+kann (FAT, exFAT, NTFS, APFS; ein Host-Verzeichnis und ein ext4-Image
 speichern diese):
 
 ```hcl

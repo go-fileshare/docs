@@ -30,6 +30,35 @@ share "photos" {
 }
 ```
 
+## HFS+ images are writable {#hfsplus-images-are-writable}
+
+Since v0.44.0 (hfsplus v0.9.0) a share whose image holds HFS+ is opened for
+writing, like FAT, exFAT and ext4: a client can create, change and delete
+files, and the times, modes and owners it sets are stored. Before, an HFS+
+image was opened read-only. The image is read into memory when the share opens
+and every change is written back to the file; an image larger than 64 GiB is
+served read-only.
+
+A **journaled** volume (made by `hdiutil create -fs "Journaled HFS+"` or by
+macOS) is written only when its journal is empty, which is what a clean
+unmount leaves. A journal that holds transactions, or one that cannot be
+verified, would be replayed by macOS over what the server writes, so the driver
+refuses it and **the share opens read-only instead**. The server keeps
+starting; it writes one line when the share opens, naming the image, the share
+and why:
+
+```text
+/srv/mac.img is an HFS+ volume whose journal holds transactions, so mac is read-only: hfsplus: journaled volume with a journal that is not empty: transactions pending (start 17408, end 34816)
+```
+
+To make such a share writable, have the journal replayed first: mount the
+image on a Mac and eject it cleanly, or run `fsck_hfs` on it. A share with
+`read_only = true` never tries the writable open.
+
+⛔ **Do not write an image that is mounted**, by this server or by anything
+else: neither side knows about the other's changes. Serve an image that nothing
+else has open.
+
 ## A partition, for any filesystem
 
 A disk image holding FAT32, ext4 or exFAT has a partition table in front of it
@@ -187,7 +216,7 @@ A time a client sets that the storage cannot keep is **ignored** by default.
 Since v0.42.0 a share can choose, with `unstorable_times`. A time is unstorable
 when it is a CreationTime that differs from the reported one, a ChangeTime sent
 alone, or an access or write time on an image whose driver cannot set times
-(FAT, exFAT, NTFS, HFS+, APFS; a host directory and an ext4 image store those):
+(FAT, exFAT, NTFS, APFS; a host directory and an ext4 image store those):
 
 ```hcl
 share "photos" {

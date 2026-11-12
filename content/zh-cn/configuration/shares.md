@@ -30,6 +30,28 @@ share "photos" {
 }
 ```
 
+## HFS+ 镜像可写 {#hfsplus-images-are-writable}
+
+自 v0.44.0（hfsplus v0.9.0）起，镜像中含 HFS+ 的共享与 FAT、exFAT 和 ext4 一样以可写方式打开：
+客户端可以创建、修改和删除文件，它所设置的时间、权限模式和所有者也会被存储。
+此前 HFS+ 镜像以只读方式打开。镜像在共享打开时读入内存，每次修改都会写回文件；
+超过 64 GiB 的镜像以只读方式提供。
+
+**带日志**的卷（由 `hdiutil create -fs "Journaled HFS+"` 或 macOS 创建）只有在其日志为空时才会被写入，
+正常卸载后日志即为空。含有事务的日志，或无法验证的日志，会被 macOS 重放并覆盖服务器写入的内容，
+因此驱动程序会拒绝它，**共享改为只读打开**。服务器照常启动；打开共享时它会写出一行，
+说明镜像、共享和原因：
+
+```text
+/srv/mac.img is an HFS+ volume whose journal holds transactions, so mac is read-only: hfsplus: journaled volume with a journal that is not empty: transactions pending (start 17408, end 34816)
+```
+
+要让这样的共享可写，需要先让日志被重放：在 Mac 上挂载该镜像并正常推出，或对其运行 `fsck_hfs`。
+设置了 `read_only = true` 的共享从不尝试以可写方式打开。
+
+⛔ **不要写入已挂载的镜像**，无论是用本服务器还是其他东西：双方都不知道对方的修改。
+请提供没有其他程序打开的镜像。
+
 ## 任何文件系统的分区 {#a-partition-for-any-filesystem}
 
 含有 FAT32、ext4 或 exFAT 的磁盘映像，与含有 XFS 的映像一样常常
@@ -185,7 +207,7 @@ share "photos" {
 
 客户端设置了存储无法保留的时间时，默认会被**忽略**。自 v0.42.0 起，共享可以用
 `unstorable_times` 来选择。无法存储的有：与所报告的值不同的 CreationTime、单独
-发送的 ChangeTime，以及对驱动程序无法设置时间的镜像（FAT、exFAT、NTFS、HFS+、APFS）设置的访问时间或修改时间
+发送的 ChangeTime，以及对驱动程序无法设置时间的镜像（FAT、exFAT、NTFS、APFS）设置的访问时间或修改时间
 （主机目录和 ext4 镜像可以存储它们）：
 
 ```hcl

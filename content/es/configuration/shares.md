@@ -32,6 +32,35 @@ share "photos" {
 }
 ```
 
+## Las imágenes HFS+ son escribibles {#hfsplus-images-are-writable}
+
+Desde la v0.44.0 (hfsplus v0.9.0) un recurso cuya imagen contiene HFS+ se abre
+para escritura, como FAT, exFAT y ext4: un cliente puede crear, modificar y
+borrar archivos, y se almacenan las fechas, los modos y los propietarios que
+establece. Antes, una imagen HFS+ se abría en solo lectura. La imagen se lee en
+memoria al abrir el recurso y cada cambio se escribe de vuelta en el archivo;
+una imagen de más de 64 GiB se sirve en solo lectura.
+
+Un volumen **con diario** (creado por `hdiutil create -fs "Journaled HFS+"` o por
+macOS) solo se escribe cuando su diario está vacío, que es lo que deja un
+desmontaje limpio. Un diario con transacciones, o uno que no se puede
+verificar, sería reproducido por macOS sobre lo que escribe el servidor, así que
+el controlador lo rechaza y **el recurso se abre en solo lectura**. El servidor
+sigue arrancando; al abrir el recurso escribe una línea que nombra la imagen, el
+recurso y el motivo:
+
+```text
+/srv/mac.img is an HFS+ volume whose journal holds transactions, so mac is read-only: hfsplus: journaled volume with a journal that is not empty: transactions pending (start 17408, end 34816)
+```
+
+Para que un recurso así sea escribible, hay que reproducir primero el diario:
+monte la imagen en un Mac y expúlsela limpiamente, o ejecute `fsck_hfs` sobre
+ella. Un recurso con `read_only = true` nunca intenta la apertura para escritura.
+
+⛔ **No escriba una imagen que esté montada**, ni con este servidor ni con otra
+cosa: ninguna de las partes conoce los cambios de la otra. Sirva una imagen que
+nada más tenga abierta.
+
 ## Una partición, para cualquier sistema de archivos {#a-partition-for-any-filesystem}
 
 Una imagen de disco que contiene FAT32, ext4 o exFAT tiene una tabla de particiones
@@ -195,7 +224,7 @@ Una fecha que establece un cliente y que el almacenamiento no puede conservar se
 **ignora** por defecto. Desde la v0.42.0 un recurso compartido puede elegir, con
 `unstorable_times`. No es almacenable una CreationTime distinta de la informada,
 una ChangeTime enviada sola, o una fecha de acceso o de escritura en una imagen
-cuyo controlador no puede establecer fechas (FAT, exFAT, NTFS, HFS+, APFS; un
+cuyo controlador no puede establecer fechas (FAT, exFAT, NTFS, APFS; un
 directorio del host y una imagen ext4 las almacenan):
 
 ```hcl

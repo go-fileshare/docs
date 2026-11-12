@@ -30,6 +30,36 @@ share "photos" {
 }
 ```
 
+## Les images HFS+ sont inscriptibles {#hfsplus-images-are-writable}
+
+Depuis la v0.44.0 (hfsplus v0.9.0), un partage dont l'image contient du HFS+ est
+ouvert en écriture, comme FAT, exFAT et ext4 : un client peut créer, modifier et
+supprimer des fichiers, et les dates, modes et propriétaires qu'il fixe sont
+enregistrés. Auparavant, une image HFS+ était ouverte en lecture seule. L'image
+est lue en mémoire à l'ouverture du partage et chaque modification est réécrite
+dans le fichier ; une image de plus de 64 Gio est servie en lecture seule.
+
+Un volume **à journal** (créé par `hdiutil create -fs "Journaled HFS+"` ou par
+macOS) n'est écrit que si son journal est vide, ce que laisse un démontage
+propre. Un journal qui contient des transactions, ou qu'on ne peut pas vérifier,
+serait rejoué par macOS par-dessus ce que le serveur écrit : le pilote le refuse
+donc, et **le partage s'ouvre en lecture seule à la place**. Le serveur démarre
+quand même ; à l'ouverture du partage il écrit une ligne qui nomme l'image, le
+partage et la raison :
+
+```text
+/srv/mac.img is an HFS+ volume whose journal holds transactions, so mac is read-only: hfsplus: journaled volume with a journal that is not empty: transactions pending (start 17408, end 34816)
+```
+
+Pour rendre un tel partage inscriptible, il faut d'abord faire rejouer le
+journal : monter l'image sur un Mac puis l'éjecter proprement, ou lancer
+`fsck_hfs` dessus. Un partage avec `read_only = true` n'essaie jamais
+l'ouverture en écriture.
+
+⛔ **N'écrivez pas dans une image montée**, ni avec ce serveur ni avec autre
+chose : aucun des deux ne connaît les modifications de l'autre. Servez une image
+que rien d'autre n'a ouverte.
+
 ## Une partition, pour n'importe quel système de fichiers {#a-partition-for-any-filesystem}
 
 Une image disque qui contient du FAT32, de l'ext4 ou de l'exFAT a une table de partitions devant elle
@@ -187,7 +217,7 @@ Une date qu'un client fixe et que le stockage ne peut pas conserver est
 **ignorée** par défaut. Depuis la v0.42.0, un partage peut choisir, avec
 `unstorable_times`. Ne sont pas enregistrables : une CreationTime différente de
 celle annoncée, une ChangeTime envoyée seule, ou une date d'accès ou d'écriture
-sur une image dont le pilote ne sait pas fixer les dates (FAT, exFAT, NTFS, HFS+,
+sur une image dont le pilote ne sait pas fixer les dates (FAT, exFAT, NTFS,
 APFS ; un répertoire de l'hôte et une image ext4 les enregistrent) :
 
 ```hcl
