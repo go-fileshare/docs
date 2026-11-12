@@ -105,7 +105,7 @@ share "attic" {
 | **디렉터리**(호스트) | 보고된 생성 시간과 같지 않으면 저장 불가 | 보고된 값과 같지 않으면 저장 불가 | 저장됨(함께 전송된 ChangeTime은 허용) |
 | **이미지, `Chtimes`가 있는 드라이버**: ext4, ufs, btrfs, xfs, zfs | 보고된 값과 같지 않으면 저장 불가(보고하는 것은 ext4뿐이며 나머지는 항상 불가) | 동일 | 저장됨(함께 전송된 ChangeTime은 허용) |
 | **이미지, FAT 또는 exFAT** (v0.43.0부터) | 보고된 값과 같지 않으면 저장 불가(둘 다 보고함) | 동일 | 형식의 해상도로 저장됨: FAT는 수정 시간 2초(내림), 접근 시간은 날짜만; exFAT는 수정 시간 10 ms, 접근 시간 2초(함께 전송된 ChangeTime은 허용) |
-| **이미지, HFS+** (v0.44.0부터) | 보고된 값과 같지 않으면 저장 불가(보고함) | 동일 | 1초 단위로 저장됨(함께 전송된 ChangeTime은 허용). 저널 때문에 공유가 [읽기 전용]({{< relref "/configuration/shares.md#hfsplus-images-are-writable" >}})이 된 경우는 제외 |
+| **이미지, HFS+** (v0.44.0부터) | 보고된 값과 같지 않으면 저장 불가(보고함) | 동일 | 1초 단위로 저장됨(함께 전송된 ChangeTime은 허용). 공유가 `hfsplus_writable_max`를 설정한 경우에만(v0.45.1부터, 기본은 읽기 전용), 그리고 저널 때문에 공유가 [읽기 전용]({{< relref "/configuration/shares.md#hfsplus-images-are-writable" >}})이 된 경우는 제외 |
 | **이미지, `Chtimes`가 없는 드라이버**: NTFS, APFS, ISO 9660, SquashFS | 동일(NTFS는 보고하고 나머지는 보고하지 않음) | 동일. 접근 시간 또는 수정 시간과 함께여도 **마찬가지** | **항상 저장 불가** |
 
 `Chtimes`가 있는 드라이버는 osfs(`osfs.go:383`), ext4(`metadata.go:93`), ufs
@@ -114,8 +114,9 @@ v0.43.0부터는 fat32 v0.13.0과 exFAT v0.6.0도 포함됩니다(전체 `Metada
 모드 비트와 소유자가 없으므로 이들의 `Chmod`와 `Chown`은 "지원되지 않음"을 반환합니다).
 따라서 FAT 또는 exFAT 이미지 공유에서의 `touch -d`와 `cp -p`는 저장됩니다. 나머지에는 없습니다.
 HFS+에도 있습니다. hfsplus v0.8.0은 `Chtimes`, `Chmod`, `Chown`을 구현하며,
-v0.44.0(hfsplus v0.9.0)부터 제공되는 HFS+ 이미지는 쓰기 가능으로 열리므로
-SMB로 설정한 시간이 저장됩니다. 트랜잭션이 남아 있는 저널이 있는 이미지는
+v0.44.0(hfsplus v0.9.0)부터 제공되는 HFS+ 이미지는 쓰기 가능으로 열 수 있어
+SMB로 설정한 시간이 저장되지만, v0.45.1부터는 공유가 `hfsplus_writable_max`를
+설정한 경우에만 그렇습니다(기본은 읽기 전용). 트랜잭션이 남아 있는 저널이 있는 이미지는
 대신 읽기 전용으로 열리며 아무것도 저장하지 않습니다
 ([HFS+ 이미지는 쓰기 가능]({{< relref "/configuration/shares.md#hfsplus-images-are-writable" >}}) 참조). v0.42.0 이전에는 fileshare가 모든 이미지 드라이버 앞에 두는
 잠금이 `Chtimes`를 숨겨서 ext4를 포함한 모든 이미지가 클라이언트의 접근 시간과 수정

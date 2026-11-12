@@ -30,28 +30,43 @@ share "photos" {
 }
 ```
 
-## HFS+ イメージは書き込み可能 {#hfsplus-images-are-writable}
+## HFS+ イメージは、共有が同意しない限り読み取り専用 {#hfsplus-images-are-writable}
 
 v0.44.0(hfsplus v0.9.0)以降、HFS+ を含むイメージの共有は、FAT、exFAT、ext4 と同様に
 書き込み可能で開かれます。クライアントはファイルを作成、変更、削除でき、設定した時刻、
 モード、所有者も保存されます。以前は HFS+ イメージは読み取り専用で開かれていました。
 イメージは共有を開くときにメモリへ読み込まれ、変更のたびにファイルへ書き戻されます。
 
+**v0.45.1 から既定でオフ。** hfsplus v0.9.0 はクラッシュ耐性がありません。操作のたびに
+イメージ全体を書き直し、その間ボリュームを使用中としてマークしないため、書き込みの途中での
+クラッシュや停電は、正常にアンマウントされたと主張し続ける壊れたイメージを残し、次のマウント時に
+何も検査されません。ジャーナル付きボリュームでは、その場で書くだけでは修正になりません。
+v0.44.0 と v0.45.0 は既定で書き込んでいました(最大 256 MiB)。v0.45.1 以降、HFS+ の共有は
+`hfsplus_writable_max` を設定しない限り**読み取り専用**で提供されます。修正は
+go-filesystems/hfsplus#34 で、公開されれば既定は戻せます。同意するには、サイズを設定し
+(先にイメージをバックアップして)、このリスクと下記のコストを受け入れてください。
+
 **コスト。** hfsplus v0.9.0 はイメージ全体をメモリに保持し、操作(作成、書き込み、名前変更、
 `Chtimes`)のたびにイメージ全体を書き直します。そのため共有のメモリ使用量はイメージの
 大きさに等しく、変更ごとの I/O も同じです(根本的な解決は go-filesystems/hfsplus#33)。
 したがって共有が HFS+ イメージを書き込み可能で開くのは `hfsplus_writable_max` までで、
-既定は 256 MiB です(`"0"` は常に開かない。バイト数、または K、M、G、T を付けた値):
+既定は `"0"`(常に開かない)です(バイト数、または K、M、G、T を付けた値):
 
 ```hcl
 share "mac" {
   image                = "/srv/mac.img"
-  hfsplus_writable_max = "256M"
+  hfsplus_writable_max = "256M"   # 同意する
 }
 ```
 
 これを超える場合、またはサイズが不明な場合、共有は**読み取り専用**で開かれます(範囲読み取りと
-時刻は引き続き使えます)。サーバーはイメージ、サイズ、上限を示す 1 行を出力します。
+時刻は引き続き使えます)。サーバーはイメージと理由を示す 1 行を出力します。設定がない場合の例:
+
+```text
+/srv/mac.img is an HFS+ volume and hfsplus_writable_max is 0, the default: hfsplus v0.9.0 is not crash-safe (a crash mid-write can leave a torn image marked clean), so HFS+ images are written only when a share sets a size, so mac is read-only
+```
+
+サイズを超えた場合:
 
 ```text
 /srv/mac.img is an HFS+ volume and it is 1073741824 bytes, over hfsplus_writable_max (268435456 bytes): a writable HFS+ image is held in memory and rewritten whole on every change, so mac is read-only

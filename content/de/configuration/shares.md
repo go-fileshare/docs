@@ -30,7 +30,7 @@ share "photos" {
 }
 ```
 
-## HFS+-Images sind schreibbar {#hfsplus-images-are-writable}
+## HFS+-Images sind schreibgeschützt, solange eine Freigabe nicht zustimmt {#hfsplus-images-are-writable}
 
 Seit v0.44.0 (hfsplus v0.9.0) wird eine Freigabe, deren Image HFS+ enthält, zum
 Schreiben geöffnet, wie FAT, exFAT und ext4: Ein Client kann Dateien anlegen,
@@ -39,24 +39,42 @@ gespeichert. Vorher wurde ein HFS+-Image schreibgeschützt geöffnet. Das Image
 wird beim Öffnen der Freigabe in den Speicher gelesen, und jede Änderung wird in
 die Datei zurückgeschrieben.
 
+**Seit v0.45.1 standardmäßig aus.** hfsplus v0.9.0 ist nicht absturzsicher: Es
+schreibt bei jeder Operation das ganze Image neu und markiert das Volume dabei
+nie als in Benutzung; ein Absturz oder Stromausfall mitten im Schreiben
+hinterlässt ein zerrissenes Image, das weiterhin sauber ausgehängt zu sein
+behauptet, und beim nächsten Einhängen prüft es nichts. Bei einem Volume mit
+Journal braucht die Lösung mehr als Schreiben an Ort und Stelle. v0.44.0 und
+v0.45.0 schrieben standardmäßig (bis 256 MiB); seit v0.45.1 wird eine HFS+-Freigabe
+**schreibgeschützt** bereitgestellt, solange sie nicht `hfsplus_writable_max`
+setzt. Die Lösung ist go-filesystems/hfsplus#34; der Standard kann zurückkehren,
+wenn sie veröffentlicht ist. Zum Einwilligen eine Größe setzen (und das Image
+vorher sichern) und dieses Risiko sowie die Kosten unten in Kauf nehmen.
+
 **Was das kostet.** hfsplus v0.9.0 hält das ganze Image im Speicher und schreibt
 bei jeder Operation (Anlegen, Schreiben, Umbenennen, `Chtimes`) das ganze Image
 neu; der Speicher einer Freigabe ist also die Größe ihres Images, und ebenso der
 E/A-Aufwand jeder Änderung (go-filesystems/hfsplus#33 ist die eigentliche
 Lösung). Eine Freigabe öffnet ein HFS+-Image deshalb nur bis zu
-`hfsplus_writable_max` zum Schreiben, standardmäßig 256 MiB (`"0"` nie; eine
+`hfsplus_writable_max` zum Schreiben, standardmäßig `"0"` (nie; eine
 Anzahl Bytes oder eine mit K, M, G oder T):
 
 ```hcl
 share "mac" {
   image                = "/srv/mac.img"
-  hfsplus_writable_max = "256M"
+  hfsplus_writable_max = "256M"   # einwilligen
 }
 ```
 
 Darüber, oder wenn die Größe unbekannt ist, wird die Freigabe **schreibgeschützt**
 geöffnet, weiterhin mit Bereichslesen und Zeiten, und der Server schreibt eine
-Zeile mit Image, Größe und Grenze:
+Zeile mit Image und Grund, zum Beispiel ohne Einstellung:
+
+```text
+/srv/mac.img is an HFS+ volume and hfsplus_writable_max is 0, the default: hfsplus v0.9.0 is not crash-safe (a crash mid-write can leave a torn image marked clean), so HFS+ images are written only when a share sets a size, so mac is read-only
+```
+
+und über der Größe:
 
 ```text
 /srv/mac.img is an HFS+ volume and it is 1073741824 bytes, over hfsplus_writable_max (268435456 bytes): a writable HFS+ image is held in memory and rewritten whole on every change, so mac is read-only

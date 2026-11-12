@@ -30,7 +30,7 @@ share "photos" {
 }
 ```
 
-## Les images HFS+ sont inscriptibles {#hfsplus-images-are-writable}
+## Les images HFS+ sont en lecture seule tant qu'un partage n'y consent pas {#hfsplus-images-are-writable}
 
 Depuis la v0.44.0 (hfsplus v0.9.0), un partage dont l'image contient du HFS+ est
 ouvert en écriture, comme FAT, exFAT et ext4 : un client peut créer, modifier et
@@ -39,23 +39,41 @@ enregistrés. Auparavant, une image HFS+ était ouverte en lecture seule. L'imag
 est lue en mémoire à l'ouverture du partage et chaque modification est réécrite
 dans le fichier.
 
+**Désactivé par défaut depuis la v0.45.1.** hfsplus v0.9.0 ne résiste pas aux
+plantages : il réécrit toute l'image à chaque opération et ne marque jamais le
+volume comme utilisé pendant ce temps, si bien qu'un plantage ou une coupure de
+courant au milieu d'une écriture laisse une image déchirée qui se dit toujours
+proprement démontée, et que rien ne vérifie au montage suivant. Sur un volume à
+journal, la correction demande plus qu'écrire en place. La v0.44.0 et la v0.45.0
+écrivaient par défaut (jusqu'à 256 Mio) ; depuis la v0.45.1, un partage HFS+ est
+servi en **lecture seule** sauf s'il définit `hfsplus_writable_max`. La correction
+est go-filesystems/hfsplus#34 ; le défaut pourra revenir à sa publication. Pour y
+consentir, définissez une taille (et sauvegardez d'abord l'image), en acceptant ce
+risque et les coûts ci-dessous.
+
 **Ce que ça coûte.** hfsplus v0.9.0 garde toute l'image en mémoire et la réécrit
 entièrement à chaque opération (création, écriture, renommage, `Chtimes`) : la
 mémoire d'un partage est la taille de son image, et l'E/S de chaque modification
 aussi (go-filesystems/hfsplus#33 est la vraie correction). Un partage n'ouvre donc
-une image HFS+ en écriture que jusqu'à `hfsplus_writable_max`, 256 Mio par défaut
-(`"0"` jamais ; un nombre d'octets, ou un nombre suivi de K, M, G ou T) :
+une image HFS+ en écriture que jusqu'à `hfsplus_writable_max`, `"0"` par défaut
+(jamais ; un nombre d'octets, ou un nombre suivi de K, M, G ou T) :
 
 ```hcl
 share "mac" {
   image                = "/srv/mac.img"
-  hfsplus_writable_max = "256M"
+  hfsplus_writable_max = "256M"   # consentir
 }
 ```
 
 Au-delà, ou si la taille est inconnue, le partage s'ouvre en **lecture seule**,
 toujours avec la lecture par plages et les dates, et le serveur écrit une ligne
-qui nomme l'image, la taille et la limite :
+qui nomme l'image et la raison, par exemple sans réglage :
+
+```text
+/srv/mac.img is an HFS+ volume and hfsplus_writable_max is 0, the default: hfsplus v0.9.0 is not crash-safe (a crash mid-write can leave a torn image marked clean), so HFS+ images are written only when a share sets a size, so mac is read-only
+```
+
+et au-delà de la taille :
 
 ```text
 /srv/mac.img is an HFS+ volume and it is 1073741824 bytes, over hfsplus_writable_max (268435456 bytes): a writable HFS+ image is held in memory and rewritten whole on every change, so mac is read-only
