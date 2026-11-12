@@ -72,6 +72,69 @@ data-copied-label="コピーしました！"
 &lt;p&gt;&lt;strong&gt;ほかの書き込み側。&lt;/strong&gt; イメージは全体が書き戻されるため、2 つ目の書き込み側は次の書き戻しで上書きされます。書き込み可能でのオープンはイメージに排他的な助言ロック &lt;code&gt;flock&lt;/code&gt;
 (Linux、macOS、BSD)を取ります。別のプロセス(たとえば同じイメージを使うもう 1 つの fileshare)が保持している場合、共有は読み取り専用で開かれ、その旨を出力します。ロックは助言的なのでmacOS のマウントはこれを取らず、ほかのプラットフォームにはロックがありません。&lt;/p&gt;
 &lt;p&gt;⛔ &lt;strong&gt;マウント中のイメージに書き込まないでください&lt;/strong&gt;。このサーバーでも他のものでも同じです。互いの変更を知りません。ほかに何も開いていないイメージを提供してください。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="an-image-the-os-has-mounted"&gt;OS がマウントしている書き込み可能イメージは読み取り専用で提供される&lt;span class="hx:absolute hx:-mt-20" id="an-image-the-os-has-mounted"&gt;&lt;/span&gt;
+&lt;a href="#an-image-the-os-has-mounted" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;v0.45.0 以降、書き込み可能なイメージ共有（FAT32、exFAT、ext4、UFS、btrfs、XFS、ZFS、HFS+ など、ドライバーを問いません）を書き込み用に開く前に、サーバーはそのイメージを OS がアタッチまたはマウントしているかどうかを OS に問い合わせます。している場合、共有は&lt;strong&gt;読み取り専用&lt;/strong&gt;で開かれ、その旨が記録され、サーバーはイメージ、OS のデバイスとマウント、共有の名前を示す 1 行を出力します。&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/srv/disk.img is in use by the OS (/dev/loop3, mounted at /mnt/disk), and a second writer would corrupt it, so disk is read-only&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="コードをコピー"
+aria-label="コードをコピー"
+data-copied-label="コピーしました！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;上記の助言的な &lt;code&gt;flock&lt;/code&gt; ではこれを防げません。OS はイメージをマウントするときにロックを取らないためです。イメージはデバイスと inode で照合され、パス文字列の比較は行わないので、マウント中のファイルへのシンボリックリンクやハードリンクも検出されます。&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;OS&lt;/th&gt;
+&lt;th&gt;問い合わせ方法&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Linux&lt;/td&gt;
+&lt;td&gt;各ループデバイスの &lt;code&gt;/sys/block/loop*/loop/backing_file&lt;/code&gt;（&lt;code&gt;mount -o loop&lt;/code&gt;、&lt;code&gt;losetup&lt;/code&gt;、udisks が作るもの）。マウントポイントは &lt;code&gt;/proc/self/mountinfo&lt;/code&gt; から取得します。アタッチされたループデバイスは、何もマウントされていなくても対象になります。&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;macOS&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;hdiutil info -plist&lt;/code&gt;。アタッチ済みの各イメージの &lt;code&gt;image-path&lt;/code&gt; を、1 回の読み込みにつき 1 回の呼び出しで取得し、15 秒でタイムアウトします。&lt;code&gt;-nomount&lt;/code&gt; でアタッチしたイメージも対象です。&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;FreeBSD、その他の BSD、Windows&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;検出できません。&lt;/strong&gt; 共有はこれまでどおり書き込み可能です。&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;strong&gt;チェック自体が失敗した場合&lt;/strong&gt;（コンテナに &lt;code&gt;/sys/block&lt;/code&gt; がない、&lt;code&gt;hdiutil&lt;/code&gt; がない、またはタイムアウトした、出力がプロパティリストではない）、イメージがマウントされているかどうかは誰にも分かりません。&lt;code&gt;image_mount_unknown&lt;/code&gt; が決めます。&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;disk&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/disk.img&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image_mount_unknown&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;read_only&amp;#34; # 既定値。&amp;#34;write&amp;#34;&lt;/span&gt; &lt;span class="k"&gt;にするとそれでも書き込み可能で提供する&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="コードをコピー"
+aria-label="コードをコピー"
+data-copied-label="コピーしました！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;既定値は &lt;code&gt;read_only&lt;/code&gt; です。読み取り専用の共有は原因を示すログ行が付いた目に見える状態で、人が対処できます。マウント下で書き込み可能な共有は双方のデータを壊し、後になるまで誰も気づきません。&lt;code&gt;write&lt;/code&gt; は、チェックが機能し得ないホスト（sysfs のないコンテナ）で、誰もイメージをマウントしない場合のための設定です。OS がマウントしていると判明したイメージは、この設定にかかわらず読み取り専用です。チェックが読み取れないバッキングパス（権限拒否、シンボリックリンクのループ）は「別のイメージ」ではなく「判定できなかった」として扱われ、同じ設定に従います。存在しないパスだけが無視されます。Linux では、バッキングファイルが削除されたループデバイスは、プロセスが &lt;code&gt;/dev/loopN&lt;/code&gt; を開ける場合にカーネル自身の記録（&lt;code&gt;LOOP_GET_STATUS64&lt;/code&gt;）で照合され、開けない場合は照合されません。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;チェックが検出できないもの&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;共有がイメージを開いた後に行われたマウント。&lt;/strong&gt; チェックはイメージを開くときに実行されます。起動時、管理 API で作成された共有、そしてリロードが共有を再構築し（ユーザーやリストの変更）、その間にイメージがマウントされたことを見つけた場合です。その場合、その共有は専用の読み取り専用オープンを受け取ります。何も変更しないリロードは再確認せず、後からの &lt;code&gt;hdiutil attach&lt;/code&gt; や &lt;code&gt;mount -o loop&lt;/code&gt; を監視するものもありません。書き込み可能で提供しているイメージをマウントする前に、共有を停止するかサーバーを再起動してください。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;ループデバイスも &lt;code&gt;hdiutil&lt;/code&gt; も経由しないマウント。&lt;/strong&gt; &lt;code&gt;qemu-nbd -c&lt;/code&gt;（nbd デバイス）、FUSE マウント（&lt;code&gt;fuse2fs&lt;/code&gt;、&lt;code&gt;guestmount&lt;/code&gt;）、イメージを開いている仮想マシンやその他のプログラム。&lt;/li&gt;
+&lt;li&gt;他のオペレーティングシステム（表を参照）と、別のマウント名前空間でアタッチされたループデバイス。&lt;/li&gt;
+&lt;li&gt;マウントが原因で読み取り専用になった共有は、マウントがなくなってもリロード後は読み取り専用のままです。再び書き込み用に開くには再起動してください。&lt;/li&gt;
+&lt;/ul&gt;
 &lt;h2 data-hextra-search-id="a-partition-for-any-filesystem"&gt;任意のファイルシステムでのパーティション&lt;span class="hx:absolute hx:-mt-20" id="a-partition-for-any-filesystem"&gt;&lt;/span&gt;
 &lt;a href="#a-partition-for-any-filesystem" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;FAT32、ext4、exFAT を含むディスクイメージも、XFS を含むものと同じくらいの頻度で、先頭にパーティションテーブルを持ちます。ところが検出はオフセット 0 を読み、パーティション分割されたイメージのそこにあるのは&lt;em&gt;テーブル&lt;/em&gt;です。そのため先にパーティションを選び、ドライバーにはそのビューを渡します。&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;

@@ -305,6 +305,100 @@ verrou.&lt;/p&gt;
 &lt;p&gt;⛔ &lt;strong&gt;N&amp;rsquo;écrivez pas dans une image montée&lt;/strong&gt;, ni avec ce serveur ni avec autre
 chose : aucun des deux ne connaît les modifications de l&amp;rsquo;autre. Servez une image
 que rien d&amp;rsquo;autre n&amp;rsquo;a ouverte.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="an-image-the-os-has-mounted"&gt;Une image inscriptible que l&amp;rsquo;OS a montée est servie en lecture seule&lt;span class="hx:absolute hx:-mt-20" id="an-image-the-os-has-mounted"&gt;&lt;/span&gt;
+&lt;a href="#an-image-the-os-has-mounted" class="subheading-anchor" aria-label="Lien permanent vers cette section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Depuis v0.45.0, avant d&amp;rsquo;ouvrir en écriture &lt;strong&gt;n&amp;rsquo;importe quel&lt;/strong&gt; partage d&amp;rsquo;image
+inscriptible (FAT32, exFAT, ext4, UFS, btrfs, XFS, ZFS, HFS+, quel que soit le
+pilote), le serveur demande à l&amp;rsquo;OS s&amp;rsquo;il a cette image attachée ou montée. Si
+oui, le partage s&amp;rsquo;ouvre en &lt;strong&gt;lecture seule&lt;/strong&gt;, est marqué comme tel, et le
+serveur écrit une ligne nommant l&amp;rsquo;image, le périphérique et le montage de l&amp;rsquo;OS,et le partage :&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/srv/disk.img is in use by the OS (/dev/loop3, mounted at /mnt/disk), and a second writer would corrupt it, so disk is read-only&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copier le code"
+aria-label="Copier le code"
+data-copied-label="Copié !"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Le &lt;code&gt;flock&lt;/code&gt; consultatif décrit plus haut ne peut pas le faire : l&amp;rsquo;OS ne prend
+aucun verrou quand il monte une image. L&amp;rsquo;image est reconnue par périphérique et
+inode, jamais en comparant des chaînes de chemin ; un lien symbolique ou un lien
+physique vers le fichier monté est donc aussi détecté.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;OS&lt;/th&gt;
+&lt;th&gt;Comment on le demande&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Linux&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;/sys/block/loop*/loop/backing_file&lt;/code&gt; de chaque périphérique loop (ce que créent &lt;code&gt;mount -o loop&lt;/code&gt;, &lt;code&gt;losetup&lt;/code&gt; et udisks) ; le point de montage vient de &lt;code&gt;/proc/self/mountinfo&lt;/code&gt;. Un périphérique loop attaché compte même si rien n&amp;rsquo;y est monté.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;macOS&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;hdiutil info -plist&lt;/code&gt;, le &lt;code&gt;image-path&lt;/code&gt; de chaque image attachée, un appel par chargement, borné à 15 s. Une image attachée avec &lt;code&gt;-nomount&lt;/code&gt; compte.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;FreeBSD, autres BSD, Windows&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;Détection impossible.&lt;/strong&gt; Le partage est inscriptible, comme avant.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;strong&gt;Quand la vérification elle-même échoue&lt;/strong&gt; (pas de &lt;code&gt;/sys/block&lt;/code&gt; dans un
+conteneur, &lt;code&gt;hdiutil&lt;/code&gt; absent ou dépassant le délai, sortie qui n&amp;rsquo;est pas une liste
+de propriétés), personne ne sait si l&amp;rsquo;image est montée. &lt;code&gt;image_mount_unknown&lt;/code&gt;
+tranche :&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;disk&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/disk.img&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image_mount_unknown&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;read_only&amp;#34; # la valeur par défaut ; &amp;#34;write&amp;#34;&lt;/span&gt; &lt;span class="k"&gt;la&lt;/span&gt; &lt;span class="k"&gt;sert&lt;/span&gt; &lt;span class="k"&gt;quand&lt;/span&gt; &lt;span class="k"&gt;même&lt;/span&gt; &lt;span class="k"&gt;inscriptible&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copier le code"
+aria-label="Copier le code"
+data-copied-label="Copié !"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;La valeur par défaut est &lt;code&gt;read_only&lt;/code&gt; : un partage en lecture seule est un état
+visible, avec une ligne de journal qui en nomme la cause, et qu&amp;rsquo;on peut corriger ;un partage inscriptible sous un montage corrompt les données des deux côtés, et
+personne ne le voit avant plus tard. &lt;code&gt;write&lt;/code&gt; convient à un hôte où la
+vérification ne peut pas fonctionner (un conteneur sans sysfs) et où personne ne
+monte d&amp;rsquo;images. Une image que l&amp;rsquo;OS a, à coup sûr, montée reste en lecture seule
+quoi que dise ce réglage. Un chemin de support que la vérification ne peut pas
+lire (permission refusée, boucle de liens symboliques) est « non jugé », pas« une autre image » : il va au même réglage. Seul un chemin qui n&amp;rsquo;existe pas est
+ignoré. Sous Linux, un périphérique loop dont le fichier de support a été
+supprimé est reconnu par l&amp;rsquo;enregistrement du noyau (&lt;code&gt;LOOP_GET_STATUS64&lt;/code&gt;) si le
+processus peut ouvrir &lt;code&gt;/dev/loopN&lt;/code&gt;, sinon il n&amp;rsquo;est pas reconnu.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Ce que la vérification ne voit pas&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Un montage fait après l&amp;rsquo;ouverture de l&amp;rsquo;image par le partage.&lt;/strong&gt; La
+vérification a lieu à l&amp;rsquo;ouverture d&amp;rsquo;une image : au démarrage, pour un partage
+créé par l&amp;rsquo;API d&amp;rsquo;administration, et quand un rechargement reconstruit les
+partages (changement de personnes ou de listes) et trouve l&amp;rsquo;image montée entre
+temps ; ce partage reçoit alors sa propre ouverture en lecture seule. Un
+rechargement qui ne change rien ne regarde pas à nouveau, et rien ne surveille
+un &lt;code&gt;hdiutil attach&lt;/code&gt; ou &lt;code&gt;mount -o loop&lt;/code&gt; ultérieur. Arrêtez le partage, ou
+redémarrez le serveur, avant de monter une image qu&amp;rsquo;il sert en écriture.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Les montages qui ne passent ni par un périphérique loop ni par &lt;code&gt;hdiutil&lt;/code&gt; :&lt;/strong&gt;
+&lt;code&gt;qemu-nbd -c&lt;/code&gt; (un périphérique nbd), les montages FUSE (&lt;code&gt;fuse2fs&lt;/code&gt;,&lt;code&gt;guestmount&lt;/code&gt;), et une machine virtuelle ou un autre programme qui a l&amp;rsquo;image
+ouverte.&lt;/li&gt;
+&lt;li&gt;Les autres systèmes d&amp;rsquo;exploitation (voir le tableau) et un périphérique loop
+attaché dans un autre espace de noms de montage.&lt;/li&gt;
+&lt;li&gt;Un partage passé en lecture seule à cause d&amp;rsquo;un montage le reste après un
+rechargement même si le montage a disparu ; redémarrez-le pour l&amp;rsquo;ouvrir de
+nouveau en écriture.&lt;/li&gt;
+&lt;/ul&gt;
 &lt;h2 data-hextra-search-id="a-partition-for-any-filesystem"&gt;Une partition, pour n&amp;rsquo;importe quel système de fichiers&lt;span class="hx:absolute hx:-mt-20" id="a-partition-for-any-filesystem"&gt;&lt;/span&gt;
 &lt;a href="#a-partition-for-any-filesystem" class="subheading-anchor" aria-label="Lien permanent vers cette section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Une image disque qui contient du FAT32, de l&amp;rsquo;ext4 ou de l&amp;rsquo;exFAT a une table de partitions devant elle
 aussi souvent qu&amp;rsquo;une image qui contient du XFS — et la détection lit l&amp;rsquo;offset zéro, où une

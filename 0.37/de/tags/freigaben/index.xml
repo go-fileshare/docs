@@ -101,6 +101,97 @@ Sperre ist beratend: ein macOS-Einhängen nimmt sie nicht, und auf anderen
 Plattformen gibt es keine Sperre.&lt;/p&gt;
 &lt;p&gt;⛔ &lt;strong&gt;Schreiben Sie kein Image, das eingehängt ist&lt;/strong&gt;, weder mit diesem Server
 noch mit etwas anderem: keine Seite weiß von den Änderungen der anderen.Stellen Sie ein Image bereit, das sonst nichts geöffnet hat.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="an-image-the-os-has-mounted"&gt;Ein beschreibbares Image, das das Betriebssystem eingehängt hat, wird schreibgeschützt bereitgestellt&lt;span class="hx:absolute hx:-mt-20" id="an-image-the-os-has-mounted"&gt;&lt;/span&gt;
+&lt;a href="#an-image-the-os-has-mounted" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Seit v0.45.0 fragt der Server, bevor ein beschreibbares Image-Share (FAT32,exFAT, ext4, UFS, btrfs, XFS, ZFS, HFS+, unabhängig vom Treiber) zum Schreiben
+geöffnet wird, das Betriebssystem, ob es dieses Image angehängt oder eingehängt
+hat. Falls ja, wird das Share &lt;strong&gt;schreibgeschützt&lt;/strong&gt; geöffnet, entsprechend
+markiert, und der Server schreibt eine Zeile mit Image, Gerät und Einhängepunkt
+des Betriebssystems sowie dem Share:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/srv/disk.img is in use by the OS (/dev/loop3, mounted at /mnt/disk), and a second writer would corrupt it, so disk is read-only&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Code kopieren"
+aria-label="Code kopieren"
+data-copied-label="Kopiert!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Das oben beschriebene &lt;code&gt;flock&lt;/code&gt; kann das nicht leisten: Das Betriebssystem nimmt
+beim Einhängen eines Images keine Sperre. Das Image wird über Gerät und Inode
+erkannt, nie über den Vergleich von Pfadzeichenketten; ein symbolischer oder
+harter Link auf die eingehängte Datei wird also ebenfalls erkannt.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Betriebssystem&lt;/th&gt;
+&lt;th&gt;Wie gefragt wird&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Linux&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;/sys/block/loop*/loop/backing_file&lt;/code&gt; jedes Loop-Geräts (was &lt;code&gt;mount -o loop&lt;/code&gt;, &lt;code&gt;losetup&lt;/code&gt; und udisks anlegen); der Einhängepunkt stammt aus &lt;code&gt;/proc/self/mountinfo&lt;/code&gt;. Ein angehängtes Loop-Gerät zählt auch, wenn nichts darauf eingehängt ist.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;macOS&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;hdiutil info -plist&lt;/code&gt;, der &lt;code&gt;image-path&lt;/code&gt; jedes angehängten Images, ein Aufruf pro Ladevorgang, mit 15 s Zeitlimit. Ein mit &lt;code&gt;-nomount&lt;/code&gt; angehängtes Image zählt.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;FreeBSD, andere BSDs, Windows&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;Nicht erkennbar.&lt;/strong&gt; Das Share ist wie bisher beschreibbar.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;strong&gt;Wenn die Prüfung selbst fehlschlägt&lt;/strong&gt; (kein &lt;code&gt;/sys/block&lt;/code&gt; in einem Container,&lt;code&gt;hdiutil&lt;/code&gt; fehlt oder überschreitet das Zeitlimit, Ausgabe ist keine Property
+List), weiß niemand, ob das Image eingehängt ist. &lt;code&gt;image_mount_unknown&lt;/code&gt;
+entscheidet:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;disk&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/disk.img&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image_mount_unknown&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;read_only&amp;#34; # der Standard; &amp;#34;write&amp;#34;&lt;/span&gt; &lt;span class="k"&gt;stellt&lt;/span&gt; &lt;span class="k"&gt;es&lt;/span&gt; &lt;span class="k"&gt;trotzdem&lt;/span&gt; &lt;span class="k"&gt;beschreibbar&lt;/span&gt; &lt;span class="k"&gt;bereit&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Code kopieren"
+aria-label="Code kopieren"
+data-copied-label="Kopiert!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Der Standard ist &lt;code&gt;read_only&lt;/code&gt;: Ein schreibgeschütztes Share ist ein sichtbarer
+Zustand mit einer Logzeile, die die Ursache nennt, und lässt sich beheben; ein
+beschreibbares Share unter einem Mount beschädigt die Daten beider Seiten, und
+es fällt erst später auf. &lt;code&gt;write&lt;/code&gt; ist für einen Host, auf dem die Prüfung nicht
+funktionieren kann (ein Container ohne sysfs) und auf dem niemand Images
+einhängt. Ein Image, das nachweislich vom Betriebssystem eingehängt ist, bleibt
+schreibgeschützt, was auch immer hier steht. Ein Backing-Pfad, den die Prüfung
+nicht lesen kann (Zugriff verweigert, Symlink-Schleife), gilt als „nicht
+beurteilbar“, nicht als „anderes Image“: Er geht an dieselbe Einstellung. Nur
+ein nicht vorhandener Pfad wird übersprungen. Unter Linux wird ein Loop-Gerät,dessen Backing-Datei gelöscht wurde, über den Kernel-Eintrag(&lt;code&gt;LOOP_GET_STATUS64&lt;/code&gt;) erkannt, wenn der Prozess &lt;code&gt;/dev/loopN&lt;/code&gt; öffnen darf, sonst
+nicht.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Was die Prüfung nicht sieht&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Ein Mount, der nach dem Öffnen des Images erfolgt.&lt;/strong&gt; Die Prüfung läuft, wenn
+ein Image geöffnet wird: beim Start, für ein über die Admin-API erstelltes
+Share und wenn ein Reload die Shares neu aufbaut (Änderung von Personen oder
+Listen) und das Image inzwischen eingehängt findet; dann erhält dieses Share
+eine eigene schreibgeschützte Öffnung. Ein Reload ohne Änderungen prüft nicht
+erneut, und nichts überwacht ein späteres &lt;code&gt;hdiutil attach&lt;/code&gt; oder&lt;code&gt;mount -o loop&lt;/code&gt;. Halten Sie das Share an oder starten Sie den Server neu,bevor Sie ein beschreibbar bereitgestelltes Image einhängen.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Mounts ohne Loop-Gerät oder &lt;code&gt;hdiutil&lt;/code&gt;:&lt;/strong&gt; &lt;code&gt;qemu-nbd -c&lt;/code&gt; (nbd-Gerät),FUSE-Mounts (&lt;code&gt;fuse2fs&lt;/code&gt;, &lt;code&gt;guestmount&lt;/code&gt;) sowie eine virtuelle Maschine oder ein
+anderes Programm, das das Image geöffnet hält.&lt;/li&gt;
+&lt;li&gt;Andere Betriebssysteme (siehe Tabelle) und ein Loop-Gerät, das in einem anderen
+Mount-Namespace angehängt wurde.&lt;/li&gt;
+&lt;li&gt;Ein wegen eines Mounts schreibgeschütztes Share bleibt bei einem Reload
+schreibgeschützt, auch wenn der Mount verschwunden ist; starten Sie es neu, um
+es wieder zum Schreiben zu öffnen.&lt;/li&gt;
+&lt;/ul&gt;
 &lt;h2 data-hextra-search-id="a-partition-for-any-filesystem"&gt;Eine Partition, für jedes Dateisystem&lt;span class="hx:absolute hx:-mt-20" id="a-partition-for-any-filesystem"&gt;&lt;/span&gt;
 &lt;a href="#a-partition-for-any-filesystem" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Ein Disk-Image mit FAT32, ext4 oder exFAT hat ebenso oft eine Partitionstabelle davor
 wie eines mit XFS – und die Erkennung liest Offset null, wo ein

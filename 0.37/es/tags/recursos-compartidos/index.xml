@@ -100,6 +100,94 @@ de macOS no lo toma, y en otras plataformas no hay bloqueo.&lt;/p&gt;
 &lt;p&gt;⛔ &lt;strong&gt;No escriba una imagen que esté montada&lt;/strong&gt;, ni con este servidor ni con otra
 cosa: ninguna de las partes conoce los cambios de la otra. Sirva una imagen que
 nada más tenga abierta.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="an-image-the-os-has-mounted"&gt;Una imagen escribible que el SO tiene montada se sirve en solo lectura&lt;span class="hx:absolute hx:-mt-20" id="an-image-the-os-has-mounted"&gt;&lt;/span&gt;
+&lt;a href="#an-image-the-os-has-mounted" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Desde v0.45.0, antes de abrir para escritura &lt;strong&gt;cualquier&lt;/strong&gt; recurso compartido de
+imagen escribible (FAT32, exFAT, ext4, UFS, btrfs, XFS, ZFS, HFS+, sea cual sea
+el controlador), el servidor pregunta al sistema operativo si tiene esa imagen
+asociada o montada. Si es así, el recurso se abre en &lt;strong&gt;solo lectura&lt;/strong&gt;, se marca
+como tal, y el servidor escribe una línea con la imagen, el dispositivo y el
+montaje del SO, y el recurso:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/srv/disk.img is in use by the OS (/dev/loop3, mounted at /mnt/disk), and a second writer would corrupt it, so disk is read-only&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;El &lt;code&gt;flock&lt;/code&gt; consultivo descrito arriba no puede lograrlo: el SO no toma ningún
+bloqueo al montar una imagen. La imagen se identifica por dispositivo e inodo,nunca comparando cadenas de ruta, de modo que también se detecta un enlace
+simbólico o físico al archivo montado.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;SO&lt;/th&gt;
+&lt;th&gt;Cómo se pregunta&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Linux&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;/sys/block/loop*/loop/backing_file&lt;/code&gt; de cada dispositivo loop (lo que crean &lt;code&gt;mount -o loop&lt;/code&gt;, &lt;code&gt;losetup&lt;/code&gt; y udisks); el punto de montaje sale de &lt;code&gt;/proc/self/mountinfo&lt;/code&gt;. Un dispositivo loop asociado cuenta aunque no haya nada montado en él.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;macOS&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;hdiutil info -plist&lt;/code&gt;, el &lt;code&gt;image-path&lt;/code&gt; de cada imagen asociada, una llamada por carga, con un límite de 15 s. Una imagen asociada con &lt;code&gt;-nomount&lt;/code&gt; cuenta.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;FreeBSD, otros BSD, Windows&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;No se puede detectar.&lt;/strong&gt; El recurso es escribible, como antes.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;strong&gt;Cuando falla la propia comprobación&lt;/strong&gt; (no hay &lt;code&gt;/sys/block&lt;/code&gt; en un contenedor,falta &lt;code&gt;hdiutil&lt;/code&gt; o supera el límite, la salida no es una lista de propiedades),nadie sabe si la imagen está montada. Decide &lt;code&gt;image_mount_unknown&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;disk&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/disk.img&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image_mount_unknown&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;read_only&amp;#34; # el valor por defecto; &amp;#34;write&amp;#34;&lt;/span&gt; &lt;span class="k"&gt;la&lt;/span&gt; &lt;span class="k"&gt;sirve&lt;/span&gt; &lt;span class="k"&gt;escribible&lt;/span&gt; &lt;span class="k"&gt;igualmente&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;El valor por defecto es &lt;code&gt;read_only&lt;/code&gt;: un recurso de solo lectura es un estado
+visible con una línea de registro que nombra su causa, y una persona puede
+corregirlo; un recurso escribible bajo un montaje corrompe los datos de ambos
+lados, y nadie lo ve hasta más tarde. &lt;code&gt;write&lt;/code&gt; es para un host donde la
+comprobación no puede funcionar (un contenedor sin sysfs) y nadie monta
+imágenes. Una imagen que se sabe montada por el SO es de solo lectura diga lo que
+diga este ajuste. Una ruta de respaldo que la comprobación no puede leer(permiso denegado, un bucle de enlaces simbólicos) es «no se pudo juzgar», no«otra imagen»: va al mismo ajuste. Solo se omite una ruta que no existe. En Linux,un dispositivo loop cuyo archivo de respaldo se borró se identifica mediante el
+registro del propio kernel (&lt;code&gt;LOOP_GET_STATUS64&lt;/code&gt;) si el proceso puede abrir&lt;code&gt;/dev/loopN&lt;/code&gt;; si no, no se identifica.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Lo que la comprobación no ve&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Un montaje hecho después de que el recurso abrió la imagen.&lt;/strong&gt; La
+comprobación se ejecuta al abrir una imagen: al arrancar, para un recurso
+creado mediante la API de administración, y cuando una recarga reconstruye los
+recursos (un cambio de personas o listas) y encuentra la imagen montada desde
+entonces; ese recurso recibe entonces una apertura propia en solo lectura. Una
+recarga que no cambia nada no vuelve a mirar, y nada vigila un&lt;code&gt;hdiutil attach&lt;/code&gt; o &lt;code&gt;mount -o loop&lt;/code&gt; posterior. Detenga el recurso o reinicie el
+servidor antes de montar una imagen que sirve como escribible.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Montajes que no pasan por un dispositivo loop ni por &lt;code&gt;hdiutil&lt;/code&gt;:&lt;/strong&gt;
+&lt;code&gt;qemu-nbd -c&lt;/code&gt; (un dispositivo nbd), montajes FUSE (&lt;code&gt;fuse2fs&lt;/code&gt;, &lt;code&gt;guestmount&lt;/code&gt;) y
+una máquina virtual u otro programa que tenga la imagen abierta.&lt;/li&gt;
+&lt;li&gt;Otros sistemas operativos (véase la tabla) y un dispositivo loop asociado en
+otro espacio de nombres de montaje.&lt;/li&gt;
+&lt;li&gt;Un recurso puesto en solo lectura a causa de un montaje sigue en solo lectura
+tras una recarga aunque el montaje haya desaparecido; reinícielo para abrirlo
+de nuevo para escritura.&lt;/li&gt;
+&lt;/ul&gt;
 &lt;h2 data-hextra-search-id="a-partition-for-any-filesystem"&gt;Una partición, para cualquier sistema de archivos&lt;span class="hx:absolute hx:-mt-20" id="a-partition-for-any-filesystem"&gt;&lt;/span&gt;
 &lt;a href="#a-partition-for-any-filesystem" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Una imagen de disco que contiene FAT32, ext4 o exFAT tiene una tabla de particiones
 delante con la misma frecuencia que una que contiene XFS, y la detección lee el

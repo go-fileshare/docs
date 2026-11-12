@@ -97,6 +97,90 @@ platforms there is no lock.&lt;/p&gt;
 &lt;p&gt;⛔ &lt;strong&gt;Do not write an image that is mounted&lt;/strong&gt;, by this server or by anything
 else: neither side knows about the other&amp;rsquo;s changes. Serve an image that nothing
 else has open.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="an-image-the-os-has-mounted"&gt;A writable image the OS has mounted is served read-only&lt;span class="hx:absolute hx:-mt-20" id="an-image-the-os-has-mounted"&gt;&lt;/span&gt;
+&lt;a href="#an-image-the-os-has-mounted" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Since v0.45.0, before &lt;strong&gt;any&lt;/strong&gt; writable image share (FAT32, exFAT, ext4, UFS,btrfs, XFS, ZFS, HFS+: whatever the driver) is opened for writing, the server
+asks the OS whether it has that image attached or mounted. If it has, the share
+opens &lt;strong&gt;read-only&lt;/strong&gt;, is marked read-only, and the server writes one line naming
+the image, the OS&amp;rsquo;s device and mount, and the share:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/srv/disk.img is in use by the OS (/dev/loop3, mounted at /mnt/disk), and a second writer would corrupt it, so disk is read-only&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;The advisory &lt;code&gt;flock&lt;/code&gt; above cannot do this: the OS takes no lock when it mounts an
+image. The image is matched by device and inode, never by comparing path strings,so a symbolic link or a hard link to the mounted file is caught too.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;OS&lt;/th&gt;
+&lt;th&gt;How it is asked&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Linux&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;/sys/block/loop*/loop/backing_file&lt;/code&gt; of each loop device (what &lt;code&gt;mount -o loop&lt;/code&gt;, &lt;code&gt;losetup&lt;/code&gt; and udisks make); the mount point comes from &lt;code&gt;/proc/self/mountinfo&lt;/code&gt;. An attached loop device counts even when nothing is mounted on it.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;macOS&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;hdiutil info -plist&lt;/code&gt;, the &lt;code&gt;image-path&lt;/code&gt; of each attached image, one call per load, bounded by a 15 s timeout. An image attached with &lt;code&gt;-nomount&lt;/code&gt; counts.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;FreeBSD, other BSDs, Windows&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;Cannot be detected.&lt;/strong&gt; The share is writable, as before.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;strong&gt;When the check itself fails&lt;/strong&gt; (no &lt;code&gt;/sys/block&lt;/code&gt; in a container, &lt;code&gt;hdiutil&lt;/code&gt;
+missing or timing out, output that is not a property list), nobody knows whether
+the image is mounted. &lt;code&gt;image_mount_unknown&lt;/code&gt; decides:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;disk&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/disk.img&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image_mount_unknown&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;read_only&amp;#34; # the default; &amp;#34;write&amp;#34;&lt;/span&gt; &lt;span class="k"&gt;serves&lt;/span&gt; &lt;span class="k"&gt;it&lt;/span&gt; &lt;span class="k"&gt;writable&lt;/span&gt; &lt;span class="k"&gt;anyway&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;The default is &lt;code&gt;read_only&lt;/code&gt;: a read-only share is a visible state with a log line
+that names its cause, and a person can fix it; a writable share under a mount
+corrupts both sides&amp;rsquo; data, and nobody sees it until later. &lt;code&gt;write&lt;/code&gt; is for a host
+where the check cannot work (a container with no sysfs) and nobody mounts
+images. An image the OS is known to have mounted is read-only whatever this says.A backing path the check cannot read (permission denied, a symbolic-link loop) is&amp;ldquo;could not be judged&amp;rdquo;, not &amp;ldquo;another image&amp;rdquo;: it goes to the same setting. Only a
+path that is not there is skipped. On Linux a loop device whose backing file was
+deleted is matched through the kernel&amp;rsquo;s own record (&lt;code&gt;LOOP_GET_STATUS64&lt;/code&gt;) when the
+process may open &lt;code&gt;/dev/loopN&lt;/code&gt;, and is otherwise not matched.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;What the check cannot see&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;A mount made after the share opened the image.&lt;/strong&gt; The check runs when an image
+is opened: at start, for a share created through the admin API, and when a
+reload rebuilds the shares (a change of people or lists) and finds the image
+mounted since, in which case that share gets a read-only open of its own. A
+reload that changes nothing does not look again, and nothing watches for a later&lt;code&gt;hdiutil attach&lt;/code&gt; or &lt;code&gt;mount -o loop&lt;/code&gt;. Stop the share, or restart the server,before mounting an image it serves writable.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Mounts that go through no loop device or &lt;code&gt;hdiutil&lt;/code&gt;:&lt;/strong&gt; &lt;code&gt;qemu-nbd -c&lt;/code&gt; (an nbd
+device), FUSE mounts (&lt;code&gt;fuse2fs&lt;/code&gt;, &lt;code&gt;guestmount&lt;/code&gt;), and a virtual machine or other
+program that has the image open.&lt;/li&gt;
+&lt;li&gt;Other operating systems (see the table), and a Linux loop device attached in
+another mount namespace.&lt;/li&gt;
+&lt;li&gt;A share made read-only because of a mount stays read-only on a reload even if
+the mount has gone; restart it to open it for writing again.&lt;/li&gt;
+&lt;/ul&gt;
 &lt;h2 data-hextra-search-id="a-partition-for-any-filesystem"&gt;A partition, for any filesystem&lt;span class="hx:absolute hx:-mt-20" id="a-partition-for-any-filesystem"&gt;&lt;/span&gt;
 &lt;a href="#a-partition-for-any-filesystem" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;A disk image holding FAT32, ext4 or exFAT has a partition table in front of it
 as often as one holding XFS does — and detection reads offset zero, where a

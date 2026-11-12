@@ -71,6 +71,69 @@ data-copied-label="已复制！"
 &lt;p&gt;要让这样的共享可写，需要先让日志被重放：在 Mac 上挂载该镜像并正常推出，或对其运行 &lt;code&gt;fsck_hfs&lt;/code&gt;。（驱动程序没有无需把镜像放进内存就能检查日志的办法，所以只有这种情况会先把镜像读入内存，最多到上限，然后再回退。）设置了 &lt;code&gt;read_only = true&lt;/code&gt; 的共享、设备和分区从不尝试以可写方式打开。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;另一个写入者。&lt;/strong&gt; 镜像是整体写回的，第二个写入者会被下一次写回覆盖。可写方式打开时会对镜像加一个排他的建议性锁 &lt;code&gt;flock&lt;/code&gt;（Linux、macOS 和 BSD）；如果另一个进程持有它，例如同一镜像上的第二个 fileshare，共享就以只读方式打开并说明原因。该锁是建议性的：macOS 的挂载不会加这个锁，其他平台则没有锁。&lt;/p&gt;
 &lt;p&gt;⛔ &lt;strong&gt;不要写入已挂载的镜像&lt;/strong&gt;，无论是用本服务器还是其他东西：双方都不知道对方的修改。请提供没有其他程序打开的镜像。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="an-image-the-os-has-mounted"&gt;操作系统已挂载的可写镜像以只读方式提供&lt;span class="hx:absolute hx:-mt-20" id="an-image-the-os-has-mounted"&gt;&lt;/span&gt;
+&lt;a href="#an-image-the-os-has-mounted" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;自 v0.45.0 起，在以写入方式打开&lt;strong&gt;任何&lt;/strong&gt;可写镜像共享（FAT32、exFAT、ext4、UFS、btrfs、XFS、ZFS、HFS+，无论驱动是什么）之前，服务器会询问操作系统是否已附加或挂载该镜像。如果是，该共享以&lt;strong&gt;只读&lt;/strong&gt;方式打开并被标记为只读，服务器会写出一行日志，指明镜像、操作系统的设备和挂载点以及共享名称：&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/srv/disk.img is in use by the OS (/dev/loop3, mounted at /mnt/disk), and a second writer would corrupt it, so disk is read-only&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="复制代码"
+aria-label="复制代码"
+data-copied-label="已复制！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;上文所述的建议性 &lt;code&gt;flock&lt;/code&gt; 无法做到这一点：操作系统挂载镜像时不会加锁。镜像按设备号和 inode 匹配，绝不比较路径字符串，因此指向已挂载文件的符号链接或硬链接同样会被发现。&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;操作系统&lt;/th&gt;
+&lt;th&gt;查询方式&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Linux&lt;/td&gt;
+&lt;td&gt;每个回环设备的 &lt;code&gt;/sys/block/loop*/loop/backing_file&lt;/code&gt;（&lt;code&gt;mount -o loop&lt;/code&gt;、&lt;code&gt;losetup&lt;/code&gt; 和 udisks 创建的设备）；挂载点来自 &lt;code&gt;/proc/self/mountinfo&lt;/code&gt;。已附加的回环设备即使上面没有挂载任何内容也算数。&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;macOS&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;hdiutil info -plist&lt;/code&gt;，即每个已附加镜像的 &lt;code&gt;image-path&lt;/code&gt;，每次加载调用一次，超时 15 秒。用 &lt;code&gt;-nomount&lt;/code&gt; 附加的镜像也算数。&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;FreeBSD、其他 BSD、Windows&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;无法检测。&lt;/strong&gt; 共享与以前一样可写。&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;strong&gt;检查本身失败时&lt;/strong&gt;（容器中没有 &lt;code&gt;/sys/block&lt;/code&gt;、&lt;code&gt;hdiutil&lt;/code&gt; 缺失或超时、输出不是属性列表），没有人知道镜像是否已挂载。由 &lt;code&gt;image_mount_unknown&lt;/code&gt; 决定：&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;disk&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/disk.img&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image_mount_unknown&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;read_only&amp;#34; # 默认值；&amp;#34;write&amp;#34;&lt;/span&gt; &lt;span class="k"&gt;仍以可写方式提供&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="复制代码"
+aria-label="复制代码"
+data-copied-label="已复制！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;默认值是 &lt;code&gt;read_only&lt;/code&gt;：只读共享是一种可见的状态，日志行会指明原因，人可以去修复；挂载之下的可写共享会损坏双方的数据，而且要到事后才会有人发现。&lt;code&gt;write&lt;/code&gt; 适用于检查无法工作的主机（没有 sysfs 的容器）且没有人挂载镜像的情况。已知被操作系统挂载的镜像无论此设置如何都是只读的。检查无法读取的后备路径（权限被拒绝、符号链接循环）被视为“无法判断”，而不是“另一个镜像”：它同样交由此设置处理。只有不存在的路径才会被跳过。在 Linux 上，后备文件已被删除的回环设备，如果进程可以打开 &lt;code&gt;/dev/loopN&lt;/code&gt;，则通过内核自己的记录（&lt;code&gt;LOOP_GET_STATUS64&lt;/code&gt;）进行匹配，否则无法匹配。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;检查看不到的情况&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;共享打开镜像之后才发生的挂载。&lt;/strong&gt; 检查在打开镜像时运行：启动时、通过管理 API 创建共享时，以及重新加载重建共享（人员或列表发生变化）并发现镜像在此期间已被挂载时；此时该共享会得到自己的只读打开。没有任何变化的重新加载不会再次检查，也没有任何机制监视之后的 &lt;code&gt;hdiutil attach&lt;/code&gt; 或 &lt;code&gt;mount -o loop&lt;/code&gt;。在挂载一个以可写方式提供的镜像之前，请先停止该共享或重启服务器。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;不经过回环设备或 &lt;code&gt;hdiutil&lt;/code&gt; 的挂载：&lt;/strong&gt; &lt;code&gt;qemu-nbd -c&lt;/code&gt;（nbd 设备）、FUSE 挂载（&lt;code&gt;fuse2fs&lt;/code&gt;、&lt;code&gt;guestmount&lt;/code&gt;），以及打开着该镜像的虚拟机或其他程序。&lt;/li&gt;
+&lt;li&gt;其他操作系统（见表格），以及在另一个挂载命名空间中附加的回环设备。&lt;/li&gt;
+&lt;li&gt;因挂载而变为只读的共享，即使挂载已消失，重新加载后仍保持只读；请重启它以再次以写入方式打开。&lt;/li&gt;
+&lt;/ul&gt;
 &lt;h2 data-hextra-search-id="a-partition-for-any-filesystem"&gt;任何文件系统的分区&lt;span class="hx:absolute hx:-mt-20" id="a-partition-for-any-filesystem"&gt;&lt;/span&gt;
 &lt;a href="#a-partition-for-any-filesystem" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;含有 FAT32、ext4 或 exFAT 的磁盘映像，与含有 XFS 的映像一样常常在前面有分区表，而检测读取的是偏移量零处，分区映像的该处是&lt;em&gt;分区表&lt;/em&gt;。因此先选择分区，再把该分区的视图交给驱动：&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
