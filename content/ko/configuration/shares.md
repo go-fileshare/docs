@@ -30,6 +30,56 @@ share "photos" {
 }
 ```
 
+## HFS+ 이미지는 쓰기 가능 {#hfsplus-images-are-writable}
+
+v0.44.0(hfsplus v0.9.0)부터 HFS+가 들어 있는 이미지의 공유는 FAT, exFAT, ext4처럼
+쓰기용으로 열립니다. 클라이언트는 파일을 만들고, 바꾸고, 지울 수 있으며, 설정한 시간,
+모드, 소유자도 저장됩니다. 이전에는 HFS+ 이미지가 읽기 전용으로 열렸습니다. 이미지는
+공유를 열 때 메모리로 읽히고 모든 변경은 파일에 다시 기록됩니다.
+
+**비용.** hfsplus v0.9.0은 이미지 전체를 메모리에 두고 작업(생성, 쓰기, 이름 변경, `Chtimes`)마다
+이미지 전체를 다시 씁니다. 따라서 공유의 메모리는 이미지 크기와 같고 변경마다의 I/O도
+마찬가지입니다(근본적인 해결은 go-filesystems/hfsplus#33). 그래서 공유는 `hfsplus_writable_max`
+이하의 HFS+ 이미지만 쓰기용으로 열며, 기본값은 256 MiB입니다(`"0"`은 열지 않음. 바이트 수 또는
+K, M, G, T가 붙은 값):
+
+```hcl
+share "mac" {
+  image                = "/srv/mac.img"
+  hfsplus_writable_max = "256M"
+}
+```
+
+이를 넘거나 크기를 알 수 없으면 공유는 **읽기 전용**으로 열리며(범위 읽기와 시간은 그대로),
+서버는 이미지, 크기, 한도를 밝히는 한 줄을 출력합니다.
+
+```text
+/srv/mac.img is an HFS+ volume and it is 1073741824 bytes, over hfsplus_writable_max (268435456 bytes): a writable HFS+ image is held in memory and rewritten whole on every change, so mac is read-only
+```
+
+**저널이 있는** 볼륨(`hdiutil create -fs "Journaled HFS+"`나 macOS가 만든 것)은 저널이
+비어 있을 때만 기록됩니다. 정상적으로 마운트를 해제하면 그렇게 남습니다. 트랜잭션이
+들어 있는 저널이나 검증할 수 없는 저널은 서버가 쓴 내용 위에 macOS가 다시 재생해 버리므로
+드라이버가 거부하며, **공유는 대신 읽기 전용으로 열립니다**. 서버는 계속 시작됩니다.
+공유를 열 때 이미지, 공유, 이유를 밝히는 한 줄을 출력합니다.
+
+```text
+/srv/mac.img is an HFS+ volume and its journal holds transactions (hfsplus: journaled volume with a journal that is not empty: transactions pending (start 17408, end 34816)), so mac is read-only
+```
+
+이런 공유를 쓰기 가능하게 하려면 먼저 저널을 재생시켜야 합니다. 이미지를 Mac에 마운트한 뒤
+정상적으로 꺼내거나 `fsck_hfs`를 실행하세요. (드라이버에는 이미지를 메모리에 올리지 않고
+저널을 확인하는 방법이 없어서, 이 경우에만 한도까지 이미지를 읽은 뒤 되돌아갑니다.)
+`read_only = true`인 공유, 장치, 파티션은 쓰기용 열기를 시도하지 않습니다.
+
+**다른 쓰기 주체.** 이미지는 통째로 다시 기록되므로 두 번째 쓰기 주체는 다음 기록에 덮어써집니다.
+쓰기용 열기는 이미지에 배타적 권고 잠금 `flock`을 겁니다(Linux, macOS, BSD). 다른 프로세스(예: 같은
+이미지를 쓰는 두 번째 fileshare)가 잠금을 쥐고 있으면 공유는 읽기 전용으로 열리고 그렇다고
+알립니다. 잠금은 권고용이라 macOS 마운트는 잠금을 걸지 않으며, 다른 플랫폼에는 잠금이 없습니다.
+
+⛔ **마운트된 이미지에는 쓰지 마세요**. 이 서버든 다른 무엇이든 마찬가지입니다.
+어느 쪽도 상대의 변경을 알지 못합니다. 다른 것이 열어 두지 않은 이미지를 제공하세요.
+
 ## 어떤 파일 시스템이든 가능한 파티션 {#a-partition-for-any-filesystem}
 
 FAT32, ext4, exFAT를 담은 디스크 이미지도 XFS를 담은 이미지만큼 자주 앞에
@@ -181,8 +231,8 @@ share "photos" {
 클라이언트가 설정한 시간을 저장소가 보존할 수 없으면 기본적으로 **무시됩니다**.
 v0.42.0부터 공유마다 `unstorable_times`로 선택할 수 있습니다. 저장할 수 없는 것은
 보고된 값과 다른 CreationTime, 단독으로 전송된 ChangeTime, 이미지에 대한 접근 시간
-또는 수정 시간 중 시간을 설정할 수 없는 드라이버(FAT, exFAT, NTFS, HFS+, APFS)의
-이미지에 대한 것입니다(호스트 디렉터리와 ext4 이미지는 이를 저장합니다).
+또는 수정 시간 중 시간을 설정할 수 없는 드라이버(NTFS, APFS, ISO 9660, SquashFS)의
+이미지에 대한 것입니다(호스트 디렉터리와 FAT, exFAT, ext4, HFS+ 이미지는 이를 저장합니다).
 
 ```hcl
 share "photos" {

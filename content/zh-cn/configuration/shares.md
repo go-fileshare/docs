@@ -30,6 +30,51 @@ share "photos" {
 }
 ```
 
+## HFS+ 镜像可写 {#hfsplus-images-are-writable}
+
+自 v0.44.0（hfsplus v0.9.0）起，镜像中含 HFS+ 的共享与 FAT、exFAT 和 ext4 一样以可写方式打开：
+客户端可以创建、修改和删除文件，它所设置的时间、权限模式和所有者也会被存储。
+此前 HFS+ 镜像以只读方式打开。镜像在共享打开时读入内存，每次修改都会写回文件。
+
+**代价。** hfsplus v0.9.0 把整个镜像放在内存中，并在每次操作（创建、写入、重命名、`Chtimes`）时
+重写整个镜像，因此共享的内存等于其镜像的大小，每次修改的 I/O 也是如此（根本的解决办法是
+go-filesystems/hfsplus#33）。所以共享只会以可写方式打开不超过 `hfsplus_writable_max` 的 HFS+ 镜像，
+默认 256 MiB（`"0"` 表示从不；可以是字节数，或带 K、M、G、T 的数）：
+
+```hcl
+share "mac" {
+  image                = "/srv/mac.img"
+  hfsplus_writable_max = "256M"
+}
+```
+
+超过上限或大小未知时，共享以**只读**方式打开（范围读取和时间仍然可用），服务器会写出一行，
+说明镜像、大小和上限：
+
+```text
+/srv/mac.img is an HFS+ volume and it is 1073741824 bytes, over hfsplus_writable_max (268435456 bytes): a writable HFS+ image is held in memory and rewritten whole on every change, so mac is read-only
+```
+
+**带日志**的卷（由 `hdiutil create -fs "Journaled HFS+"` 或 macOS 创建）只有在其日志为空时才会被写入，
+正常卸载后日志即为空。含有事务的日志，或无法验证的日志，会被 macOS 重放并覆盖服务器写入的内容，
+因此驱动程序会拒绝它，**共享改为只读打开**。服务器照常启动；打开共享时它会写出一行，
+说明镜像、共享和原因：
+
+```text
+/srv/mac.img is an HFS+ volume and its journal holds transactions (hfsplus: journaled volume with a journal that is not empty: transactions pending (start 17408, end 34816)), so mac is read-only
+```
+
+要让这样的共享可写，需要先让日志被重放：在 Mac 上挂载该镜像并正常推出，或对其运行 `fsck_hfs`。
+（驱动程序没有无需把镜像放进内存就能检查日志的办法，所以只有这种情况会先把镜像读入内存，最多到上限，
+然后再回退。）设置了 `read_only = true` 的共享、设备和分区从不尝试以可写方式打开。
+
+**另一个写入者。** 镜像是整体写回的，第二个写入者会被下一次写回覆盖。可写方式打开时会对镜像加一个排他的
+建议性锁 `flock`（Linux、macOS 和 BSD）；如果另一个进程持有它，例如同一镜像上的第二个 fileshare，
+共享就以只读方式打开并说明原因。该锁是建议性的：macOS 的挂载不会加这个锁，其他平台则没有锁。
+
+⛔ **不要写入已挂载的镜像**，无论是用本服务器还是其他东西：双方都不知道对方的修改。
+请提供没有其他程序打开的镜像。
+
 ## 任何文件系统的分区 {#a-partition-for-any-filesystem}
 
 含有 FAT32、ext4 或 exFAT 的磁盘映像，与含有 XFS 的映像一样常常
@@ -185,8 +230,8 @@ share "photos" {
 
 客户端设置了存储无法保留的时间时，默认会被**忽略**。自 v0.42.0 起，共享可以用
 `unstorable_times` 来选择。无法存储的有：与所报告的值不同的 CreationTime、单独
-发送的 ChangeTime，以及对驱动程序无法设置时间的镜像（FAT、exFAT、NTFS、HFS+、APFS）设置的访问时间或修改时间
-（主机目录和 ext4 镜像可以存储它们）：
+发送的 ChangeTime，以及对驱动程序无法设置时间的镜像（NTFS、APFS、ISO 9660、SquashFS）设置的访问时间或修改时间
+（主机目录以及 FAT、exFAT、ext4 和 HFS+ 镜像可以存储它们）：
 
 ```hcl
 share "photos" {

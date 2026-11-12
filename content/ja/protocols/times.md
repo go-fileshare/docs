@@ -102,18 +102,19 @@ share "attic" {
 | **ディレクトリ**(ホスト) | 報告された作成時刻と同じでない限り保存不可 | 報告された値と同じでない限り保存不可 | 保存される(一緒に送られた ChangeTime は受理) |
 | **イメージ、`Chtimes` を持つドライバー**:ext4、ufs、btrfs、xfs、zfs | 報告された値と同じでない限り保存不可(報告するのは ext4 のみ。他は常に不可) | 同上 | 保存される(一緒に送られた ChangeTime は受理) |
 | **イメージ、FAT または exFAT**(v0.43.0 以降) | 報告された値と同じでない限り保存不可(どちらも報告する) | 同上 | 形式の精度で保存される:FAT は更新時刻が 2 秒(切り捨て)、アクセス時刻は日付のみ。exFAT は更新時刻が 10 ms、アクセス時刻が 2 秒(一緒に送られた ChangeTime は受理) |
-| **イメージ、`Chtimes` を持たないドライバー**:NTFS、HFS+、APFS、ISO 9660、SquashFS | 同上(NTFS、HFS+ は報告し、他は報告しない) | 同上。アクセス時刻または更新時刻と一緒でも**同様** | **常に保存不可** |
+| **イメージ、HFS+**(v0.44.0 以降) | 報告された値と同じでない限り保存不可(報告する) | 同上 | 1 秒単位で保存される(一緒に送られた ChangeTime は受理)。ジャーナルにより共有が[読み取り専用]({{< relref "/configuration/shares.md#hfsplus-images-are-writable" >}})になった場合を除く |
+| **イメージ、`Chtimes` を持たないドライバー**:NTFS、APFS、ISO 9660、SquashFS | 同上(NTFS は報告し、他は報告しない) | 同上。アクセス時刻または更新時刻と一緒でも**同様** | **常に保存不可** |
 
 `Chtimes` を持つドライバーは osfs(`osfs.go:383`)、ext4(`metadata.go:93`)、ufs
 (`metadata.go:63`)、btrfs(`fs.go:382`)、xfs(`fs.go:521`)、zfs(`metadata.go:94`)、
 および v0.43.0 以降は fat32 v0.13.0 と exFAT v0.6.0 です(完全な `MetadataSetter`。
 FAT にはモードビットも所有者もないため、これらの `Chmod` と `Chown` は「未対応」を返します)。
 そのため FAT・exFAT イメージの共有での `touch -d` と `cp -p` は保存されます。他にはありません。
-HFS+ は引き続きこの一覧にあります。hfsplus v0.8.0(v0.43.0 から固定)は `Chtimes`、
-`Chmod`、`Chown` を実装していますが、提供される HFS+ イメージはドライバーの読み取り専用
-`OpenReader` で開かれるため、SMB で設定した時刻はまだ保存されません。`hdiutil` がジャーナル付きで
-作成した HFS+ イメージにドライバーが書き込んだ内容は、まだ macOS から見えません
-(Refs go-filesystems/hfsplus#29)。v0.42.0 より前は、fileshare がすべてのイメージドライバーの前に
+HFS+ にもあります。hfsplus v0.8.0 は `Chtimes`、`Chmod`、`Chown` を実装しており、
+v0.44.0(hfsplus v0.9.0)以降、提供される HFS+ イメージは書き込み可能で開かれるため、
+SMB で設定した時刻は保存されます。ジャーナルにトランザクションが残っているイメージは
+代わりに読み取り専用で開かれ、何も保存されません
+([HFS+ イメージは書き込み可能]({{< relref "/configuration/shares.md#hfsplus-images-are-writable" >}})を参照)。v0.42.0 より前は、fileshare がすべてのイメージドライバーの前に
 置くロックが `Chtimes` を隠していたため、ext4 を含むすべてのイメージがクライアントの
 アクセス時刻と更新時刻を捨てていました。v0.42.0 からは、ドライバーが持つ場合にだけ
 `Chtimes` を通します。NTFS イメージは読み取り専用のドライバーで読まれるため、
