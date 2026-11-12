@@ -189,7 +189,7 @@ qu&amp;rsquo;épingle cette version :&lt;/p&gt;
 &lt;td&gt;&lt;strong&gt;Image, HFS+&lt;/strong&gt; (depuis la v0.44.0)&lt;/td&gt;
 &lt;td&gt;non enregistrable sauf si égale à l&amp;rsquo;annoncée (il en annonce une)&lt;/td&gt;
 &lt;td&gt;idem&lt;/td&gt;
-&lt;td&gt;enregistrée à la seconde (une ChangeTime envoyée avec elle est acceptée), sauf si le journal a mis le partage en &lt;a href="https://go-fileshare.github.io/docs/0.37/fr/configuration/shares/#hfsplus-images-are-writable"&gt;lecture seule&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;enregistrée à la seconde (une ChangeTime envoyée avec elle est acceptée), quand le partage définit &lt;code&gt;hfsplus_writable_max&lt;/code&gt; (depuis la v0.45.1 ; par défaut il est en lecture seule), et pas si le journal a mis le partage en &lt;a href="https://go-fileshare.github.io/docs/0.37/fr/configuration/shares/#hfsplus-images-are-writable"&gt;lecture seule&lt;/a&gt;&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
 &lt;td&gt;&lt;strong&gt;Image, pilote sans &lt;code&gt;Chtimes&lt;/code&gt;&lt;/strong&gt; : NTFS, APFS, ISO 9660, SquashFS&lt;/td&gt;
@@ -200,8 +200,9 @@ qu&amp;rsquo;épingle cette version :&lt;/p&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;Les pilotes avec &lt;code&gt;Chtimes&lt;/code&gt; sont osfs (&lt;code&gt;osfs.go:383&lt;/code&gt;), ext4 (&lt;code&gt;metadata.go:93&lt;/code&gt;), ufs(&lt;code&gt;metadata.go:63&lt;/code&gt;), btrfs (&lt;code&gt;fs.go:382&lt;/code&gt;), xfs (&lt;code&gt;fs.go:521&lt;/code&gt;) et zfs(&lt;code&gt;metadata.go:94&lt;/code&gt;) et, depuis la v0.43.0, fat32 v0.13.0 et exFAT v0.6.0 (le&lt;code&gt;MetadataSetter&lt;/code&gt; complet : leurs &lt;code&gt;Chmod&lt;/code&gt; et &lt;code&gt;Chown&lt;/code&gt; répondent « non pris en charge »,FAT n&amp;rsquo;ayant ni bits de mode ni propriétaires), si bien que &lt;code&gt;touch -d&lt;/code&gt; et &lt;code&gt;cp -p&lt;/code&gt; sur un
-partage d&amp;rsquo;image FAT ou exFAT sont enregistrés ; les autres n&amp;rsquo;en ont pas. HFS+ en a un aussi :hfsplus v0.8.0 implémente &lt;code&gt;Chtimes&lt;/code&gt;, &lt;code&gt;Chmod&lt;/code&gt; et &lt;code&gt;Chown&lt;/code&gt;, et depuis la v0.44.0(hfsplus v0.9.0) une image HFS+ servie est ouverte en écriture, si bien qu&amp;rsquo;une date
-fixée par SMB y est enregistrée. Une image à journal qui contient des transactions
+partage d&amp;rsquo;image FAT ou exFAT sont enregistrés ; les autres n&amp;rsquo;en ont pas. HFS+ en a un aussi :hfsplus v0.8.0 implémente &lt;code&gt;Chtimes&lt;/code&gt;, &lt;code&gt;Chmod&lt;/code&gt; et &lt;code&gt;Chown&lt;/code&gt;, et depuis la v0.44.0(hfsplus v0.9.0) une image HFS+ servie peut être ouverte en écriture, si bien qu&amp;rsquo;une date
+fixée par SMB y est enregistrée, mais depuis la v0.45.1 seulement quand le partage
+définit &lt;code&gt;hfsplus_writable_max&lt;/code&gt; (par défaut il est en lecture seule). Une image à journal qui contient des transactions
 est ouverte en lecture seule à la place, et n&amp;rsquo;enregistre rien (voir&lt;a href="https://go-fileshare.github.io/docs/0.37/fr/configuration/shares/#hfsplus-images-are-writable"&gt;Les images HFS+ sont inscriptibles&lt;/a&gt;). Avant la v0.42.0, le verrou que
 fileshare place devant chaque pilote d&amp;rsquo;image masquait &lt;code&gt;Chtimes&lt;/code&gt;, si bien que
 toute image abandonnait les dates d&amp;rsquo;accès et d&amp;rsquo;écriture d&amp;rsquo;un client, ext4

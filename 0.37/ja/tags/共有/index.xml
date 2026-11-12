@@ -21,14 +21,15 @@ data-copied-label="コピーしました！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;h2 data-hextra-search-id="hfsplus-images-are-writable"&gt;HFS+ イメージは書き込み可能&lt;span class="hx:absolute hx:-mt-20" id="hfsplus-images-are-writable"&gt;&lt;/span&gt;
+&lt;h2 data-hextra-search-id="hfsplus-images-are-writable"&gt;HFS+ イメージは、共有が同意しない限り読み取り専用&lt;span class="hx:absolute hx:-mt-20" id="hfsplus-images-are-writable"&gt;&lt;/span&gt;
 &lt;a href="#hfsplus-images-are-writable" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;v0.44.0(hfsplus v0.9.0)以降、HFS+ を含むイメージの共有は、FAT、exFAT、ext4 と同様に書き込み可能で開かれます。クライアントはファイルを作成、変更、削除でき、設定した時刻、モード、所有者も保存されます。以前は HFS+ イメージは読み取り専用で開かれていました。イメージは共有を開くときにメモリへ読み込まれ、変更のたびにファイルへ書き戻されます。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;コスト。&lt;/strong&gt; hfsplus v0.9.0 はイメージ全体をメモリに保持し、操作(作成、書き込み、名前変更、&lt;code&gt;Chtimes&lt;/code&gt;)のたびにイメージ全体を書き直します。そのため共有のメモリ使用量はイメージの大きさに等しく、変更ごとの I/O も同じです(根本的な解決は go-filesystems/hfsplus#33)。したがって共有が HFS+ イメージを書き込み可能で開くのは &lt;code&gt;hfsplus_writable_max&lt;/code&gt; までで、既定は 256 MiB です(&lt;code&gt;&amp;quot;0&amp;quot;&lt;/code&gt; は常に開かない。バイト数、または K、M、G、T を付けた値):&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;v0.45.1 から既定でオフ。&lt;/strong&gt; hfsplus v0.9.0 はクラッシュ耐性がありません。操作のたびにイメージ全体を書き直し、その間ボリュームを使用中としてマークしないため、書き込みの途中でのクラッシュや停電は、正常にアンマウントされたと主張し続ける壊れたイメージを残し、次のマウント時に何も検査されません。ジャーナル付きボリュームでは、その場で書くだけでは修正になりません。v0.44.0 と v0.45.0 は既定で書き込んでいました(最大 256 MiB)。v0.45.1 以降、HFS+ の共有は&lt;code&gt;hfsplus_writable_max&lt;/code&gt; を設定しない限り&lt;strong&gt;読み取り専用&lt;/strong&gt;で提供されます。修正はgo-filesystems/hfsplus#34 で、公開されれば既定は戻せます。同意するには、サイズを設定し(先にイメージをバックアップして)、このリスクと下記のコストを受け入れてください。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;コスト。&lt;/strong&gt; hfsplus v0.9.0 はイメージ全体をメモリに保持し、操作(作成、書き込み、名前変更、&lt;code&gt;Chtimes&lt;/code&gt;)のたびにイメージ全体を書き直します。そのため共有のメモリ使用量はイメージの大きさに等しく、変更ごとの I/O も同じです(根本的な解決は go-filesystems/hfsplus#33)。したがって共有が HFS+ イメージを書き込み可能で開くのは &lt;code&gt;hfsplus_writable_max&lt;/code&gt; までで、既定は &lt;code&gt;&amp;quot;0&amp;quot;&lt;/code&gt;(常に開かない)です(バイト数、または K、M、G、T を付けた値):&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;mac&amp;#34;&lt;/span&gt; {
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/mac.img&amp;#34;&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; hfsplus_writable_max&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;256M&amp;#34;&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; hfsplus_writable_max&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;256M&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # 同意する
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
 &lt;button
 class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
 title="コードをコピー"
@@ -40,7 +41,21 @@ data-copied-label="コピーしました！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;これを超える場合、またはサイズが不明な場合、共有は&lt;strong&gt;読み取り専用&lt;/strong&gt;で開かれます(範囲読み取りと時刻は引き続き使えます)。サーバーはイメージ、サイズ、上限を示す 1 行を出力します。&lt;/p&gt;
+&lt;p&gt;これを超える場合、またはサイズが不明な場合、共有は&lt;strong&gt;読み取り専用&lt;/strong&gt;で開かれます(範囲読み取りと時刻は引き続き使えます)。サーバーはイメージと理由を示す 1 行を出力します。設定がない場合の例:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/srv/mac.img is an HFS+ volume and hfsplus_writable_max is 0, the default: hfsplus v0.9.0 is not crash-safe (a crash mid-write can leave a torn image marked clean), so HFS+ images are written only when a share sets a size, so mac is read-only&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="コードをコピー"
+aria-label="コードをコピー"
+data-copied-label="コピーしました！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;サイズを超えた場合:&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/srv/mac.img is an HFS+ volume and it is 1073741824 bytes, over hfsplus_writable_max (268435456 bytes): a writable HFS+ image is held in memory and rewritten whole on every change, so mac is read-only&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
 &lt;button

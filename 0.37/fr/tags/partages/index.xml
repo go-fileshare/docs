@@ -23,23 +23,34 @@ data-copied-label="Copié !"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;h2 data-hextra-search-id="hfsplus-images-are-writable"&gt;Les images HFS+ sont inscriptibles&lt;span class="hx:absolute hx:-mt-20" id="hfsplus-images-are-writable"&gt;&lt;/span&gt;
+&lt;h2 data-hextra-search-id="hfsplus-images-are-writable"&gt;Les images HFS+ sont en lecture seule tant qu&amp;rsquo;un partage n&amp;rsquo;y consent pas&lt;span class="hx:absolute hx:-mt-20" id="hfsplus-images-are-writable"&gt;&lt;/span&gt;
 &lt;a href="#hfsplus-images-are-writable" class="subheading-anchor" aria-label="Lien permanent vers cette section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Depuis la v0.44.0 (hfsplus v0.9.0), un partage dont l&amp;rsquo;image contient du HFS+ est
 ouvert en écriture, comme FAT, exFAT et ext4 : un client peut créer, modifier et
 supprimer des fichiers, et les dates, modes et propriétaires qu&amp;rsquo;il fixe sont
 enregistrés. Auparavant, une image HFS+ était ouverte en lecture seule. L&amp;rsquo;image
 est lue en mémoire à l&amp;rsquo;ouverture du partage et chaque modification est réécrite
 dans le fichier.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Désactivé par défaut depuis la v0.45.1.&lt;/strong&gt; hfsplus v0.9.0 ne résiste pas aux
+plantages : il réécrit toute l&amp;rsquo;image à chaque opération et ne marque jamais le
+volume comme utilisé pendant ce temps, si bien qu&amp;rsquo;un plantage ou une coupure de
+courant au milieu d&amp;rsquo;une écriture laisse une image déchirée qui se dit toujours
+proprement démontée, et que rien ne vérifie au montage suivant. Sur un volume à
+journal, la correction demande plus qu&amp;rsquo;écrire en place. La v0.44.0 et la v0.45.0
+écrivaient par défaut (jusqu&amp;rsquo;à 256 Mio) ; depuis la v0.45.1, un partage HFS+ est
+servi en &lt;strong&gt;lecture seule&lt;/strong&gt; sauf s&amp;rsquo;il définit &lt;code&gt;hfsplus_writable_max&lt;/code&gt;. La correction
+est go-filesystems/hfsplus#34 ; le défaut pourra revenir à sa publication. Pour y
+consentir, définissez une taille (et sauvegardez d&amp;rsquo;abord l&amp;rsquo;image), en acceptant ce
+risque et les coûts ci-dessous.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Ce que ça coûte.&lt;/strong&gt; hfsplus v0.9.0 garde toute l&amp;rsquo;image en mémoire et la réécrit
 entièrement à chaque opération (création, écriture, renommage, &lt;code&gt;Chtimes&lt;/code&gt;) : la
 mémoire d&amp;rsquo;un partage est la taille de son image, et l&amp;rsquo;E/S de chaque modification
 aussi (go-filesystems/hfsplus#33 est la vraie correction). Un partage n&amp;rsquo;ouvre donc
-une image HFS+ en écriture que jusqu&amp;rsquo;à &lt;code&gt;hfsplus_writable_max&lt;/code&gt;, 256 Mio par défaut(&lt;code&gt;&amp;quot;0&amp;quot;&lt;/code&gt; jamais ; un nombre d&amp;rsquo;octets, ou un nombre suivi de K, M, G ou T) :&lt;/p&gt;
+une image HFS+ en écriture que jusqu&amp;rsquo;à &lt;code&gt;hfsplus_writable_max&lt;/code&gt;, &lt;code&gt;&amp;quot;0&amp;quot;&lt;/code&gt; par défaut(jamais ; un nombre d&amp;rsquo;octets, ou un nombre suivi de K, M, G ou T) :&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;mac&amp;#34;&lt;/span&gt; {
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/mac.img&amp;#34;&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; hfsplus_writable_max&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;256M&amp;#34;&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; hfsplus_writable_max&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;256M&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # consentir
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
 &lt;button
 class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
 title="Copier le code"
@@ -52,7 +63,21 @@ data-copied-label="Copié !"
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;p&gt;Au-delà, ou si la taille est inconnue, le partage s&amp;rsquo;ouvre en &lt;strong&gt;lecture seule&lt;/strong&gt;,toujours avec la lecture par plages et les dates, et le serveur écrit une ligne
-qui nomme l&amp;rsquo;image, la taille et la limite :&lt;/p&gt;
+qui nomme l&amp;rsquo;image et la raison, par exemple sans réglage :&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/srv/mac.img is an HFS+ volume and hfsplus_writable_max is 0, the default: hfsplus v0.9.0 is not crash-safe (a crash mid-write can leave a torn image marked clean), so HFS+ images are written only when a share sets a size, so mac is read-only&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copier le code"
+aria-label="Copier le code"
+data-copied-label="Copié !"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;et au-delà de la taille :&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/srv/mac.img is an HFS+ volume and it is 1073741824 bytes, over hfsplus_writable_max (268435456 bytes): a writable HFS+ image is held in memory and rewritten whole on every change, so mac is read-only&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
 &lt;button

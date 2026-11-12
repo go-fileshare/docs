@@ -23,20 +23,26 @@ data-copied-label="복사됨!"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;h2 data-hextra-search-id="hfsplus-images-are-writable"&gt;HFS+ 이미지는 쓰기 가능&lt;span class="hx:absolute hx:-mt-20" id="hfsplus-images-are-writable"&gt;&lt;/span&gt;
+&lt;h2 data-hextra-search-id="hfsplus-images-are-writable"&gt;HFS+ 이미지는 공유가 동의하지 않으면 읽기 전용&lt;span class="hx:absolute hx:-mt-20" id="hfsplus-images-are-writable"&gt;&lt;/span&gt;
 &lt;a href="#hfsplus-images-are-writable" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;v0.44.0(hfsplus v0.9.0)부터 HFS+가 들어 있는 이미지의 공유는 FAT, exFAT, ext4처럼
 쓰기용으로 열립니다. 클라이언트는 파일을 만들고, 바꾸고, 지울 수 있으며, 설정한 시간,모드, 소유자도 저장됩니다. 이전에는 HFS+ 이미지가 읽기 전용으로 열렸습니다. 이미지는
 공유를 열 때 메모리로 읽히고 모든 변경은 파일에 다시 기록됩니다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;v0.45.1부터 기본으로 꺼짐.&lt;/strong&gt; hfsplus v0.9.0은 충돌에 안전하지 않습니다. 작업마다
+이미지 전체를 다시 쓰고 그동안 볼륨을 사용 중으로 표시하지 않으므로, 쓰는 도중의 충돌이나
+정전은 정상적으로 마운트 해제된 것처럼 보이는 손상된 이미지를 남기고, 다음 마운트 때 아무것도
+검사되지 않습니다. 저널이 있는 볼륨에서는 제자리 쓰기만으로는 해결되지 않습니다. v0.44.0과
+v0.45.0은 기본으로 썼습니다(최대 256 MiB). v0.45.1부터 HFS+ 공유는 &lt;code&gt;hfsplus_writable_max&lt;/code&gt;를
+설정하지 않으면 &lt;strong&gt;읽기 전용&lt;/strong&gt;으로 제공됩니다. 해결책은 go-filesystems/hfsplus#34이며,공개되면 기본값을 되돌릴 수 있습니다. 동의하려면 크기를 설정하고(먼저 이미지를 백업하세요)이 위험과 아래 비용을 감수해야 합니다.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;비용.&lt;/strong&gt; hfsplus v0.9.0은 이미지 전체를 메모리에 두고 작업(생성, 쓰기, 이름 변경, &lt;code&gt;Chtimes&lt;/code&gt;)마다
 이미지 전체를 다시 씁니다. 따라서 공유의 메모리는 이미지 크기와 같고 변경마다의 I/O도
 마찬가지입니다(근본적인 해결은 go-filesystems/hfsplus#33). 그래서 공유는 &lt;code&gt;hfsplus_writable_max&lt;/code&gt;
-이하의 HFS+ 이미지만 쓰기용으로 열며, 기본값은 256 MiB입니다(&lt;code&gt;&amp;quot;0&amp;quot;&lt;/code&gt;은 열지 않음. 바이트 수 또는
+이하의 HFS+ 이미지만 쓰기용으로 열며, 기본값은 &lt;code&gt;&amp;quot;0&amp;quot;&lt;/code&gt;(열지 않음)입니다(바이트 수 또는
 K, M, G, T가 붙은 값):&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;mac&amp;#34;&lt;/span&gt; {
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/mac.img&amp;#34;&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; hfsplus_writable_max&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;256M&amp;#34;&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; hfsplus_writable_max&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;256M&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # 동의
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
 &lt;button
 class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
 title="코드 복사"
@@ -48,7 +54,21 @@ data-copied-label="복사됨!"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;이를 넘거나 크기를 알 수 없으면 공유는 &lt;strong&gt;읽기 전용&lt;/strong&gt;으로 열리며(범위 읽기와 시간은 그대로),서버는 이미지, 크기, 한도를 밝히는 한 줄을 출력합니다.&lt;/p&gt;
+&lt;p&gt;이를 넘거나 크기를 알 수 없으면 공유는 &lt;strong&gt;읽기 전용&lt;/strong&gt;으로 열리며(범위 읽기와 시간은 그대로),서버는 이미지와 이유를 밝히는 한 줄을 출력합니다. 설정이 없을 때의 예:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/srv/mac.img is an HFS+ volume and hfsplus_writable_max is 0, the default: hfsplus v0.9.0 is not crash-safe (a crash mid-write can leave a torn image marked clean), so HFS+ images are written only when a share sets a size, so mac is read-only&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="코드 복사"
+aria-label="코드 복사"
+data-copied-label="복사됨!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;크기를 넘었을 때:&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/srv/mac.img is an HFS+ volume and it is 1073741824 bytes, over hfsplus_writable_max (268435456 bytes): a writable HFS+ image is held in memory and rewritten whole on every change, so mac is read-only&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
 &lt;button

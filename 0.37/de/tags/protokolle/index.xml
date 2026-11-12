@@ -1056,7 +1056,7 @@ dem mit &lt;code&gt;STATUS_MEDIA_WRITE_PROTECTED&lt;/code&gt; beantwortet.&lt;/p
 &lt;td&gt;&lt;strong&gt;Image, HFS+&lt;/strong&gt; (seit v0.44.0)&lt;/td&gt;
 &lt;td&gt;nicht speicherbar, außer sie entspricht der gemeldeten (es meldet eine)&lt;/td&gt;
 &lt;td&gt;ebenso&lt;/td&gt;
-&lt;td&gt;sekundengenau gespeichert (eine mitgesendete ChangeTime wird akzeptiert), es sei denn, das Journal hat die Freigabe &lt;a href="https://go-fileshare.github.io/docs/0.37/de/configuration/shares/#hfsplus-images-are-writable"&gt;schreibgeschützt&lt;/a&gt; gemacht&lt;/td&gt;
+&lt;td&gt;sekundengenau gespeichert (eine mitgesendete ChangeTime wird akzeptiert), wenn die Freigabe &lt;code&gt;hfsplus_writable_max&lt;/code&gt; setzt (seit v0.45.1; standardmäßig ist sie schreibgeschützt), und nicht, wenn das Journal die Freigabe &lt;a href="https://go-fileshare.github.io/docs/0.37/de/configuration/shares/#hfsplus-images-are-writable"&gt;schreibgeschützt&lt;/a&gt; gemacht&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
 &lt;td&gt;&lt;strong&gt;Image, Treiber ohne &lt;code&gt;Chtimes&lt;/code&gt;&lt;/strong&gt;: NTFS, APFS, ISO 9660, SquashFS&lt;/td&gt;
@@ -1068,8 +1068,9 @@ dem mit &lt;code&gt;STATUS_MEDIA_WRITE_PROTECTED&lt;/code&gt; beantwortet.&lt;/p
 &lt;/table&gt;
 &lt;p&gt;Treiber mit &lt;code&gt;Chtimes&lt;/code&gt; sind osfs (&lt;code&gt;osfs.go:383&lt;/code&gt;), ext4 (&lt;code&gt;metadata.go:93&lt;/code&gt;), ufs(&lt;code&gt;metadata.go:63&lt;/code&gt;), btrfs (&lt;code&gt;fs.go:382&lt;/code&gt;), xfs (&lt;code&gt;fs.go:521&lt;/code&gt;) und zfs(&lt;code&gt;metadata.go:94&lt;/code&gt;) sowie seit v0.43.0 fat32 v0.13.0 und exFAT v0.6.0 (der vollständige&lt;code&gt;MetadataSetter&lt;/code&gt;: ihre &lt;code&gt;Chmod&lt;/code&gt; und &lt;code&gt;Chown&lt;/code&gt; melden „nicht unterstützt“, da FAT weder
 Modus-Bits noch Eigentümer kennt), sodass &lt;code&gt;touch -d&lt;/code&gt; und &lt;code&gt;cp -p&lt;/code&gt; auf einer FAT- oder
-exFAT-Image-Freigabe gespeichert werden; die übrigen haben keines. Auch HFS+ hat eines:hfsplus v0.8.0 implementiert &lt;code&gt;Chtimes&lt;/code&gt;, &lt;code&gt;Chmod&lt;/code&gt; und &lt;code&gt;Chown&lt;/code&gt;, und seit v0.44.0(hfsplus v0.9.0) wird ein bereitgestelltes HFS+-Image schreibbar geöffnet, sodass
-eine per SMB gesetzte Zeit gespeichert wird. Ein Image mit Journal, das
+exFAT-Image-Freigabe gespeichert werden; die übrigen haben keines. Auch HFS+ hat eines:hfsplus v0.8.0 implementiert &lt;code&gt;Chtimes&lt;/code&gt;, &lt;code&gt;Chmod&lt;/code&gt; und &lt;code&gt;Chown&lt;/code&gt;, und seit v0.44.0(hfsplus v0.9.0) kann ein bereitgestelltes HFS+-Image schreibbar geöffnet werden, sodass
+eine per SMB gesetzte Zeit gespeichert wird, seit v0.45.1 aber nur, wenn die
+Freigabe &lt;code&gt;hfsplus_writable_max&lt;/code&gt; setzt (standardmäßig ist sie schreibgeschützt). Ein Image mit Journal, das
 Transaktionen enthält, wird stattdessen schreibgeschützt geöffnet und speichert
 nichts (siehe &lt;a href="https://go-fileshare.github.io/docs/0.37/de/configuration/shares/#hfsplus-images-are-writable"&gt;HFS+-Images sind schreibbar&lt;/a&gt;). Vor v0.42.0 verbarg die Sperre, die
 fileshare vor jeden Image-Treiber setzt, &lt;code&gt;Chtimes&lt;/code&gt;, sodass jedes Image die
