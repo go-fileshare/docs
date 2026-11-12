@@ -111,7 +111,7 @@ qu'épingle cette version :
 | **Répertoire** (hôte) | non enregistrable sauf si égale à la date de création annoncée | non enregistrable sauf si égale à l'annoncée | enregistrée (une ChangeTime envoyée avec elle est acceptée) |
 | **Image, pilote avec `Chtimes`** : ext4, ufs, btrfs, xfs, zfs | non enregistrable sauf si égale à l'annoncée (seul ext4 en annonce une : pour les autres, toujours) | idem | enregistrée (une ChangeTime envoyée avec elle est acceptée) |
 | **Image, FAT ou exFAT** (depuis la v0.43.0) | non enregistrable sauf si égale à l'annoncée (les deux en annoncent une) | idem | enregistrée à la résolution du format : date d'écriture FAT à 2 s (arrondie vers le bas) et date d'accès au jour seulement ; date d'écriture exFAT à 10 ms et date d'accès à 2 s (une ChangeTime envoyée avec elle est acceptée) |
-| **Image, HFS+** (depuis la v0.44.0) | non enregistrable sauf si égale à l'annoncée (il en annonce une) | idem | enregistrée à la seconde (une ChangeTime envoyée avec elle est acceptée), sauf si le journal a mis le partage en [lecture seule]({{< relref "/configuration/shares.md#hfsplus-images-are-writable" >}}) |
+| **Image, HFS+** (depuis la v0.44.0) | non enregistrable sauf si égale à l'annoncée (il en annonce une) | idem | enregistrée à la seconde (une ChangeTime envoyée avec elle est acceptée), quand le partage définit `hfsplus_writable_max` (depuis la v0.45.1 ; par défaut il est en lecture seule), et pas si le journal a mis le partage en [lecture seule]({{< relref "/configuration/shares.md#hfsplus-images-are-writable" >}}) |
 | **Image, pilote sans `Chtimes`** : NTFS, APFS, ISO 9660, SquashFS | idem (NTFS en annonce une ; les autres jamais) | idem, **y compris** envoyée avec une date d'accès ou d'écriture | **toujours non enregistrable** |
 
 Les pilotes avec `Chtimes` sont osfs (`osfs.go:383`), ext4 (`metadata.go:93`), ufs
@@ -121,8 +121,9 @@ Les pilotes avec `Chtimes` sont osfs (`osfs.go:383`), ext4 (`metadata.go:93`), u
 FAT n'ayant ni bits de mode ni propriétaires), si bien que `touch -d` et `cp -p` sur un
 partage d'image FAT ou exFAT sont enregistrés ; les autres n'en ont pas. HFS+ en a un aussi :
 hfsplus v0.8.0 implémente `Chtimes`, `Chmod` et `Chown`, et depuis la v0.44.0
-(hfsplus v0.9.0) une image HFS+ servie est ouverte en écriture, si bien qu'une date
-fixée par SMB y est enregistrée. Une image à journal qui contient des transactions
+(hfsplus v0.9.0) une image HFS+ servie peut être ouverte en écriture, si bien qu'une date
+fixée par SMB y est enregistrée, mais depuis la v0.45.1 seulement quand le partage
+définit `hfsplus_writable_max` (par défaut il est en lecture seule). Une image à journal qui contient des transactions
 est ouverte en lecture seule à la place, et n'enregistre rien (voir
 [Les images HFS+ sont inscriptibles]({{< relref "/configuration/shares.md#hfsplus-images-are-writable" >}})). Avant la v0.42.0, le verrou que
 fileshare place devant chaque pilote d'image masquait `Chtimes`, si bien que

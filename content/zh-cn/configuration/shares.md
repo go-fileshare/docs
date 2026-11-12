@@ -30,26 +30,39 @@ share "photos" {
 }
 ```
 
-## HFS+ 镜像可写 {#hfsplus-images-are-writable}
+## HFS+ 镜像默认只读，除非共享选择启用写入 {#hfsplus-images-are-writable}
 
 自 v0.44.0（hfsplus v0.9.0）起，镜像中含 HFS+ 的共享与 FAT、exFAT 和 ext4 一样以可写方式打开：
 客户端可以创建、修改和删除文件，它所设置的时间、权限模式和所有者也会被存储。
 此前 HFS+ 镜像以只读方式打开。镜像在共享打开时读入内存，每次修改都会写回文件。
 
+**自 v0.45.1 起默认关闭。** hfsplus v0.9.0 不能抵御崩溃：它在每次操作时重写整个镜像，
+并且在此期间从不把卷标记为使用中，所以写入过程中的崩溃或断电会留下一个仍声称已干净卸载的
+损坏镜像，下次挂载时也没有任何检查。对于带日志的卷，修复需要的不只是原地写入。v0.44.0 和
+v0.45.0 默认会写入（最大 256 MiB）；自 v0.45.1 起，除非共享设置了 `hfsplus_writable_max`，
+HFS+ 共享以**只读**方式提供。修复是 go-filesystems/hfsplus#34；发布后默认值可以恢复。
+要启用写入，请设置一个大小（并先备份镜像），即接受这一风险和下面的代价。
+
 **代价。** hfsplus v0.9.0 把整个镜像放在内存中，并在每次操作（创建、写入、重命名、`Chtimes`）时
 重写整个镜像，因此共享的内存等于其镜像的大小，每次修改的 I/O 也是如此（根本的解决办法是
 go-filesystems/hfsplus#33）。所以共享只会以可写方式打开不超过 `hfsplus_writable_max` 的 HFS+ 镜像，
-默认 256 MiB（`"0"` 表示从不；可以是字节数，或带 K、M、G、T 的数）：
+默认 `"0"`（表示从不；可以是字节数，或带 K、M、G、T 的数）：
 
 ```hcl
 share "mac" {
   image                = "/srv/mac.img"
-  hfsplus_writable_max = "256M"
+  hfsplus_writable_max = "256M"   # 启用写入
 }
 ```
 
 超过上限或大小未知时，共享以**只读**方式打开（范围读取和时间仍然可用），服务器会写出一行，
-说明镜像、大小和上限：
+说明镜像和原因，例如没有任何设置时：
+
+```text
+/srv/mac.img is an HFS+ volume and hfsplus_writable_max is 0, the default: hfsplus v0.9.0 is not crash-safe (a crash mid-write can leave a torn image marked clean), so HFS+ images are written only when a share sets a size, so mac is read-only
+```
+
+超过该大小时：
 
 ```text
 /srv/mac.img is an HFS+ volume and it is 1073741824 bytes, over hfsplus_writable_max (268435456 bytes): a writable HFS+ image is held in memory and rewritten whole on every change, so mac is read-only

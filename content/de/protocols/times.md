@@ -111,7 +111,7 @@ die dieses Release festschreibt:
 | **Verzeichnis** (Host) | nicht speicherbar, außer sie entspricht der gemeldeten Erstellungszeit | nicht speicherbar, außer sie entspricht der gemeldeten | gespeichert (eine mitgesendete ChangeTime wird akzeptiert) |
 | **Image, Treiber mit `Chtimes`**: ext4, ufs, btrfs, xfs, zfs | nicht speicherbar, außer sie entspricht der gemeldeten (nur ext4 meldet eine: bei den anderen immer) | ebenso | gespeichert (eine mitgesendete ChangeTime wird akzeptiert) |
 | **Image, FAT oder exFAT** (seit v0.43.0) | nicht speicherbar, außer sie entspricht der gemeldeten (beide melden eine) | ebenso | gespeichert in der Auflösung des Formats: FAT-Schreibzeit 2 s (abgerundet) und Zugriffszeit nur das Datum; exFAT-Schreibzeit 10 ms und Zugriffszeit 2 s (eine mitgesendete ChangeTime wird akzeptiert) |
-| **Image, HFS+** (seit v0.44.0) | nicht speicherbar, außer sie entspricht der gemeldeten (es meldet eine) | ebenso | sekundengenau gespeichert (eine mitgesendete ChangeTime wird akzeptiert), es sei denn, das Journal hat die Freigabe [schreibgeschützt]({{< relref "/configuration/shares.md#hfsplus-images-are-writable" >}}) gemacht |
+| **Image, HFS+** (seit v0.44.0) | nicht speicherbar, außer sie entspricht der gemeldeten (es meldet eine) | ebenso | sekundengenau gespeichert (eine mitgesendete ChangeTime wird akzeptiert), wenn die Freigabe `hfsplus_writable_max` setzt (seit v0.45.1; standardmäßig ist sie schreibgeschützt), und nicht, wenn das Journal die Freigabe [schreibgeschützt]({{< relref "/configuration/shares.md#hfsplus-images-are-writable" >}}) gemacht |
 | **Image, Treiber ohne `Chtimes`**: NTFS, APFS, ISO 9660, SquashFS | ebenso (NTFS meldet eine; die anderen nie) | ebenso, **auch** wenn sie mit einer Zugriffs- oder Änderungszeit gesendet wird | **immer nicht speicherbar** |
 
 Treiber mit `Chtimes` sind osfs (`osfs.go:383`), ext4 (`metadata.go:93`), ufs
@@ -121,8 +121,9 @@ Treiber mit `Chtimes` sind osfs (`osfs.go:383`), ext4 (`metadata.go:93`), ufs
 Modus-Bits noch Eigentümer kennt), sodass `touch -d` und `cp -p` auf einer FAT- oder
 exFAT-Image-Freigabe gespeichert werden; die übrigen haben keines. Auch HFS+ hat eines:
 hfsplus v0.8.0 implementiert `Chtimes`, `Chmod` und `Chown`, und seit v0.44.0
-(hfsplus v0.9.0) wird ein bereitgestelltes HFS+-Image schreibbar geöffnet, sodass
-eine per SMB gesetzte Zeit gespeichert wird. Ein Image mit Journal, das
+(hfsplus v0.9.0) kann ein bereitgestelltes HFS+-Image schreibbar geöffnet werden, sodass
+eine per SMB gesetzte Zeit gespeichert wird, seit v0.45.1 aber nur, wenn die
+Freigabe `hfsplus_writable_max` setzt (standardmäßig ist sie schreibgeschützt). Ein Image mit Journal, das
 Transaktionen enthält, wird stattdessen schreibgeschützt geöffnet und speichert
 nichts (siehe [HFS+-Images sind schreibbar]({{< relref "/configuration/shares.md#hfsplus-images-are-writable" >}})). Vor v0.42.0 verbarg die Sperre, die
 fileshare vor jeden Image-Treiber setzt, `Chtimes`, sodass jedes Image die

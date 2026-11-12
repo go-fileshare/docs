@@ -102,7 +102,7 @@ What a share can store depends on its driver, at the versions this release pins:
 | **Directory** (host) | unstorable unless equal to the reported birth time | unstorable unless equal to the reported one | stored (a ChangeTime sent with it is accepted) |
 | **Image, driver with `Chtimes`**: ext4, ufs, btrfs, xfs, zfs | unstorable unless equal to the reported one (only ext4 reports one: for the others, always) | the same | stored (a ChangeTime sent with it is accepted) |
 | **Image, FAT or exFAT** (since v0.43.0) | unstorable unless equal to the reported one (both report one) | the same | stored at the format's resolution: FAT write time 2 s (rounded down) and access time the date only; exFAT write time 10 ms and access time 2 s (a ChangeTime sent with it is accepted) |
-| **Image, HFS+** (since v0.44.0) | unstorable unless equal to the reported one (it reports one) | the same | stored to the second (a ChangeTime sent with it is accepted), unless the journal made the share [read-only]({{< relref "/configuration/shares.md#hfsplus-images-are-writable" >}}) |
+| **Image, HFS+** (since v0.44.0) | unstorable unless equal to the reported one (it reports one) | the same | stored to the second (a ChangeTime sent with it is accepted) when the share sets `hfsplus_writable_max` (since v0.45.1; by default it is read-only), and not if the journal made the share [read-only]({{< relref "/configuration/shares.md#hfsplus-images-are-writable" >}}) |
 | **Image, driver without `Chtimes`**: NTFS, APFS, ISO 9660, SquashFS | the same (NTFS reports one; the others never) | the same, **also** when sent with an access or write time | **always unstorable** |
 
 The drivers with `Chtimes` are osfs (`osfs.go:383`), ext4 (`metadata.go:93`), ufs
@@ -112,7 +112,9 @@ The drivers with `Chtimes` are osfs (`osfs.go:383`), ext4 (`metadata.go:93`), uf
 no mode bits or owners), so `touch -d` and `cp -p` on a FAT or exFAT image share
 are stored; the others have none. HFS+ has one too: hfsplus v0.8.0 implements
 `Chtimes`, `Chmod` and `Chown`, and since v0.44.0 (hfsplus v0.9.0) a served HFS+
-image is opened writable, so a time set over SMB is stored. A journaled image
+image can be opened writable, so a time set over SMB is stored, but since
+v0.45.1 only when the share sets `hfsplus_writable_max` (by default it is
+read-only). A journaled image
 whose journal holds transactions is opened read-only instead, and stores nothing
 (see [HFS+ images are writable]({{< relref "/configuration/shares.md#hfsplus-images-are-writable" >}})).
 Before v0.42.0 the lock fileshare puts

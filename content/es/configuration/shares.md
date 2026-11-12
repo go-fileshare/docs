@@ -32,7 +32,7 @@ share "photos" {
 }
 ```
 
-## Las imágenes HFS+ son escribibles {#hfsplus-images-are-writable}
+## Las imágenes HFS+ son de solo lectura salvo que un recurso lo acepte {#hfsplus-images-are-writable}
 
 Desde la v0.44.0 (hfsplus v0.9.0) un recurso cuya imagen contiene HFS+ se abre
 para escritura, como FAT, exFAT y ext4: un cliente puede crear, modificar y
@@ -40,23 +40,41 @@ borrar archivos, y se almacenan las fechas, los modos y los propietarios que
 establece. Antes, una imagen HFS+ se abría en solo lectura. La imagen se lee en
 memoria al abrir el recurso y cada cambio se escribe de vuelta en el archivo.
 
+**Desactivado por defecto desde la v0.45.1.** hfsplus v0.9.0 no es seguro ante
+caídas: reescribe toda la imagen en cada operación y nunca marca el volumen como
+en uso mientras lo hace, de modo que una caída o un corte de corriente a mitad de
+una escritura deja una imagen rota que sigue diciendo que se desmontó limpiamente,
+y nada la comprueba en el siguiente montaje. En un volumen con diario, la
+solución necesita más que escribir en el sitio. La v0.44.0 y la v0.45.0 escribían
+por defecto (hasta 256 MiB); desde la v0.45.1 un recurso HFS+ se sirve en **solo
+lectura** salvo que defina `hfsplus_writable_max`. La solución es
+go-filesystems/hfsplus#34; el valor por defecto podrá volver cuando se publique.
+Para aceptarlo, defina un tamaño (y haga antes una copia de la imagen),
+asumiendo este riesgo y los costes de abajo.
+
 **Lo que cuesta.** hfsplus v0.9.0 mantiene toda la imagen en memoria y reescribe
 toda la imagen en cada operación (crear, escribir, renombrar, `Chtimes`), de modo
 que la memoria de un recurso es el tamaño de su imagen, y también lo es la E/S de
 cada cambio (go-filesystems/hfsplus#33 es la solución de fondo). Por eso un
 recurso abre una imagen HFS+ para escritura solo hasta `hfsplus_writable_max`,
-256 MiB por defecto (`"0"` nunca; un número de bytes, o uno con K, M, G o T):
+`"0"` por defecto (nunca; un número de bytes, o uno con K, M, G o T):
 
 ```hcl
 share "mac" {
   image                = "/srv/mac.img"
-  hfsplus_writable_max = "256M"
+  hfsplus_writable_max = "256M"   # aceptar
 }
 ```
 
 Por encima, o si se desconoce el tamaño, el recurso se abre en **solo lectura**,
 aún con lectura por rangos y fechas, y el servidor escribe una línea que nombra
-la imagen, el tamaño y el límite:
+la imagen y el motivo, por ejemplo sin ningún ajuste:
+
+```text
+/srv/mac.img is an HFS+ volume and hfsplus_writable_max is 0, the default: hfsplus v0.9.0 is not crash-safe (a crash mid-write can leave a torn image marked clean), so HFS+ images are written only when a share sets a size, so mac is read-only
+```
+
+y por encima del tamaño:
 
 ```text
 /srv/mac.img is an HFS+ volume and it is 1073741824 bytes, over hfsplus_writable_max (268435456 bytes): a writable HFS+ image is held in memory and rewritten whole on every change, so mac is read-only

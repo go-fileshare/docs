@@ -111,7 +111,7 @@ que fija esta versión:
 | **Directorio** (host) | no almacenable salvo que sea igual a la fecha de creación informada | no almacenable salvo que sea igual a la informada | almacenada (una ChangeTime enviada con ella se acepta) |
 | **Imagen, controlador con `Chtimes`**: ext4, ufs, btrfs, xfs, zfs | no almacenable salvo que sea igual a la informada (solo ext4 informa una: en los demás, siempre) | igual | almacenada (una ChangeTime enviada con ella se acepta) |
 | **Imagen, FAT o exFAT** (desde la v0.43.0) | no almacenable salvo que sea igual a la informada (ambas informan una) | igual | almacenada con la resolución del formato: fecha de escritura de FAT a 2 s (redondeada hacia abajo) y fecha de acceso solo el día; fecha de escritura de exFAT a 10 ms y fecha de acceso a 2 s (una ChangeTime enviada con ella se acepta) |
-| **Imagen, HFS+** (desde la v0.44.0) | no almacenable salvo que sea igual a la informada (informa una) | igual | almacenada al segundo (una ChangeTime enviada con ella se acepta), salvo que el diario haya dejado el recurso en [solo lectura]({{< relref "/configuration/shares.md#hfsplus-images-are-writable" >}}) |
+| **Imagen, HFS+** (desde la v0.44.0) | no almacenable salvo que sea igual a la informada (informa una) | igual | almacenada al segundo (una ChangeTime enviada con ella se acepta), cuando el recurso define `hfsplus_writable_max` (desde la v0.45.1; por defecto es de solo lectura), y no si el diario ha dejado el recurso en [solo lectura]({{< relref "/configuration/shares.md#hfsplus-images-are-writable" >}}) |
 | **Imagen, controlador sin `Chtimes`**: NTFS, APFS, ISO 9660, SquashFS | igual (NTFS informa una; los demás nunca) | igual, **también** cuando se envía con una fecha de acceso o de escritura | **siempre no almacenable** |
 
 Los controladores con `Chtimes` son osfs (`osfs.go:383`), ext4 (`metadata.go:93`),
@@ -121,8 +121,9 @@ ufs (`metadata.go:63`), btrfs (`fs.go:382`), xfs (`fs.go:521`) y zfs
 no tiene bits de modo ni propietarios), de modo que `touch -d` y `cp -p` sobre un
 recurso de imagen FAT o exFAT se almacenan; los demás no tienen. HFS+ también lo tiene:
 hfsplus v0.8.0 implementa `Chtimes`, `Chmod` y `Chown`, y desde la v0.44.0
-(hfsplus v0.9.0) una imagen HFS+ servida se abre para escritura, de modo que una
-fecha establecida por SMB se almacena. Una imagen con diario que contiene
+(hfsplus v0.9.0) una imagen HFS+ servida puede abrirse para escritura, de modo que una
+fecha establecida por SMB se almacena, pero desde la v0.45.1 solo cuando el recurso
+define `hfsplus_writable_max` (por defecto es de solo lectura). Una imagen con diario que contiene
 transacciones se abre en cambio en solo lectura y no almacena nada (véase
 [Las imágenes HFS+ son escribibles]({{< relref "/configuration/shares.md#hfsplus-images-are-writable" >}})). Antes de la v0.42.0 el bloqueo que
 fileshare coloca delante de cada controlador de imagen ocultaba `Chtimes`, de

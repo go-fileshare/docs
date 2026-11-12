@@ -30,7 +30,7 @@ share "photos" {
 }
 ```
 
-## HFS+ images are writable {#hfsplus-images-are-writable}
+## HFS+ images are read-only unless a share opts in {#hfsplus-images-are-writable}
 
 Since v0.44.0 (hfsplus v0.9.0) a share whose image holds HFS+ is opened for
 writing, like FAT, exFAT and ext4: a client can create, change and delete
@@ -38,23 +38,40 @@ files, and the times, modes and owners it sets are stored. Before, an HFS+
 image was opened read-only. The image is read into memory when the share opens
 and every change is written back to the file.
 
+**Off by default since v0.45.1.** hfsplus v0.9.0 is not crash-safe: it rewrites
+the whole image on every operation and never marks the volume as in use while it
+does, so a crash or power loss in the middle of a write leaves a torn image that
+still says it was cleanly unmounted, and nothing checks it at the next mount. On
+a journaled volume the fix needs more than writing in place. v0.44.0 and v0.45.0
+wrote by default (up to 256 MiB); since v0.45.1 an HFS+ share is served
+**read-only** unless it sets `hfsplus_writable_max`. The fix is
+go-filesystems/hfsplus#34; the default can come back when it is released. To
+opt in, set a size (and back the image up first), accepting this risk and the
+costs below.
+
 **What it costs.** hfsplus v0.9.0 holds the whole image in memory and rewrites
 the whole image on every operation (a create, a write, a rename, a `Chtimes`),
 so the memory of a share is the size of its image, and so is the I/O of every
 change (go-filesystems/hfsplus#33 is the real fix). A share therefore opens an
-HFS+ image for writing only up to `hfsplus_writable_max`, 256 MiB by default
-(`"0"` never; a number of bytes, or one with K, M, G or T):
+HFS+ image for writing only up to `hfsplus_writable_max`, which is `"0"` (never)
+by default (a number of bytes, or one with K, M, G or T):
 
 ```hcl
 share "mac" {
   image                = "/srv/mac.img"
-  hfsplus_writable_max = "256M"
+  hfsplus_writable_max = "256M"   # opt in
 }
 ```
 
-Above the cap, or when the size is unknown, the share opens **read-only**, still
-with range reads and times, and the server writes one line naming the image, the
-size and the cap:
+With the default, above the cap, or when the size is unknown, the share opens
+**read-only**, still with range reads and times, and the server writes one line
+naming the image and the reason, for instance with no setting:
+
+```text
+/srv/mac.img is an HFS+ volume and hfsplus_writable_max is 0, the default: hfsplus v0.9.0 is not crash-safe (a crash mid-write can leave a torn image marked clean), so HFS+ images are written only when a share sets a size, so mac is read-only
+```
+
+and above the size:
 
 ```text
 /srv/mac.img is an HFS+ volume and it is 1073741824 bytes, over hfsplus_writable_max (268435456 bytes): a writable HFS+ image is held in memory and rewritten whole on every change, so mac is read-only
