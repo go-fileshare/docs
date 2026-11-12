@@ -36,7 +36,26 @@ v0.44.0(hfsplus v0.9.0)以降、HFS+ を含むイメージの共有は、FAT、e
 書き込み可能で開かれます。クライアントはファイルを作成、変更、削除でき、設定した時刻、
 モード、所有者も保存されます。以前は HFS+ イメージは読み取り専用で開かれていました。
 イメージは共有を開くときにメモリへ読み込まれ、変更のたびにファイルへ書き戻されます。
-64 GiB を超えるイメージは読み取り専用で提供されます。
+
+**コスト。** hfsplus v0.9.0 はイメージ全体をメモリに保持し、操作(作成、書き込み、名前変更、
+`Chtimes`)のたびにイメージ全体を書き直します。そのため共有のメモリ使用量はイメージの
+大きさに等しく、変更ごとの I/O も同じです(根本的な解決は go-filesystems/hfsplus#33)。
+したがって共有が HFS+ イメージを書き込み可能で開くのは `hfsplus_writable_max` までで、
+既定は 256 MiB です(`"0"` は常に開かない。バイト数、または K、M、G、T を付けた値):
+
+```hcl
+share "mac" {
+  image                = "/srv/mac.img"
+  hfsplus_writable_max = "256M"
+}
+```
+
+これを超える場合、またはサイズが不明な場合、共有は**読み取り専用**で開かれます(範囲読み取りと
+時刻は引き続き使えます)。サーバーはイメージ、サイズ、上限を示す 1 行を出力します。
+
+```text
+/srv/mac.img is an HFS+ volume and it is 1073741824 bytes, over hfsplus_writable_max (268435456 bytes): a writable HFS+ image is held in memory and rewritten whole on every change, so mac is read-only
+```
 
 **ジャーナル付き**のボリューム(`hdiutil create -fs "Journaled HFS+"` や macOS が作成するもの)は、
 ジャーナルが空のときだけ書き込まれます。これは正常にアンマウントした後の状態です。
@@ -46,12 +65,20 @@ v0.44.0(hfsplus v0.9.0)以降、HFS+ を含むイメージの共有は、FAT、e
 1 行を出力します。
 
 ```text
-/srv/mac.img is an HFS+ volume whose journal holds transactions, so mac is read-only: hfsplus: journaled volume with a journal that is not empty: transactions pending (start 17408, end 34816)
+/srv/mac.img is an HFS+ volume and its journal holds transactions (hfsplus: journaled volume with a journal that is not empty: transactions pending (start 17408, end 34816)), so mac is read-only
 ```
 
 そのような共有を書き込み可能にするには、先にジャーナルを再生させます。イメージを Mac で
-マウントして正常に取り出すか、`fsck_hfs` を実行してください。`read_only = true` の共有は
+マウントして正常に取り出すか、`fsck_hfs` を実行してください。(ドライバーにはイメージを
+メモリに載せずにジャーナルを調べる方法がないため、この場合だけは上限までイメージを読み込んでから
+フォールバックします。)`read_only = true` の共有、デバイス、パーティションは
 書き込み可能でのオープンを試みません。
+
+**ほかの書き込み側。** イメージは全体が書き戻されるため、2 つ目の書き込み側は次の書き戻しで
+上書きされます。書き込み可能でのオープンはイメージに排他的な助言ロック `flock`
+(Linux、macOS、BSD)を取ります。別のプロセス(たとえば同じイメージを使うもう 1 つの fileshare)が
+保持している場合、共有は読み取り専用で開かれ、その旨を出力します。ロックは助言的なので
+macOS のマウントはこれを取らず、ほかのプラットフォームにはロックがありません。
 
 ⛔ **マウント中のイメージに書き込まないでください**。このサーバーでも他のものでも同じです。
 互いの変更を知りません。ほかに何も開いていないイメージを提供してください。

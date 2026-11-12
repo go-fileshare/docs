@@ -38,8 +38,29 @@ Desde la v0.44.0 (hfsplus v0.9.0) un recurso cuya imagen contiene HFS+ se abre
 para escritura, como FAT, exFAT y ext4: un cliente puede crear, modificar y
 borrar archivos, y se almacenan las fechas, los modos y los propietarios que
 establece. Antes, una imagen HFS+ se abría en solo lectura. La imagen se lee en
-memoria al abrir el recurso y cada cambio se escribe de vuelta en el archivo;
-una imagen de más de 64 GiB se sirve en solo lectura.
+memoria al abrir el recurso y cada cambio se escribe de vuelta en el archivo.
+
+**Lo que cuesta.** hfsplus v0.9.0 mantiene toda la imagen en memoria y reescribe
+toda la imagen en cada operación (crear, escribir, renombrar, `Chtimes`), de modo
+que la memoria de un recurso es el tamaño de su imagen, y también lo es la E/S de
+cada cambio (go-filesystems/hfsplus#33 es la solución de fondo). Por eso un
+recurso abre una imagen HFS+ para escritura solo hasta `hfsplus_writable_max`,
+256 MiB por defecto (`"0"` nunca; un número de bytes, o uno con K, M, G o T):
+
+```hcl
+share "mac" {
+  image                = "/srv/mac.img"
+  hfsplus_writable_max = "256M"
+}
+```
+
+Por encima, o si se desconoce el tamaño, el recurso se abre en **solo lectura**,
+aún con lectura por rangos y fechas, y el servidor escribe una línea que nombra
+la imagen, el tamaño y el límite:
+
+```text
+/srv/mac.img is an HFS+ volume and it is 1073741824 bytes, over hfsplus_writable_max (268435456 bytes): a writable HFS+ image is held in memory and rewritten whole on every change, so mac is read-only
+```
 
 Un volumen **con diario** (creado por `hdiutil create -fs "Journaled HFS+"` o por
 macOS) solo se escribe cuando su diario está vacío, que es lo que deja un
@@ -50,12 +71,22 @@ sigue arrancando; al abrir el recurso escribe una línea que nombra la imagen, e
 recurso y el motivo:
 
 ```text
-/srv/mac.img is an HFS+ volume whose journal holds transactions, so mac is read-only: hfsplus: journaled volume with a journal that is not empty: transactions pending (start 17408, end 34816)
+/srv/mac.img is an HFS+ volume and its journal holds transactions (hfsplus: journaled volume with a journal that is not empty: transactions pending (start 17408, end 34816)), so mac is read-only
 ```
 
 Para que un recurso así sea escribible, hay que reproducir primero el diario:
 monte la imagen en un Mac y expúlsela limpiamente, o ejecute `fsck_hfs` sobre
-ella. Un recurso con `read_only = true` nunca intenta la apertura para escritura.
+ella. (El controlador no tiene una comprobación del diario que funcione sin la
+imagen en memoria, así que este caso lee la imagen, hasta el límite, antes de
+volver atrás.) Un recurso con `read_only = true`, un dispositivo y una partición
+nunca intentan la apertura para escritura.
+
+**Otro escritor.** La imagen se vuelca entera, así que un segundo escritor sería
+sobrescrito por el siguiente volcado. La apertura para escritura toma un bloqueo
+consultivo exclusivo `flock` sobre la imagen (Linux, macOS y los BSD); si otro
+proceso lo tiene, por ejemplo un segundo fileshare sobre la misma imagen, el
+recurso se abre en solo lectura y lo dice. El bloqueo es consultivo: un montaje
+de macOS no lo toma, y en otras plataformas no hay bloqueo.
 
 ⛔ **No escriba una imagen que esté montada**, ni con este servidor ni con otra
 cosa: ninguna de las partes conoce los cambios de la otra. Sirva una imagen que

@@ -37,7 +37,29 @@ ouvert en écriture, comme FAT, exFAT et ext4 : un client peut créer, modifier 
 supprimer des fichiers, et les dates, modes et propriétaires qu'il fixe sont
 enregistrés. Auparavant, une image HFS+ était ouverte en lecture seule. L'image
 est lue en mémoire à l'ouverture du partage et chaque modification est réécrite
-dans le fichier ; une image de plus de 64 Gio est servie en lecture seule.
+dans le fichier.
+
+**Ce que ça coûte.** hfsplus v0.9.0 garde toute l'image en mémoire et la réécrit
+entièrement à chaque opération (création, écriture, renommage, `Chtimes`) : la
+mémoire d'un partage est la taille de son image, et l'E/S de chaque modification
+aussi (go-filesystems/hfsplus#33 est la vraie correction). Un partage n'ouvre donc
+une image HFS+ en écriture que jusqu'à `hfsplus_writable_max`, 256 Mio par défaut
+(`"0"` jamais ; un nombre d'octets, ou un nombre suivi de K, M, G ou T) :
+
+```hcl
+share "mac" {
+  image                = "/srv/mac.img"
+  hfsplus_writable_max = "256M"
+}
+```
+
+Au-delà, ou si la taille est inconnue, le partage s'ouvre en **lecture seule**,
+toujours avec la lecture par plages et les dates, et le serveur écrit une ligne
+qui nomme l'image, la taille et la limite :
+
+```text
+/srv/mac.img is an HFS+ volume and it is 1073741824 bytes, over hfsplus_writable_max (268435456 bytes): a writable HFS+ image is held in memory and rewritten whole on every change, so mac is read-only
+```
 
 Un volume **à journal** (créé par `hdiutil create -fs "Journaled HFS+"` ou par
 macOS) n'est écrit que si son journal est vide, ce que laisse un démontage
@@ -48,13 +70,23 @@ quand même ; à l'ouverture du partage il écrit une ligne qui nomme l'image, l
 partage et la raison :
 
 ```text
-/srv/mac.img is an HFS+ volume whose journal holds transactions, so mac is read-only: hfsplus: journaled volume with a journal that is not empty: transactions pending (start 17408, end 34816)
+/srv/mac.img is an HFS+ volume and its journal holds transactions (hfsplus: journaled volume with a journal that is not empty: transactions pending (start 17408, end 34816)), so mac is read-only
 ```
 
 Pour rendre un tel partage inscriptible, il faut d'abord faire rejouer le
 journal : monter l'image sur un Mac puis l'éjecter proprement, ou lancer
-`fsck_hfs` dessus. Un partage avec `read_only = true` n'essaie jamais
-l'ouverture en écriture.
+`fsck_hfs` dessus. (Le pilote n'a pas de vérification du journal qui marche sans
+l'image en mémoire : ce seul cas lit l'image, jusqu'à la limite, avant de se
+rabattre.) Un partage avec `read_only = true`, un périphérique et une partition
+n'essaient jamais l'ouverture en écriture.
+
+**Un autre écrivain.** L'image est réécrite entière : un second écrivain serait
+écrasé par la réécriture suivante. L'ouverture en écriture prend un verrou
+consultatif exclusif `flock` sur l'image (Linux, macOS et les BSD) ; si un autre
+processus le détient, par exemple un second fileshare sur la même image, le
+partage s'ouvre en lecture seule et le dit. Le verrou est consultatif : un
+montage macOS ne le prend pas, et sur les autres plateformes il n'y a pas de
+verrou.
 
 ⛔ **N'écrivez pas dans une image montée**, ni avec ce serveur ni avec autre
 chose : aucun des deux ne connaît les modifications de l'autre. Servez une image

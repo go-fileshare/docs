@@ -36,8 +36,29 @@ Since v0.44.0 (hfsplus v0.9.0) a share whose image holds HFS+ is opened for
 writing, like FAT, exFAT and ext4: a client can create, change and delete
 files, and the times, modes and owners it sets are stored. Before, an HFS+
 image was opened read-only. The image is read into memory when the share opens
-and every change is written back to the file; an image larger than 64 GiB is
-served read-only.
+and every change is written back to the file.
+
+**What it costs.** hfsplus v0.9.0 holds the whole image in memory and rewrites
+the whole image on every operation (a create, a write, a rename, a `Chtimes`),
+so the memory of a share is the size of its image, and so is the I/O of every
+change (go-filesystems/hfsplus#33 is the real fix). A share therefore opens an
+HFS+ image for writing only up to `hfsplus_writable_max`, 256 MiB by default
+(`"0"` never; a number of bytes, or one with K, M, G or T):
+
+```hcl
+share "mac" {
+  image                = "/srv/mac.img"
+  hfsplus_writable_max = "256M"
+}
+```
+
+Above the cap, or when the size is unknown, the share opens **read-only**, still
+with range reads and times, and the server writes one line naming the image, the
+size and the cap:
+
+```text
+/srv/mac.img is an HFS+ volume and it is 1073741824 bytes, over hfsplus_writable_max (268435456 bytes): a writable HFS+ image is held in memory and rewritten whole on every change, so mac is read-only
+```
 
 A **journaled** volume (made by `hdiutil create -fs "Journaled HFS+"` or by
 macOS) is written only when its journal is empty, which is what a clean
@@ -48,12 +69,21 @@ starting; it writes one line when the share opens, naming the image, the share
 and why:
 
 ```text
-/srv/mac.img is an HFS+ volume whose journal holds transactions, so mac is read-only: hfsplus: journaled volume with a journal that is not empty: transactions pending (start 17408, end 34816)
+/srv/mac.img is an HFS+ volume and its journal holds transactions (hfsplus: journaled volume with a journal that is not empty: transactions pending (start 17408, end 34816)), so mac is read-only
 ```
 
 To make such a share writable, have the journal replayed first: mount the
-image on a Mac and eject it cleanly, or run `fsck_hfs` on it. A share with
-`read_only = true` never tries the writable open.
+image on a Mac and eject it cleanly, or run `fsck_hfs` on it. (The driver has no
+journal check that works without the image in memory, so this one case reads the
+image, up to the cap, before it falls back.) A share with `read_only = true`, a
+device and a partition never try the writable open.
+
+**Another writer.** The image is flushed whole, so a second writer would be
+overwritten by the next flush. A writable open takes an exclusive advisory
+`flock` on the image (Linux, macOS and the BSDs); if another process holds it,
+for instance a second fileshare on the same image, the share opens read-only and
+says so. The lock is advisory: a macOS mount does not take it, and on other
+platforms there is no lock.
 
 ⛔ **Do not write an image that is mounted**, by this server or by anything
 else: neither side knows about the other's changes. Serve an image that nothing

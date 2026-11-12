@@ -37,8 +37,30 @@ Schreiben geöffnet, wie FAT, exFAT und ext4: Ein Client kann Dateien anlegen,
 ändern und löschen, und die Zeiten, Modi und Eigentümer, die er setzt, werden
 gespeichert. Vorher wurde ein HFS+-Image schreibgeschützt geöffnet. Das Image
 wird beim Öffnen der Freigabe in den Speicher gelesen, und jede Änderung wird in
-die Datei zurückgeschrieben; ein Image über 64 GiB wird schreibgeschützt
-bereitgestellt.
+die Datei zurückgeschrieben.
+
+**Was das kostet.** hfsplus v0.9.0 hält das ganze Image im Speicher und schreibt
+bei jeder Operation (Anlegen, Schreiben, Umbenennen, `Chtimes`) das ganze Image
+neu; der Speicher einer Freigabe ist also die Größe ihres Images, und ebenso der
+E/A-Aufwand jeder Änderung (go-filesystems/hfsplus#33 ist die eigentliche
+Lösung). Eine Freigabe öffnet ein HFS+-Image deshalb nur bis zu
+`hfsplus_writable_max` zum Schreiben, standardmäßig 256 MiB (`"0"` nie; eine
+Anzahl Bytes oder eine mit K, M, G oder T):
+
+```hcl
+share "mac" {
+  image                = "/srv/mac.img"
+  hfsplus_writable_max = "256M"
+}
+```
+
+Darüber, oder wenn die Größe unbekannt ist, wird die Freigabe **schreibgeschützt**
+geöffnet, weiterhin mit Bereichslesen und Zeiten, und der Server schreibt eine
+Zeile mit Image, Größe und Grenze:
+
+```text
+/srv/mac.img is an HFS+ volume and it is 1073741824 bytes, over hfsplus_writable_max (268435456 bytes): a writable HFS+ image is held in memory and rewritten whole on every change, so mac is read-only
+```
 
 Ein Volume **mit Journal** (erzeugt von `hdiutil create -fs "Journaled HFS+"`
 oder von macOS) wird nur beschrieben, wenn sein Journal leer ist, wie es nach
@@ -49,13 +71,23 @@ stattdessen schreibgeschützt geöffnet**. Der Server startet trotzdem; beim
 Öffnen der Freigabe schreibt er eine Zeile mit Image, Freigabe und Grund:
 
 ```text
-/srv/mac.img is an HFS+ volume whose journal holds transactions, so mac is read-only: hfsplus: journaled volume with a journal that is not empty: transactions pending (start 17408, end 34816)
+/srv/mac.img is an HFS+ volume and its journal holds transactions (hfsplus: journaled volume with a journal that is not empty: transactions pending (start 17408, end 34816)), so mac is read-only
 ```
 
 Damit eine solche Freigabe schreibbar wird, muss das Journal zuerst
 wiedergegeben werden: das Image an einem Mac einhängen und sauber auswerfen
-oder `fsck_hfs` darauf ausführen. Eine Freigabe mit `read_only = true`
-versucht das schreibbare Öffnen nie.
+oder `fsck_hfs` darauf ausführen. (Der Treiber hat keine Journalprüfung ohne das
+Image im Speicher; dieser eine Fall liest das Image bis zur Grenze, bevor er
+zurückfällt.) Eine Freigabe mit `read_only = true`, ein Gerät und eine Partition
+versuchen das schreibbare Öffnen nie.
+
+**Ein anderer Schreiber.** Das Image wird ganz zurückgeschrieben, ein zweiter
+Schreiber würde also vom nächsten Zurückschreiben überschrieben. Das schreibbare
+Öffnen nimmt eine exklusive beratende `flock`-Sperre auf das Image (Linux, macOS
+und die BSDs); hält sie ein anderer Prozess, etwa ein zweites fileshare auf
+demselben Image, wird die Freigabe schreibgeschützt geöffnet und sagt es. Die
+Sperre ist beratend: ein macOS-Einhängen nimmt sie nicht, und auf anderen
+Plattformen gibt es keine Sperre.
 
 ⛔ **Schreiben Sie kein Image, das eingehängt ist**, weder mit diesem Server
 noch mit etwas anderem: keine Seite weiß von den Änderungen der anderen.
