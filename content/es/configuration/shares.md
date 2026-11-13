@@ -34,30 +34,37 @@ share "photos" {
 
 ## Las imágenes HFS+ son de solo lectura salvo que un recurso lo acepte {#hfsplus-images-are-writable}
 
-Desde la v0.44.0 (hfsplus v0.9.0) un recurso cuya imagen contiene HFS+ se abre
-para escritura, como FAT, exFAT y ext4: un cliente puede crear, modificar y
-borrar archivos, y se almacenan las fechas, los modos y los propietarios que
-establece. Antes, una imagen HFS+ se abría en solo lectura. La imagen se lee en
-memoria al abrir el recurso y cada cambio se escribe de vuelta en el archivo.
+Desde v0.44.0 (hfsplus v0.9.0), un recurso cuya imagen contiene HFS+ puede
+abrirse para escritura, como FAT, exFAT y ext4: un cliente puede crear, cambiar y
+borrar archivos, y las fechas, modos y propietarios que establece se guardan.
+Antes, una imagen HFS+ se abría en solo lectura.
 
-**Desactivado por defecto desde la v0.45.1.** hfsplus v0.9.0 no es seguro ante
-caídas: reescribe toda la imagen en cada operación y nunca marca el volumen como
-en uso mientras lo hace, de modo que una caída o un corte de corriente a mitad de
-una escritura deja una imagen rota que sigue diciendo que se desmontó limpiamente,
-y nada la comprueba en el siguiente montaje. En un volumen con diario, la
-solución necesita más que escribir en el sitio. La v0.44.0 y la v0.45.0 escribían
-por defecto (hasta 256 MiB); desde la v0.45.1 un recurso HFS+ se sirve en **solo
-lectura** salvo que defina `hfsplus_writable_max`. La solución es
-go-filesystems/hfsplus#34; el valor por defecto podrá volver cuando se publique.
-Para aceptarlo, defina un tamaño (y haga antes una copia de la imagen),
-asumiendo este riesgo y los costes de abajo.
+**Desactivado por defecto desde v0.45.1, y lo sigue estando.** hfsplus v0.9.0 no
+resistía a los fallos (mantenía toda la imagen en memoria, la reescribía entera
+en cada operación y nunca marcaba el volumen como en uso), así que v0.45.1
+desactivó la escritura, que v0.44.0 y v0.45.0 permitían por defecto (hasta
+256 MiB). **Desde v0.46.0 (hfsplus v0.10.0)**, un volumen HFS+ escribible se
+escribe **en el sitio**:
 
-**Lo que cuesta.** hfsplus v0.9.0 mantiene toda la imagen en memoria y reescribe
-toda la imagen en cada operación (crear, escribir, renombrar, `Chtimes`), de modo
-que la memoria de un recurso es el tamaño de su imagen, y también lo es la E/S de
-cada cambio (go-filesystems/hfsplus#33 es la solución de fondo). Por eso un
-recurso abre una imagen HFS+ para escritura solo hasta `hfsplus_writable_max`,
-`"0"` por defecto (nunca; un número de bytes, o uno con K, M, G o T):
+- **Sin coste de memoria.** La imagen no se copia en memoria (una caché de lectura
+  de 8 MiB); solo se escriben los sectores que cambia cada confirmación. El
+  límite de 64 GiB desaparece.
+- **Un fallo es visible.** Cada confirmación marca el volumen como en uso: el bit
+  de desmontado y el bit de journal se borran en la primera escritura de la
+  cabecera y se restauran al final, de modo que `fsck_hfs -q` ve un fallo,
+  también en volúmenes con journal.
+- **Una escritura fallida detiene el volumen.** Tras un vaciado fallido, el
+  volumen rechaza las escrituras (`ErrVolumeFailed`) hasta que se reabre el
+  recurso.
+
+Sigue siendo **opcional**, por lo que hfsplus aún no ha terminado: una escritura
+pequeña y duradera cuesta 3 fsync por confirmación y es unas 3 veces más lenta
+que en macOS (go-filesystems/hfsplus#35), las pruebas de fallos aún no están
+reforzadas (go-filesystems/hfsplus#37), y tras un fallo un volumen con journal se
+monta sin su journal hasta `diskutil enableJournal`. El valor por defecto podrá
+volver cuando se corrija. Haga antes una copia de la imagen. Un recurso lo
+acepta con `hfsplus_writable_max`, que por defecto es `"0"` (nunca; un número de
+bytes, o uno con K, M, G o T):
 
 ```hcl
 share "mac" {
@@ -66,48 +73,66 @@ share "mac" {
 }
 ```
 
-Por encima, o si se desconoce el tamaño, el recurso se abre en **solo lectura**,
-aún con lectura por rangos y fechas, y el servidor escribe una línea que nombra
-la imagen y el motivo, por ejemplo sin ningún ajuste:
+Desde v0.46.0 el tamaño ya no limita la memoria. Sigue siendo un tamaño para que
+una configuración escrita para v0.44.0 a v0.45.1 signifique lo que significaba
+(un recurso que decía `"256M"` no empieza a escribir una imagen de 2 TiB); un
+valor grande como `"1T"` es la simple aceptación.
+
+Con el valor por defecto, por encima del tamaño o con tamaño desconocido, el
+recurso se abre en **solo lectura**, aún con lecturas por rangos y fechas, y el
+servidor escribe una línea con la imagen y el motivo, por ejemplo sin ningún
+ajuste:
 
 ```text
-/srv/mac.img is an HFS+ volume and hfsplus_writable_max is 0, the default: hfsplus v0.9.0 is not crash-safe (a crash mid-write can leave a torn image marked clean), so HFS+ images are written only when a share sets a size, so mac is read-only
+/srv/mac.img is an HFS+ volume and hfsplus_writable_max is 0, the default: HFS+ images are written only when a share sets a size, because a durable small write is about 3x slower than on macOS (go-filesystems/hfsplus#35), the crash tests are not finished (go-filesystems/hfsplus#37), and after a crash a journaled volume mounts without its journal until diskutil enableJournal, so mac is read-only
 ```
 
 y por encima del tamaño:
 
 ```text
-/srv/mac.img is an HFS+ volume and it is 1073741824 bytes, over hfsplus_writable_max (268435456 bytes): a writable HFS+ image is held in memory and rewritten whole on every change, so mac is read-only
+/srv/mac.img is an HFS+ volume and it is 1073741824 bytes, over hfsplus_writable_max (268435456 bytes), so mac is read-only
 ```
 
-Un volumen **con diario** (creado por `hdiutil create -fs "Journaled HFS+"` o por
-macOS) solo se escribe cuando su diario está vacío, que es lo que deja un
-desmontaje limpio. Un diario con transacciones, o uno que no se puede
+**Una recarga sigue el ajuste (desde v0.46.0).** Cuando una recarga cambia si una
+imagen HFS+ se escribe (ajuste quitado, añadido o movido a uno y otro lado del
+tamaño de la imagen), la imagen se vuelve a abrir: quitar la aceptación deja el
+recurso en solo lectura al instante, añadirla lo hace escribible. Antes de
+v0.46.0 se conservaba el controlador abierto, así que un recurso seguía siendo
+escribible tras quitar su aceptación hasta que el servidor se reiniciaba. Pasar
+de un tamaño escribible a otro no cambia nada.
+
+Un volumen **con journal** (creado por `hdiutil create -fs "Journaled HFS+"` o por
+macOS) solo se escribe cuando su journal está vacío, que es lo que deja un
+desmontaje limpio. Un journal con transacciones, o uno que no se puede
 verificar, sería reproducido por macOS sobre lo que escribe el servidor, así que
-el controlador lo rechaza y **el recurso se abre en solo lectura**. El servidor
-sigue arrancando; al abrir el recurso escribe una línea que nombra la imagen, el
-recurso y el motivo:
+el controlador lo rechaza y **el recurso se abre en solo lectura en su lugar**. El
+servidor sigue arrancando; al abrir el recurso escribe una línea con la imagen,
+el recurso y el motivo:
 
 ```text
 /srv/mac.img is an HFS+ volume and its journal holds transactions (hfsplus: journaled volume with a journal that is not empty: transactions pending (start 17408, end 34816)), so mac is read-only
 ```
 
-Para que un recurso así sea escribible, hay que reproducir primero el diario:
-monte la imagen en un Mac y expúlsela limpiamente, o ejecute `fsck_hfs` sobre
-ella. (El controlador no tiene una comprobación del diario que funcione sin la
-imagen en memoria, así que este caso lee la imagen, hasta el límite, antes de
-volver atrás.) Un recurso con `read_only = true`, un dispositivo y una partición
-nunca intentan la apertura para escritura.
+Para que un recurso así sea escribible, hay que reproducir antes el journal:
+montar la imagen en un Mac y expulsarla limpiamente, o ejecutar `fsck_hfs` sobre
+ella. Mientras se escribe un volumen con journal, su bit de journal está
+borrado; tras un fallo sigue borrado, así que el volumen se monta sin journal
+hasta `diskutil enableJournal`. Un recurso con `read_only = true`, un dispositivo
+y una partición nunca intentan la apertura para escritura.
 
-**Otro escritor.** La imagen se vuelca entera, así que un segundo escritor sería
-sobrescrito por el siguiente volcado. La apertura para escritura toma un bloqueo
-consultivo exclusivo `flock` sobre la imagen (Linux, macOS y los BSD); si otro
-proceso lo tiene, por ejemplo un segundo fileshare sobre la misma imagen, el
-recurso se abre en solo lectura y lo dice. El bloqueo es consultivo: un montaje
-de macOS no lo toma, y en otras plataformas no hay bloqueo.
+La imagen se abre una segunda vez por su nombre para escribir (hfsplus recibe una
+ruta), y solo si ese nombre sigue siendo el mismo archivo que tiene el recurso;
+si no, el recurso se abre en solo lectura y lo dice.
 
-⛔ **No escriba una imagen que esté montada**, ni con este servidor ni con otra
-cosa: ninguna de las partes conoce los cambios de la otra. Sirva una imagen que
+**Otro escritor.** Un segundo escritor sobre la misma imagen la corrompería. La
+apertura para escritura toma un bloqueo consultivo exclusivo `flock` sobre la
+imagen (Linux, macOS y los BSD); si otro proceso lo tiene, por ejemplo un segundo
+fileshare sobre la misma imagen, el recurso se abre en solo lectura y lo dice. El
+bloqueo es consultivo: un montaje de macOS no lo toma, y en otras plataformas no
+hay bloqueo.
+
+⛔ **No escriba una imagen montada**, ni con este servidor ni con otra cosa:
+ninguna de las dos partes conoce los cambios de la otra. Sirva una imagen que
 nada más tenga abierta.
 
 ## Una imagen escribible que el SO tiene montada se sirve en solo lectura {#an-image-the-os-has-mounted}

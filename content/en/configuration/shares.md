@@ -32,29 +32,33 @@ share "photos" {
 
 ## HFS+ images are read-only unless a share opts in {#hfsplus-images-are-writable}
 
-Since v0.44.0 (hfsplus v0.9.0) a share whose image holds HFS+ is opened for
+Since v0.44.0 (hfsplus v0.9.0) a share whose image holds HFS+ can be opened for
 writing, like FAT, exFAT and ext4: a client can create, change and delete
 files, and the times, modes and owners it sets are stored. Before, an HFS+
-image was opened read-only. The image is read into memory when the share opens
-and every change is written back to the file.
+image was opened read-only.
 
-**Off by default since v0.45.1.** hfsplus v0.9.0 is not crash-safe: it rewrites
-the whole image on every operation and never marks the volume as in use while it
-does, so a crash or power loss in the middle of a write leaves a torn image that
-still says it was cleanly unmounted, and nothing checks it at the next mount. On
-a journaled volume the fix needs more than writing in place. v0.44.0 and v0.45.0
-wrote by default (up to 256 MiB); since v0.45.1 an HFS+ share is served
-**read-only** unless it sets `hfsplus_writable_max`. The fix is
-go-filesystems/hfsplus#34; the default can come back when it is released. To
-opt in, set a size (and back the image up first), accepting this risk and the
-costs below.
+**Off by default since v0.45.1, and still off.** hfsplus v0.9.0 was not
+crash-safe (it held the whole image in memory, rewrote it whole on every
+operation and never marked the volume as in use), so v0.45.1 turned writing off
+after v0.44.0 and v0.45.0 had written by default (up to 256 MiB). **Since
+v0.46.0 (hfsplus v0.10.0)** a writable HFS+ volume is written **in place**:
 
-**What it costs.** hfsplus v0.9.0 holds the whole image in memory and rewrites
-the whole image on every operation (a create, a write, a rename, a `Chtimes`),
-so the memory of a share is the size of its image, and so is the I/O of every
-change (go-filesystems/hfsplus#33 is the real fix). A share therefore opens an
-HFS+ image for writing only up to `hfsplus_writable_max`, which is `"0"` (never)
-by default (a number of bytes, or one with K, M, G or T):
+- **No memory cost.** The image is not copied into memory (an 8 MiB read cache);
+  only the sectors a commit changes are written. The 64 GiB ceiling is gone.
+- **A crash is visible.** Each commit marks the volume as in use: the unmounted
+  bit and the journaled bit are cleared in the first header write and restored
+  at the end, so `fsck_hfs -q` sees a crash, journaled volumes included.
+- **A failed write stops the volume.** After a failed flush the volume refuses
+  writes (`ErrVolumeFailed`) until the share is reopened.
+
+It stays **opt-in**, because of what hfsplus has not finished: a durable small
+write costs 3 fsyncs per commit and is about 3x slower than on macOS
+(go-filesystems/hfsplus#35), the crash tests are not hardened yet
+(go-filesystems/hfsplus#37), and after a crash a journaled volume mounts without
+its journal until `diskutil enableJournal`. The default can come back when
+those are fixed. Back the image up first. A share opts in with
+`hfsplus_writable_max`, which is `"0"` (never) by default (a number of bytes, or
+one with K, M, G or T):
 
 ```hcl
 share "mac" {
@@ -63,19 +67,31 @@ share "mac" {
 }
 ```
 
-With the default, above the cap, or when the size is unknown, the share opens
+Since v0.46.0 the size no longer bounds memory. It stays a size, so that a
+configuration written for v0.44.0 to v0.45.1 means what it did (a share that
+said `"256M"` does not start writing a 2 TiB image); a large value such as
+`"1T"` is the plain opt-in.
+
+With the default, above the size, or when the size is unknown, the share opens
 **read-only**, still with range reads and times, and the server writes one line
 naming the image and the reason, for instance with no setting:
 
 ```text
-/srv/mac.img is an HFS+ volume and hfsplus_writable_max is 0, the default: hfsplus v0.9.0 is not crash-safe (a crash mid-write can leave a torn image marked clean), so HFS+ images are written only when a share sets a size, so mac is read-only
+/srv/mac.img is an HFS+ volume and hfsplus_writable_max is 0, the default: HFS+ images are written only when a share sets a size, because a durable small write is about 3x slower than on macOS (go-filesystems/hfsplus#35), the crash tests are not finished (go-filesystems/hfsplus#37), and after a crash a journaled volume mounts without its journal until diskutil enableJournal, so mac is read-only
 ```
 
 and above the size:
 
 ```text
-/srv/mac.img is an HFS+ volume and it is 1073741824 bytes, over hfsplus_writable_max (268435456 bytes): a writable HFS+ image is held in memory and rewritten whole on every change, so mac is read-only
+/srv/mac.img is an HFS+ volume and it is 1073741824 bytes, over hfsplus_writable_max (268435456 bytes), so mac is read-only
 ```
+
+**A reload follows the setting (since v0.46.0).** When a reload changes whether
+an HFS+ image is written (the setting removed, added, or moved across the image's
+size), the image is opened again: removing the opt-in makes the share read-only
+at once, adding it makes the share writable. Before v0.46.0 the open driver was
+kept, so a share stayed writable after its opt-in was removed until the server
+restarted. A size changed from one writable value to another changes nothing.
 
 A **journaled** volume (made by `hdiutil create -fs "Journaled HFS+"` or by
 macOS) is written only when its journal is empty, which is what a clean
@@ -90,17 +106,21 @@ and why:
 ```
 
 To make such a share writable, have the journal replayed first: mount the
-image on a Mac and eject it cleanly, or run `fsck_hfs` on it. (The driver has no
-journal check that works without the image in memory, so this one case reads the
-image, up to the cap, before it falls back.) A share with `read_only = true`, a
-device and a partition never try the writable open.
+image on a Mac and eject it cleanly, or run `fsck_hfs` on it. While a journaled
+volume is being written its journaled bit is cleared; after a crash it stays
+cleared, so the volume mounts non-journaled until `diskutil enableJournal`. A
+share with `read_only = true`, a device and a partition never try the writable
+open.
 
-**Another writer.** The image is flushed whole, so a second writer would be
-overwritten by the next flush. A writable open takes an exclusive advisory
-`flock` on the image (Linux, macOS and the BSDs); if another process holds it,
-for instance a second fileshare on the same image, the share opens read-only and
-says so. The lock is advisory: a macOS mount does not take it, and on other
-platforms there is no lock.
+The image is opened a second time by its name for writing (hfsplus takes a
+path), and only if that name is still the very file the share holds; otherwise
+the share opens read-only and says so.
+
+**Another writer.** A second writer on the same image would corrupt it. A
+writable open takes an exclusive advisory `flock` on the image (Linux, macOS and
+the BSDs); if another process holds it, for instance a second fileshare on the
+same image, the share opens read-only and says so. The lock is advisory: a macOS
+mount does not take it, and on other platforms there is no lock.
 
 ⛔ **Do not write an image that is mounted**, by this server or by anything
 else: neither side knows about the other's changes. Serve an image that nothing

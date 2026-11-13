@@ -32,31 +32,36 @@ share "photos" {
 
 ## Les images HFS+ sont en lecture seule tant qu'un partage n'y consent pas {#hfsplus-images-are-writable}
 
-Depuis la v0.44.0 (hfsplus v0.9.0), un partage dont l'image contient du HFS+ est
-ouvert en écriture, comme FAT, exFAT et ext4 : un client peut créer, modifier et
-supprimer des fichiers, et les dates, modes et propriétaires qu'il fixe sont
-enregistrés. Auparavant, une image HFS+ était ouverte en lecture seule. L'image
-est lue en mémoire à l'ouverture du partage et chaque modification est réécrite
-dans le fichier.
+Depuis la v0.44.0 (hfsplus v0.9.0), un partage dont l'image contient du HFS+ peut
+être ouvert en écriture, comme FAT, exFAT et ext4 : un client peut créer,
+modifier et supprimer des fichiers, et les dates, modes et propriétaires qu'il
+fixe sont enregistrés. Auparavant, une image HFS+ était ouverte en lecture seule.
 
-**Désactivé par défaut depuis la v0.45.1.** hfsplus v0.9.0 ne résiste pas aux
-plantages : il réécrit toute l'image à chaque opération et ne marque jamais le
-volume comme utilisé pendant ce temps, si bien qu'un plantage ou une coupure de
-courant au milieu d'une écriture laisse une image déchirée qui se dit toujours
-proprement démontée, et que rien ne vérifie au montage suivant. Sur un volume à
-journal, la correction demande plus qu'écrire en place. La v0.44.0 et la v0.45.0
-écrivaient par défaut (jusqu'à 256 Mio) ; depuis la v0.45.1, un partage HFS+ est
-servi en **lecture seule** sauf s'il définit `hfsplus_writable_max`. La correction
-est go-filesystems/hfsplus#34 ; le défaut pourra revenir à sa publication. Pour y
-consentir, définissez une taille (et sauvegardez d'abord l'image), en acceptant ce
-risque et les coûts ci-dessous.
+**Désactivé par défaut depuis la v0.45.1, et toujours désactivé.** hfsplus v0.9.0
+ne résistait pas aux plantages (il gardait toute l'image en mémoire, la
+réécrivait entièrement à chaque opération et ne marquait jamais le volume comme
+utilisé) : la v0.45.1 a donc désactivé l'écriture, que la v0.44.0 et la v0.45.0
+activaient par défaut (jusqu'à 256 Mio). **Depuis la v0.46.0 (hfsplus v0.10.0)**,
+un volume HFS+ inscriptible est écrit **en place** :
 
-**Ce que ça coûte.** hfsplus v0.9.0 garde toute l'image en mémoire et la réécrit
-entièrement à chaque opération (création, écriture, renommage, `Chtimes`) : la
-mémoire d'un partage est la taille de son image, et l'E/S de chaque modification
-aussi (go-filesystems/hfsplus#33 est la vraie correction). Un partage n'ouvre donc
-une image HFS+ en écriture que jusqu'à `hfsplus_writable_max`, `"0"` par défaut
-(jamais ; un nombre d'octets, ou un nombre suivi de K, M, G ou T) :
+- **Aucun coût en mémoire.** L'image n'est pas copiée en mémoire (un cache de
+  lecture de 8 Mio) ; seuls les secteurs modifiés par une validation sont écrits.
+  Le plafond de 64 Gio a disparu.
+- **Un plantage est visible.** Chaque validation marque le volume comme utilisé :
+  le bit « démonté » et le bit « journalisé » sont effacés dès la première
+  écriture de l'en-tête et rétablis à la fin, si bien que `fsck_hfs -q` voit un
+  plantage, volumes à journal compris.
+- **Une écriture échouée arrête le volume.** Après un vidage échoué, le volume
+  refuse les écritures (`ErrVolumeFailed`) jusqu'à la réouverture du partage.
+
+Cela reste **sur consentement**, à cause de ce que hfsplus n'a pas terminé : une
+petite écriture durable coûte 3 fsync par validation et est environ 3 fois plus
+lente que sur macOS (go-filesystems/hfsplus#35), les tests de plantage ne sont
+pas encore durcis (go-filesystems/hfsplus#37), et après un plantage un volume à
+journal se monte sans son journal jusqu'à `diskutil enableJournal`. Le défaut
+pourra revenir quand cela sera corrigé. Sauvegardez d'abord l'image. Un partage y
+consent avec `hfsplus_writable_max`, `"0"` par défaut (jamais ; un nombre
+d'octets, ou un nombre suivi de K, M, G ou T) :
 
 ```hcl
 share "mac" {
@@ -65,19 +70,33 @@ share "mac" {
 }
 ```
 
-Au-delà, ou si la taille est inconnue, le partage s'ouvre en **lecture seule**,
-toujours avec la lecture par plages et les dates, et le serveur écrit une ligne
-qui nomme l'image et la raison, par exemple sans réglage :
+Depuis la v0.46.0, la taille ne borne plus la mémoire. Elle reste une taille pour
+qu'une configuration écrite pour la v0.44.0 à la v0.45.1 garde son sens (un
+partage qui disait `"256M"` ne se met pas à écrire une image de 2 Tio) ; une
+grande valeur comme `"1T"` est le simple consentement.
+
+Avec le défaut, au-delà de la taille, ou si la taille est inconnue, le partage
+s'ouvre en **lecture seule**, toujours avec la lecture par plages et les dates,
+et le serveur écrit une ligne qui nomme l'image et la raison, par exemple sans
+réglage :
 
 ```text
-/srv/mac.img is an HFS+ volume and hfsplus_writable_max is 0, the default: hfsplus v0.9.0 is not crash-safe (a crash mid-write can leave a torn image marked clean), so HFS+ images are written only when a share sets a size, so mac is read-only
+/srv/mac.img is an HFS+ volume and hfsplus_writable_max is 0, the default: HFS+ images are written only when a share sets a size, because a durable small write is about 3x slower than on macOS (go-filesystems/hfsplus#35), the crash tests are not finished (go-filesystems/hfsplus#37), and after a crash a journaled volume mounts without its journal until diskutil enableJournal, so mac is read-only
 ```
 
 et au-delà de la taille :
 
 ```text
-/srv/mac.img is an HFS+ volume and it is 1073741824 bytes, over hfsplus_writable_max (268435456 bytes): a writable HFS+ image is held in memory and rewritten whole on every change, so mac is read-only
+/srv/mac.img is an HFS+ volume and it is 1073741824 bytes, over hfsplus_writable_max (268435456 bytes), so mac is read-only
 ```
+
+**Un rechargement suit le réglage (depuis la v0.46.0).** Quand un rechargement
+change le fait qu'une image HFS+ soit écrite (réglage retiré, ajouté, ou déplacé
+de part et d'autre de la taille de l'image), l'image est rouverte : retirer le
+consentement rend le partage aussitôt en lecture seule, l'ajouter le rend
+inscriptible. Avant la v0.46.0, le pilote ouvert était conservé : un partage
+restait inscriptible après le retrait de son consentement, jusqu'au redémarrage
+du serveur. Passer d'une taille inscriptible à une autre ne change rien.
 
 Un volume **à journal** (créé par `hdiutil create -fs "Journaled HFS+"` ou par
 macOS) n'est écrit que si son journal est vide, ce que laisse un démontage
@@ -93,18 +112,21 @@ partage et la raison :
 
 Pour rendre un tel partage inscriptible, il faut d'abord faire rejouer le
 journal : monter l'image sur un Mac puis l'éjecter proprement, ou lancer
-`fsck_hfs` dessus. (Le pilote n'a pas de vérification du journal qui marche sans
-l'image en mémoire : ce seul cas lit l'image, jusqu'à la limite, avant de se
-rabattre.) Un partage avec `read_only = true`, un périphérique et une partition
-n'essaient jamais l'ouverture en écriture.
+`fsck_hfs` dessus. Pendant l'écriture d'un volume à journal, son bit « journalisé »
+est effacé ; après un plantage il le reste, et le volume se monte donc sans
+journal jusqu'à `diskutil enableJournal`. Un partage avec `read_only = true`, un
+périphérique et une partition n'essaient jamais l'ouverture en écriture.
 
-**Un autre écrivain.** L'image est réécrite entière : un second écrivain serait
-écrasé par la réécriture suivante. L'ouverture en écriture prend un verrou
-consultatif exclusif `flock` sur l'image (Linux, macOS et les BSD) ; si un autre
-processus le détient, par exemple un second fileshare sur la même image, le
-partage s'ouvre en lecture seule et le dit. Le verrou est consultatif : un
-montage macOS ne le prend pas, et sur les autres plateformes il n'y a pas de
-verrou.
+L'image est ouverte une seconde fois par son nom pour l'écriture (hfsplus prend
+un chemin), et seulement si ce nom désigne encore le fichier même que le partage
+détient ; sinon le partage s'ouvre en lecture seule et le dit.
+
+**Un autre écrivain.** Un second écrivain sur la même image la corromprait.
+L'ouverture en écriture prend un verrou consultatif exclusif `flock` sur l'image
+(Linux, macOS et les BSD) ; si un autre processus le détient, par exemple un
+second fileshare sur la même image, le partage s'ouvre en lecture seule et le
+dit. Le verrou est consultatif : un montage macOS ne le prend pas, et sur les
+autres plateformes il n'y a pas de verrou.
 
 ⛔ **N'écrivez pas dans une image montée**, ni avec ce serveur ni avec autre
 chose : aucun des deux ne connaît les modifications de l'autre. Servez une image

@@ -33,24 +33,28 @@ share "photos" {
 ## HFS+ 이미지는 공유가 동의하지 않으면 읽기 전용 {#hfsplus-images-are-writable}
 
 v0.44.0(hfsplus v0.9.0)부터 HFS+가 들어 있는 이미지의 공유는 FAT, exFAT, ext4처럼
-쓰기용으로 열립니다. 클라이언트는 파일을 만들고, 바꾸고, 지울 수 있으며, 설정한 시간,
-모드, 소유자도 저장됩니다. 이전에는 HFS+ 이미지가 읽기 전용으로 열렸습니다. 이미지는
-공유를 열 때 메모리로 읽히고 모든 변경은 파일에 다시 기록됩니다.
+쓰기용으로 열 수 있습니다. 클라이언트는 파일을 만들고, 바꾸고, 지울 수 있으며, 설정한 시간,
+모드, 소유자도 저장됩니다. 이전에는 HFS+ 이미지가 읽기 전용으로 열렸습니다.
 
-**v0.45.1부터 기본으로 꺼짐.** hfsplus v0.9.0은 충돌에 안전하지 않습니다. 작업마다
-이미지 전체를 다시 쓰고 그동안 볼륨을 사용 중으로 표시하지 않으므로, 쓰는 도중의 충돌이나
-정전은 정상적으로 마운트 해제된 것처럼 보이는 손상된 이미지를 남기고, 다음 마운트 때 아무것도
-검사되지 않습니다. 저널이 있는 볼륨에서는 제자리 쓰기만으로는 해결되지 않습니다. v0.44.0과
-v0.45.0은 기본으로 썼습니다(최대 256 MiB). v0.45.1부터 HFS+ 공유는 `hfsplus_writable_max`를
-설정하지 않으면 **읽기 전용**으로 제공됩니다. 해결책은 go-filesystems/hfsplus#34이며,
-공개되면 기본값을 되돌릴 수 있습니다. 동의하려면 크기를 설정하고(먼저 이미지를 백업하세요)
-이 위험과 아래 비용을 감수해야 합니다.
+**v0.45.1부터 기본으로 꺼져 있고, 지금도 꺼져 있습니다.** hfsplus v0.9.0은 충돌에 안전하지
+않았습니다(이미지 전체를 메모리에 두고, 작업마다 전체를 다시 쓰고, 볼륨을 사용 중으로 표시하지
+않았습니다). 그래서 v0.45.1이 쓰기를 껐습니다(v0.44.0과 v0.45.0은 기본으로 썼습니다. 최대
+256 MiB). **v0.46.0(hfsplus v0.10.0)부터** 쓰기 가능한 HFS+ 볼륨은 **제자리에서** 기록됩니다.
 
-**비용.** hfsplus v0.9.0은 이미지 전체를 메모리에 두고 작업(생성, 쓰기, 이름 변경, `Chtimes`)마다
-이미지 전체를 다시 씁니다. 따라서 공유의 메모리는 이미지 크기와 같고 변경마다의 I/O도
-마찬가지입니다(근본적인 해결은 go-filesystems/hfsplus#33). 그래서 공유는 `hfsplus_writable_max`
-이하의 HFS+ 이미지만 쓰기용으로 열며, 기본값은 `"0"`(열지 않음)입니다(바이트 수 또는
-K, M, G, T가 붙은 값):
+- **메모리 비용이 없습니다.** 이미지를 메모리에 복사하지 않으며(8 MiB 읽기 캐시만 있음), 커밋이
+  바꾼 섹터만 기록합니다. 64 GiB 상한도 없어졌습니다.
+- **충돌이 보입니다.** 커밋마다 볼륨을 사용 중으로 표시합니다. 마운트 해제 비트와 저널 비트는 첫
+  헤더 쓰기에서 지워지고 마지막에 복원되므로 `fsck_hfs -q`가 충돌을 알아볼 수 있습니다. 저널이 있는
+  볼륨도 마찬가지입니다.
+- **쓰기 실패는 볼륨을 멈춥니다.** 플러시가 실패하면 공유를 다시 열 때까지 볼륨은 쓰기를
+  거부합니다(`ErrVolumeFailed`).
+
+그래도 **옵트인**으로 남아 있습니다. hfsplus에 아직 끝나지 않은 일이 있기 때문입니다. 내구성 있는
+작은 쓰기는 커밋당 fsync 3번이 필요해 macOS보다 약 3배 느리고(go-filesystems/hfsplus#35),
+충돌 테스트는 아직 강화되지 않았으며(go-filesystems/hfsplus#37), 충돌 뒤에는 저널이 있는 볼륨이
+`diskutil enableJournal`을 실행할 때까지 저널 없이 마운트됩니다. 이것들이 고쳐지면 기본값을 되돌릴
+수 있습니다. 먼저 이미지를 백업하세요. 공유는 `hfsplus_writable_max`로 동의하며, 기본값은
+`"0"`(쓰지 않음; 바이트 수, 또는 K, M, G, T가 붙은 수)입니다.
 
 ```hcl
 share "mac" {
@@ -59,41 +63,53 @@ share "mac" {
 }
 ```
 
-이를 넘거나 크기를 알 수 없으면 공유는 **읽기 전용**으로 열리며(범위 읽기와 시간은 그대로),
-서버는 이미지와 이유를 밝히는 한 줄을 출력합니다. 설정이 없을 때의 예:
+v0.46.0부터 이 크기는 더 이상 메모리를 제한하지 않습니다. v0.44.0~v0.45.1용으로 쓴 설정이
+예전과 같은 뜻을 유지하도록 크기로 남겨 두었습니다(`"256M"`이라고 쓴 공유가 2 TiB 이미지를 쓰기
+시작하지는 않습니다). `"1T"` 같은 큰 값은 단순한 동의가 됩니다.
+
+기본값일 때, 크기를 넘을 때, 크기를 알 수 없을 때 공유는 **읽기 전용**으로 열리며(범위 읽기와 시간은
+그대로 동작합니다), 서버는 이미지와 이유를 밝히는 한 줄을 씁니다. 예를 들어 설정이 없을 때:
 
 ```text
-/srv/mac.img is an HFS+ volume and hfsplus_writable_max is 0, the default: hfsplus v0.9.0 is not crash-safe (a crash mid-write can leave a torn image marked clean), so HFS+ images are written only when a share sets a size, so mac is read-only
+/srv/mac.img is an HFS+ volume and hfsplus_writable_max is 0, the default: HFS+ images are written only when a share sets a size, because a durable small write is about 3x slower than on macOS (go-filesystems/hfsplus#35), the crash tests are not finished (go-filesystems/hfsplus#37), and after a crash a journaled volume mounts without its journal until diskutil enableJournal, so mac is read-only
 ```
 
-크기를 넘었을 때:
+크기를 넘을 때:
 
 ```text
-/srv/mac.img is an HFS+ volume and it is 1073741824 bytes, over hfsplus_writable_max (268435456 bytes): a writable HFS+ image is held in memory and rewritten whole on every change, so mac is read-only
+/srv/mac.img is an HFS+ volume and it is 1073741824 bytes, over hfsplus_writable_max (268435456 bytes), so mac is read-only
 ```
 
-**저널이 있는** 볼륨(`hdiutil create -fs "Journaled HFS+"`나 macOS가 만든 것)은 저널이
-비어 있을 때만 기록됩니다. 정상적으로 마운트를 해제하면 그렇게 남습니다. 트랜잭션이
-들어 있는 저널이나 검증할 수 없는 저널은 서버가 쓴 내용 위에 macOS가 다시 재생해 버리므로
-드라이버가 거부하며, **공유는 대신 읽기 전용으로 열립니다**. 서버는 계속 시작됩니다.
-공유를 열 때 이미지, 공유, 이유를 밝히는 한 줄을 출력합니다.
+**다시 불러오기는 설정을 따릅니다(v0.46.0부터).** 다시 불러오기로 HFS+ 이미지를 쓰는지 여부가
+바뀌면(설정을 지우거나, 추가하거나, 이미지 크기를 사이에 두고 옮긴 경우) 이미지를 다시 엽니다.
+동의를 지우면 공유가 즉시 읽기 전용이 되고, 추가하면 쓰기 가능해집니다. v0.46.0 이전에는 열려 있는
+드라이버를 그대로 써서, 동의를 지워도 서버를 다시 시작할 때까지 공유가 쓰기 가능한 채로 남았습니다.
+쓰기 가능한 크기에서 다른 쓰기 가능한 크기로 바꾸는 것은 아무것도 바꾸지 않습니다.
+
+**저널이 있는** 볼륨(`hdiutil create -fs "Journaled HFS+"`나 macOS가 만든 것)은 저널이 비어 있을
+때만 기록됩니다. 정상적으로 마운트 해제하면 비어 있게 됩니다. 트랜잭션이 있는 저널이나 검증할 수
+없는 저널은 서버가 쓴 내용 위에 macOS가 재생해 버리므로 드라이버가 거부하고, **공유는 대신 읽기
+전용으로 열립니다**. 서버는 계속 시작하며, 공유를 열 때 이미지, 공유, 이유를 밝히는 한 줄을 씁니다.
 
 ```text
 /srv/mac.img is an HFS+ volume and its journal holds transactions (hfsplus: journaled volume with a journal that is not empty: transactions pending (start 17408, end 34816)), so mac is read-only
 ```
 
-이런 공유를 쓰기 가능하게 하려면 먼저 저널을 재생시켜야 합니다. 이미지를 Mac에 마운트한 뒤
-정상적으로 꺼내거나 `fsck_hfs`를 실행하세요. (드라이버에는 이미지를 메모리에 올리지 않고
-저널을 확인하는 방법이 없어서, 이 경우에만 한도까지 이미지를 읽은 뒤 되돌아갑니다.)
-`read_only = true`인 공유, 장치, 파티션은 쓰기용 열기를 시도하지 않습니다.
+이런 공유를 쓰기 가능하게 하려면 먼저 저널을 재생시켜야 합니다. Mac에서 이미지를 마운트한 뒤
+정상적으로 꺼내거나, 이미지에 `fsck_hfs`를 실행하세요. 저널이 있는 볼륨을 쓰는 동안에는 저널 비트가
+지워져 있고, 충돌 뒤에도 지워진 채로 남으므로 볼륨은 `diskutil enableJournal`을 실행할 때까지
+저널 없이 마운트됩니다. `read_only = true`인 공유, 장치, 파티션은 쓰기용 열기를 시도하지 않습니다.
 
-**다른 쓰기 주체.** 이미지는 통째로 다시 기록되므로 두 번째 쓰기 주체는 다음 기록에 덮어써집니다.
-쓰기용 열기는 이미지에 배타적 권고 잠금 `flock`을 겁니다(Linux, macOS, BSD). 다른 프로세스(예: 같은
-이미지를 쓰는 두 번째 fileshare)가 잠금을 쥐고 있으면 공유는 읽기 전용으로 열리고 그렇다고
-알립니다. 잠금은 권고용이라 macOS 마운트는 잠금을 걸지 않으며, 다른 플랫폼에는 잠금이 없습니다.
+이미지는 쓰기를 위해 이름으로 한 번 더 열리며(hfsplus는 경로를 받습니다), 그 이름이 공유가 쥐고 있는
+바로 그 파일을 가리킬 때만 그렇습니다. 그렇지 않으면 공유는 읽기 전용으로 열리고 그 사실을 알립니다.
 
-⛔ **마운트된 이미지에는 쓰지 마세요**. 이 서버든 다른 무엇이든 마찬가지입니다.
-어느 쪽도 상대의 변경을 알지 못합니다. 다른 것이 열어 두지 않은 이미지를 제공하세요.
+**다른 쓰기 주체.** 같은 이미지에 두 번째 쓰기 주체가 있으면 이미지가 손상됩니다. 쓰기용으로 열 때
+이미지에 배타적인 권고 잠금 `flock`을 잡습니다(Linux, macOS, BSD). 다른 프로세스가 잡고 있으면(예:
+같은 이미지의 두 번째 fileshare) 공유는 읽기 전용으로 열리고 그 사실을 알립니다. 잠금은 권고용이라
+macOS 마운트는 잡지 않으며, 다른 플랫폼에는 잠금이 없습니다.
+
+⛔ **마운트된 이미지에는 쓰지 마세요.** 이 서버로든 다른 것으로든 마찬가지입니다. 어느 쪽도 상대의
+변경을 알지 못합니다. 다른 것이 열어 두지 않은 이미지를 제공하세요.
 
 ## OS가 마운트한 쓰기 가능 이미지는 읽기 전용으로 제공됩니다 {#an-image-the-os-has-mounted}
 
