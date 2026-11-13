@@ -117,9 +117,10 @@ est effacé ; après un plantage il le reste, et le volume se monte donc sans
 journal jusqu'à `diskutil enableJournal`. Un partage avec `read_only = true`, un
 périphérique et une partition n'essaient jamais l'ouverture en écriture.
 
-L'image est ouverte une seconde fois par son nom pour l'écriture (hfsplus prend
-un chemin), et seulement si ce nom désigne encore le fichier même que le partage
-détient ; sinon le partage s'ouvre en lecture seule et le dit.
+Le volume est écrit par le descripteur de fichier propre du partage (hfsplus
+v0.11.0) : le fichier déjà confiné et verrouillé, jamais le nom de l'image rouvert.
+Une taille qui ne correspond pas au volume ouvre le partage en lecture seule,
+avec une ligne.
 
 **Un autre écrivain.** Un second écrivain sur la même image la corromprait.
 L'ouverture en écriture prend un verrou consultatif exclusif `flock` sur l'image

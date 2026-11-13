@@ -120,9 +120,10 @@ borrado; tras un fallo sigue borrado, así que el volumen se monta sin journal
 hasta `diskutil enableJournal`. Un recurso con `read_only = true`, un dispositivo
 y una partición nunca intentan la apertura para escritura.
 
-La imagen se abre una segunda vez por su nombre para escribir (hfsplus recibe una
-ruta), y solo si ese nombre sigue siendo el mismo archivo que tiene el recurso;
-si no, el recurso se abre en solo lectura y lo dice.
+El volumen se escribe a través del descriptor de archivo propio del recurso
+(hfsplus v0.11.0): el archivo ya confinado y bloqueado, nunca el nombre de la
+imagen abierto de nuevo. Un tamaño que no coincide con el volumen abre el recurso
+en solo lectura, con una línea.
 
 **Otro escritor.** Un segundo escritor sobre la misma imagen la corrompería. La
 apertura para escritura toma un bloqueo consultivo exclusivo `flock` sobre la

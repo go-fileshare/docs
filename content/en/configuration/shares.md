@@ -112,9 +112,10 @@ cleared, so the volume mounts non-journaled until `diskutil enableJournal`. A
 share with `read_only = true`, a device and a partition never try the writable
 open.
 
-The image is opened a second time by its name for writing (hfsplus takes a
-path), and only if that name is still the very file the share holds; otherwise
-the share opens read-only and says so.
+The volume is written through the share's own file descriptor (hfsplus v0.11.0):
+the file that is already confined and locked, never the image's name opened
+again. A size that does not match the volume opens the share read-only, with one
+line.
 
 **Another writer.** A second writer on the same image would corrupt it. A
 writable open takes an exclusive advisory `flock` on the image (Linux, macOS and

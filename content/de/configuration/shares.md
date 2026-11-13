@@ -121,10 +121,10 @@ das Volume wird also ohne Journal eingehängt, bis `diskutil enableJournal`
 läuft. Eine Freigabe mit `read_only = true`, ein Gerät und eine Partition
 versuchen das Öffnen zum Schreiben nie.
 
-Das Image wird zum Schreiben ein zweites Mal über seinen Namen geöffnet (hfsplus
-nimmt einen Pfad), und nur, wenn dieser Name noch genau die Datei bezeichnet,
-die die Freigabe hält; sonst wird die Freigabe schreibgeschützt geöffnet und
-sagt es.
+Das Volume wird über den eigenen Dateideskriptor der Freigabe geschrieben
+(hfsplus v0.11.0): die Datei, die bereits eingegrenzt und gesperrt ist, nie der
+erneut geöffnete Name des Images. Eine Größe, die nicht zum Volume passt, öffnet
+die Freigabe schreibgeschützt, mit einer Zeile.
 
 **Ein zweiter Schreiber.** Ein zweiter Schreiber auf demselben Image würde es
 beschädigen. Das Öffnen zum Schreiben nimmt eine exklusive beratende Sperre
