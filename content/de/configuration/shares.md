@@ -32,84 +32,111 @@ share "photos" {
 
 ## HFS+-Images sind schreibgeschützt, solange eine Freigabe nicht zustimmt {#hfsplus-images-are-writable}
 
-Seit v0.44.0 (hfsplus v0.9.0) wird eine Freigabe, deren Image HFS+ enthält, zum
-Schreiben geöffnet, wie FAT, exFAT und ext4: Ein Client kann Dateien anlegen,
-ändern und löschen, und die Zeiten, Modi und Eigentümer, die er setzt, werden
-gespeichert. Vorher wurde ein HFS+-Image schreibgeschützt geöffnet. Das Image
-wird beim Öffnen der Freigabe in den Speicher gelesen, und jede Änderung wird in
-die Datei zurückgeschrieben.
+Seit v0.44.0 (hfsplus v0.9.0) kann eine Freigabe, deren Image HFS+ enthält, wie
+FAT, exFAT und ext4 zum Schreiben geöffnet werden: Ein Client kann Dateien
+anlegen, ändern und löschen, und die Zeiten, Modi und Besitzer, die er setzt,
+werden gespeichert. Vorher wurde ein HFS+-Image schreibgeschützt geöffnet.
 
-**Seit v0.45.1 standardmäßig aus.** hfsplus v0.9.0 ist nicht absturzsicher: Es
-schreibt bei jeder Operation das ganze Image neu und markiert das Volume dabei
-nie als in Benutzung; ein Absturz oder Stromausfall mitten im Schreiben
-hinterlässt ein zerrissenes Image, das weiterhin sauber ausgehängt zu sein
-behauptet, und beim nächsten Einhängen prüft es nichts. Bei einem Volume mit
-Journal braucht die Lösung mehr als Schreiben an Ort und Stelle. v0.44.0 und
-v0.45.0 schrieben standardmäßig (bis 256 MiB); seit v0.45.1 wird eine HFS+-Freigabe
-**schreibgeschützt** bereitgestellt, solange sie nicht `hfsplus_writable_max`
-setzt. Die Lösung ist go-filesystems/hfsplus#34; der Standard kann zurückkehren,
-wenn sie veröffentlicht ist. Zum Einwilligen eine Größe setzen (und das Image
-vorher sichern) und dieses Risiko sowie die Kosten unten in Kauf nehmen.
+**Seit v0.45.1 standardmäßig aus, und weiterhin aus.** hfsplus v0.9.0 war nicht
+absturzsicher (es hielt das ganze Image im Speicher, schrieb es bei jeder
+Operation vollständig zurück und markierte das Volume nie als in Benutzung);
+deshalb hat v0.45.1 das Schreiben abgeschaltet, das v0.44.0 und v0.45.0
+standardmäßig erlaubten (bis 256 MiB). **Seit v0.46.0 (hfsplus v0.10.0)** wird
+ein beschreibbares HFS+-Volume **an Ort und Stelle** geschrieben:
 
-**Was das kostet.** hfsplus v0.9.0 hält das ganze Image im Speicher und schreibt
-bei jeder Operation (Anlegen, Schreiben, Umbenennen, `Chtimes`) das ganze Image
-neu; der Speicher einer Freigabe ist also die Größe ihres Images, und ebenso der
-E/A-Aufwand jeder Änderung (go-filesystems/hfsplus#33 ist die eigentliche
-Lösung). Eine Freigabe öffnet ein HFS+-Image deshalb nur bis zu
-`hfsplus_writable_max` zum Schreiben, standardmäßig `"0"` (nie; eine
-Anzahl Bytes oder eine mit K, M, G oder T):
+- **Kein Speicherbedarf.** Das Image wird nicht in den Speicher kopiert (ein
+  Lese-Cache von 8 MiB); nur die Sektoren, die ein Commit ändert, werden
+  geschrieben. Die Obergrenze von 64 GiB entfällt.
+- **Ein Absturz ist sichtbar.** Jeder Commit markiert das Volume als in
+  Benutzung: Das Unmounted-Bit und das Journaled-Bit werden beim ersten Schreiben
+  des Headers gelöscht und am Ende wiederhergestellt, sodass `fsck_hfs -q` einen
+  Absturz erkennt, auch bei Volumes mit Journal.
+- **Ein fehlgeschlagener Schreibvorgang stoppt das Volume.** Nach einem
+  fehlgeschlagenen Flush verweigert das Volume Schreibzugriffe
+  (`ErrVolumeFailed`), bis die Freigabe neu geöffnet wird.
+
+Es bleibt **auf Zustimmung**, wegen dessen, was hfsplus noch nicht fertig hat:
+Ein dauerhaft geschriebener kleiner Schreibvorgang kostet 3 fsyncs pro Commit
+und ist etwa 3-mal langsamer als unter macOS (go-filesystems/hfsplus#35), die
+Absturztests sind noch nicht gehärtet (go-filesystems/hfsplus#37), und nach einem
+Absturz wird ein Volume mit Journal ohne sein Journal eingehängt, bis
+`diskutil enableJournal` läuft. Der Standard kann zurückkehren, wenn das behoben
+ist. Sichern Sie das Image zuerst. Eine Freigabe stimmt mit
+`hfsplus_writable_max` zu, standardmäßig `"0"` (nie; eine Zahl in Bytes oder eine
+mit K, M, G oder T):
 
 ```hcl
 share "mac" {
   image                = "/srv/mac.img"
-  hfsplus_writable_max = "256M"   # einwilligen
+  hfsplus_writable_max = "256M"   # zustimmen
 }
 ```
 
-Darüber, oder wenn die Größe unbekannt ist, wird die Freigabe **schreibgeschützt**
-geöffnet, weiterhin mit Bereichslesen und Zeiten, und der Server schreibt eine
-Zeile mit Image und Grund, zum Beispiel ohne Einstellung:
+Seit v0.46.0 begrenzt die Größe den Speicher nicht mehr. Sie bleibt eine Größe,
+damit eine für v0.44.0 bis v0.45.1 geschriebene Konfiguration bedeutet, was sie
+bedeutete (eine Freigabe mit `"256M"` beginnt nicht, ein 2-TiB-Image zu
+beschreiben); ein großer Wert wie `"1T"` ist die schlichte Zustimmung.
+
+Beim Standard, über der Größe oder bei unbekannter Größe wird die Freigabe
+**schreibgeschützt** geöffnet, weiterhin mit Bereichslesen und Zeiten, und der
+Server schreibt eine Zeile mit dem Image und dem Grund, zum Beispiel ohne
+Einstellung:
 
 ```text
-/srv/mac.img is an HFS+ volume and hfsplus_writable_max is 0, the default: hfsplus v0.9.0 is not crash-safe (a crash mid-write can leave a torn image marked clean), so HFS+ images are written only when a share sets a size, so mac is read-only
+/srv/mac.img is an HFS+ volume and hfsplus_writable_max is 0, the default: HFS+ images are written only when a share sets a size, because a durable small write is about 3x slower than on macOS (go-filesystems/hfsplus#35), the crash tests are not finished (go-filesystems/hfsplus#37), and after a crash a journaled volume mounts without its journal until diskutil enableJournal, so mac is read-only
 ```
 
 und über der Größe:
 
 ```text
-/srv/mac.img is an HFS+ volume and it is 1073741824 bytes, over hfsplus_writable_max (268435456 bytes): a writable HFS+ image is held in memory and rewritten whole on every change, so mac is read-only
+/srv/mac.img is an HFS+ volume and it is 1073741824 bytes, over hfsplus_writable_max (268435456 bytes), so mac is read-only
 ```
 
-Ein Volume **mit Journal** (erzeugt von `hdiutil create -fs "Journaled HFS+"`
-oder von macOS) wird nur beschrieben, wenn sein Journal leer ist, wie es nach
-einem sauberen Aushängen zurückbleibt. Ein Journal mit Transaktionen oder eines,
-das sich nicht prüfen lässt, würde von macOS über das wiedergegeben, was der
-Server schreibt; deshalb lehnt der Treiber es ab, und **die Freigabe wird
-stattdessen schreibgeschützt geöffnet**. Der Server startet trotzdem; beim
-Öffnen der Freigabe schreibt er eine Zeile mit Image, Freigabe und Grund:
+**Ein Neuladen folgt der Einstellung (seit v0.46.0).** Ändert ein Neuladen, ob
+ein HFS+-Image geschrieben wird (Einstellung entfernt, hinzugefügt oder über die
+Größe des Images hinweg verschoben), wird das Image neu geöffnet: Das Entfernen
+der Zustimmung macht die Freigabe sofort schreibgeschützt, das Hinzufügen macht
+sie beschreibbar. Vor v0.46.0 blieb der geöffnete Treiber erhalten, sodass eine
+Freigabe nach dem Entfernen ihrer Zustimmung bis zum Neustart des Servers
+beschreibbar blieb. Der Wechsel von einer beschreibbaren Größe zu einer anderen
+ändert nichts.
+
+Ein Volume **mit Journal** (erstellt von `hdiutil create -fs "Journaled HFS+"`
+oder von macOS) wird nur geschrieben, wenn sein Journal leer ist, was ein
+sauberes Aushängen hinterlässt. Ein Journal mit Transaktionen oder eines, das
+sich nicht prüfen lässt, würde von macOS über das wiedergegeben, was der Server
+schreibt; der Treiber verweigert es daher, und **die Freigabe wird stattdessen
+schreibgeschützt geöffnet**. Der Server startet trotzdem; beim Öffnen der
+Freigabe schreibt er eine Zeile mit Image, Freigabe und Grund:
 
 ```text
 /srv/mac.img is an HFS+ volume and its journal holds transactions (hfsplus: journaled volume with a journal that is not empty: transactions pending (start 17408, end 34816)), so mac is read-only
 ```
 
-Damit eine solche Freigabe schreibbar wird, muss das Journal zuerst
-wiedergegeben werden: das Image an einem Mac einhängen und sauber auswerfen
-oder `fsck_hfs` darauf ausführen. (Der Treiber hat keine Journalprüfung ohne das
-Image im Speicher; dieser eine Fall liest das Image bis zur Grenze, bevor er
-zurückfällt.) Eine Freigabe mit `read_only = true`, ein Gerät und eine Partition
-versuchen das schreibbare Öffnen nie.
+Um eine solche Freigabe beschreibbar zu machen, muss das Journal zuerst
+wiedergegeben werden: das Image auf einem Mac einhängen und sauber auswerfen
+oder `fsck_hfs` darauf ausführen. Solange ein Volume mit Journal geschrieben
+wird, ist sein Journaled-Bit gelöscht; nach einem Absturz bleibt es gelöscht,
+das Volume wird also ohne Journal eingehängt, bis `diskutil enableJournal`
+läuft. Eine Freigabe mit `read_only = true`, ein Gerät und eine Partition
+versuchen das Öffnen zum Schreiben nie.
 
-**Ein anderer Schreiber.** Das Image wird ganz zurückgeschrieben, ein zweiter
-Schreiber würde also vom nächsten Zurückschreiben überschrieben. Das schreibbare
-Öffnen nimmt eine exklusive beratende `flock`-Sperre auf das Image (Linux, macOS
-und die BSDs); hält sie ein anderer Prozess, etwa ein zweites fileshare auf
-demselben Image, wird die Freigabe schreibgeschützt geöffnet und sagt es. Die
-Sperre ist beratend: ein macOS-Einhängen nimmt sie nicht, und auf anderen
-Plattformen gibt es keine Sperre.
+Das Volume wird über den eigenen Dateideskriptor der Freigabe geschrieben
+(hfsplus v0.11.0): die Datei, die bereits eingegrenzt und gesperrt ist, nie der
+erneut geöffnete Name des Images. Eine Größe, die nicht zum Volume passt, öffnet
+die Freigabe schreibgeschützt, mit einer Zeile.
 
-⛔ **Schreiben Sie kein Image, das eingehängt ist**, weder mit diesem Server
-noch mit etwas anderem: keine Seite weiß von den Änderungen der anderen.
-Stellen Sie ein Image bereit, das sonst nichts geöffnet hat.
+**Ein zweiter Schreiber.** Ein zweiter Schreiber auf demselben Image würde es
+beschädigen. Das Öffnen zum Schreiben nimmt eine exklusive beratende Sperre
+(`flock`) auf das Image (Linux, macOS und die BSDs); hält ein anderer Prozess
+sie, etwa ein zweites fileshare auf demselben Image, wird die Freigabe
+schreibgeschützt geöffnet und sagt es. Die Sperre ist beratend: Ein
+macOS-Einhängen nimmt sie nicht, und auf anderen Plattformen gibt es keine
+Sperre.
+
+⛔ **Schreiben Sie kein eingehängtes Image**, weder mit diesem Server noch mit
+etwas anderem: Keine Seite kennt die Änderungen der anderen. Stellen Sie ein
+Image bereit, das sonst nichts geöffnet hat.
 
 ## Ein beschreibbares Image, das das Betriebssystem eingehängt hat, wird schreibgeschützt bereitgestellt {#an-image-the-os-has-mounted}
 
