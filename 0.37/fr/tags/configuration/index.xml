@@ -229,28 +229,31 @@ data-copied-label="Copié !"
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="hfsplus-images-are-writable"&gt;Les images HFS+ sont en lecture seule tant qu&amp;rsquo;un partage n&amp;rsquo;y consent pas&lt;span class="hx:absolute hx:-mt-20" id="hfsplus-images-are-writable"&gt;&lt;/span&gt;
-&lt;a href="#hfsplus-images-are-writable" class="subheading-anchor" aria-label="Lien permanent vers cette section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Depuis la v0.44.0 (hfsplus v0.9.0), un partage dont l&amp;rsquo;image contient du HFS+ est
-ouvert en écriture, comme FAT, exFAT et ext4 : un client peut créer, modifier et
-supprimer des fichiers, et les dates, modes et propriétaires qu&amp;rsquo;il fixe sont
-enregistrés. Auparavant, une image HFS+ était ouverte en lecture seule. L&amp;rsquo;image
-est lue en mémoire à l&amp;rsquo;ouverture du partage et chaque modification est réécrite
-dans le fichier.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Désactivé par défaut depuis la v0.45.1.&lt;/strong&gt; hfsplus v0.9.0 ne résiste pas aux
-plantages : il réécrit toute l&amp;rsquo;image à chaque opération et ne marque jamais le
-volume comme utilisé pendant ce temps, si bien qu&amp;rsquo;un plantage ou une coupure de
-courant au milieu d&amp;rsquo;une écriture laisse une image déchirée qui se dit toujours
-proprement démontée, et que rien ne vérifie au montage suivant. Sur un volume à
-journal, la correction demande plus qu&amp;rsquo;écrire en place. La v0.44.0 et la v0.45.0
-écrivaient par défaut (jusqu&amp;rsquo;à 256 Mio) ; depuis la v0.45.1, un partage HFS+ est
-servi en &lt;strong&gt;lecture seule&lt;/strong&gt; sauf s&amp;rsquo;il définit &lt;code&gt;hfsplus_writable_max&lt;/code&gt;. La correction
-est go-filesystems/hfsplus#34 ; le défaut pourra revenir à sa publication. Pour y
-consentir, définissez une taille (et sauvegardez d&amp;rsquo;abord l&amp;rsquo;image), en acceptant ce
-risque et les coûts ci-dessous.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Ce que ça coûte.&lt;/strong&gt; hfsplus v0.9.0 garde toute l&amp;rsquo;image en mémoire et la réécrit
-entièrement à chaque opération (création, écriture, renommage, &lt;code&gt;Chtimes&lt;/code&gt;) : la
-mémoire d&amp;rsquo;un partage est la taille de son image, et l&amp;rsquo;E/S de chaque modification
-aussi (go-filesystems/hfsplus#33 est la vraie correction). Un partage n&amp;rsquo;ouvre donc
-une image HFS+ en écriture que jusqu&amp;rsquo;à &lt;code&gt;hfsplus_writable_max&lt;/code&gt;, &lt;code&gt;&amp;quot;0&amp;quot;&lt;/code&gt; par défaut(jamais ; un nombre d&amp;rsquo;octets, ou un nombre suivi de K, M, G ou T) :&lt;/p&gt;
+&lt;a href="#hfsplus-images-are-writable" class="subheading-anchor" aria-label="Lien permanent vers cette section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Depuis la v0.44.0 (hfsplus v0.9.0), un partage dont l&amp;rsquo;image contient du HFS+ peut
+être ouvert en écriture, comme FAT, exFAT et ext4 : un client peut créer,modifier et supprimer des fichiers, et les dates, modes et propriétaires qu&amp;rsquo;il
+fixe sont enregistrés. Auparavant, une image HFS+ était ouverte en lecture seule.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Désactivé par défaut depuis la v0.45.1, et toujours désactivé.&lt;/strong&gt; hfsplus v0.9.0
+ne résistait pas aux plantages (il gardait toute l&amp;rsquo;image en mémoire, la
+réécrivait entièrement à chaque opération et ne marquait jamais le volume comme
+utilisé) : la v0.45.1 a donc désactivé l&amp;rsquo;écriture, que la v0.44.0 et la v0.45.0
+activaient par défaut (jusqu&amp;rsquo;à 256 Mio). &lt;strong&gt;Depuis la v0.46.0 (hfsplus v0.10.0)&lt;/strong&gt;,un volume HFS+ inscriptible est écrit &lt;strong&gt;en place&lt;/strong&gt; :&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Aucun coût en mémoire.&lt;/strong&gt; L&amp;rsquo;image n&amp;rsquo;est pas copiée en mémoire (un cache de
+lecture de 8 Mio) ; seuls les secteurs modifiés par une validation sont écrits.Le plafond de 64 Gio a disparu.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Un plantage est visible.&lt;/strong&gt; Chaque validation marque le volume comme utilisé :le bit « démonté » et le bit « journalisé » sont effacés dès la première
+écriture de l&amp;rsquo;en-tête et rétablis à la fin, si bien que &lt;code&gt;fsck_hfs -q&lt;/code&gt; voit un
+plantage, volumes à journal compris.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Une écriture échouée arrête le volume.&lt;/strong&gt; Après un vidage échoué, le volume
+refuse les écritures (&lt;code&gt;ErrVolumeFailed&lt;/code&gt;) jusqu&amp;rsquo;à la réouverture du partage.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Cela reste &lt;strong&gt;sur consentement&lt;/strong&gt;, à cause de ce que hfsplus n&amp;rsquo;a pas terminé : une
+petite écriture durable coûte 3 fsync par validation et est environ 3 fois plus
+lente que sur macOS (go-filesystems/hfsplus#35), les tests de plantage ne sont
+pas encore durcis (go-filesystems/hfsplus#37), et après un plantage un volume à
+journal se monte sans son journal jusqu&amp;rsquo;à &lt;code&gt;diskutil enableJournal&lt;/code&gt;. Le défaut
+pourra revenir quand cela sera corrigé. Sauvegardez d&amp;rsquo;abord l&amp;rsquo;image. Un partage y
+consent avec &lt;code&gt;hfsplus_writable_max&lt;/code&gt;, &lt;code&gt;&amp;quot;0&amp;quot;&lt;/code&gt; par défaut (jamais ; un nombre
+d&amp;rsquo;octets, ou un nombre suivi de K, M, G ou T) :&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;mac&amp;#34;&lt;/span&gt; {
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/mac.img&amp;#34;&lt;/span&gt;
@@ -267,10 +270,15 @@ data-copied-label="Copié !"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;Au-delà, ou si la taille est inconnue, le partage s&amp;rsquo;ouvre en &lt;strong&gt;lecture seule&lt;/strong&gt;,toujours avec la lecture par plages et les dates, et le serveur écrit une ligne
-qui nomme l&amp;rsquo;image et la raison, par exemple sans réglage :&lt;/p&gt;
+&lt;p&gt;Depuis la v0.46.0, la taille ne borne plus la mémoire. Elle reste une taille pour
+qu&amp;rsquo;une configuration écrite pour la v0.44.0 à la v0.45.1 garde son sens (un
+partage qui disait &lt;code&gt;&amp;quot;256M&amp;quot;&lt;/code&gt; ne se met pas à écrire une image de 2 Tio) ; une
+grande valeur comme &lt;code&gt;&amp;quot;1T&amp;quot;&lt;/code&gt; est le simple consentement.&lt;/p&gt;
+&lt;p&gt;Avec le défaut, au-delà de la taille, ou si la taille est inconnue, le partage
+s&amp;rsquo;ouvre en &lt;strong&gt;lecture seule&lt;/strong&gt;, toujours avec la lecture par plages et les dates,et le serveur écrit une ligne qui nomme l&amp;rsquo;image et la raison, par exemple sans
+réglage :&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
-&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/srv/mac.img is an HFS+ volume and hfsplus_writable_max is 0, the default: hfsplus v0.9.0 is not crash-safe (a crash mid-write can leave a torn image marked clean), so HFS+ images are written only when a share sets a size, so mac is read-only&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/srv/mac.img is an HFS+ volume and hfsplus_writable_max is 0, the default: HFS+ images are written only when a share sets a size, because a durable small write is about 3x slower than on macOS (go-filesystems/hfsplus#35), the crash tests are not finished (go-filesystems/hfsplus#37), and after a crash a journaled volume mounts without its journal until diskutil enableJournal, so mac is read-only&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
 &lt;button
 class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
 title="Copier le code"
@@ -284,7 +292,7 @@ data-copied-label="Copié !"
 &lt;/div&gt;
 &lt;p&gt;et au-delà de la taille :&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
-&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/srv/mac.img is an HFS+ volume and it is 1073741824 bytes, over hfsplus_writable_max (268435456 bytes): a writable HFS+ image is held in memory and rewritten whole on every change, so mac is read-only&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/srv/mac.img is an HFS+ volume and it is 1073741824 bytes, over hfsplus_writable_max (268435456 bytes), so mac is read-only&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
 &lt;button
 class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
 title="Copier le code"
@@ -296,6 +304,13 @@ data-copied-label="Copié !"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;Un rechargement suit le réglage (depuis la v0.46.0).&lt;/strong&gt; Quand un rechargement
+change le fait qu&amp;rsquo;une image HFS+ soit écrite (réglage retiré, ajouté, ou déplacé
+de part et d&amp;rsquo;autre de la taille de l&amp;rsquo;image), l&amp;rsquo;image est rouverte : retirer le
+consentement rend le partage aussitôt en lecture seule, l&amp;rsquo;ajouter le rend
+inscriptible. Avant la v0.46.0, le pilote ouvert était conservé : un partage
+restait inscriptible après le retrait de son consentement, jusqu&amp;rsquo;au redémarrage
+du serveur. Passer d&amp;rsquo;une taille inscriptible à une autre ne change rien.&lt;/p&gt;
 &lt;p&gt;Un volume &lt;strong&gt;à journal&lt;/strong&gt; (créé par &lt;code&gt;hdiutil create -fs &amp;quot;Journaled HFS+&amp;quot;&lt;/code&gt; ou par
 macOS) n&amp;rsquo;est écrit que si son journal est vide, ce que laisse un démontage
 propre. Un journal qui contient des transactions, ou qu&amp;rsquo;on ne peut pas vérifier,serait rejoué par macOS par-dessus ce que le serveur écrit : le pilote le refuse
@@ -316,17 +331,15 @@ data-copied-label="Copié !"
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;p&gt;Pour rendre un tel partage inscriptible, il faut d&amp;rsquo;abord faire rejouer le
-journal : monter l&amp;rsquo;image sur un Mac puis l&amp;rsquo;éjecter proprement, ou lancer&lt;code&gt;fsck_hfs&lt;/code&gt; dessus. (Le pilote n&amp;rsquo;a pas de vérification du journal qui marche sans
-l&amp;rsquo;image en mémoire : ce seul cas lit l&amp;rsquo;image, jusqu&amp;rsquo;à la limite, avant de se
-rabattre.) Un partage avec &lt;code&gt;read_only = true&lt;/code&gt;, un périphérique et une partition
-n&amp;rsquo;essaient jamais l&amp;rsquo;ouverture en écriture.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Un autre écrivain.&lt;/strong&gt; L&amp;rsquo;image est réécrite entière : un second écrivain serait
-écrasé par la réécriture suivante. L&amp;rsquo;ouverture en écriture prend un verrou
-consultatif exclusif &lt;code&gt;flock&lt;/code&gt; sur l&amp;rsquo;image (Linux, macOS et les BSD) ; si un autre
-processus le détient, par exemple un second fileshare sur la même image, le
-partage s&amp;rsquo;ouvre en lecture seule et le dit. Le verrou est consultatif : un
-montage macOS ne le prend pas, et sur les autres plateformes il n&amp;rsquo;y a pas de
-verrou.&lt;/p&gt;
+journal : monter l&amp;rsquo;image sur un Mac puis l&amp;rsquo;éjecter proprement, ou lancer&lt;code&gt;fsck_hfs&lt;/code&gt; dessus. Pendant l&amp;rsquo;écriture d&amp;rsquo;un volume à journal, son bit « journalisé »est effacé ; après un plantage il le reste, et le volume se monte donc sans
+journal jusqu&amp;rsquo;à &lt;code&gt;diskutil enableJournal&lt;/code&gt;. Un partage avec &lt;code&gt;read_only = true&lt;/code&gt;, un
+périphérique et une partition n&amp;rsquo;essaient jamais l&amp;rsquo;ouverture en écriture.&lt;/p&gt;
+&lt;p&gt;Le volume est écrit par le descripteur de fichier propre du partage (hfsplus
+v0.11.0) : le fichier déjà confiné et verrouillé, jamais le nom de l&amp;rsquo;image rouvert.Une taille qui ne correspond pas au volume ouvre le partage en lecture seule,avec une ligne.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Un autre écrivain.&lt;/strong&gt; Un second écrivain sur la même image la corromprait.L&amp;rsquo;ouverture en écriture prend un verrou consultatif exclusif &lt;code&gt;flock&lt;/code&gt; sur l&amp;rsquo;image(Linux, macOS et les BSD) ; si un autre processus le détient, par exemple un
+second fileshare sur la même image, le partage s&amp;rsquo;ouvre en lecture seule et le
+dit. Le verrou est consultatif : un montage macOS ne le prend pas, et sur les
+autres plateformes il n&amp;rsquo;y a pas de verrou.&lt;/p&gt;
 &lt;p&gt;⛔ &lt;strong&gt;N&amp;rsquo;écrivez pas dans une image montée&lt;/strong&gt;, ni avec ce serveur ni avec autre
 chose : aucun des deux ne connaît les modifications de l&amp;rsquo;autre. Servez une image
 que rien d&amp;rsquo;autre n&amp;rsquo;a ouverte.&lt;/p&gt;

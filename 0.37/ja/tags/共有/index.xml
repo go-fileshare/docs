@@ -22,9 +22,14 @@ data-copied-label="コピーしました！"
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="hfsplus-images-are-writable"&gt;HFS+ イメージは、共有が同意しない限り読み取り専用&lt;span class="hx:absolute hx:-mt-20" id="hfsplus-images-are-writable"&gt;&lt;/span&gt;
-&lt;a href="#hfsplus-images-are-writable" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;v0.44.0(hfsplus v0.9.0)以降、HFS+ を含むイメージの共有は、FAT、exFAT、ext4 と同様に書き込み可能で開かれます。クライアントはファイルを作成、変更、削除でき、設定した時刻、モード、所有者も保存されます。以前は HFS+ イメージは読み取り専用で開かれていました。イメージは共有を開くときにメモリへ読み込まれ、変更のたびにファイルへ書き戻されます。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;v0.45.1 から既定でオフ。&lt;/strong&gt; hfsplus v0.9.0 はクラッシュ耐性がありません。操作のたびにイメージ全体を書き直し、その間ボリュームを使用中としてマークしないため、書き込みの途中でのクラッシュや停電は、正常にアンマウントされたと主張し続ける壊れたイメージを残し、次のマウント時に何も検査されません。ジャーナル付きボリュームでは、その場で書くだけでは修正になりません。v0.44.0 と v0.45.0 は既定で書き込んでいました(最大 256 MiB)。v0.45.1 以降、HFS+ の共有は&lt;code&gt;hfsplus_writable_max&lt;/code&gt; を設定しない限り&lt;strong&gt;読み取り専用&lt;/strong&gt;で提供されます。修正はgo-filesystems/hfsplus#34 で、公開されれば既定は戻せます。同意するには、サイズを設定し(先にイメージをバックアップして)、このリスクと下記のコストを受け入れてください。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;コスト。&lt;/strong&gt; hfsplus v0.9.0 はイメージ全体をメモリに保持し、操作(作成、書き込み、名前変更、&lt;code&gt;Chtimes&lt;/code&gt;)のたびにイメージ全体を書き直します。そのため共有のメモリ使用量はイメージの大きさに等しく、変更ごとの I/O も同じです(根本的な解決は go-filesystems/hfsplus#33)。したがって共有が HFS+ イメージを書き込み可能で開くのは &lt;code&gt;hfsplus_writable_max&lt;/code&gt; までで、既定は &lt;code&gt;&amp;quot;0&amp;quot;&lt;/code&gt;(常に開かない)です(バイト数、または K、M、G、T を付けた値):&lt;/p&gt;
+&lt;a href="#hfsplus-images-are-writable" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;v0.44.0(hfsplus v0.9.0)以降、HFS+ を含むイメージの共有は、FAT、exFAT、ext4 と同様に書き込み可能で開けます。クライアントはファイルを作成、変更、削除でき、設定した時刻、モード、所有者も保存されます。以前は HFS+ イメージは読み取り専用で開かれていました。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;v0.45.1 から既定でオフで、今もオフです。&lt;/strong&gt; hfsplus v0.9.0 はクラッシュ耐性がありませんでした(イメージ全体をメモリに保持し、操作のたびに全体を書き直し、ボリュームを使用中としてマークしませんでした)。そのため v0.45.1 は書き込みをオフにしました(v0.44.0 と v0.45.0 は既定で書き込んでいました。最大 256 MiB)。&lt;strong&gt;v0.46.0(hfsplus v0.10.0)以降&lt;/strong&gt;、書き込み可能な HFS+ ボリュームは&lt;strong&gt;その場で&lt;/strong&gt;書き込まれます。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;メモリの負担がありません。&lt;/strong&gt; イメージはメモリにコピーされず(8 MiB の読み取りキャッシュのみ)、コミットで変わったセクタだけが書かれます。64 GiB の上限もなくなりました。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;クラッシュが見えます。&lt;/strong&gt; コミットのたびにボリュームを使用中としてマークします。アンマウント済みビットとジャーナル済みビットは最初のヘッダー書き込みで消され、最後に戻されるので、&lt;code&gt;fsck_hfs -q&lt;/code&gt; はクラッシュを検出できます。ジャーナル付きボリュームも同様です。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;書き込みの失敗はボリュームを止めます。&lt;/strong&gt; フラッシュに失敗すると、共有を開き直すまでボリュームは書き込みを拒否します(&lt;code&gt;ErrVolumeFailed&lt;/code&gt;)。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;それでも&lt;strong&gt;オプトイン&lt;/strong&gt;のままです。hfsplus にまだ終わっていないことがあるためです。耐久性のある小さな書き込みは 1 コミットあたり 3 回の fsync を要し、macOS の約 3 倍遅くなります(go-filesystems/hfsplus#35)。クラッシュテストはまだ強化されておらず(go-filesystems/hfsplus#37)、クラッシュ後、ジャーナル付きボリュームは &lt;code&gt;diskutil enableJournal&lt;/code&gt; を実行するまでジャーナルなしでマウントされます。これらが直れば既定は戻せます。先にイメージをバックアップしてください。共有は&lt;code&gt;hfsplus_writable_max&lt;/code&gt; で同意します。既定は &lt;code&gt;&amp;quot;0&amp;quot;&lt;/code&gt;(書き込まない。バイト数、または K、M、G、T を付けた数)です。&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;mac&amp;#34;&lt;/span&gt; {
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/mac.img&amp;#34;&lt;/span&gt;
@@ -41,9 +46,10 @@ data-copied-label="コピーしました！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;これを超える場合、またはサイズが不明な場合、共有は&lt;strong&gt;読み取り専用&lt;/strong&gt;で開かれます(範囲読み取りと時刻は引き続き使えます)。サーバーはイメージと理由を示す 1 行を出力します。設定がない場合の例:&lt;/p&gt;
+&lt;p&gt;v0.46.0 以降、このサイズはメモリの上限ではなくなりました。v0.44.0 から v0.45.1 向けに書かれた設定が以前と同じ意味を保つよう、サイズのままにしてあります(&lt;code&gt;&amp;quot;256M&amp;quot;&lt;/code&gt; と書いた共有が、2 TiB のイメージを書き始めることはありません)。&lt;code&gt;&amp;quot;1T&amp;quot;&lt;/code&gt; のような大きな値は、単なる同意になります。&lt;/p&gt;
+&lt;p&gt;既定のとき、サイズを超えるとき、サイズが不明なときは、共有は&lt;strong&gt;読み取り専用&lt;/strong&gt;で開かれ(範囲読み取りと時刻は引き続き使えます)、サーバーはイメージと理由を示す 1 行を書きます。たとえば設定がない場合:&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
-&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/srv/mac.img is an HFS+ volume and hfsplus_writable_max is 0, the default: hfsplus v0.9.0 is not crash-safe (a crash mid-write can leave a torn image marked clean), so HFS+ images are written only when a share sets a size, so mac is read-only&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/srv/mac.img is an HFS+ volume and hfsplus_writable_max is 0, the default: HFS+ images are written only when a share sets a size, because a durable small write is about 3x slower than on macOS (go-filesystems/hfsplus#35), the crash tests are not finished (go-filesystems/hfsplus#37), and after a crash a journaled volume mounts without its journal until diskutil enableJournal, so mac is read-only&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
 &lt;button
 class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
 title="コードをコピー"
@@ -55,9 +61,9 @@ data-copied-label="コピーしました！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;サイズを超えた場合:&lt;/p&gt;
+&lt;p&gt;サイズを超える場合:&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
-&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/srv/mac.img is an HFS+ volume and it is 1073741824 bytes, over hfsplus_writable_max (268435456 bytes): a writable HFS+ image is held in memory and rewritten whole on every change, so mac is read-only&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/srv/mac.img is an HFS+ volume and it is 1073741824 bytes, over hfsplus_writable_max (268435456 bytes), so mac is read-only&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
 &lt;button
 class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
 title="コードをコピー"
@@ -69,7 +75,8 @@ data-copied-label="コピーしました！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;&lt;strong&gt;ジャーナル付き&lt;/strong&gt;のボリューム(&lt;code&gt;hdiutil create -fs &amp;quot;Journaled HFS+&amp;quot;&lt;/code&gt; や macOS が作成するもの)は、ジャーナルが空のときだけ書き込まれます。これは正常にアンマウントした後の状態です。トランザクションを含むジャーナル、または検証できないジャーナルは、サーバーが書き込んだ内容の上から macOS が再生してしまうため、ドライバーはこれを拒否し、&lt;strong&gt;共有は代わりに読み取り専用で開かれます&lt;/strong&gt;。サーバーは起動を続けます。共有を開くときに、イメージ、共有、理由を示す1 行を出力します。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;リロードは設定に従います(v0.46.0 以降)。&lt;/strong&gt; リロードによって HFS+ イメージを書き込むかどうかが変わると(設定の削除、追加、またはイメージのサイズをまたぐ変更)、イメージは開き直されます。同意を削除すると共有はすぐに読み取り専用になり、追加すると書き込み可能になります。v0.46.0 より前は開いているドライバーがそのまま使われたため、同意を削除してもサーバーを再起動するまで共有は書き込み可能のままでした。書き込み可能なサイズから別の書き込み可能なサイズへの変更では何も変わりません。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;ジャーナル付き&lt;/strong&gt;ボリューム(&lt;code&gt;hdiutil create -fs &amp;quot;Journaled HFS+&amp;quot;&lt;/code&gt; や macOS が作るもの)は、ジャーナルが空のときだけ書き込まれます。正常にアンマウントすれば空になります。トランザクションを含むジャーナルや検証できないジャーナルは、サーバーが書いた内容の上に macOS が再生してしまうため、ドライバーはそれを拒否し、&lt;strong&gt;共有は代わりに読み取り専用で開かれます&lt;/strong&gt;。サーバーは起動を続け、共有を開くときにイメージ、共有、理由を示す 1 行を書きます。&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/srv/mac.img is an HFS+ volume and its journal holds transactions (hfsplus: journaled volume with a journal that is not empty: transactions pending (start 17408, end 34816)), so mac is read-only&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
 &lt;button
@@ -83,10 +90,10 @@ data-copied-label="コピーしました！"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;そのような共有を書き込み可能にするには、先にジャーナルを再生させます。イメージを Mac でマウントして正常に取り出すか、&lt;code&gt;fsck_hfs&lt;/code&gt; を実行してください。(ドライバーにはイメージをメモリに載せずにジャーナルを調べる方法がないため、この場合だけは上限までイメージを読み込んでからフォールバックします。)&lt;code&gt;read_only = true&lt;/code&gt; の共有、デバイス、パーティションは書き込み可能でのオープンを試みません。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;ほかの書き込み側。&lt;/strong&gt; イメージは全体が書き戻されるため、2 つ目の書き込み側は次の書き戻しで上書きされます。書き込み可能でのオープンはイメージに排他的な助言ロック &lt;code&gt;flock&lt;/code&gt;
-(Linux、macOS、BSD)を取ります。別のプロセス(たとえば同じイメージを使うもう 1 つの fileshare)が保持している場合、共有は読み取り専用で開かれ、その旨を出力します。ロックは助言的なのでmacOS のマウントはこれを取らず、ほかのプラットフォームにはロックがありません。&lt;/p&gt;
-&lt;p&gt;⛔ &lt;strong&gt;マウント中のイメージに書き込まないでください&lt;/strong&gt;。このサーバーでも他のものでも同じです。互いの変更を知りません。ほかに何も開いていないイメージを提供してください。&lt;/p&gt;
+&lt;p&gt;そのような共有を書き込み可能にするには、先にジャーナルを再生させます。Mac でイメージをマウントして正常に取り出すか、&lt;code&gt;fsck_hfs&lt;/code&gt; を実行します。ジャーナル付きボリュームの書き込み中はジャーナル済みビットが消されます。クラッシュ後も消えたままなので、ボリュームは &lt;code&gt;diskutil enableJournal&lt;/code&gt; を実行するまで、ジャーナルなしでマウントされます。&lt;code&gt;read_only = true&lt;/code&gt; の共有、デバイス、パーティションは、書き込み用のオープンを試みません。&lt;/p&gt;
+&lt;p&gt;ボリュームは共有自身のファイルディスクリプターを通して書き込まれます(hfsplus v0.11.0)。すでに閉じ込めとロックが済んだファイルであり、イメージの名前を開き直すことはありません。ボリュームと一致しないサイズは、共有を読み取り専用で開き、1 行を出力します。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;別の書き込み側。&lt;/strong&gt; 同じイメージへの 2 つ目の書き込み側は、イメージを壊します。書き込み用のオープンはイメージに排他的な助言ロック &lt;code&gt;flock&lt;/code&gt; を取ります(Linux、macOS、BSD)。別のプロセスが保持している場合(たとえば同じイメージ上の 2 つ目の fileshare)、共有は読み取り専用で開かれ、その旨が出力されます。ロックは助言的で、macOS のマウントは取らず、他のプラットフォームにはロックがありません。&lt;/p&gt;
+&lt;p&gt;⛔ &lt;strong&gt;マウントされているイメージには書き込まないでください。&lt;/strong&gt; このサーバーでも他のものでも同じです。どちらも相手の変更を知りません。他に何も開いていないイメージを提供してください。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="an-image-the-os-has-mounted"&gt;OS がマウントしている書き込み可能イメージは読み取り専用で提供される&lt;span class="hx:absolute hx:-mt-20" id="an-image-the-os-has-mounted"&gt;&lt;/span&gt;
 &lt;a href="#an-image-the-os-has-mounted" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;v0.45.0 以降、書き込み可能なイメージ共有（FAT32、exFAT、ext4、UFS、btrfs、XFS、ZFS、HFS+ など、ドライバーを問いません）を書き込み用に開く前に、サーバーはそのイメージを OS がアタッチまたはマウントしているかどうかを OS に問い合わせます。している場合、共有は&lt;strong&gt;読み取り専用&lt;/strong&gt;で開かれ、その旨が記録され、サーバーはイメージ、OS のデバイスとマウント、共有の名前を示す 1 行を出力します。&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;

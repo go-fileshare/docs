@@ -231,24 +231,28 @@ data-copied-label="Copied!"
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="hfsplus-images-are-writable"&gt;HFS+ images are read-only unless a share opts in&lt;span class="hx:absolute hx:-mt-20" id="hfsplus-images-are-writable"&gt;&lt;/span&gt;
-&lt;a href="#hfsplus-images-are-writable" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Since v0.44.0 (hfsplus v0.9.0) a share whose image holds HFS+ is opened for
+&lt;a href="#hfsplus-images-are-writable" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Since v0.44.0 (hfsplus v0.9.0) a share whose image holds HFS+ can be opened for
 writing, like FAT, exFAT and ext4: a client can create, change and delete
 files, and the times, modes and owners it sets are stored. Before, an HFS+
-image was opened read-only. The image is read into memory when the share opens
-and every change is written back to the file.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Off by default since v0.45.1.&lt;/strong&gt; hfsplus v0.9.0 is not crash-safe: it rewrites
-the whole image on every operation and never marks the volume as in use while it
-does, so a crash or power loss in the middle of a write leaves a torn image that
-still says it was cleanly unmounted, and nothing checks it at the next mount. On
-a journaled volume the fix needs more than writing in place. v0.44.0 and v0.45.0
-wrote by default (up to 256 MiB); since v0.45.1 an HFS+ share is served&lt;strong&gt;read-only&lt;/strong&gt; unless it sets &lt;code&gt;hfsplus_writable_max&lt;/code&gt;. The fix is
-go-filesystems/hfsplus#34; the default can come back when it is released. To
-opt in, set a size (and back the image up first), accepting this risk and the
-costs below.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;What it costs.&lt;/strong&gt; hfsplus v0.9.0 holds the whole image in memory and rewrites
-the whole image on every operation (a create, a write, a rename, a &lt;code&gt;Chtimes&lt;/code&gt;),so the memory of a share is the size of its image, and so is the I/O of every
-change (go-filesystems/hfsplus#33 is the real fix). A share therefore opens an
-HFS+ image for writing only up to &lt;code&gt;hfsplus_writable_max&lt;/code&gt;, which is &lt;code&gt;&amp;quot;0&amp;quot;&lt;/code&gt; (never)by default (a number of bytes, or one with K, M, G or T):&lt;/p&gt;
+image was opened read-only.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Off by default since v0.45.1, and still off.&lt;/strong&gt; hfsplus v0.9.0 was not
+crash-safe (it held the whole image in memory, rewrote it whole on every
+operation and never marked the volume as in use), so v0.45.1 turned writing off
+after v0.44.0 and v0.45.0 had written by default (up to 256 MiB). &lt;strong&gt;Since
+v0.46.0 (hfsplus v0.10.0)&lt;/strong&gt; a writable HFS+ volume is written &lt;strong&gt;in place&lt;/strong&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;No memory cost.&lt;/strong&gt; The image is not copied into memory (an 8 MiB read cache);only the sectors a commit changes are written. The 64 GiB ceiling is gone.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;A crash is visible.&lt;/strong&gt; Each commit marks the volume as in use: the unmounted
+bit and the journaled bit are cleared in the first header write and restored
+at the end, so &lt;code&gt;fsck_hfs -q&lt;/code&gt; sees a crash, journaled volumes included.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;A failed write stops the volume.&lt;/strong&gt; After a failed flush the volume refuses
+writes (&lt;code&gt;ErrVolumeFailed&lt;/code&gt;) until the share is reopened.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;It stays &lt;strong&gt;opt-in&lt;/strong&gt;, because of what hfsplus has not finished: a durable small
+write costs 3 fsyncs per commit and is about 3x slower than on macOS(go-filesystems/hfsplus#35), the crash tests are not hardened yet(go-filesystems/hfsplus#37), and after a crash a journaled volume mounts without
+its journal until &lt;code&gt;diskutil enableJournal&lt;/code&gt;. The default can come back when
+those are fixed. Back the image up first. A share opts in with&lt;code&gt;hfsplus_writable_max&lt;/code&gt;, which is &lt;code&gt;&amp;quot;0&amp;quot;&lt;/code&gt; (never) by default (a number of bytes, or
+one with K, M, G or T):&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;mac&amp;#34;&lt;/span&gt; {
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/mac.img&amp;#34;&lt;/span&gt;
@@ -265,10 +269,13 @@ data-copied-label="Copied!"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;With the default, above the cap, or when the size is unknown, the share opens&lt;strong&gt;read-only&lt;/strong&gt;, still with range reads and times, and the server writes one line
+&lt;p&gt;Since v0.46.0 the size no longer bounds memory. It stays a size, so that a
+configuration written for v0.44.0 to v0.45.1 means what it did (a share that
+said &lt;code&gt;&amp;quot;256M&amp;quot;&lt;/code&gt; does not start writing a 2 TiB image); a large value such as&lt;code&gt;&amp;quot;1T&amp;quot;&lt;/code&gt; is the plain opt-in.&lt;/p&gt;
+&lt;p&gt;With the default, above the size, or when the size is unknown, the share opens&lt;strong&gt;read-only&lt;/strong&gt;, still with range reads and times, and the server writes one line
 naming the image and the reason, for instance with no setting:&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
-&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/srv/mac.img is an HFS+ volume and hfsplus_writable_max is 0, the default: hfsplus v0.9.0 is not crash-safe (a crash mid-write can leave a torn image marked clean), so HFS+ images are written only when a share sets a size, so mac is read-only&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/srv/mac.img is an HFS+ volume and hfsplus_writable_max is 0, the default: HFS+ images are written only when a share sets a size, because a durable small write is about 3x slower than on macOS (go-filesystems/hfsplus#35), the crash tests are not finished (go-filesystems/hfsplus#37), and after a crash a journaled volume mounts without its journal until diskutil enableJournal, so mac is read-only&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
 &lt;button
 class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
 title="Copy code"
@@ -282,7 +289,7 @@ data-copied-label="Copied!"
 &lt;/div&gt;
 &lt;p&gt;and above the size:&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
-&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/srv/mac.img is an HFS+ volume and it is 1073741824 bytes, over hfsplus_writable_max (268435456 bytes): a writable HFS+ image is held in memory and rewritten whole on every change, so mac is read-only&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/srv/mac.img is an HFS+ volume and it is 1073741824 bytes, over hfsplus_writable_max (268435456 bytes), so mac is read-only&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
 &lt;button
 class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
 title="Copy code"
@@ -294,6 +301,12 @@ data-copied-label="Copied!"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;A reload follows the setting (since v0.46.0).&lt;/strong&gt; When a reload changes whether
+an HFS+ image is written (the setting removed, added, or moved across the image&amp;rsquo;s
+size), the image is opened again: removing the opt-in makes the share read-only
+at once, adding it makes the share writable. Before v0.46.0 the open driver was
+kept, so a share stayed writable after its opt-in was removed until the server
+restarted. A size changed from one writable value to another changes nothing.&lt;/p&gt;
 &lt;p&gt;A &lt;strong&gt;journaled&lt;/strong&gt; volume (made by &lt;code&gt;hdiutil create -fs &amp;quot;Journaled HFS+&amp;quot;&lt;/code&gt; or by
 macOS) is written only when its journal is empty, which is what a clean
 unmount leaves. A journal that holds transactions, or one that cannot be
@@ -315,14 +328,19 @@ data-copied-label="Copied!"
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;p&gt;To make such a share writable, have the journal replayed first: mount the
-image on a Mac and eject it cleanly, or run &lt;code&gt;fsck_hfs&lt;/code&gt; on it. (The driver has no
-journal check that works without the image in memory, so this one case reads the
-image, up to the cap, before it falls back.) A share with &lt;code&gt;read_only = true&lt;/code&gt;, a
-device and a partition never try the writable open.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Another writer.&lt;/strong&gt; The image is flushed whole, so a second writer would be
-overwritten by the next flush. A writable open takes an exclusive advisory&lt;code&gt;flock&lt;/code&gt; on the image (Linux, macOS and the BSDs); if another process holds it,for instance a second fileshare on the same image, the share opens read-only and
-says so. The lock is advisory: a macOS mount does not take it, and on other
-platforms there is no lock.&lt;/p&gt;
+image on a Mac and eject it cleanly, or run &lt;code&gt;fsck_hfs&lt;/code&gt; on it. While a journaled
+volume is being written its journaled bit is cleared; after a crash it stays
+cleared, so the volume mounts non-journaled until &lt;code&gt;diskutil enableJournal&lt;/code&gt;. A
+share with &lt;code&gt;read_only = true&lt;/code&gt;, a device and a partition never try the writable
+open.&lt;/p&gt;
+&lt;p&gt;The volume is written through the share&amp;rsquo;s own file descriptor (hfsplus v0.11.0):the file that is already confined and locked, never the image&amp;rsquo;s name opened
+again. A size that does not match the volume opens the share read-only, with one
+line.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Another writer.&lt;/strong&gt; A second writer on the same image would corrupt it. A
+writable open takes an exclusive advisory &lt;code&gt;flock&lt;/code&gt; on the image (Linux, macOS and
+the BSDs); if another process holds it, for instance a second fileshare on the
+same image, the share opens read-only and says so. The lock is advisory: a macOS
+mount does not take it, and on other platforms there is no lock.&lt;/p&gt;
 &lt;p&gt;⛔ &lt;strong&gt;Do not write an image that is mounted&lt;/strong&gt;, by this server or by anything
 else: neither side knows about the other&amp;rsquo;s changes. Serve an image that nothing
 else has open.&lt;/p&gt;

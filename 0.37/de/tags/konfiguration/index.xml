@@ -24,30 +24,35 @@ data-copied-label="Kopiert!"
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 data-hextra-search-id="hfsplus-images-are-writable"&gt;HFS+-Images sind schreibgeschützt, solange eine Freigabe nicht zustimmt&lt;span class="hx:absolute hx:-mt-20" id="hfsplus-images-are-writable"&gt;&lt;/span&gt;
-&lt;a href="#hfsplus-images-are-writable" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Seit v0.44.0 (hfsplus v0.9.0) wird eine Freigabe, deren Image HFS+ enthält, zum
-Schreiben geöffnet, wie FAT, exFAT und ext4: Ein Client kann Dateien anlegen,ändern und löschen, und die Zeiten, Modi und Eigentümer, die er setzt, werden
-gespeichert. Vorher wurde ein HFS+-Image schreibgeschützt geöffnet. Das Image
-wird beim Öffnen der Freigabe in den Speicher gelesen, und jede Änderung wird in
-die Datei zurückgeschrieben.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Seit v0.45.1 standardmäßig aus.&lt;/strong&gt; hfsplus v0.9.0 ist nicht absturzsicher: Es
-schreibt bei jeder Operation das ganze Image neu und markiert das Volume dabei
-nie als in Benutzung; ein Absturz oder Stromausfall mitten im Schreiben
-hinterlässt ein zerrissenes Image, das weiterhin sauber ausgehängt zu sein
-behauptet, und beim nächsten Einhängen prüft es nichts. Bei einem Volume mit
-Journal braucht die Lösung mehr als Schreiben an Ort und Stelle. v0.44.0 und
-v0.45.0 schrieben standardmäßig (bis 256 MiB); seit v0.45.1 wird eine HFS+-Freigabe&lt;strong&gt;schreibgeschützt&lt;/strong&gt; bereitgestellt, solange sie nicht &lt;code&gt;hfsplus_writable_max&lt;/code&gt;
-setzt. Die Lösung ist go-filesystems/hfsplus#34; der Standard kann zurückkehren,wenn sie veröffentlicht ist. Zum Einwilligen eine Größe setzen (und das Image
-vorher sichern) und dieses Risiko sowie die Kosten unten in Kauf nehmen.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Was das kostet.&lt;/strong&gt; hfsplus v0.9.0 hält das ganze Image im Speicher und schreibt
-bei jeder Operation (Anlegen, Schreiben, Umbenennen, &lt;code&gt;Chtimes&lt;/code&gt;) das ganze Image
-neu; der Speicher einer Freigabe ist also die Größe ihres Images, und ebenso der
-E/A-Aufwand jeder Änderung (go-filesystems/hfsplus#33 ist die eigentliche
-Lösung). Eine Freigabe öffnet ein HFS+-Image deshalb nur bis zu&lt;code&gt;hfsplus_writable_max&lt;/code&gt; zum Schreiben, standardmäßig &lt;code&gt;&amp;quot;0&amp;quot;&lt;/code&gt; (nie; eine
-Anzahl Bytes oder eine mit K, M, G oder T):&lt;/p&gt;
+&lt;a href="#hfsplus-images-are-writable" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Seit v0.44.0 (hfsplus v0.9.0) kann eine Freigabe, deren Image HFS+ enthält, wie
+FAT, exFAT und ext4 zum Schreiben geöffnet werden: Ein Client kann Dateien
+anlegen, ändern und löschen, und die Zeiten, Modi und Besitzer, die er setzt,werden gespeichert. Vorher wurde ein HFS+-Image schreibgeschützt geöffnet.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Seit v0.45.1 standardmäßig aus, und weiterhin aus.&lt;/strong&gt; hfsplus v0.9.0 war nicht
+absturzsicher (es hielt das ganze Image im Speicher, schrieb es bei jeder
+Operation vollständig zurück und markierte das Volume nie als in Benutzung);deshalb hat v0.45.1 das Schreiben abgeschaltet, das v0.44.0 und v0.45.0
+standardmäßig erlaubten (bis 256 MiB). &lt;strong&gt;Seit v0.46.0 (hfsplus v0.10.0)&lt;/strong&gt; wird
+ein beschreibbares HFS+-Volume &lt;strong&gt;an Ort und Stelle&lt;/strong&gt; geschrieben:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Kein Speicherbedarf.&lt;/strong&gt; Das Image wird nicht in den Speicher kopiert (ein
+Lese-Cache von 8 MiB); nur die Sektoren, die ein Commit ändert, werden
+geschrieben. Die Obergrenze von 64 GiB entfällt.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Ein Absturz ist sichtbar.&lt;/strong&gt; Jeder Commit markiert das Volume als in
+Benutzung: Das Unmounted-Bit und das Journaled-Bit werden beim ersten Schreiben
+des Headers gelöscht und am Ende wiederhergestellt, sodass &lt;code&gt;fsck_hfs -q&lt;/code&gt; einen
+Absturz erkennt, auch bei Volumes mit Journal.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Ein fehlgeschlagener Schreibvorgang stoppt das Volume.&lt;/strong&gt; Nach einem
+fehlgeschlagenen Flush verweigert das Volume Schreibzugriffe(&lt;code&gt;ErrVolumeFailed&lt;/code&gt;), bis die Freigabe neu geöffnet wird.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Es bleibt &lt;strong&gt;auf Zustimmung&lt;/strong&gt;, wegen dessen, was hfsplus noch nicht fertig hat:Ein dauerhaft geschriebener kleiner Schreibvorgang kostet 3 fsyncs pro Commit
+und ist etwa 3-mal langsamer als unter macOS (go-filesystems/hfsplus#35), die
+Absturztests sind noch nicht gehärtet (go-filesystems/hfsplus#37), und nach einem
+Absturz wird ein Volume mit Journal ohne sein Journal eingehängt, bis&lt;code&gt;diskutil enableJournal&lt;/code&gt; läuft. Der Standard kann zurückkehren, wenn das behoben
+ist. Sichern Sie das Image zuerst. Eine Freigabe stimmt mit&lt;code&gt;hfsplus_writable_max&lt;/code&gt; zu, standardmäßig &lt;code&gt;&amp;quot;0&amp;quot;&lt;/code&gt; (nie; eine Zahl in Bytes oder eine
+mit K, M, G oder T):&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;mac&amp;#34;&lt;/span&gt; {
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/mac.img&amp;#34;&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; hfsplus_writable_max&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;256M&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # einwilligen
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; hfsplus_writable_max&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;256M&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # zustimmen
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
 &lt;button
 class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
@@ -60,11 +65,14 @@ data-copied-label="Kopiert!"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;Darüber, oder wenn die Größe unbekannt ist, wird die Freigabe &lt;strong&gt;schreibgeschützt&lt;/strong&gt;
-geöffnet, weiterhin mit Bereichslesen und Zeiten, und der Server schreibt eine
-Zeile mit Image und Grund, zum Beispiel ohne Einstellung:&lt;/p&gt;
+&lt;p&gt;Seit v0.46.0 begrenzt die Größe den Speicher nicht mehr. Sie bleibt eine Größe,damit eine für v0.44.0 bis v0.45.1 geschriebene Konfiguration bedeutet, was sie
+bedeutete (eine Freigabe mit &lt;code&gt;&amp;quot;256M&amp;quot;&lt;/code&gt; beginnt nicht, ein 2-TiB-Image zu
+beschreiben); ein großer Wert wie &lt;code&gt;&amp;quot;1T&amp;quot;&lt;/code&gt; ist die schlichte Zustimmung.&lt;/p&gt;
+&lt;p&gt;Beim Standard, über der Größe oder bei unbekannter Größe wird die Freigabe&lt;strong&gt;schreibgeschützt&lt;/strong&gt; geöffnet, weiterhin mit Bereichslesen und Zeiten, und der
+Server schreibt eine Zeile mit dem Image und dem Grund, zum Beispiel ohne
+Einstellung:&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
-&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/srv/mac.img is an HFS+ volume and hfsplus_writable_max is 0, the default: hfsplus v0.9.0 is not crash-safe (a crash mid-write can leave a torn image marked clean), so HFS+ images are written only when a share sets a size, so mac is read-only&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/srv/mac.img is an HFS+ volume and hfsplus_writable_max is 0, the default: HFS+ images are written only when a share sets a size, because a durable small write is about 3x slower than on macOS (go-filesystems/hfsplus#35), the crash tests are not finished (go-filesystems/hfsplus#37), and after a crash a journaled volume mounts without its journal until diskutil enableJournal, so mac is read-only&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
 &lt;button
 class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
 title="Code kopieren"
@@ -78,7 +86,7 @@ data-copied-label="Kopiert!"
 &lt;/div&gt;
 &lt;p&gt;und über der Größe:&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
-&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/srv/mac.img is an HFS+ volume and it is 1073741824 bytes, over hfsplus_writable_max (268435456 bytes): a writable HFS+ image is held in memory and rewritten whole on every change, so mac is read-only&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/srv/mac.img is an HFS+ volume and it is 1073741824 bytes, over hfsplus_writable_max (268435456 bytes), so mac is read-only&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
 &lt;button
 class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
 title="Code kopieren"
@@ -90,12 +98,21 @@ data-copied-label="Kopiert!"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;Ein Volume &lt;strong&gt;mit Journal&lt;/strong&gt; (erzeugt von &lt;code&gt;hdiutil create -fs &amp;quot;Journaled HFS+&amp;quot;&lt;/code&gt;
-oder von macOS) wird nur beschrieben, wenn sein Journal leer ist, wie es nach
-einem sauberen Aushängen zurückbleibt. Ein Journal mit Transaktionen oder eines,das sich nicht prüfen lässt, würde von macOS über das wiedergegeben, was der
-Server schreibt; deshalb lehnt der Treiber es ab, und &lt;strong&gt;die Freigabe wird
-stattdessen schreibgeschützt geöffnet&lt;/strong&gt;. Der Server startet trotzdem; beim
-Öffnen der Freigabe schreibt er eine Zeile mit Image, Freigabe und Grund:&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Ein Neuladen folgt der Einstellung (seit v0.46.0).&lt;/strong&gt; Ändert ein Neuladen, ob
+ein HFS+-Image geschrieben wird (Einstellung entfernt, hinzugefügt oder über die
+Größe des Images hinweg verschoben), wird das Image neu geöffnet: Das Entfernen
+der Zustimmung macht die Freigabe sofort schreibgeschützt, das Hinzufügen macht
+sie beschreibbar. Vor v0.46.0 blieb der geöffnete Treiber erhalten, sodass eine
+Freigabe nach dem Entfernen ihrer Zustimmung bis zum Neustart des Servers
+beschreibbar blieb. Der Wechsel von einer beschreibbaren Größe zu einer anderen
+ändert nichts.&lt;/p&gt;
+&lt;p&gt;Ein Volume &lt;strong&gt;mit Journal&lt;/strong&gt; (erstellt von &lt;code&gt;hdiutil create -fs &amp;quot;Journaled HFS+&amp;quot;&lt;/code&gt;
+oder von macOS) wird nur geschrieben, wenn sein Journal leer ist, was ein
+sauberes Aushängen hinterlässt. Ein Journal mit Transaktionen oder eines, das
+sich nicht prüfen lässt, würde von macOS über das wiedergegeben, was der Server
+schreibt; der Treiber verweigert es daher, und &lt;strong&gt;die Freigabe wird stattdessen
+schreibgeschützt geöffnet&lt;/strong&gt;. Der Server startet trotzdem; beim Öffnen der
+Freigabe schreibt er eine Zeile mit Image, Freigabe und Grund:&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/srv/mac.img is an HFS+ volume and its journal holds transactions (hfsplus: journaled volume with a journal that is not empty: transactions pending (start 17408, end 34816)), so mac is read-only&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
 &lt;button
@@ -109,21 +126,24 @@ data-copied-label="Kopiert!"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;Damit eine solche Freigabe schreibbar wird, muss das Journal zuerst
-wiedergegeben werden: das Image an einem Mac einhängen und sauber auswerfen
-oder &lt;code&gt;fsck_hfs&lt;/code&gt; darauf ausführen. (Der Treiber hat keine Journalprüfung ohne das
-Image im Speicher; dieser eine Fall liest das Image bis zur Grenze, bevor er
-zurückfällt.) Eine Freigabe mit &lt;code&gt;read_only = true&lt;/code&gt;, ein Gerät und eine Partition
-versuchen das schreibbare Öffnen nie.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Ein anderer Schreiber.&lt;/strong&gt; Das Image wird ganz zurückgeschrieben, ein zweiter
-Schreiber würde also vom nächsten Zurückschreiben überschrieben. Das schreibbare
-Öffnen nimmt eine exklusive beratende &lt;code&gt;flock&lt;/code&gt;-Sperre auf das Image (Linux, macOS
-und die BSDs); hält sie ein anderer Prozess, etwa ein zweites fileshare auf
-demselben Image, wird die Freigabe schreibgeschützt geöffnet und sagt es. Die
-Sperre ist beratend: ein macOS-Einhängen nimmt sie nicht, und auf anderen
-Plattformen gibt es keine Sperre.&lt;/p&gt;
-&lt;p&gt;⛔ &lt;strong&gt;Schreiben Sie kein Image, das eingehängt ist&lt;/strong&gt;, weder mit diesem Server
-noch mit etwas anderem: keine Seite weiß von den Änderungen der anderen.Stellen Sie ein Image bereit, das sonst nichts geöffnet hat.&lt;/p&gt;
+&lt;p&gt;Um eine solche Freigabe beschreibbar zu machen, muss das Journal zuerst
+wiedergegeben werden: das Image auf einem Mac einhängen und sauber auswerfen
+oder &lt;code&gt;fsck_hfs&lt;/code&gt; darauf ausführen. Solange ein Volume mit Journal geschrieben
+wird, ist sein Journaled-Bit gelöscht; nach einem Absturz bleibt es gelöscht,das Volume wird also ohne Journal eingehängt, bis &lt;code&gt;diskutil enableJournal&lt;/code&gt;
+läuft. Eine Freigabe mit &lt;code&gt;read_only = true&lt;/code&gt;, ein Gerät und eine Partition
+versuchen das Öffnen zum Schreiben nie.&lt;/p&gt;
+&lt;p&gt;Das Volume wird über den eigenen Dateideskriptor der Freigabe geschrieben(hfsplus v0.11.0): die Datei, die bereits eingegrenzt und gesperrt ist, nie der
+erneut geöffnete Name des Images. Eine Größe, die nicht zum Volume passt, öffnet
+die Freigabe schreibgeschützt, mit einer Zeile.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Ein zweiter Schreiber.&lt;/strong&gt; Ein zweiter Schreiber auf demselben Image würde es
+beschädigen. Das Öffnen zum Schreiben nimmt eine exklusive beratende Sperre(&lt;code&gt;flock&lt;/code&gt;) auf das Image (Linux, macOS und die BSDs); hält ein anderer Prozess
+sie, etwa ein zweites fileshare auf demselben Image, wird die Freigabe
+schreibgeschützt geöffnet und sagt es. Die Sperre ist beratend: Ein
+macOS-Einhängen nimmt sie nicht, und auf anderen Plattformen gibt es keine
+Sperre.&lt;/p&gt;
+&lt;p&gt;⛔ &lt;strong&gt;Schreiben Sie kein eingehängtes Image&lt;/strong&gt;, weder mit diesem Server noch mit
+etwas anderem: Keine Seite kennt die Änderungen der anderen. Stellen Sie ein
+Image bereit, das sonst nichts geöffnet hat.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="an-image-the-os-has-mounted"&gt;Ein beschreibbares Image, das das Betriebssystem eingehängt hat, wird schreibgeschützt bereitgestellt&lt;span class="hx:absolute hx:-mt-20" id="an-image-the-os-has-mounted"&gt;&lt;/span&gt;
 &lt;a href="#an-image-the-os-has-mounted" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Seit v0.45.0 fragt der Server, bevor ein beschreibbares Image-Share (FAT32,exFAT, ext4, UFS, btrfs, XFS, ZFS, HFS+, unabhängig vom Treiber) zum Schreiben
 geöffnet wird, das Betriebssystem, ob es dieses Image angehängt oder eingehängt
