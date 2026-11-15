@@ -112,10 +112,12 @@ configuration, en nommant le partage.
   un commit sans données, 2 avec données, 1 pour un `Sync`.
 - `lazy` : les données sont réécrites sans ordre : 1 barrière pour la première
   écriture, 0 ensuite, 2 pour un `Sync`. Un changement n'est sur le support
-  que lorsque le volume est fermé (le partage est retiré ou le serveur s'arrête)
-  ou qu'un rechargement change le niveau. fileshare n'émet aucun sync de lui-même :
-  un FLUSH SMB, un COMMIT NFS ou un fsync SFTP réussit sans rendre durables les
-  données de `lazy`. **N'utilisez pas `lazy` pour un partage que
+  qu'une fois le volume synchronisé : par le flush d'un client (un FLUSH SMB, un
+  COMMIT NFS ou un `fsync@openssh.com` SFTP, qui remet aussi un volume `mounted`
+  à l'état propre), à la fermeture du volume, ou quand un rechargement change le
+  niveau. Un sync échoué est renvoyé au client comme une erreur d'E/S. WebDAV et
+  S3 n'ont pas de flush : leurs accusés ne sont pas durables avec `lazy`.
+  **N'utilisez pas `lazy` pour un partage que
   d'autres clients montent en même temps** : rien n'ordonne les données du fichier avant les
   métadonnées qui les désignent, donc après un plantage un fichier peut contenir des
   octets périmés d'un fichier supprimé, et les changements depuis la dernière stabilisation du volume

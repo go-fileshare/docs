@@ -115,10 +115,12 @@ nicht laden und nennt die Freigabe.
   Schreibvorgang, 1 für einen Commit ohne Daten, 2 mit Daten, 1 für ein `Sync`.
 - `lazy`: Die Daten werden ohne Reihenfolge zurückgeschrieben: 1 Barriere für
   den ersten Schreibvorgang, danach 0, 2 für ein `Sync`. Eine Änderung liegt erst
-  auf dem Medium, wenn das Volume geschlossen wird (die Freigabe wird entfernt
-  oder der Server hält an) oder ein Reload die Stufe ändert. fileshare führt kein
-  eigenes Sync aus: Ein SMB-FLUSH, ein NFS-COMMIT oder ein SFTP-fsync gelingt, ohne
-  `lazy`-Daten dauerhaft zu machen. **`lazy` nicht für eine
+  auf dem Medium, wenn das Volume synchronisiert ist: durch den Flush eines
+  Clients (ein SMB-FLUSH, ein NFS-COMMIT oder ein SFTP-`fsync@openssh.com`, was
+  auch ein `mounted`-Volume wieder als sauber markiert), beim Schließen des
+  Volumes oder wenn ein Reload die Stufe ändert. Ein fehlgeschlagenes Sync wird dem
+  Client als E/A-Fehler zurückgegeben. WebDAV und S3 kennen keinen Flush, ihre
+  Bestätigungen sind bei `lazy` nicht dauerhaft. **`lazy` nicht für eine
   Freigabe verwenden, die andere Clients gleichzeitig einhängen**: Nichts ordnet Dateidaten vor die Metadaten, die auf sie
   zeigen, daher kann eine Datei nach einem Absturz veraltete Bytes einer gelöschten
   enthalten, und die Änderungen seit dem letzten Abschluss des Volumes gehen verloren. Nach einem
