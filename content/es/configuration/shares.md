@@ -128,14 +128,18 @@ el recurso.
 **Qué alcanza un flush.** Un FLUSH de SMB, un COMMIT de NFS (un WRITE UNSTABLE se
 responde UNSTABLE, de modo que el cliente envía el COMMIT; un WRITE que pide
 estabilidad se sincroniza) y un `fsync@openssh.com` de SFTP sincronizan el
-volumen. El árbol de SFTP es por persona y la petición no lleva ruta, así que
-sincroniza cada recurso que la persona puede escribir. El mismo flush es veraz
+volumen. La petición de SFTP nombra un manejador, pero el gancho de sync del
+módulo sftp no recibe ruta, así que fileshare sincroniza cada recurso que la
+persona puede escribir (un gancho por recurso queda como tarea pendiente). El mismo flush es veraz
 para los demás controladores de imagen escribibles: fat32, exfat y ext4 hacen
 fsync de la imagen mediante el `Sync` del propio archivo, y ntfs y ufs, que
 escriben cada cambio directamente en la imagen, se sincronizan con un fsync del
 archivo de la imagen. Un recurso de directorio no tiene nada que sincronizar. Un
-sync fallido sigue fallido: un flush o COMMIT repetido también se rechaza y no se
-le dice que sus datos son duraderos.
+sync fallido sigue fallido en hfsplus y en el fsync de la imagen usado para fat32,
+exfat, ext4, ntfs y ufs (el primer error se conserva hasta reabrir el recurso): un
+flush o COMMIT repetido también se rechaza y no se le dice que sus datos son
+duraderos. El `Sync` propio de un manejador de archivo posicional en fat32, exfat
+y ext4 es del controlador y aquí no se retiene.
 
 ```hcl
 share "mac" {

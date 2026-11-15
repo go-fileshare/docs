@@ -127,14 +127,19 @@ configuration, en nommant le partage.
 **Ce qu'atteint un flush.** Un FLUSH SMB, un COMMIT NFS (un WRITE UNSTABLE reçoit
 la réponse UNSTABLE, pour que le client envoie le COMMIT ; un WRITE qui demande
 la stabilité est synchronisé) et un `fsync@openssh.com` SFTP synchronisent le
-volume. L'arbre SFTP est propre à chaque personne et la requête ne porte aucun
-chemin : il synchronise donc chaque partage que la personne peut écrire. Le même
+volume. La requête SFTP nomme un descripteur, mais le point d'accroche de sync du
+module sftp ne reçoit aucun chemin : fileshare synchronise donc chaque partage
+que la personne peut écrire (un point d'accroche par partage reste à faire). Le même
 flush est fiable pour les autres pilotes d'image inscriptibles : fat32, exfat et
 ext4 font un fsync de l'image par le `Sync` du fichier lui-même, et ntfs et ufs,
 qui écrivent chaque changement directement dans l'image, sont synchronisés par
 un fsync du fichier image. Un partage de répertoire n'a rien à synchroniser. Un
-sync échoué reste échoué : un flush ou un COMMIT répété est refusé aussi, et ne
-s'entend pas dire que ses données sont durables.
+sync échoué reste échoué pour hfsplus et pour le fsync de l'image utilisé pour
+fat32, exfat, ext4, ntfs et ufs (la première erreur est conservée jusqu'à la
+réouverture du partage) : un flush ou un COMMIT répété est refusé aussi, et ne
+s'entend pas dire que ses données sont durables. Le `Sync` propre d'un
+descripteur de fichier positionnel sur fat32, exfat et ext4 appartient au pilote
+et n'est pas retenu ici.
 
 ```hcl
 share "mac" {

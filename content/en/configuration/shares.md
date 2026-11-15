@@ -120,13 +120,17 @@ below makes the configuration refuse to load, naming the share.
 **What a flush reaches.** An SMB FLUSH, an NFS COMMIT (an UNSTABLE WRITE is
 answered UNSTABLE, so the client sends the COMMIT; a WRITE that asks for
 stability is synced) and an SFTP `fsync@openssh.com` sync the volume. The SFTP
-tree is per person and the request carries no path, so it syncs every share the
-person may write. The same flush is truthful for the other writable image
+request names a handle, but the sftp module's sync hook takes no path, so
+fileshare syncs every share the person may write (a per-share hook is a
+follow-up). The same flush is truthful for the other writable image
 drivers: fat32, exfat and ext4 fsync the image through the file's own `Sync`,
 and ntfs and ufs, which write each change through to the image, are synced with
 an fsync of the image file. A directory share has nothing to sync. A sync that
-failed stays failed: a retried flush or COMMIT is refused too, and is not told
-its data is durable.
+failed stays failed for hfsplus and for the image fsync used for fat32, exfat,
+ext4, ntfs and ufs (the first error is kept until the share is reopened): a
+retried flush or COMMIT is refused too, and is not told its data is durable. A
+positional file handle's own `Sync` on fat32, exfat and ext4 is the driver's and
+is not latched.
 
 ```hcl
 share "mac" {

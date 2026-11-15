@@ -130,15 +130,20 @@ nicht laden und nennt die Freigabe.
 **Was ein Flush erreicht.** Ein SMB-FLUSH, ein NFS-COMMIT (ein UNSTABLE-WRITE
 wird mit UNSTABLE beantwortet, damit der Client das COMMIT sendet; ein WRITE, der
 Stabilität verlangt, wird synchronisiert) und ein SFTP-`fsync@openssh.com`
-synchronisieren das Volume. Der SFTP-Baum gilt pro Person und die Anfrage trägt
-keinen Pfad, daher synchronisiert er jede Freigabe, die die Person beschreiben
-darf. Derselbe Flush ist auch für die anderen beschreibbaren Image-Treiber
+synchronisieren das Volume. Die SFTP-Anfrage nennt ein Handle, aber der
+Sync-Hook des sftp-Moduls nimmt keinen Pfad, daher synchronisiert fileshare jede
+Freigabe, die die Person beschreiben darf (ein Hook pro Freigabe ist ein
+Folgeschritt). Derselbe Flush ist auch für die anderen beschreibbaren Image-Treiber
 verlässlich: fat32, exfat und ext4 führen über das eigene `Sync` der Datei ein
 fsync des Images aus, und ntfs und ufs, die jede Änderung sofort ins Image
 schreiben, werden mit einem fsync der Image-Datei synchronisiert. Eine
 Verzeichnisfreigabe hat nichts zu synchronisieren. Ein fehlgeschlagenes Sync
-bleibt fehlgeschlagen: Ein wiederholter Flush oder COMMIT wird ebenfalls
-abgewiesen und erfährt nicht, seine Daten seien dauerhaft.
+bleibt fehlgeschlagen, bei hfsplus und beim Image-fsync für fat32, exfat, ext4,
+ntfs und ufs (der erste Fehler bleibt bis zum erneuten Öffnen der Freigabe
+erhalten): Ein wiederholter Flush oder COMMIT wird ebenfalls abgewiesen und
+erfährt nicht, seine Daten seien dauerhaft. Das eigene `Sync` eines
+positionsfähigen Datei-Handles bei fat32, exfat und ext4 gehört dem Treiber und
+wird hier nicht festgehalten.
 
 ```hcl
 share "mac" {
