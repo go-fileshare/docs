@@ -127,9 +127,11 @@ configuration, en nommant le partage.
 **Ce qu'atteint un flush.** Un FLUSH SMB, un COMMIT NFS (un WRITE UNSTABLE reçoit
 la réponse UNSTABLE, pour que le client envoie le COMMIT ; un WRITE qui demande
 la stabilité est synchronisé) et un `fsync@openssh.com` SFTP synchronisent le
-volume. La requête SFTP nomme un descripteur, mais le point d'accroche de sync du
-module sftp ne reçoit aucun chemin : fileshare synchronise donc chaque partage
-que la personne peut écrire (un point d'accroche par partage reste à faire). Le même
+volume. La requête SFTP nomme un descripteur, et fileshare ne synchronise que le partage
+situé sous le chemin du descripteur (go-filesystems/sftp v0.15.0) : N partages
+inscriptibles coûtent un seul sync, et un partage en échec ne fait échouer que
+ses propres fsync, pas ceux des autres. Un partage en lecture seule pour la
+personne ne synchronise rien. Le même
 flush est fiable pour les autres pilotes d'image inscriptibles : fat32, exfat et
 ext4 font un fsync de l'image par le `Sync` du fichier lui-même, et ntfs et ufs,
 qui écrivent chaque changement directement dans l'image, sont synchronisés par

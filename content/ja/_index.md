@@ -13,7 +13,7 @@ Go 製で、`CGO_ENABLED=0`、バイナリは 1 つです。このページは
 [v0.32.0]({{< relref "/status.md" >}}) について説明しています。
 
 ```sh
-go install github.com/go-fileshare/fileshare@latest          # with Go 1.27.3 or later
+go install github.com/go-fileshare/fileshare@latest          # with Go 1.27.4 or later
 
 fileshare --image disk.img --user alice --password-file pw   # one image, now
 fileshare --config /etc/fileshare.d                          # several, with users

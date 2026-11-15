@@ -13,7 +13,7 @@ description: "go-fileshare는 디스크 이미지와 디렉터리를 SMB, NFS, W
 [v0.32.0]({{< relref "/status.md" >}})을 설명합니다.
 
 ```sh
-go install github.com/go-fileshare/fileshare@latest          # with Go 1.27.3 or later
+go install github.com/go-fileshare/fileshare@latest          # with Go 1.27.4 or later
 
 fileshare --image disk.img --user alice --password-file pw   # one image, now
 fileshare --config /etc/fileshare.d                          # several, with users

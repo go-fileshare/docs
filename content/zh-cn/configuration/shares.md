@@ -99,8 +99,9 @@ share "mac" {
 
 **刷新能到达哪里。** SMB 的 FLUSH、NFS 的 COMMIT（UNSTABLE 的 WRITE 会得到 UNSTABLE 的
 回答，因此客户端会发送 COMMIT；要求稳定性的 WRITE 会被同步）以及 SFTP 的
-`fsync@openssh.com` 都会同步卷。SFTP 请求指明的是一个句柄，但 sftp 模块的同步钩子不接收路径，所以
-fileshare 会同步该人可写的每个共享（按共享的钩子留作后续工作）。同样的刷新对其他可写的镜像驱动也是可靠的：fat32、exfat 和 ext4 通过文件自身的
+`fsync@openssh.com` 都会同步卷。SFTP 请求指明的是一个句柄，
+fileshare 只同步该句柄路径下的那个共享（go-filesystems/sftp v0.15.0）：N 个可写共享只需一次同步，
+已失败的共享只会让它自己的 fsync 失败，不会影响其他共享。对该人只读的共享不会同步任何内容。同样的刷新对其他可写的镜像驱动也是可靠的：fat32、exfat 和 ext4 通过文件自身的
 `Sync` 对镜像执行 fsync，而每次更改都直接写入镜像的 ntfs 和 ufs 则通过对镜像文件执行 fsync 来同步。
 目录共享没有需要同步的内容。失败的同步会一直保持失败，对 hfsplus 以及用于 fat32、exfat、ext4、ntfs 和 ufs 的镜像
 fsync 都是如此（第一个错误会保留到共享被重新打开）：重试的刷新或 COMMIT 同样会被拒绝，

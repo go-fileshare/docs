@@ -110,9 +110,11 @@ v0.46.0부터 이 크기는 더 이상 메모리를 제한하지 않습니다. v
 
 **플러시가 닿는 범위.** SMB FLUSH, NFS COMMIT(UNSTABLE WRITE에는 UNSTABLE로 응답하므로
 클라이언트가 COMMIT을 보냅니다. 안정성을 요구하는 WRITE는 동기화됩니다), SFTP
-`fsync@openssh.com`은 볼륨을 동기화합니다. SFTP 요청은 핸들을 가리키지만 sftp 모듈의 동기화 훅은
-경로를 받지 않으므로, fileshare는 그 사람이 쓸 수 있는 모든 공유를 동기화합니다
-(공유별 훅은 후속 과제입니다). 같은 플러시는 쓰기 가능한 다른 이미지
+`fsync@openssh.com`은 볼륨을 동기화합니다. SFTP 요청은 핸들을 가리키며,
+fileshare는 핸들의 경로 아래에 있는 공유만 동기화합니다(go-filesystems/sftp v0.15.0).
+쓰기 가능한 공유가 N개여도 동기화는 한 번이고, 실패한 공유는 자기 자신의 fsync만
+실패시키며 다른 공유의 fsync에는 영향을 주지 않습니다. 그 사람에게 읽기 전용인 공유는
+아무것도 동기화하지 않습니다. 같은 플러시는 쓰기 가능한 다른 이미지
 드라이버에도 정확합니다. fat32, exfat, ext4는 파일 자체의 `Sync`로 이미지를 fsync하고,
 변경을 즉시 이미지에 쓰는 ntfs와 ufs는 이미지 파일의 fsync로 동기화됩니다. 디렉터리
 공유는 동기화할 것이 없습니다. 실패한 동기화는 hfsplus와, fat32, exfat, ext4, ntfs, ufs에 쓰는 이미지 fsync에서
