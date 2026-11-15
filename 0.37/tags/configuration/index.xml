@@ -333,9 +333,9 @@ mount runs &lt;code&gt;fsck_hfs&lt;/code&gt;.&lt;/li&gt;
 &lt;p&gt;&lt;strong&gt;What a flush reaches.&lt;/strong&gt; An SMB FLUSH, an NFS COMMIT (an UNSTABLE WRITE is
 answered UNSTABLE, so the client sends the COMMIT; a WRITE that asks for
 stability is synced) and an SFTP &lt;code&gt;fsync@openssh.com&lt;/code&gt; sync the volume. The SFTP
-request names a handle, but the sftp module&amp;rsquo;s sync hook takes no path, so
-fileshare syncs every share the person may write (a per-share hook is a
-follow-up). The same flush is truthful for the other writable image
+request names a handle, and fileshare syncs only the share under the handle&amp;rsquo;s
+path (go-filesystems/sftp v0.15.0): N writable shares cost one sync, and a
+share that has failed fails only its own fsyncs, not those on the other shares.A share that is read-only for the person syncs nothing. The same flush is truthful for the other writable image
 drivers: fat32, exfat and ext4 fsync the image through the file&amp;rsquo;s own &lt;code&gt;Sync&lt;/code&gt;,and ntfs and ufs, which write each change through to the image, are synced with
 an fsync of the image file. A directory share has nothing to sync. A sync that
 failed stays failed for hfsplus and for the image fsync used for fat32, exfat,ext4, ntfs and ufs (the first error is kept until the share is reopened): a
