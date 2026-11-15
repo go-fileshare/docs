@@ -128,9 +128,11 @@ el recurso.
 **Qué alcanza un flush.** Un FLUSH de SMB, un COMMIT de NFS (un WRITE UNSTABLE se
 responde UNSTABLE, de modo que el cliente envía el COMMIT; un WRITE que pide
 estabilidad se sincroniza) y un `fsync@openssh.com` de SFTP sincronizan el
-volumen. La petición de SFTP nombra un manejador, pero el gancho de sync del
-módulo sftp no recibe ruta, así que fileshare sincroniza cada recurso que la
-persona puede escribir (un gancho por recurso queda como tarea pendiente). El mismo flush es veraz
+volumen. La petición de SFTP nombra un manejador, y fileshare sincroniza solo el recurso
+bajo la ruta del manejador (go-filesystems/sftp v0.15.0): N recursos escribibles
+cuestan un sync, y un recurso que ha fallado hace fallar solo sus propios fsync,
+no los de los demás. Un recurso de solo lectura para la persona no sincroniza
+nada. El mismo flush es veraz
 para los demás controladores de imagen escribibles: fat32, exfat y ext4 hacen
 fsync de la imagen mediante el `Sync` del propio archivo, y ntfs y ufs, que
 escriben cada cambio directamente en la imagen, se sincronizan con un fsync del

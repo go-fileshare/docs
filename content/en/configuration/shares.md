@@ -120,9 +120,10 @@ below makes the configuration refuse to load, naming the share.
 **What a flush reaches.** An SMB FLUSH, an NFS COMMIT (an UNSTABLE WRITE is
 answered UNSTABLE, so the client sends the COMMIT; a WRITE that asks for
 stability is synced) and an SFTP `fsync@openssh.com` sync the volume. The SFTP
-request names a handle, but the sftp module's sync hook takes no path, so
-fileshare syncs every share the person may write (a per-share hook is a
-follow-up). The same flush is truthful for the other writable image
+request names a handle, and fileshare syncs only the share under the handle's
+path (go-filesystems/sftp v0.15.0): N writable shares cost one sync, and a
+share that has failed fails only its own fsyncs, not those on the other shares.
+A share that is read-only for the person syncs nothing. The same flush is truthful for the other writable image
 drivers: fat32, exfat and ext4 fsync the image through the file's own `Sync`,
 and ntfs and ufs, which write each change through to the image, are synced with
 an fsync of the image file. A directory share has nothing to sync. A sync that

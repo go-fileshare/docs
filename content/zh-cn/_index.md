@@ -13,7 +13,7 @@ Go 实现，`CGO_ENABLED=0`，单一二进制文件。本文档描述的是
 [v0.32.0]({{< relref "/status.md" >}})。
 
 ```sh
-go install github.com/go-fileshare/fileshare@latest          # with Go 1.27.3 or later
+go install github.com/go-fileshare/fileshare@latest          # with Go 1.27.4 or later
 
 fileshare --image disk.img --user alice --password-file pw   # 一个映像，立即可用
 fileshare --config /etc/fileshare.d                          # 多个映像，带用户

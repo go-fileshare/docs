@@ -130,10 +130,12 @@ nicht laden und nennt die Freigabe.
 **Was ein Flush erreicht.** Ein SMB-FLUSH, ein NFS-COMMIT (ein UNSTABLE-WRITE
 wird mit UNSTABLE beantwortet, damit der Client das COMMIT sendet; ein WRITE, der
 Stabilität verlangt, wird synchronisiert) und ein SFTP-`fsync@openssh.com`
-synchronisieren das Volume. Die SFTP-Anfrage nennt ein Handle, aber der
-Sync-Hook des sftp-Moduls nimmt keinen Pfad, daher synchronisiert fileshare jede
-Freigabe, die die Person beschreiben darf (ein Hook pro Freigabe ist ein
-Folgeschritt). Derselbe Flush ist auch für die anderen beschreibbaren Image-Treiber
+synchronisieren das Volume. Die SFTP-Anfrage nennt ein Handle, und fileshare
+synchronisiert nur die Freigabe unter dem Pfad des Handles (go-filesystems/sftp
+v0.15.0): N beschreibbare Freigaben kosten ein Sync, und eine Freigabe, die
+fehlgeschlagen ist, lässt nur ihre eigenen fsyncs scheitern, nicht die der
+anderen. Eine für die Person schreibgeschützte Freigabe synchronisiert nichts.
+Derselbe Flush ist auch für die anderen beschreibbaren Image-Treiber
 verlässlich: fat32, exfat und ext4 führen über das eigene `Sync` der Datei ein
 fsync des Images aus, und ntfs und ufs, die jede Änderung sofort ins Image
 schreiben, werden mit einem fsync der Image-Datei synchronisiert. Eine
