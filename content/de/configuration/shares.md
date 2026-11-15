@@ -155,7 +155,13 @@ share "mac" {
 
 `hfsplus_durability` schaltet das Schreiben nicht ein: `hfsplus_writable_max` ist
 weiterhin standardmäßig `"0"`. Ein Reload, der den Wert ändert, ändert das
-geöffnete Volume an Ort und Stelle.
+geöffnete Volume an Ort und Stelle (der Treiber bleibt erhalten, sodass kein
+zweiter Schreiber die Image-Sperre erwerben muss), nachdem die alten
+Verbindungen beendet wurden und bevor die neue Liste der Shares bedient wird
+(seit v0.49.1): Ein abgelehnter Reload lässt die Stufe unverändert. Beim
+Wechsel zu einer trägeren Stufe wird zuerst geleert; schlägt das Leeren fehl,
+meldet eine Logzeile das, das Volume bleibt auf seiner Stufe, und das Share
+nimmt keine Schreibzugriffe an, bis sie erneut geöffnet wird.
 
 Ein Volume **mit Journal** (erstellt von `hdiutil create -fs "Journaled HFS+"`
 oder von macOS) wird nur geschrieben, wenn sein Journal leer ist, was ein

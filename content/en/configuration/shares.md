@@ -140,7 +140,12 @@ share "mac" {
 ```
 
 `hfsplus_durability` does not turn writing on: `hfsplus_writable_max` still
-defaults to `"0"`. A reload that changes it changes the open volume in place.
+defaults to `"0"`. A reload that changes it changes the open volume in place
+(the driver is kept, so no second writer has to take the image lock), after the
+old connections are stopped and before the new list of shares is served (since
+v0.49.1): a reload that is refused leaves the level as it was. Leaving a lazier
+level flushes first; if that flush fails, one log line says so, the volume stays
+at its level, and the share accepts no write until it is reopened.
 
 A **journaled** volume (made by `hdiutil create -fs "Journaled HFS+"` or by
 macOS) is written only when its journal is empty, which is what a clean

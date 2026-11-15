@@ -151,7 +151,13 @@ share "mac" {
 
 `hfsplus_durability` n'active pas l'écriture : `hfsplus_writable_max` vaut
 toujours `"0"` par défaut. Un rechargement qui la change modifie le volume
-ouvert sur place.
+ouvert sur place (le pilote est conservé, donc aucun second écrivain n'a à
+prendre le verrou de l'image), après l'arrêt des anciennes connexions et avant
+que la nouvelle liste de partages soit servie (depuis v0.49.1) : un
+rechargement refusé laisse le niveau tel qu'il était. Quitter un niveau plus
+paresseux vide d'abord ; si ce vidage échoue, une ligne de journal le dit, le
+volume reste à son niveau, et le partage n'accepte aucune écriture tant qu'il
+n'est pas rouvert.
 
 Un volume **à journal** (créé par `hdiutil create -fs "Journaled HFS+"` ou par
 macOS) n'est écrit que si son journal est vide, ce que laisse un démontage
