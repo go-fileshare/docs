@@ -163,7 +163,13 @@ data-copied-label="Copié !"
 &lt;/div&gt;
 &lt;p&gt;&lt;code&gt;hfsplus_durability&lt;/code&gt; n&amp;rsquo;active pas l&amp;rsquo;écriture : &lt;code&gt;hfsplus_writable_max&lt;/code&gt; vaut
 toujours &lt;code&gt;&amp;quot;0&amp;quot;&lt;/code&gt; par défaut. Un rechargement qui la change modifie le volume
-ouvert sur place.&lt;/p&gt;
+ouvert sur place (le pilote est conservé, donc aucun second écrivain n&amp;rsquo;a à
+prendre le verrou de l&amp;rsquo;image), après l&amp;rsquo;arrêt des anciennes connexions et avant
+que la nouvelle liste de partages soit servie (depuis v0.49.1) : un
+rechargement refusé laisse le niveau tel qu&amp;rsquo;il était. Quitter un niveau plus
+paresseux vide d&amp;rsquo;abord ; si ce vidage échoue, une ligne de journal le dit, le
+volume reste à son niveau, et le partage n&amp;rsquo;accepte aucune écriture tant qu&amp;rsquo;il
+n&amp;rsquo;est pas rouvert.&lt;/p&gt;
 &lt;p&gt;Un volume &lt;strong&gt;à journal&lt;/strong&gt; (créé par &lt;code&gt;hdiutil create -fs &amp;quot;Journaled HFS+&amp;quot;&lt;/code&gt; ou par
 macOS) n&amp;rsquo;est écrit que si son journal est vide, ce que laisse un démontage
 propre. Un journal qui contient des transactions, ou qu&amp;rsquo;on ne peut pas vérifier,serait rejoué par macOS par-dessus ce que le serveur écrit : le pilote le refuse

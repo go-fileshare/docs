@@ -368,7 +368,13 @@ data-copied-label="¡Copiado!"
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;p&gt;&lt;code&gt;hfsplus_durability&lt;/code&gt; no activa la escritura: &lt;code&gt;hfsplus_writable_max&lt;/code&gt; sigue siendo&lt;code&gt;&amp;quot;0&amp;quot;&lt;/code&gt; por defecto. Una recarga que lo cambia cambia el volumen abierto en el
-sitio.&lt;/p&gt;
+sitio (se conserva el controlador, así que ningún segundo escritor tiene que
+tomar el bloqueo de la imagen), después de detener las conexiones antiguas y
+antes de servir la nueva lista de recursos (desde v0.49.1): una recarga
+rechazada deja el nivel como estaba. Salir hacia un nivel más perezoso vacía
+primero; si ese vaciado falla, una línea de registro lo indica, el volumen
+permanece en su nivel y el recurso no acepta ninguna escritura hasta que se
+reabra.&lt;/p&gt;
 &lt;p&gt;Un volumen &lt;strong&gt;con journal&lt;/strong&gt; (creado por &lt;code&gt;hdiutil create -fs &amp;quot;Journaled HFS+&amp;quot;&lt;/code&gt; o por
 macOS) solo se escribe cuando su journal está vacío, que es lo que deja un
 desmontaje limpio. Un journal con transacciones, o uno que no se puede

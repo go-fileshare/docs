@@ -133,7 +133,7 @@ data-copied-label="복사됨!"
 &lt;/button&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;&lt;code&gt;hfsplus_durability&lt;/code&gt;는 쓰기를 켜지 않습니다. &lt;code&gt;hfsplus_writable_max&lt;/code&gt;의 기본값은 여전히&lt;code&gt;&amp;quot;0&amp;quot;&lt;/code&gt;입니다. 이 값을 바꾸는 리로드는 열려 있는 볼륨을 그 자리에서 바꿉니다.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;hfsplus_durability&lt;/code&gt;는 쓰기를 켜지 않습니다. &lt;code&gt;hfsplus_writable_max&lt;/code&gt;의 기본값은 여전히&lt;code&gt;&amp;quot;0&amp;quot;&lt;/code&gt;입니다. 이 값을 바꾸는 리로드는 열려 있는 볼륨을 그 자리에서 바꿉니다(드라이버가 유지되므로 두 번째 쓰기 주체가 이미지 잠금을 얻을 필요가 없습니다).이는 이전 연결을 중지한 뒤, 새 셰어 목록을 제공하기 전에 이루어집니다(v0.49.1부터).거부된 리로드는 수준을 원래대로 둡니다. 더 느슨한 수준으로 옮길 때는 먼저 플러시합니다.그 플러시가 실패하면 로그 한 줄로 알리고, 볼륨은 기존 수준에 머물며,셰어는 다시 열릴 때까지 쓰기를 받지 않습니다.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;저널이 있는&lt;/strong&gt; 볼륨(&lt;code&gt;hdiutil create -fs &amp;quot;Journaled HFS+&amp;quot;&lt;/code&gt;나 macOS가 만든 것)은 저널이 비어 있을
 때만 기록됩니다. 정상적으로 마운트 해제하면 비어 있게 됩니다. 트랜잭션이 있는 저널이나 검증할 수
 없는 저널은 서버가 쓴 내용 위에 macOS가 재생해 버리므로 드라이버가 거부하고, &lt;strong&gt;공유는 대신 읽기
