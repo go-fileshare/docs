@@ -98,6 +98,42 @@ inscriptible. Avant la v0.46.0, le pilote ouvert était conservé : un partage
 restait inscriptible après le retrait de son consentement, jusqu'au redémarrage
 du serveur. Passer d'une taille inscriptible à une autre ne change rien.
 
+**Durabilité (hfsplus v0.12.0).** `hfsplus_durability` choisit, par partage,
+quand une écriture est sur le support. Elle ne s'applique qu'à une image HFS+
+inscriptible ; un partage ouvert en lecture seule l'ignore, sans erreur. Une
+valeur autre que les trois suivantes fait refuser le chargement de la
+configuration, en nommant le partage.
+
+- `strict` (par défaut) : chaque commit est durable au retour : 3 barrières
+  d'écriture par commit sur un volume propre à l'ouverture, 1 pour un `Sync`.
+- `mounted` : les données sont écrites avant les métadonnées qui les désignent,
+  et le volume reste marqué en cours d'utilisation entre les commits, comme
+  TN1150 décrit un volume monté : 2 barrières pour la première écriture, 1 pour
+  un commit sans données, 2 avec données, 1 pour un `Sync`.
+- `lazy` : les données sont réécrites sans ordre : 1 barrière pour la première
+  écriture, 0 ensuite, 2 pour un `Sync`. Un changement n'est sur le support
+  que lorsque le volume est fermé (le partage est retiré ou le serveur s'arrête)
+  ou qu'un rechargement change le niveau. fileshare n'émet aucun sync de lui-même :
+  un FLUSH SMB, un COMMIT NFS ou un fsync SFTP réussit sans rendre durables les
+  données de `lazy`. **N'utilisez pas `lazy` pour un partage que
+  d'autres clients montent en même temps** : rien n'ordonne les données du fichier avant les
+  métadonnées qui les désignent, donc après un plantage un fichier peut contenir des
+  octets périmés d'un fichier supprimé, et les changements depuis la dernière stabilisation du volume
+  sont perdus. Après un plantage, `mounted` et `lazy` laissent le volume marqué
+  comme non démonté proprement, si bien que le montage suivant lance `fsck_hfs`.
+
+```hcl
+share "mac" {
+  image                = "/srv/mac.img"
+  hfsplus_writable_max = "256M"
+  hfsplus_durability   = "mounted"
+}
+```
+
+`hfsplus_durability` n'active pas l'écriture : `hfsplus_writable_max` vaut
+toujours `"0"` par défaut. Un rechargement qui la change modifie le volume
+ouvert sur place.
+
 Un volume **à journal** (créé par `hdiutil create -fs "Journaled HFS+"` ou par
 macOS) n'est écrit que si son journal est vide, ce que laisse un démontage
 propre. Un journal qui contient des transactions, ou qu'on ne peut pas vérifier,

@@ -101,6 +101,42 @@ Freigabe nach dem Entfernen ihrer Zustimmung bis zum Neustart des Servers
 beschreibbar blieb. Der Wechsel von einer beschreibbaren Größe zu einer anderen
 ändert nichts.
 
+**Dauerhaftigkeit (hfsplus v0.12.0).** `hfsplus_durability` legt pro Freigabe
+fest, wann ein Schreibvorgang auf dem Medium liegt. Es gilt nur für ein
+beschreibbares HFS+-Image; eine schreibgeschützt geöffnete Freigabe ignoriert es
+ohne Fehler. Ein anderer Wert als die drei folgenden lässt die Konfiguration
+nicht laden und nennt die Freigabe.
+
+- `strict` (Standard): Jeder Commit ist beim Zurückkehren dauerhaft: 3
+  Schreibbarrieren pro Commit auf einem beim Öffnen sauberen Volume, 1 für ein `Sync`.
+- `mounted`: Die Daten werden vor den Metadaten geschrieben, die auf sie
+  zeigen, und das Volume bleibt zwischen Commits als in Benutzung markiert, wie
+  TN1150 ein eingehängtes Volume beschreibt: 2 Barrieren für den ersten
+  Schreibvorgang, 1 für einen Commit ohne Daten, 2 mit Daten, 1 für ein `Sync`.
+- `lazy`: Die Daten werden ohne Reihenfolge zurückgeschrieben: 1 Barriere für
+  den ersten Schreibvorgang, danach 0, 2 für ein `Sync`. Eine Änderung liegt erst
+  auf dem Medium, wenn das Volume geschlossen wird (die Freigabe wird entfernt
+  oder der Server hält an) oder ein Reload die Stufe ändert. fileshare führt kein
+  eigenes Sync aus: Ein SMB-FLUSH, ein NFS-COMMIT oder ein SFTP-fsync gelingt, ohne
+  `lazy`-Daten dauerhaft zu machen. **`lazy` nicht für eine
+  Freigabe verwenden, die andere Clients gleichzeitig einhängen**: Nichts ordnet Dateidaten vor die Metadaten, die auf sie
+  zeigen, daher kann eine Datei nach einem Absturz veraltete Bytes einer gelöschten
+  enthalten, und die Änderungen seit dem letzten Abschluss des Volumes gehen verloren. Nach einem
+  Absturz lassen `mounted` und `lazy` das Volume als nicht sauber ausgehängt
+  markiert zurück, sodass das nächste Einhängen `fsck_hfs` ausführt.
+
+```hcl
+share "mac" {
+  image                = "/srv/mac.img"
+  hfsplus_writable_max = "256M"
+  hfsplus_durability   = "mounted"
+}
+```
+
+`hfsplus_durability` schaltet das Schreiben nicht ein: `hfsplus_writable_max` ist
+weiterhin standardmäßig `"0"`. Ein Reload, der den Wert ändert, ändert das
+geöffnete Volume an Ort und Stelle.
+
 Ein Volume **mit Journal** (erstellt von `hdiutil create -fs "Journaled HFS+"`
 oder von macOS) wird nur geschrieben, wenn sein Journal leer ist, was ein
 sauberes Aushängen hinterlässt. Ein Journal mit Transaktionen oder eines, das

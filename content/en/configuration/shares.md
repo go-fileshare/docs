@@ -93,6 +93,39 @@ at once, adding it makes the share writable. Before v0.46.0 the open driver was
 kept, so a share stayed writable after its opt-in was removed until the server
 restarted. A size changed from one writable value to another changes nothing.
 
+**Durability (hfsplus v0.12.0).** `hfsplus_durability` chooses, per share, when
+a write is on the medium. It applies to a writable HFS+ image only; a share
+opened read-only ignores it, without an error. A value other than the three
+below makes the configuration refuse to load, naming the share.
+
+- `strict` (the default): every commit is durable when it returns: 3 write
+  barriers per commit on a volume that was clean when opened, 1 for a `Sync`.
+- `mounted`: data is written before the metadata that points at it, and the
+  volume stays marked as in use between commits, as TN1150 describes a mounted
+  volume: 2 barriers for the first write, 1 for a commit without data, 2 with
+  data, 1 for a `Sync`.
+- `lazy`: data is written back with no order: 1 barrier for the first write, 0
+  after, 2 for a `Sync`. A change is on the medium only when the volume is
+  closed (the share is removed or the server stops) or a reload changes the
+  level. fileshare issues no sync of its own: an SMB FLUSH, an NFS COMMIT or an
+  SFTP fsync succeeds without making `lazy` data durable. **Do not use `lazy` for a share that other clients mount at the same
+  time**: nothing orders file data before the metadata
+  that points at it, so after a crash a file may hold stale bytes of a deleted
+  one, and the changes since the volume was last settled are lost. After a crash, `mounted`
+  and `lazy` leave the volume marked as not cleanly unmounted, so the next
+  mount runs `fsck_hfs`.
+
+```hcl
+share "mac" {
+  image                = "/srv/mac.img"
+  hfsplus_writable_max = "256M"
+  hfsplus_durability   = "mounted"
+}
+```
+
+`hfsplus_durability` does not turn writing on: `hfsplus_writable_max` still
+defaults to `"0"`. A reload that changes it changes the open volume in place.
+
 A **journaled** volume (made by `hdiutil create -fs "Journaled HFS+"` or by
 macOS) is written only when its journal is empty, which is what a clean
 unmount leaves. A journal that holds transactions, or one that cannot be
