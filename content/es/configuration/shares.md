@@ -101,6 +101,39 @@ v0.46.0 se conservaba el controlador abierto, así que un recurso seguía siendo
 escribible tras quitar su aceptación hasta que el servidor se reiniciaba. Pasar
 de un tamaño escribible a otro no cambia nada.
 
+**Durabilidad (hfsplus v0.12.0).** `hfsplus_durability` elige, por recurso,
+cuándo una escritura está en el medio. Solo se aplica a una imagen HFS+
+escribible; un recurso abierto en solo lectura la ignora, sin error. Un valor
+distinto de los tres siguientes hace que la configuración no cargue, nombrando
+el recurso.
+
+- `strict` (por defecto): cada commit es duradero al volver: 3 barreras de
+  escritura por commit, 1 para un `Sync`.
+- `mounted`: los datos se escriben antes que los metadatos que apuntan a ellos,
+  y el volumen sigue marcado como en uso entre commits, como TN1150 describe un
+  volumen montado: 2 barreras para la primera escritura, 1 para un commit sin
+  datos, 2 con datos, 1 para un `Sync`.
+- `lazy`: los datos se escriben sin orden: 1 barrera para la primera escritura,
+  0 después, 2 para un `Sync`. Un cambio está en el medio solo tras un sync o un
+  cierre. **No use `lazy` en un recurso que otros clientes monten a la vez**: el
+  nada ordena los datos del archivo antes de los metadatos
+  que apuntan a ellos, así que tras un fallo un archivo puede contener bytes
+  obsoletos de uno borrado, y los cambios desde el último sync se pierden. Tras un
+  fallo, `mounted` y `lazy` dejan el volumen marcado como no desmontado
+  limpiamente, de modo que el siguiente montaje ejecuta `fsck_hfs`.
+
+```hcl
+share "mac" {
+  image                = "/srv/mac.img"
+  hfsplus_writable_max = "256M"
+  hfsplus_durability   = "mounted"
+}
+```
+
+`hfsplus_durability` no activa la escritura: `hfsplus_writable_max` sigue siendo
+`"0"` por defecto. Una recarga que lo cambia cambia el volumen abierto en el
+sitio.
+
 Un volumen **con journal** (creado por `hdiutil create -fs "Journaled HFS+"` o por
 macOS) solo se escribe cuando su journal está vacío, que es lo que deja un
 desmontaje limpio. Un journal con transacciones, o uno que no se puede
