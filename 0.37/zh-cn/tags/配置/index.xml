@@ -77,6 +77,31 @@ data-copied-label="已复制！"
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;p&gt;&lt;strong&gt;重新加载会跟随该设置（自 v0.46.0 起）。&lt;/strong&gt; 当一次重新加载改变了 HFS+ 镜像是否被写入（设置被移除、添加，或跨过镜像大小），镜像会被重新打开：移除启用设置会让共享立即变为只读，添加则让它变为可写。v0.46.0 之前会保留已打开的驱动程序，所以共享在移除启用设置后仍然可写，直到服务器重启。从一个可写大小改为另一个可写大小不会有任何变化。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;持久性（hfsplus v0.12.0）。&lt;/strong&gt; &lt;code&gt;hfsplus_durability&lt;/code&gt; 按共享选择写入何时落到介质上。它只适用于可写的 HFS+ 镜像；以只读方式打开的共享会忽略它，且不报错。若取值不是下面三个之一，配置将拒绝加载，并指明该共享。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;strict&lt;/code&gt;（默认）：每次提交在返回时即已持久化：打开时干净的卷上每次提交 3 个写屏障，&lt;code&gt;Sync&lt;/code&gt; 为 1 个。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;mounted&lt;/code&gt;：数据先于指向它的元数据写入，卷在两次提交之间保持“使用中”标记，正如 TN1150对已挂载卷的描述：首次写入 2 个屏障，不含数据的提交 1 个，含数据的提交 2 个，&lt;code&gt;Sync&lt;/code&gt;
+为 1 个。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;lazy&lt;/code&gt;：数据无序回写：首次写入 1 个屏障，之后为 0，&lt;code&gt;Sync&lt;/code&gt; 为 2 个。更改只有在卷被关闭（共享被移除或服务器停止）或重新加载更改了级别时才落到介质上。fileshare 自身不发出任何sync：SMB 的 FLUSH、NFS 的 COMMIT 或 SFTP 的 fsync 都会成功，却不会让 &lt;code&gt;lazy&lt;/code&gt; 的数据持久化。&lt;strong&gt;不要对其他客户端同时挂载的共享使用 &lt;code&gt;lazy&lt;/code&gt;&lt;/strong&gt;：没有任何机制保证文件数据先于指向它的元数据写入，因此崩溃后文件可能含有已删除文件的陈旧字节，且卷上次被确定之后的更改会丢失。崩溃后，&lt;code&gt;mounted&lt;/code&gt; 和 &lt;code&gt;lazy&lt;/code&gt; 会让卷保持“未正常卸载”的标记，因此下次挂载会运行 &lt;code&gt;fsck_hfs&lt;/code&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;mac&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/mac.img&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; hfsplus_writable_max&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;256M&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; hfsplus_durability&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;mounted&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="复制代码"
+aria-label="复制代码"
+data-copied-label="已复制！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;hfsplus_durability&lt;/code&gt; 不会开启写入：&lt;code&gt;hfsplus_writable_max&lt;/code&gt; 默认仍为 &lt;code&gt;&amp;quot;0&amp;quot;&lt;/code&gt;。更改它的重新加载会就地更改已打开的卷。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;带日志&lt;/strong&gt;的卷（由 &lt;code&gt;hdiutil create -fs &amp;quot;Journaled HFS+&amp;quot;&lt;/code&gt; 或 macOS 创建）只有在其日志为空时才会被写入，正常卸载后日志即为空。含有事务的日志，或无法验证的日志，会被 macOS 重放并覆盖服务器写入的内容，因此驱动程序会拒绝它，&lt;strong&gt;共享改为只读打开&lt;/strong&gt;。服务器照常启动；打开共享时它会写出一行，说明镜像、共享和原因：&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/srv/mac.img is an HFS+ volume and its journal holds transactions (hfsplus: journaled volume with a journal that is not empty: transactions pending (start 17408, end 34816)), so mac is read-only&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;

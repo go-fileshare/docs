@@ -100,6 +100,47 @@ size), the image is opened again: removing the opt-in makes the share read-only
 at once, adding it makes the share writable. Before v0.46.0 the open driver was
 kept, so a share stayed writable after its opt-in was removed until the server
 restarted. A size changed from one writable value to another changes nothing.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Durability (hfsplus v0.12.0).&lt;/strong&gt; &lt;code&gt;hfsplus_durability&lt;/code&gt; chooses, per share, when
+a write is on the medium. It applies to a writable HFS+ image only; a share
+opened read-only ignores it, without an error. A value other than the three
+below makes the configuration refuse to load, naming the share.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;strict&lt;/code&gt; (the default): every commit is durable when it returns: 3 write
+barriers per commit on a volume that was clean when opened, 1 for a &lt;code&gt;Sync&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;mounted&lt;/code&gt;: data is written before the metadata that points at it, and the
+volume stays marked as in use between commits, as TN1150 describes a mounted
+volume: 2 barriers for the first write, 1 for a commit without data, 2 with
+data, 1 for a &lt;code&gt;Sync&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;lazy&lt;/code&gt;: data is written back with no order: 1 barrier for the first write, 0
+after, 2 for a &lt;code&gt;Sync&lt;/code&gt;. A change is on the medium only when the volume is
+closed (the share is removed or the server stops) or a reload changes the
+level. fileshare issues no sync of its own: an SMB FLUSH, an NFS COMMIT or an
+SFTP fsync succeeds without making &lt;code&gt;lazy&lt;/code&gt; data durable. &lt;strong&gt;Do not use &lt;code&gt;lazy&lt;/code&gt; for a share that other clients mount at the same
+time&lt;/strong&gt;: nothing orders file data before the metadata
+that points at it, so after a crash a file may hold stale bytes of a deleted
+one, and the changes since the volume was last settled are lost. After a crash, &lt;code&gt;mounted&lt;/code&gt;
+and &lt;code&gt;lazy&lt;/code&gt; leave the volume marked as not cleanly unmounted, so the next
+mount runs &lt;code&gt;fsck_hfs&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;mac&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/mac.img&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; hfsplus_writable_max&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;256M&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; hfsplus_durability&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;mounted&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;hfsplus_durability&lt;/code&gt; does not turn writing on: &lt;code&gt;hfsplus_writable_max&lt;/code&gt; still
+defaults to &lt;code&gt;&amp;quot;0&amp;quot;&lt;/code&gt;. A reload that changes it changes the open volume in place.&lt;/p&gt;
 &lt;p&gt;A &lt;strong&gt;journaled&lt;/strong&gt; volume (made by &lt;code&gt;hdiutil create -fs &amp;quot;Journaled HFS+&amp;quot;&lt;/code&gt; or by
 macOS) is written only when its journal is empty, which is what a clean
 unmount leaves. A journal that holds transactions, or one that cannot be

@@ -76,6 +76,30 @@ data-copied-label="コピーしました！"
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;p&gt;&lt;strong&gt;リロードは設定に従います(v0.46.0 以降)。&lt;/strong&gt; リロードによって HFS+ イメージを書き込むかどうかが変わると(設定の削除、追加、またはイメージのサイズをまたぐ変更)、イメージは開き直されます。同意を削除すると共有はすぐに読み取り専用になり、追加すると書き込み可能になります。v0.46.0 より前は開いているドライバーがそのまま使われたため、同意を削除してもサーバーを再起動するまで共有は書き込み可能のままでした。書き込み可能なサイズから別の書き込み可能なサイズへの変更では何も変わりません。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;永続性(hfsplus v0.12.0)。&lt;/strong&gt; &lt;code&gt;hfsplus_durability&lt;/code&gt; は、書き込みがいつメディア上に載るかを共有ごとに選びます。書き込み可能な HFS+ イメージにのみ適用され、読み取り専用で開かれた共有ではエラーなしで無視されます。次の 3 つ以外の値を指定すると、設定は共有名を示して読み込みを拒否されます。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;strict&lt;/code&gt;(既定): すべてのコミットは戻った時点で永続化されます。コミットごとに書き込みバリア 3 回(開いた時点で正常だったボリュームの場合)、&lt;code&gt;Sync&lt;/code&gt; は 1 回です。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;mounted&lt;/code&gt;: データは、それを指すメタデータより先に書かれ、ボリュームはコミットの間もTN1150 がマウント済みボリュームについて述べるとおり使用中の印が付いたままです。最初の書き込みはバリア 2 回、データなしのコミットは 1 回、データありは 2 回、&lt;code&gt;Sync&lt;/code&gt; は 1 回です。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;lazy&lt;/code&gt;: データは順序なしで書き戻されます。最初の書き込みはバリア 1 回、その後は 0 回、&lt;code&gt;Sync&lt;/code&gt; は 2 回です。変更は、ボリュームがクローズされたとき(共有が削除されるかサーバーが停止したとき)か、リロードでレベルが変わったときにのみメディア上に載ります。fileshare は独自の sync を行わないため、SMB の FLUSH、NFS の COMMIT、SFTP の fsync は、&lt;code&gt;lazy&lt;/code&gt; のデータを永続化しないまま成功します。&lt;strong&gt;他のクライアントが同時にマウントする共有には &lt;code&gt;lazy&lt;/code&gt; を使わないでください&lt;/strong&gt;。ファイルデータをそれを指すメタデータより先に書く順序付けがないため、クラッシュ後にファイルが削除済みファイルの古いバイトを含むことがあり、ボリュームが最後に確定されて以降の変更は失われます。クラッシュ後、&lt;code&gt;mounted&lt;/code&gt; と &lt;code&gt;lazy&lt;/code&gt; はボリュームを正常にアンマウントされていない状態のままにするので、次のマウントで &lt;code&gt;fsck_hfs&lt;/code&gt; が実行されます。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;mac&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/mac.img&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; hfsplus_writable_max&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;256M&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; hfsplus_durability&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;mounted&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="コードをコピー"
+aria-label="コードをコピー"
+data-copied-label="コピーしました！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;hfsplus_durability&lt;/code&gt; は書き込みを有効にしません。&lt;code&gt;hfsplus_writable_max&lt;/code&gt; の既定は引き続き&lt;code&gt;&amp;quot;0&amp;quot;&lt;/code&gt; です。この値を変更するリロードは、開いているボリュームをその場で変更します。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;ジャーナル付き&lt;/strong&gt;ボリューム(&lt;code&gt;hdiutil create -fs &amp;quot;Journaled HFS+&amp;quot;&lt;/code&gt; や macOS が作るもの)は、ジャーナルが空のときだけ書き込まれます。正常にアンマウントすれば空になります。トランザクションを含むジャーナルや検証できないジャーナルは、サーバーが書いた内容の上に macOS が再生してしまうため、ドライバーはそれを拒否し、&lt;strong&gt;共有は代わりに読み取り専用で開かれます&lt;/strong&gt;。サーバーは起動を続け、共有を開くときにイメージ、共有、理由を示す 1 行を書きます。&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/srv/mac.img is an HFS+ volume and its journal holds transactions (hfsplus: journaled volume with a journal that is not empty: transactions pending (start 17408, end 34816)), so mac is read-only&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;

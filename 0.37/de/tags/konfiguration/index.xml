@@ -106,6 +106,49 @@ sie beschreibbar. Vor v0.46.0 blieb der geöffnete Treiber erhalten, sodass eine
 Freigabe nach dem Entfernen ihrer Zustimmung bis zum Neustart des Servers
 beschreibbar blieb. Der Wechsel von einer beschreibbaren Größe zu einer anderen
 ändert nichts.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Dauerhaftigkeit (hfsplus v0.12.0).&lt;/strong&gt; &lt;code&gt;hfsplus_durability&lt;/code&gt; legt pro Freigabe
+fest, wann ein Schreibvorgang auf dem Medium liegt. Es gilt nur für ein
+beschreibbares HFS+-Image; eine schreibgeschützt geöffnete Freigabe ignoriert es
+ohne Fehler. Ein anderer Wert als die drei folgenden lässt die Konfiguration
+nicht laden und nennt die Freigabe.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;strict&lt;/code&gt; (Standard): Jeder Commit ist beim Zurückkehren dauerhaft: 3
+Schreibbarrieren pro Commit auf einem beim Öffnen sauberen Volume, 1 für ein &lt;code&gt;Sync&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;mounted&lt;/code&gt;: Die Daten werden vor den Metadaten geschrieben, die auf sie
+zeigen, und das Volume bleibt zwischen Commits als in Benutzung markiert, wie
+TN1150 ein eingehängtes Volume beschreibt: 2 Barrieren für den ersten
+Schreibvorgang, 1 für einen Commit ohne Daten, 2 mit Daten, 1 für ein &lt;code&gt;Sync&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;lazy&lt;/code&gt;: Die Daten werden ohne Reihenfolge zurückgeschrieben: 1 Barriere für
+den ersten Schreibvorgang, danach 0, 2 für ein &lt;code&gt;Sync&lt;/code&gt;. Eine Änderung liegt erst
+auf dem Medium, wenn das Volume geschlossen wird (die Freigabe wird entfernt
+oder der Server hält an) oder ein Reload die Stufe ändert. fileshare führt kein
+eigenes Sync aus: Ein SMB-FLUSH, ein NFS-COMMIT oder ein SFTP-fsync gelingt, ohne&lt;code&gt;lazy&lt;/code&gt;-Daten dauerhaft zu machen. &lt;strong&gt;&lt;code&gt;lazy&lt;/code&gt; nicht für eine
+Freigabe verwenden, die andere Clients gleichzeitig einhängen&lt;/strong&gt;: Nichts ordnet Dateidaten vor die Metadaten, die auf sie
+zeigen, daher kann eine Datei nach einem Absturz veraltete Bytes einer gelöschten
+enthalten, und die Änderungen seit dem letzten Abschluss des Volumes gehen verloren. Nach einem
+Absturz lassen &lt;code&gt;mounted&lt;/code&gt; und &lt;code&gt;lazy&lt;/code&gt; das Volume als nicht sauber ausgehängt
+markiert zurück, sodass das nächste Einhängen &lt;code&gt;fsck_hfs&lt;/code&gt; ausführt.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;mac&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/mac.img&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; hfsplus_writable_max&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;256M&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; hfsplus_durability&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;mounted&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Code kopieren"
+aria-label="Code kopieren"
+data-copied-label="Kopiert!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;hfsplus_durability&lt;/code&gt; schaltet das Schreiben nicht ein: &lt;code&gt;hfsplus_writable_max&lt;/code&gt; ist
+weiterhin standardmäßig &lt;code&gt;&amp;quot;0&amp;quot;&lt;/code&gt;. Ein Reload, der den Wert ändert, ändert das
+geöffnete Volume an Ort und Stelle.&lt;/p&gt;
 &lt;p&gt;Ein Volume &lt;strong&gt;mit Journal&lt;/strong&gt; (erstellt von &lt;code&gt;hdiutil create -fs &amp;quot;Journaled HFS+&amp;quot;&lt;/code&gt;
 oder von macOS) wird nur geschrieben, wenn sein Journal leer ist, was ein
 sauberes Aushängen hinterlässt. Ein Journal mit Transaktionen oder eines, das

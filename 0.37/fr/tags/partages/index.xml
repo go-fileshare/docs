@@ -106,6 +106,46 @@ consentement rend le partage aussitôt en lecture seule, l&amp;rsquo;ajouter le 
 inscriptible. Avant la v0.46.0, le pilote ouvert était conservé : un partage
 restait inscriptible après le retrait de son consentement, jusqu&amp;rsquo;au redémarrage
 du serveur. Passer d&amp;rsquo;une taille inscriptible à une autre ne change rien.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Durabilité (hfsplus v0.12.0).&lt;/strong&gt; &lt;code&gt;hfsplus_durability&lt;/code&gt; choisit, par partage,quand une écriture est sur le support. Elle ne s&amp;rsquo;applique qu&amp;rsquo;à une image HFS+
+inscriptible ; un partage ouvert en lecture seule l&amp;rsquo;ignore, sans erreur. Une
+valeur autre que les trois suivantes fait refuser le chargement de la
+configuration, en nommant le partage.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;strict&lt;/code&gt; (par défaut) : chaque commit est durable au retour : 3 barrières
+d&amp;rsquo;écriture par commit sur un volume propre à l&amp;rsquo;ouverture, 1 pour un &lt;code&gt;Sync&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;mounted&lt;/code&gt; : les données sont écrites avant les métadonnées qui les désignent,et le volume reste marqué en cours d&amp;rsquo;utilisation entre les commits, comme
+TN1150 décrit un volume monté : 2 barrières pour la première écriture, 1 pour
+un commit sans données, 2 avec données, 1 pour un &lt;code&gt;Sync&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;lazy&lt;/code&gt; : les données sont réécrites sans ordre : 1 barrière pour la première
+écriture, 0 ensuite, 2 pour un &lt;code&gt;Sync&lt;/code&gt;. Un changement n&amp;rsquo;est sur le support
+que lorsque le volume est fermé (le partage est retiré ou le serveur s&amp;rsquo;arrête)ou qu&amp;rsquo;un rechargement change le niveau. fileshare n&amp;rsquo;émet aucun sync de lui-même :un FLUSH SMB, un COMMIT NFS ou un fsync SFTP réussit sans rendre durables les
+données de &lt;code&gt;lazy&lt;/code&gt;. &lt;strong&gt;N&amp;rsquo;utilisez pas &lt;code&gt;lazy&lt;/code&gt; pour un partage que
+d&amp;rsquo;autres clients montent en même temps&lt;/strong&gt; : rien n&amp;rsquo;ordonne les données du fichier avant les
+métadonnées qui les désignent, donc après un plantage un fichier peut contenir des
+octets périmés d&amp;rsquo;un fichier supprimé, et les changements depuis la dernière stabilisation du volume
+sont perdus. Après un plantage, &lt;code&gt;mounted&lt;/code&gt; et &lt;code&gt;lazy&lt;/code&gt; laissent le volume marqué
+comme non démonté proprement, si bien que le montage suivant lance &lt;code&gt;fsck_hfs&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;mac&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/mac.img&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; hfsplus_writable_max&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;256M&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; hfsplus_durability&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;mounted&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copier le code"
+aria-label="Copier le code"
+data-copied-label="Copié !"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;hfsplus_durability&lt;/code&gt; n&amp;rsquo;active pas l&amp;rsquo;écriture : &lt;code&gt;hfsplus_writable_max&lt;/code&gt; vaut
+toujours &lt;code&gt;&amp;quot;0&amp;quot;&lt;/code&gt; par défaut. Un rechargement qui la change modifie le volume
+ouvert sur place.&lt;/p&gt;
 &lt;p&gt;Un volume &lt;strong&gt;à journal&lt;/strong&gt; (créé par &lt;code&gt;hdiutil create -fs &amp;quot;Journaled HFS+&amp;quot;&lt;/code&gt; ou par
 macOS) n&amp;rsquo;est écrit que si son journal est vide, ce que laisse un démontage
 propre. Un journal qui contient des transactions, ou qu&amp;rsquo;on ne peut pas vérifier,serait rejoué par macOS par-dessus ce que le serveur écrit : le pilote le refuse
