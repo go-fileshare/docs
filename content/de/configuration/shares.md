@@ -141,9 +141,7 @@ Verzeichnisfreigabe hat nichts zu synchronisieren. Ein fehlgeschlagenes Sync
 bleibt fehlgeschlagen, bei hfsplus und beim Image-fsync für fat32, exfat, ext4,
 ntfs und ufs (der erste Fehler bleibt bis zum erneuten Öffnen der Freigabe
 erhalten): Ein wiederholter Flush oder COMMIT wird ebenfalls abgewiesen und
-erfährt nicht, seine Daten seien dauerhaft. Das eigene `Sync` eines
-positionsfähigen Datei-Handles bei fat32, exfat und ext4 gehört dem Treiber und
-wird hier nicht festgehalten.
+erfährt nicht, seine Daten seien dauerhaft.
 
 ```hcl
 share "mac" {

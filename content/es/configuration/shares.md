@@ -138,8 +138,7 @@ archivo de la imagen. Un recurso de directorio no tiene nada que sincronizar. Un
 sync fallido sigue fallido en hfsplus y en el fsync de la imagen usado para fat32,
 exfat, ext4, ntfs y ufs (el primer error se conserva hasta reabrir el recurso): un
 flush o COMMIT repetido también se rechaza y no se le dice que sus datos son
-duraderos. El `Sync` propio de un manejador de archivo posicional en fat32, exfat
-y ext4 es del controlador y aquí no se retiene.
+duraderos.
 
 ```hcl
 share "mac" {
