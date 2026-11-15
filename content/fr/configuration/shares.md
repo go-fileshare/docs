@@ -137,9 +137,7 @@ un fsync du fichier image. Un partage de répertoire n'a rien à synchroniser. U
 sync échoué reste échoué pour hfsplus et pour le fsync de l'image utilisé pour
 fat32, exfat, ext4, ntfs et ufs (la première erreur est conservée jusqu'à la
 réouverture du partage) : un flush ou un COMMIT répété est refusé aussi, et ne
-s'entend pas dire que ses données sont durables. Le `Sync` propre d'un
-descripteur de fichier positionnel sur fat32, exfat et ext4 appartient au pilote
-et n'est pas retenu ici.
+s'entend pas dire que ses données sont durables.
 
 ```hcl
 share "mac" {

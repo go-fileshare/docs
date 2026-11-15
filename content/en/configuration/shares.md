@@ -128,9 +128,7 @@ and ntfs and ufs, which write each change through to the image, are synced with
 an fsync of the image file. A directory share has nothing to sync. A sync that
 failed stays failed for hfsplus and for the image fsync used for fat32, exfat,
 ext4, ntfs and ufs (the first error is kept until the share is reopened): a
-retried flush or COMMIT is refused too, and is not told its data is durable. A
-positional file handle's own `Sync` on fat32, exfat and ext4 is the driver's and
-is not latched.
+retried flush or COMMIT is refused too, and is not told its data is durable.
 
 ```hcl
 share "mac" {
