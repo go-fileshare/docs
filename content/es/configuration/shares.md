@@ -152,7 +152,13 @@ share "mac" {
 
 `hfsplus_durability` no activa la escritura: `hfsplus_writable_max` sigue siendo
 `"0"` por defecto. Una recarga que lo cambia cambia el volumen abierto en el
-sitio.
+sitio (se conserva el controlador, así que ningún segundo escritor tiene que
+tomar el bloqueo de la imagen), después de detener las conexiones antiguas y
+antes de servir la nueva lista de recursos (desde v0.49.1): una recarga
+rechazada deja el nivel como estaba. Salir hacia un nivel más perezoso vacía
+primero; si ese vaciado falla, una línea de registro lo indica, el volumen
+permanece en su nivel y el recurso no acepta ninguna escritura hasta que se
+reabra.
 
 Un volumen **con journal** (creado por `hdiutil create -fs "Journaled HFS+"` o por
 macOS) solo se escribe cuando su journal está vacío, que es lo que deja un
