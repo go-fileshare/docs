@@ -105,15 +105,32 @@ below makes the configuration refuse to load, naming the share.
   volume: 2 barriers for the first write, 1 for a commit without data, 2 with
   data, 1 for a `Sync`.
 - `lazy`: data is written back with no order: 1 barrier for the first write, 0
-  after, 2 for a `Sync`. A change is on the medium only when the volume is
-  closed (the share is removed or the server stops) or a reload changes the
-  level. fileshare issues no sync of its own: an SMB FLUSH, an NFS COMMIT or an
-  SFTP fsync succeeds without making `lazy` data durable. **Do not use `lazy` for a share that other clients mount at the same
+  after, 2 for a `Sync`. A change is on the medium only once the volume is
+  synced: by a client's flush (an SMB FLUSH, an NFS COMMIT, or an SFTP
+  `fsync@openssh.com`, which also marks a `mounted` volume clean), when the
+  volume is closed, or when a reload changes the level. A failed sync is
+  returned to the client as an I/O error. WebDAV and S3 have no flush, so their
+  acknowledgements are not durable at `lazy`. **Do not use `lazy` for a share that other clients mount at the same
   time**: nothing orders file data before the metadata
   that points at it, so after a crash a file may hold stale bytes of a deleted
   one, and the changes since the volume was last settled are lost. After a crash, `mounted`
   and `lazy` leave the volume marked as not cleanly unmounted, so the next
   mount runs `fsck_hfs`.
+
+**What a flush reaches.** An SMB FLUSH, an NFS COMMIT (an UNSTABLE WRITE is
+answered UNSTABLE, so the client sends the COMMIT; a WRITE that asks for
+stability is synced) and an SFTP `fsync@openssh.com` sync the volume. The SFTP
+request names a handle, but the sftp module's sync hook takes no path, so
+fileshare syncs every share the person may write (a per-share hook is a
+follow-up). The same flush is truthful for the other writable image
+drivers: fat32, exfat and ext4 fsync the image through the file's own `Sync`,
+and ntfs and ufs, which write each change through to the image, are synced with
+an fsync of the image file. A directory share has nothing to sync. A sync that
+failed stays failed for hfsplus and for the image fsync used for fat32, exfat,
+ext4, ntfs and ufs (the first error is kept until the share is reopened): a
+retried flush or COMMIT is refused too, and is not told its data is durable. A
+positional file handle's own `Sync` on fat32, exfat and ext4 is the driver's and
+is not latched.
 
 ```hcl
 share "mac" {

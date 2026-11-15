@@ -114,14 +114,32 @@ el recurso.
   volumen montado: 2 barreras para la primera escritura, 1 para un commit sin
   datos, 2 con datos, 1 para un `Sync`.
 - `lazy`: los datos se escriben sin orden: 1 barrera para la primera escritura,
-  0 después, 2 para un `Sync`. Un cambio está en el medio solo cuando se cierra el
-  volumen (se quita el recurso o el servidor se detiene) o una recarga cambia el
-  nivel. fileshare no emite ningún sync propio: un FLUSH de SMB, un COMMIT de NFS
-  o un fsync de SFTP se cumplen sin hacer duraderos los datos de `lazy`. **No use `lazy` en un recurso que otros clientes monten a la vez**: nada ordena los datos del archivo antes de los metadatos
+  0 después, 2 para un `Sync`. Un cambio está en el medio solo cuando el volumen
+  se sincroniza: por el flush de un cliente (un FLUSH de SMB, un COMMIT de NFS o un
+  `fsync@openssh.com` de SFTP, que además marca como limpio un volumen `mounted`),
+  al cerrarse el volumen o cuando una recarga cambia el nivel. Un sync fallido se
+  devuelve al cliente como error de E/S. WebDAV y S3 no tienen flush, así que sus
+  confirmaciones no son duraderas con `lazy`. **No use `lazy` en un recurso que otros clientes monten a la vez**: nada ordena los datos del archivo antes de los metadatos
   que apuntan a ellos, así que tras un fallo un archivo puede contener bytes
   obsoletos de uno borrado, y los cambios desde la última vez que se asentó el volumen se pierden. Tras un
   fallo, `mounted` y `lazy` dejan el volumen marcado como no desmontado
   limpiamente, de modo que el siguiente montaje ejecuta `fsck_hfs`.
+
+**Qué alcanza un flush.** Un FLUSH de SMB, un COMMIT de NFS (un WRITE UNSTABLE se
+responde UNSTABLE, de modo que el cliente envía el COMMIT; un WRITE que pide
+estabilidad se sincroniza) y un `fsync@openssh.com` de SFTP sincronizan el
+volumen. La petición de SFTP nombra un manejador, pero el gancho de sync del
+módulo sftp no recibe ruta, así que fileshare sincroniza cada recurso que la
+persona puede escribir (un gancho por recurso queda como tarea pendiente). El mismo flush es veraz
+para los demás controladores de imagen escribibles: fat32, exfat y ext4 hacen
+fsync de la imagen mediante el `Sync` del propio archivo, y ntfs y ufs, que
+escriben cada cambio directamente en la imagen, se sincronizan con un fsync del
+archivo de la imagen. Un recurso de directorio no tiene nada que sincronizar. Un
+sync fallido sigue fallido en hfsplus y en el fsync de la imagen usado para fat32,
+exfat, ext4, ntfs y ufs (el primer error se conserva hasta reabrir el recurso): un
+flush o COMMIT repetido también se rechaza y no se le dice que sus datos son
+duraderos. El `Sync` propio de un manejador de archivo posicional en fat32, exfat
+y ext4 es del controlador y aquí no se retiene.
 
 ```hcl
 share "mac" {

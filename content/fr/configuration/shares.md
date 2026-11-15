@@ -112,15 +112,34 @@ configuration, en nommant le partage.
   un commit sans données, 2 avec données, 1 pour un `Sync`.
 - `lazy` : les données sont réécrites sans ordre : 1 barrière pour la première
   écriture, 0 ensuite, 2 pour un `Sync`. Un changement n'est sur le support
-  que lorsque le volume est fermé (le partage est retiré ou le serveur s'arrête)
-  ou qu'un rechargement change le niveau. fileshare n'émet aucun sync de lui-même :
-  un FLUSH SMB, un COMMIT NFS ou un fsync SFTP réussit sans rendre durables les
-  données de `lazy`. **N'utilisez pas `lazy` pour un partage que
+  qu'une fois le volume synchronisé : par le flush d'un client (un FLUSH SMB, un
+  COMMIT NFS ou un `fsync@openssh.com` SFTP, qui remet aussi un volume `mounted`
+  à l'état propre), à la fermeture du volume, ou quand un rechargement change le
+  niveau. Un sync échoué est renvoyé au client comme une erreur d'E/S. WebDAV et
+  S3 n'ont pas de flush : leurs accusés ne sont pas durables avec `lazy`.
+  **N'utilisez pas `lazy` pour un partage que
   d'autres clients montent en même temps** : rien n'ordonne les données du fichier avant les
   métadonnées qui les désignent, donc après un plantage un fichier peut contenir des
   octets périmés d'un fichier supprimé, et les changements depuis la dernière stabilisation du volume
   sont perdus. Après un plantage, `mounted` et `lazy` laissent le volume marqué
   comme non démonté proprement, si bien que le montage suivant lance `fsck_hfs`.
+
+**Ce qu'atteint un flush.** Un FLUSH SMB, un COMMIT NFS (un WRITE UNSTABLE reçoit
+la réponse UNSTABLE, pour que le client envoie le COMMIT ; un WRITE qui demande
+la stabilité est synchronisé) et un `fsync@openssh.com` SFTP synchronisent le
+volume. La requête SFTP nomme un descripteur, mais le point d'accroche de sync du
+module sftp ne reçoit aucun chemin : fileshare synchronise donc chaque partage
+que la personne peut écrire (un point d'accroche par partage reste à faire). Le même
+flush est fiable pour les autres pilotes d'image inscriptibles : fat32, exfat et
+ext4 font un fsync de l'image par le `Sync` du fichier lui-même, et ntfs et ufs,
+qui écrivent chaque changement directement dans l'image, sont synchronisés par
+un fsync du fichier image. Un partage de répertoire n'a rien à synchroniser. Un
+sync échoué reste échoué pour hfsplus et pour le fsync de l'image utilisé pour
+fat32, exfat, ext4, ntfs et ufs (la première erreur est conservée jusqu'à la
+réouverture du partage) : un flush ou un COMMIT répété est refusé aussi, et ne
+s'entend pas dire que ses données sont durables. Le `Sync` propre d'un
+descripteur de fichier positionnel sur fat32, exfat et ext4 appartient au pilote
+et n'est pas retenu ici.
 
 ```hcl
 share "mac" {

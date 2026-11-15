@@ -115,15 +115,35 @@ nicht laden und nennt die Freigabe.
   Schreibvorgang, 1 für einen Commit ohne Daten, 2 mit Daten, 1 für ein `Sync`.
 - `lazy`: Die Daten werden ohne Reihenfolge zurückgeschrieben: 1 Barriere für
   den ersten Schreibvorgang, danach 0, 2 für ein `Sync`. Eine Änderung liegt erst
-  auf dem Medium, wenn das Volume geschlossen wird (die Freigabe wird entfernt
-  oder der Server hält an) oder ein Reload die Stufe ändert. fileshare führt kein
-  eigenes Sync aus: Ein SMB-FLUSH, ein NFS-COMMIT oder ein SFTP-fsync gelingt, ohne
-  `lazy`-Daten dauerhaft zu machen. **`lazy` nicht für eine
+  auf dem Medium, wenn das Volume synchronisiert ist: durch den Flush eines
+  Clients (ein SMB-FLUSH, ein NFS-COMMIT oder ein SFTP-`fsync@openssh.com`, was
+  auch ein `mounted`-Volume wieder als sauber markiert), beim Schließen des
+  Volumes oder wenn ein Reload die Stufe ändert. Ein fehlgeschlagenes Sync wird dem
+  Client als E/A-Fehler zurückgegeben. WebDAV und S3 kennen keinen Flush, ihre
+  Bestätigungen sind bei `lazy` nicht dauerhaft. **`lazy` nicht für eine
   Freigabe verwenden, die andere Clients gleichzeitig einhängen**: Nichts ordnet Dateidaten vor die Metadaten, die auf sie
   zeigen, daher kann eine Datei nach einem Absturz veraltete Bytes einer gelöschten
   enthalten, und die Änderungen seit dem letzten Abschluss des Volumes gehen verloren. Nach einem
   Absturz lassen `mounted` und `lazy` das Volume als nicht sauber ausgehängt
   markiert zurück, sodass das nächste Einhängen `fsck_hfs` ausführt.
+
+**Was ein Flush erreicht.** Ein SMB-FLUSH, ein NFS-COMMIT (ein UNSTABLE-WRITE
+wird mit UNSTABLE beantwortet, damit der Client das COMMIT sendet; ein WRITE, der
+Stabilität verlangt, wird synchronisiert) und ein SFTP-`fsync@openssh.com`
+synchronisieren das Volume. Die SFTP-Anfrage nennt ein Handle, aber der
+Sync-Hook des sftp-Moduls nimmt keinen Pfad, daher synchronisiert fileshare jede
+Freigabe, die die Person beschreiben darf (ein Hook pro Freigabe ist ein
+Folgeschritt). Derselbe Flush ist auch für die anderen beschreibbaren Image-Treiber
+verlässlich: fat32, exfat und ext4 führen über das eigene `Sync` der Datei ein
+fsync des Images aus, und ntfs und ufs, die jede Änderung sofort ins Image
+schreiben, werden mit einem fsync der Image-Datei synchronisiert. Eine
+Verzeichnisfreigabe hat nichts zu synchronisieren. Ein fehlgeschlagenes Sync
+bleibt fehlgeschlagen, bei hfsplus und beim Image-fsync für fat32, exfat, ext4,
+ntfs und ufs (der erste Fehler bleibt bis zum erneuten Öffnen der Freigabe
+erhalten): Ein wiederholter Flush oder COMMIT wird ebenfalls abgewiesen und
+erfährt nicht, seine Daten seien dauerhaft. Das eigene `Sync` eines
+positionsfähigen Datei-Handles bei fat32, exfat und ext4 gehört dem Treiber und
+wird hier nicht festgehalten.
 
 ```hcl
 share "mac" {
