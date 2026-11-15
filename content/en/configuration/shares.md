@@ -105,11 +105,13 @@ below makes the configuration refuse to load, naming the share.
   volume: 2 barriers for the first write, 1 for a commit without data, 2 with
   data, 1 for a `Sync`.
 - `lazy`: data is written back with no order: 1 barrier for the first write, 0
-  after, 2 for a `Sync`. A change is on the medium only after a sync or a
-  close. **Do not use `lazy` for a share that other clients mount at the same
+  after, 2 for a `Sync`. A change is on the medium only when the volume is
+  closed (the share is removed or the server stops) or a reload changes the
+  level. fileshare issues no sync of its own: an SMB FLUSH, an NFS COMMIT or an
+  SFTP fsync succeeds without making `lazy` data durable. **Do not use `lazy` for a share that other clients mount at the same
   time**: nothing orders file data before the metadata
   that points at it, so after a crash a file may hold stale bytes of a deleted
-  one, and the changes since the last sync are lost. After a crash, `mounted`
+  one, and the changes since the volume was last settled are lost. After a crash, `mounted`
   and `lazy` leave the volume marked as not cleanly unmounted, so the next
   mount runs `fsck_hfs`.
 

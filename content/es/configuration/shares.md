@@ -114,11 +114,13 @@ el recurso.
   volumen montado: 2 barreras para la primera escritura, 1 para un commit sin
   datos, 2 con datos, 1 para un `Sync`.
 - `lazy`: los datos se escriben sin orden: 1 barrera para la primera escritura,
-  0 después, 2 para un `Sync`. Un cambio está en el medio solo tras un sync o un
-  cierre. **No use `lazy` en un recurso que otros clientes monten a la vez**: el
+  0 después, 2 para un `Sync`. Un cambio está en el medio solo cuando se cierra el
+  volumen (se quita el recurso o el servidor se detiene) o una recarga cambia el
+  nivel. fileshare no emite ningún sync propio: un FLUSH de SMB, un COMMIT de NFS
+  o un fsync de SFTP se cumplen sin hacer duraderos los datos de `lazy`. **No use `lazy` en un recurso que otros clientes monten a la vez**: el
   nada ordena los datos del archivo antes de los metadatos
   que apuntan a ellos, así que tras un fallo un archivo puede contener bytes
-  obsoletos de uno borrado, y los cambios desde el último sync se pierden. Tras un
+  obsoletos de uno borrado, y los cambios desde la última vez que se cerró el volumen se pierden. Tras un
   fallo, `mounted` y `lazy` dejan el volumen marcado como no desmontado
   limpiamente, de modo que el siguiente montaje ejecuta `fsck_hfs`.
 

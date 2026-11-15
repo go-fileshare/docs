@@ -115,11 +115,14 @@ nicht laden und nennt die Freigabe.
   Schreibvorgang, 1 für einen Commit ohne Daten, 2 mit Daten, 1 für ein `Sync`.
 - `lazy`: Die Daten werden ohne Reihenfolge zurückgeschrieben: 1 Barriere für
   den ersten Schreibvorgang, danach 0, 2 für ein `Sync`. Eine Änderung liegt erst
-  nach einem Sync oder einem Schließen auf dem Medium. **`lazy` nicht für eine
+  auf dem Medium, wenn das Volume geschlossen wird (die Freigabe wird entfernt
+  oder der Server hält an) oder ein Reload die Stufe ändert. fileshare führt kein
+  eigenes Sync aus: Ein SMB-FLUSH, ein NFS-COMMIT oder ein SFTP-fsync gelingt, ohne
+  `lazy`-Daten dauerhaft zu machen. **`lazy` nicht für eine
   Freigabe verwenden, die andere Clients gleichzeitig einhängen**: Das Medium ist
   nichts ordnet Dateidaten vor die Metadaten, die auf sie
   zeigen, daher kann eine Datei nach einem Absturz veraltete Bytes einer gelöschten
-  enthalten, und die Änderungen seit dem letzten Sync gehen verloren. Nach einem
+  enthalten, und die Änderungen seit dem letzten Abschluss des Volumes gehen verloren. Nach einem
   Absturz lassen `mounted` und `lazy` das Volume als nicht sauber ausgehängt
   markiert zurück, sodass das nächste Einhängen `fsck_hfs` ausführt.
 
