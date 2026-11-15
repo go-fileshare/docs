@@ -108,7 +108,7 @@ ohne Fehler. Ein anderer Wert als die drei folgenden lässt die Konfiguration
 nicht laden und nennt die Freigabe.
 
 - `strict` (Standard): Jeder Commit ist beim Zurückkehren dauerhaft: 3
-  Schreibbarrieren pro Commit, 1 für ein `Sync`.
+  Schreibbarrieren pro Commit auf einem beim Öffnen sauberen Volume, 1 für ein `Sync`.
 - `mounted`: Die Daten werden vor den Metadaten geschrieben, die auf sie
   zeigen, und das Volume bleibt zwischen Commits als in Benutzung markiert, wie
   TN1150 ein eingehängtes Volume beschreibt: 2 Barrieren für den ersten
@@ -119,8 +119,7 @@ nicht laden und nennt die Freigabe.
   oder der Server hält an) oder ein Reload die Stufe ändert. fileshare führt kein
   eigenes Sync aus: Ein SMB-FLUSH, ein NFS-COMMIT oder ein SFTP-fsync gelingt, ohne
   `lazy`-Daten dauerhaft zu machen. **`lazy` nicht für eine
-  Freigabe verwenden, die andere Clients gleichzeitig einhängen**: Das Medium ist
-  nichts ordnet Dateidaten vor die Metadaten, die auf sie
+  Freigabe verwenden, die andere Clients gleichzeitig einhängen**: Nichts ordnet Dateidaten vor die Metadaten, die auf sie
   zeigen, daher kann eine Datei nach einem Absturz veraltete Bytes einer gelöschten
   enthalten, und die Änderungen seit dem letzten Abschluss des Volumes gehen verloren. Nach einem
   Absturz lassen `mounted` und `lazy` das Volume als nicht sauber ausgehängt

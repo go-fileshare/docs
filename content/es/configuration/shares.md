@@ -108,7 +108,7 @@ distinto de los tres siguientes hace que la configuración no cargue, nombrando
 el recurso.
 
 - `strict` (por defecto): cada commit es duradero al volver: 3 barreras de
-  escritura por commit, 1 para un `Sync`.
+  escritura por commit en un volumen limpio al abrirse, 1 para un `Sync`.
 - `mounted`: los datos se escriben antes que los metadatos que apuntan a ellos,
   y el volumen sigue marcado como en uso entre commits, como TN1150 describe un
   volumen montado: 2 barreras para la primera escritura, 1 para un commit sin
@@ -117,10 +117,9 @@ el recurso.
   0 después, 2 para un `Sync`. Un cambio está en el medio solo cuando se cierra el
   volumen (se quita el recurso o el servidor se detiene) o una recarga cambia el
   nivel. fileshare no emite ningún sync propio: un FLUSH de SMB, un COMMIT de NFS
-  o un fsync de SFTP se cumplen sin hacer duraderos los datos de `lazy`. **No use `lazy` en un recurso que otros clientes monten a la vez**: el
-  nada ordena los datos del archivo antes de los metadatos
+  o un fsync de SFTP se cumplen sin hacer duraderos los datos de `lazy`. **No use `lazy` en un recurso que otros clientes monten a la vez**: nada ordena los datos del archivo antes de los metadatos
   que apuntan a ellos, así que tras un fallo un archivo puede contener bytes
-  obsoletos de uno borrado, y los cambios desde la última vez que se cerró el volumen se pierden. Tras un
+  obsoletos de uno borrado, y los cambios desde la última vez que se asentó el volumen se pierden. Tras un
   fallo, `mounted` y `lazy` dejan el volumen marcado como no desmontado
   limpiamente, de modo que el siguiente montaje ejecuta `fsck_hfs`.
 

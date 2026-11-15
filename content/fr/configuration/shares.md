@@ -105,7 +105,7 @@ valeur autre que les trois suivantes fait refuser le chargement de la
 configuration, en nommant le partage.
 
 - `strict` (par défaut) : chaque commit est durable au retour : 3 barrières
-  d'écriture par commit, 1 pour un `Sync`.
+  d'écriture par commit sur un volume propre à l'ouverture, 1 pour un `Sync`.
 - `mounted` : les données sont écrites avant les métadonnées qui les désignent,
   et le volume reste marqué en cours d'utilisation entre les commits, comme
   TN1150 décrit un volume monté : 2 barrières pour la première écriture, 1 pour
@@ -118,7 +118,7 @@ configuration, en nommant le partage.
   données de `lazy`. **N'utilisez pas `lazy` pour un partage que
   d'autres clients montent en même temps** : rien n'ordonne les données du fichier avant les
   métadonnées qui les désignent, donc après un plantage un fichier peut contenir des
-  octets périmés d'un fichier supprimé, et les changements depuis la dernière fermeture du volume
+  octets périmés d'un fichier supprimé, et les changements depuis la dernière stabilisation du volume
   sont perdus. Après un plantage, `mounted` et `lazy` laissent le volume marqué
   comme non démonté proprement, si bien que le montage suivant lance `fsck_hfs`.
 

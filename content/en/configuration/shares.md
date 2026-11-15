@@ -99,7 +99,7 @@ opened read-only ignores it, without an error. A value other than the three
 below makes the configuration refuse to load, naming the share.
 
 - `strict` (the default): every commit is durable when it returns: 3 write
-  barriers per commit, 1 for a `Sync`.
+  barriers per commit on a volume that was clean when opened, 1 for a `Sync`.
 - `mounted`: data is written before the metadata that points at it, and the
   volume stays marked as in use between commits, as TN1150 describes a mounted
   volume: 2 barriers for the first write, 1 for a commit without data, 2 with
