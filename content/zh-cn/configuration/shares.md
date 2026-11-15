@@ -97,6 +97,14 @@ share "mac" {
   陈旧字节，且卷上次被确定之后的更改会丢失。崩溃后，`mounted` 和 `lazy` 会让卷保持
   “未正常卸载”的标记，因此下次挂载会运行 `fsck_hfs`。
 
+**刷新能到达哪里。** SMB 的 FLUSH、NFS 的 COMMIT（UNSTABLE 的 WRITE 会得到 UNSTABLE 的
+回答，因此客户端会发送 COMMIT；要求稳定性的 WRITE 会被同步）以及 SFTP 的
+`fsync@openssh.com` 都会同步卷。SFTP 的目录树是按人建立的，请求不带路径，所以它会同步该人
+可写的每个共享。同样的刷新对其他可写的镜像驱动也是可靠的：fat32、exfat 和 ext4 通过文件自身的
+`Sync` 对镜像执行 fsync，而每次更改都直接写入镜像的 ntfs 和 ufs 则通过对镜像文件执行 fsync 来同步。
+目录共享没有需要同步的内容。失败的同步会一直保持失败：重试的刷新或 COMMIT 同样会被拒绝，
+不会被告知其数据已持久化。
+
 ```hcl
 share "mac" {
   image                = "/srv/mac.img"

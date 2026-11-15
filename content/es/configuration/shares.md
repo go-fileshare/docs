@@ -125,6 +125,18 @@ el recurso.
   fallo, `mounted` y `lazy` dejan el volumen marcado como no desmontado
   limpiamente, de modo que el siguiente montaje ejecuta `fsck_hfs`.
 
+**Qué alcanza un flush.** Un FLUSH de SMB, un COMMIT de NFS (un WRITE UNSTABLE se
+responde UNSTABLE, de modo que el cliente envía el COMMIT; un WRITE que pide
+estabilidad se sincroniza) y un `fsync@openssh.com` de SFTP sincronizan el
+volumen. El árbol de SFTP es por persona y la petición no lleva ruta, así que
+sincroniza cada recurso que la persona puede escribir. El mismo flush es veraz
+para los demás controladores de imagen escribibles: fat32, exfat y ext4 hacen
+fsync de la imagen mediante el `Sync` del propio archivo, y ntfs y ufs, que
+escriben cada cambio directamente en la imagen, se sincronizan con un fsync del
+archivo de la imagen. Un recurso de directorio no tiene nada que sincronizar. Un
+sync fallido sigue fallido: un flush o COMMIT repetido también se rechaza y no se
+le dice que sus datos son duraderos.
+
 ```hcl
 share "mac" {
   image                = "/srv/mac.img"

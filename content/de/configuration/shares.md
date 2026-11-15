@@ -127,6 +127,19 @@ nicht laden und nennt die Freigabe.
   Absturz lassen `mounted` und `lazy` das Volume als nicht sauber ausgehängt
   markiert zurück, sodass das nächste Einhängen `fsck_hfs` ausführt.
 
+**Was ein Flush erreicht.** Ein SMB-FLUSH, ein NFS-COMMIT (ein UNSTABLE-WRITE
+wird mit UNSTABLE beantwortet, damit der Client das COMMIT sendet; ein WRITE, der
+Stabilität verlangt, wird synchronisiert) und ein SFTP-`fsync@openssh.com`
+synchronisieren das Volume. Der SFTP-Baum gilt pro Person und die Anfrage trägt
+keinen Pfad, daher synchronisiert er jede Freigabe, die die Person beschreiben
+darf. Derselbe Flush ist auch für die anderen beschreibbaren Image-Treiber
+verlässlich: fat32, exfat und ext4 führen über das eigene `Sync` der Datei ein
+fsync des Images aus, und ntfs und ufs, die jede Änderung sofort ins Image
+schreiben, werden mit einem fsync der Image-Datei synchronisiert. Eine
+Verzeichnisfreigabe hat nichts zu synchronisieren. Ein fehlgeschlagenes Sync
+bleibt fehlgeschlagen: Ein wiederholter Flush oder COMMIT wird ebenfalls
+abgewiesen und erfährt nicht, seine Daten seien dauerhaft.
+
 ```hcl
 share "mac" {
   image                = "/srv/mac.img"

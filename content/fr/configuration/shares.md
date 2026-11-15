@@ -124,6 +124,18 @@ configuration, en nommant le partage.
   sont perdus. Après un plantage, `mounted` et `lazy` laissent le volume marqué
   comme non démonté proprement, si bien que le montage suivant lance `fsck_hfs`.
 
+**Ce qu'atteint un flush.** Un FLUSH SMB, un COMMIT NFS (un WRITE UNSTABLE reçoit
+la réponse UNSTABLE, pour que le client envoie le COMMIT ; un WRITE qui demande
+la stabilité est synchronisé) et un `fsync@openssh.com` SFTP synchronisent le
+volume. L'arbre SFTP est propre à chaque personne et la requête ne porte aucun
+chemin : il synchronise donc chaque partage que la personne peut écrire. Le même
+flush est fiable pour les autres pilotes d'image inscriptibles : fat32, exfat et
+ext4 font un fsync de l'image par le `Sync` du fichier lui-même, et ntfs et ufs,
+qui écrivent chaque changement directement dans l'image, sont synchronisés par
+un fsync du fichier image. Un partage de répertoire n'a rien à synchroniser. Un
+sync échoué reste échoué : un flush ou un COMMIT répété est refusé aussi, et ne
+s'entend pas dire que ses données sont durables.
+
 ```hcl
 share "mac" {
   image                = "/srv/mac.img"

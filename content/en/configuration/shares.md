@@ -117,6 +117,17 @@ below makes the configuration refuse to load, naming the share.
   and `lazy` leave the volume marked as not cleanly unmounted, so the next
   mount runs `fsck_hfs`.
 
+**What a flush reaches.** An SMB FLUSH, an NFS COMMIT (an UNSTABLE WRITE is
+answered UNSTABLE, so the client sends the COMMIT; a WRITE that asks for
+stability is synced) and an SFTP `fsync@openssh.com` sync the volume. The SFTP
+tree is per person and the request carries no path, so it syncs every share the
+person may write. The same flush is truthful for the other writable image
+drivers: fat32, exfat and ext4 fsync the image through the file's own `Sync`,
+and ntfs and ufs, which write each change through to the image, are synced with
+an fsync of the image file. A directory share has nothing to sync. A sync that
+failed stays failed: a retried flush or COMMIT is refused too, and is not told
+its data is durable.
+
 ```hcl
 share "mac" {
   image                = "/srv/mac.img"
