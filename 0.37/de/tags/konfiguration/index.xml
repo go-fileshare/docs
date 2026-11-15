@@ -120,15 +120,14 @@ TN1150 ein eingehängtes Volume beschreibt: 2 Barrieren für den ersten
 Schreibvorgang, 1 für einen Commit ohne Daten, 2 mit Daten, 1 für ein &lt;code&gt;Sync&lt;/code&gt;.&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;lazy&lt;/code&gt;: Die Daten werden ohne Reihenfolge zurückgeschrieben: 1 Barriere für
 den ersten Schreibvorgang, danach 0, 2 für ein &lt;code&gt;Sync&lt;/code&gt;. Eine Änderung liegt erst
-auf dem Medium, wenn das Volume geschlossen wird (die Freigabe wird entfernt
-oder der Server hält an) oder ein Reload die Stufe ändert. fileshare führt kein
-eigenes Sync aus: Ein SMB-FLUSH, ein NFS-COMMIT oder ein SFTP-fsync gelingt, ohne&lt;code&gt;lazy&lt;/code&gt;-Daten dauerhaft zu machen. &lt;strong&gt;&lt;code&gt;lazy&lt;/code&gt; nicht für eine
-Freigabe verwenden, die andere Clients gleichzeitig einhängen&lt;/strong&gt;: Nichts ordnet Dateidaten vor die Metadaten, die auf sie
-zeigen, daher kann eine Datei nach einem Absturz veraltete Bytes einer gelöschten
-enthalten, und die Änderungen seit dem letzten Abschluss des Volumes gehen verloren. Nach einem
-Absturz lassen &lt;code&gt;mounted&lt;/code&gt; und &lt;code&gt;lazy&lt;/code&gt; das Volume als nicht sauber ausgehängt
-markiert zurück, sodass das nächste Einhängen &lt;code&gt;fsck_hfs&lt;/code&gt; ausführt.&lt;/li&gt;
+auf dem Medium, wenn das Volume synchronisiert ist: durch den Flush eines
+Clients (ein SMB-FLUSH, ein NFS-COMMIT oder ein &lt;a href="mailto:SFTP-%60fsync@openssh.com"&gt;SFTP-`fsync@openssh.com&lt;/a&gt;&lt;code&gt;, was auch ein &lt;/code&gt;mounted&lt;code&gt;-Volume wieder als sauber markiert), beim Schließen des Volumes oder wenn ein Reload die Stufe ändert. Ein fehlgeschlagenes Sync wird dem Client als E/A-Fehler zurückgegeben. WebDAV und S3 kennen keinen Flush, ihre Bestätigungen sind bei &lt;/code&gt;lazy&lt;code&gt; nicht dauerhaft. **&lt;/code&gt;lazy&lt;code&gt;nicht für eine Freigabe verwenden, die andere Clients gleichzeitig einhängen**: Nichts ordnet Dateidaten vor die Metadaten, die auf sie zeigen, daher kann eine Datei nach einem Absturz veraltete Bytes einer gelöschten enthalten, und die Änderungen seit dem letzten Abschluss des Volumes gehen verloren. Nach einem Absturz lassen&lt;/code&gt;mounted&lt;code&gt;und&lt;/code&gt;lazy&lt;code&gt;das Volume als nicht sauber ausgehängt markiert zurück, sodass das nächste Einhängen&lt;/code&gt;fsck_hfs` ausführt.&lt;/li&gt;
 &lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Was ein Flush erreicht.&lt;/strong&gt; Ein SMB-FLUSH, ein NFS-COMMIT (ein UNSTABLE-WRITE
+wird mit UNSTABLE beantwortet, damit der Client das COMMIT sendet; ein WRITE, der
+Stabilität verlangt, wird synchronisiert) und ein &lt;a href="mailto:SFTP-%60fsync@openssh.com"&gt;SFTP-`fsync@openssh.com&lt;/a&gt;&lt;code&gt;synchronisieren das Volume. Die SFTP-Anfrage nennt ein Handle, aber der Sync-Hook des sftp-Moduls nimmt keinen Pfad, daher synchronisiert fileshare jede Freigabe, die die Person beschreiben darf (ein Hook pro Freigabe ist ein Folgeschritt). Derselbe Flush ist auch für die anderen beschreibbaren Image-Treiber verlässlich: fat32, exfat und ext4 führen über das eigene&lt;/code&gt;Sync&lt;code&gt;der Datei ein fsync des Images aus, und ntfs und ufs, die jede Änderung sofort ins Image schreiben, werden mit einem fsync der Image-Datei synchronisiert. Eine Verzeichnisfreigabe hat nichts zu synchronisieren. Ein fehlgeschlagenes Sync bleibt fehlgeschlagen, bei hfsplus und beim Image-fsync für fat32, exfat, ext4, ntfs und ufs (der erste Fehler bleibt bis zum erneuten Öffnen der Freigabe erhalten): Ein wiederholter Flush oder COMMIT wird ebenfalls abgewiesen und erfährt nicht, seine Daten seien dauerhaft. Das eigene&lt;/code&gt;Sync` eines
+positionsfähigen Datei-Handles bei fat32, exfat und ext4 gehört dem Treiber und
+wird hier nicht festgehalten.&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;mac&amp;#34;&lt;/span&gt; {
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/mac.img&amp;#34;&lt;/span&gt;

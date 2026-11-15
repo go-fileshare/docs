@@ -327,15 +327,29 @@ escritura por commit en un volumen limpio al abrirse, 1 para un &lt;code&gt;Sync
 &lt;li&gt;&lt;code&gt;mounted&lt;/code&gt;: los datos se escriben antes que los metadatos que apuntan a ellos,y el volumen sigue marcado como en uso entre commits, como TN1150 describe un
 volumen montado: 2 barreras para la primera escritura, 1 para un commit sin
 datos, 2 con datos, 1 para un &lt;code&gt;Sync&lt;/code&gt;.&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;lazy&lt;/code&gt;: los datos se escriben sin orden: 1 barrera para la primera escritura,0 después, 2 para un &lt;code&gt;Sync&lt;/code&gt;. Un cambio está en el medio solo cuando se cierra el
-volumen (se quita el recurso o el servidor se detiene) o una recarga cambia el
-nivel. fileshare no emite ningún sync propio: un FLUSH de SMB, un COMMIT de NFS
-o un fsync de SFTP se cumplen sin hacer duraderos los datos de &lt;code&gt;lazy&lt;/code&gt;. &lt;strong&gt;No use &lt;code&gt;lazy&lt;/code&gt; en un recurso que otros clientes monten a la vez&lt;/strong&gt;: nada ordena los datos del archivo antes de los metadatos
+&lt;li&gt;&lt;code&gt;lazy&lt;/code&gt;: los datos se escriben sin orden: 1 barrera para la primera escritura,0 después, 2 para un &lt;code&gt;Sync&lt;/code&gt;. Un cambio está en el medio solo cuando el volumen
+se sincroniza: por el flush de un cliente (un FLUSH de SMB, un COMMIT de NFS o un&lt;code&gt;fsync@openssh.com&lt;/code&gt; de SFTP, que además marca como limpio un volumen &lt;code&gt;mounted&lt;/code&gt;),al cerrarse el volumen o cuando una recarga cambia el nivel. Un sync fallido se
+devuelve al cliente como error de E/S. WebDAV y S3 no tienen flush, así que sus
+confirmaciones no son duraderas con &lt;code&gt;lazy&lt;/code&gt;. &lt;strong&gt;No use &lt;code&gt;lazy&lt;/code&gt; en un recurso que otros clientes monten a la vez&lt;/strong&gt;: nada ordena los datos del archivo antes de los metadatos
 que apuntan a ellos, así que tras un fallo un archivo puede contener bytes
 obsoletos de uno borrado, y los cambios desde la última vez que se asentó el volumen se pierden. Tras un
 fallo, &lt;code&gt;mounted&lt;/code&gt; y &lt;code&gt;lazy&lt;/code&gt; dejan el volumen marcado como no desmontado
 limpiamente, de modo que el siguiente montaje ejecuta &lt;code&gt;fsck_hfs&lt;/code&gt;.&lt;/li&gt;
 &lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Qué alcanza un flush.&lt;/strong&gt; Un FLUSH de SMB, un COMMIT de NFS (un WRITE UNSTABLE se
+responde UNSTABLE, de modo que el cliente envía el COMMIT; un WRITE que pide
+estabilidad se sincroniza) y un &lt;code&gt;fsync@openssh.com&lt;/code&gt; de SFTP sincronizan el
+volumen. La petición de SFTP nombra un manejador, pero el gancho de sync del
+módulo sftp no recibe ruta, así que fileshare sincroniza cada recurso que la
+persona puede escribir (un gancho por recurso queda como tarea pendiente). El mismo flush es veraz
+para los demás controladores de imagen escribibles: fat32, exfat y ext4 hacen
+fsync de la imagen mediante el &lt;code&gt;Sync&lt;/code&gt; del propio archivo, y ntfs y ufs, que
+escriben cada cambio directamente en la imagen, se sincronizan con un fsync del
+archivo de la imagen. Un recurso de directorio no tiene nada que sincronizar. Un
+sync fallido sigue fallido en hfsplus y en el fsync de la imagen usado para fat32,exfat, ext4, ntfs y ufs (el primer error se conserva hasta reabrir el recurso): un
+flush o COMMIT repetido también se rechaza y no se le dice que sus datos son
+duraderos. El &lt;code&gt;Sync&lt;/code&gt; propio de un manejador de archivo posicional en fat32, exfat
+y ext4 es del controlador y aquí no se retiene.&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;mac&amp;#34;&lt;/span&gt; {
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/mac.img&amp;#34;&lt;/span&gt;

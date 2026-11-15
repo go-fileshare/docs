@@ -118,14 +118,32 @@ TN1150 décrit un volume monté : 2 barrières pour la première écriture, 1 po
 un commit sans données, 2 avec données, 1 pour un &lt;code&gt;Sync&lt;/code&gt;.&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;lazy&lt;/code&gt; : les données sont réécrites sans ordre : 1 barrière pour la première
 écriture, 0 ensuite, 2 pour un &lt;code&gt;Sync&lt;/code&gt;. Un changement n&amp;rsquo;est sur le support
-que lorsque le volume est fermé (le partage est retiré ou le serveur s&amp;rsquo;arrête)ou qu&amp;rsquo;un rechargement change le niveau. fileshare n&amp;rsquo;émet aucun sync de lui-même :un FLUSH SMB, un COMMIT NFS ou un fsync SFTP réussit sans rendre durables les
-données de &lt;code&gt;lazy&lt;/code&gt;. &lt;strong&gt;N&amp;rsquo;utilisez pas &lt;code&gt;lazy&lt;/code&gt; pour un partage que
+qu&amp;rsquo;une fois le volume synchronisé : par le flush d&amp;rsquo;un client (un FLUSH SMB, un
+COMMIT NFS ou un &lt;code&gt;fsync@openssh.com&lt;/code&gt; SFTP, qui remet aussi un volume &lt;code&gt;mounted&lt;/code&gt;
+à l&amp;rsquo;état propre), à la fermeture du volume, ou quand un rechargement change le
+niveau. Un sync échoué est renvoyé au client comme une erreur d&amp;rsquo;E/S. WebDAV et
+S3 n&amp;rsquo;ont pas de flush : leurs accusés ne sont pas durables avec &lt;code&gt;lazy&lt;/code&gt;.&lt;strong&gt;N&amp;rsquo;utilisez pas &lt;code&gt;lazy&lt;/code&gt; pour un partage que
 d&amp;rsquo;autres clients montent en même temps&lt;/strong&gt; : rien n&amp;rsquo;ordonne les données du fichier avant les
 métadonnées qui les désignent, donc après un plantage un fichier peut contenir des
 octets périmés d&amp;rsquo;un fichier supprimé, et les changements depuis la dernière stabilisation du volume
 sont perdus. Après un plantage, &lt;code&gt;mounted&lt;/code&gt; et &lt;code&gt;lazy&lt;/code&gt; laissent le volume marqué
 comme non démonté proprement, si bien que le montage suivant lance &lt;code&gt;fsck_hfs&lt;/code&gt;.&lt;/li&gt;
 &lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Ce qu&amp;rsquo;atteint un flush.&lt;/strong&gt; Un FLUSH SMB, un COMMIT NFS (un WRITE UNSTABLE reçoit
+la réponse UNSTABLE, pour que le client envoie le COMMIT ; un WRITE qui demande
+la stabilité est synchronisé) et un &lt;code&gt;fsync@openssh.com&lt;/code&gt; SFTP synchronisent le
+volume. La requête SFTP nomme un descripteur, mais le point d&amp;rsquo;accroche de sync du
+module sftp ne reçoit aucun chemin : fileshare synchronise donc chaque partage
+que la personne peut écrire (un point d&amp;rsquo;accroche par partage reste à faire). Le même
+flush est fiable pour les autres pilotes d&amp;rsquo;image inscriptibles : fat32, exfat et
+ext4 font un fsync de l&amp;rsquo;image par le &lt;code&gt;Sync&lt;/code&gt; du fichier lui-même, et ntfs et ufs,qui écrivent chaque changement directement dans l&amp;rsquo;image, sont synchronisés par
+un fsync du fichier image. Un partage de répertoire n&amp;rsquo;a rien à synchroniser. Un
+sync échoué reste échoué pour hfsplus et pour le fsync de l&amp;rsquo;image utilisé pour
+fat32, exfat, ext4, ntfs et ufs (la première erreur est conservée jusqu&amp;rsquo;à la
+réouverture du partage) : un flush ou un COMMIT répété est refusé aussi, et ne
+s&amp;rsquo;entend pas dire que ses données sont durables. Le &lt;code&gt;Sync&lt;/code&gt; propre d&amp;rsquo;un
+descripteur de fichier positionnel sur fat32, exfat et ext4 appartient au pilote
+et n&amp;rsquo;est pas retenu ici.&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;mac&amp;#34;&lt;/span&gt; {
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/mac.img&amp;#34;&lt;/span&gt;
