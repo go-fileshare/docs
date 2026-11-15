@@ -348,8 +348,7 @@ escriben cada cambio directamente en la imagen, se sincronizan con un fsync del
 archivo de la imagen. Un recurso de directorio no tiene nada que sincronizar. Un
 sync fallido sigue fallido en hfsplus y en el fsync de la imagen usado para fat32,exfat, ext4, ntfs y ufs (el primer error se conserva hasta reabrir el recurso): un
 flush o COMMIT repetido también se rechaza y no se le dice que sus datos son
-duraderos. El &lt;code&gt;Sync&lt;/code&gt; propio de un manejador de archivo posicional en fat32, exfat
-y ext4 es del controlador y aquí no se retiene.&lt;/p&gt;
+duraderos.&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;mac&amp;#34;&lt;/span&gt; {
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/mac.img&amp;#34;&lt;/span&gt;

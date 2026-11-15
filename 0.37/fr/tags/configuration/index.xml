@@ -346,9 +346,7 @@ un fsync du fichier image. Un partage de répertoire n&amp;rsquo;a rien à synch
 sync échoué reste échoué pour hfsplus et pour le fsync de l&amp;rsquo;image utilisé pour
 fat32, exfat, ext4, ntfs et ufs (la première erreur est conservée jusqu&amp;rsquo;à la
 réouverture du partage) : un flush ou un COMMIT répété est refusé aussi, et ne
-s&amp;rsquo;entend pas dire que ses données sont durables. Le &lt;code&gt;Sync&lt;/code&gt; propre d&amp;rsquo;un
-descripteur de fichier positionnel sur fat32, exfat et ext4 appartient au pilote
-et n&amp;rsquo;est pas retenu ici.&lt;/p&gt;
+s&amp;rsquo;entend pas dire que ses données sont durables.&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;mac&amp;#34;&lt;/span&gt; {
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/mac.img&amp;#34;&lt;/span&gt;

@@ -132,9 +132,7 @@ follow-up). The same flush is truthful for the other writable image
 drivers: fat32, exfat and ext4 fsync the image through the file&amp;rsquo;s own &lt;code&gt;Sync&lt;/code&gt;,and ntfs and ufs, which write each change through to the image, are synced with
 an fsync of the image file. A directory share has nothing to sync. A sync that
 failed stays failed for hfsplus and for the image fsync used for fat32, exfat,ext4, ntfs and ufs (the first error is kept until the share is reopened): a
-retried flush or COMMIT is refused too, and is not told its data is durable. A
-positional file handle&amp;rsquo;s own &lt;code&gt;Sync&lt;/code&gt; on fat32, exfat and ext4 is the driver&amp;rsquo;s and
-is not latched.&lt;/p&gt;
+retried flush or COMMIT is refused too, and is not told its data is durable.&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
 &lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;mac&amp;#34;&lt;/span&gt; {
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/mac.img&amp;#34;&lt;/span&gt;
