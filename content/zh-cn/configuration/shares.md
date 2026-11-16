@@ -46,8 +46,9 @@ share "photos" {
   结束时恢复，所以 `fsck_hfs -q` 能发现崩溃，带日志的卷也一样。
 - **写入失败会让卷停止。** 刷新失败后，卷会拒绝写入（`ErrVolumeFailed`），直到共享重新打开。
 
-它仍然需要**主动选择启用**，因为 hfsplus 还有未完成的事项：持久的小写入每次提交需要 3 次 fsync，
-大约比 macOS 慢 3 倍（go-filesystems/hfsplus#35）；崩溃测试尚未加固（go-filesystems/hfsplus#37）；
+它仍然需要**主动选择启用**，因为 hfsplus 还有未完成的事项：持久的小写入（创建、写 1 字节、fsync）
+在默认持久性下耗时 12.66 ms，而 macOS 为 5.13 ms，大约慢 2.5 倍；在 `hfsplus_durability = "mounted"` 下为 8.20 ms，慢 1.6 倍
+（在 hfsplus v0.12.2 上测得，go-filesystems/hfsplus#35；其余差距见 go-filesystems/hfsplus#45，即通过日志写入带日志的卷）；
 崩溃后，带日志的卷会在没有日志的情况下挂载，直到运行 `diskutil enableJournal`。这些问题修复后，
 默认值可以恢复。请先备份镜像。共享通过 `hfsplus_writable_max` 选择启用，默认 `"0"`
 （表示从不；可以是字节数，或带 K、M、G、T 的数）：
@@ -66,7 +67,7 @@ share "mac" {
 服务器会写出一行，说明镜像和原因，例如没有任何设置时：
 
 ```text
-/srv/mac.img is an HFS+ volume and hfsplus_writable_max is 0, the default: HFS+ images are written only when a share sets a size, because a durable small write is about 3x slower than on macOS (go-filesystems/hfsplus#35), the crash tests are not finished (go-filesystems/hfsplus#37), and after a crash a journaled volume mounts without its journal until diskutil enableJournal, so mac is read-only
+/srv/mac.img is an HFS+ volume and hfsplus_writable_max is 0, the default: HFS+ images are written only when a share sets a size, because a durable small write is about 2.5x slower than on macOS (go-filesystems/hfsplus#45), 1.6x at the "mounted" durability level, and after a crash a journaled volume mounts without its journal until diskutil enableJournal, so mac is read-only
 ```
 
 超过该大小时：

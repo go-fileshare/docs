@@ -58,9 +58,12 @@ escribe **en el sitio**:
   recurso.
 
 Sigue siendo **opcional**, por lo que hfsplus aún no ha terminado: una escritura
-pequeña y duradera cuesta 3 fsync por confirmación y es unas 3 veces más lenta
-que en macOS (go-filesystems/hfsplus#35), las pruebas de fallos aún no están
-reforzadas (go-filesystems/hfsplus#37), y tras un fallo un volumen con journal se
+pequeña y duradera (crear, un byte, fsync) tarda 12,66 ms con la durabilidad por
+defecto frente a 5,13 ms en macOS, unas 2,5 veces más lenta, y 8,20 ms, 1,6
+veces, con `hfsplus_durability = "mounted"` (medido con hfsplus v0.12.2,
+go-filesystems/hfsplus#35; el resto de la diferencia es
+go-filesystems/hfsplus#45, escribir los volúmenes con journal a través de su
+journal), y tras un fallo un volumen con journal se
 monta sin su journal hasta `diskutil enableJournal`. El valor por defecto podrá
 volver cuando se corrija. Haga antes una copia de la imagen. Un recurso lo
 acepta con `hfsplus_writable_max`, que por defecto es `"0"` (nunca; un número de
@@ -84,7 +87,7 @@ servidor escribe una línea con la imagen y el motivo, por ejemplo sin ningún
 ajuste:
 
 ```text
-/srv/mac.img is an HFS+ volume and hfsplus_writable_max is 0, the default: HFS+ images are written only when a share sets a size, because a durable small write is about 3x slower than on macOS (go-filesystems/hfsplus#35), the crash tests are not finished (go-filesystems/hfsplus#37), and after a crash a journaled volume mounts without its journal until diskutil enableJournal, so mac is read-only
+/srv/mac.img is an HFS+ volume and hfsplus_writable_max is 0, the default: HFS+ images are written only when a share sets a size, because a durable small write is about 2.5x slower than on macOS (go-filesystems/hfsplus#45), 1.6x at the "mounted" durability level, and after a crash a journaled volume mounts without its journal until diskutil enableJournal, so mac is read-only
 ```
 
 y por encima del tamaño:
