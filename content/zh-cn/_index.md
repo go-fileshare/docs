@@ -75,6 +75,7 @@ nfs    on 0.0.0.0:2049 — scratch
 | [什么撤销什么]({{< relref "/security/_index.md" >}}) | KRL、CRL、共享信号，以及为什么它们都以拒绝为默认 |
 | [只构建所需内容]({{< relref "/operations/build-tags.md" >}}) | 通过构建标签完全省略某个协议 |
 | [每个协议一个进程]({{< relref "/operations/isolation.md" >}}) | `--isolate` |
+| [库]({{< relref "/libraries/_index.md" >}}) | `automount`：无需密码对话框，在文件管理器中挂载 SMB 共享 |
 | [状态]({{< relref "/status.md" >}}) | 哪些已经验证，哪些尚未实现 |
 
 ## 许可证 {#licence}
