@@ -75,6 +75,7 @@ See [What a protocol can promise]({{< relref "/protocols/_index.md" >}}).
 | [What revokes what]({{< relref "/security/_index.md" >}}) | KRL, CRL, shared signals — and why each fails closed |
 | [Building only what you want]({{< relref "/operations/build-tags.md" >}}) | a tag leaves a protocol out entirely |
 | [One process per protocol]({{< relref "/operations/isolation.md" >}}) | `--isolate` |
+| [Libraries]({{< relref "/libraries/_index.md" >}}) | `automount`: mount an SMB share in the file manager with no password dialog |
 | [Status]({{< relref "/status.md" >}}) | what is verified, and what is not here yet |
 
 ## Licence
