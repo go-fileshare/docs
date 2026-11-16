@@ -75,6 +75,7 @@ nfs    on 0.0.0.0:2049 — scratch
 | [何が何を失効させるか]({{< relref "/security/_index.md" >}}) | KRL、CRL、共有シグナル、そしてそれぞれがフェイルクローズする理由 |
 | [必要なものだけをビルドする]({{< relref "/operations/build-tags.md" >}}) | タグを指定するとプロトコルを丸ごと除外できる |
 | [プロトコルごとに 1 プロセス]({{< relref "/operations/isolation.md" >}}) | `--isolate` |
+| [ライブラリ]({{< relref "/libraries/_index.md" >}}) | `automount`: パスワードダイアログなしで SMB 共有をファイルマネージャにマウントする |
 | [ステータス]({{< relref "/status.md" >}}) | 検証済みのもの、まだ存在しないもの |
 
 ## ライセンス {#licence}

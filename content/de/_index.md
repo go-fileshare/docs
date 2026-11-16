@@ -75,6 +75,7 @@ Siehe [Was ein Protokoll zusichern kann]({{< relref "/protocols/_index.md" >}}).
 | [Was was widerruft]({{< relref "/security/_index.md" >}}) | KRL, CRL, Shared Signals – und warum jedes geschlossen fehlschlägt (fail closed) |
 | [Nur bauen, was Sie brauchen]({{< relref "/operations/build-tags.md" >}}) | ein Build-Tag lässt ein Protokoll ganz weg |
 | [Ein Prozess pro Protokoll]({{< relref "/operations/isolation.md" >}}) | `--isolate` |
+| [Bibliotheken]({{< relref "/libraries/_index.md" >}}) | `automount`: eine SMB-Freigabe ohne Passwortdialog im Dateimanager einhängen |
 | [Stand]({{< relref "/status.md" >}}) | was geprüft ist und was noch fehlt |
 
 ## Lizenz {#licence}

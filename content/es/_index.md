@@ -76,6 +76,7 @@ camino. Consulte [Lo que un protocolo puede prometer]({{< relref "/protocols/_in
 | [Qué revoca qué]({{< relref "/security/_index.md" >}}) | KRL, CRL, señales compartidas, y por qué cada una falla en modo cerrado |
 | [Compilar solo lo que necesita]({{< relref "/operations/build-tags.md" >}}) | una etiqueta deja un protocolo completamente fuera |
 | [Un proceso por protocolo]({{< relref "/operations/isolation.md" >}}) | `--isolate` |
+| [Bibliotecas]({{< relref "/libraries/_index.md" >}}) | `automount`: montar un recurso SMB en el gestor de archivos sin cuadro de contraseña |
 | [Estado]({{< relref "/status.md" >}}) | lo que está verificado y lo que aún no está aquí |
 
 ## Licencia {#licence}

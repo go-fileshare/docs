@@ -75,6 +75,7 @@ nfs    on 0.0.0.0:2049 — scratch
 | [무엇이 무엇을 폐기하는가]({{< relref "/security/_index.md" >}}) | KRL, CRL, 공유 신호 — 그리고 각각이 안전하게 차단되는(fail closed) 이유 |
 | [필요한 것만 빌드하기]({{< relref "/operations/build-tags.md" >}}) | 태그로 프로토콜을 완전히 제외 |
 | [프로토콜마다 하나의 프로세스]({{< relref "/operations/isolation.md" >}}) | `--isolate` |
+| [라이브러리]({{< relref "/libraries/_index.md" >}}) | `automount`: 비밀번호 대화 상자 없이 SMB 공유를 파일 관리자에 마운트 |
 | [현황]({{< relref "/status.md" >}}) | 검증된 것과 아직 없는 것 |
 
 ## 라이선스 {#licence}

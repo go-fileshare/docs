@@ -75,6 +75,7 @@ Voir [Ce qu'un protocole peut promettre]({{< relref "/protocols/_index.md" >}}).
 | [Ce qui révoque quoi]({{< relref "/security/_index.md" >}}) | KRL, CRL, signaux partagés — et pourquoi chacun refuse en cas de doute |
 | [Ne compiler que ce que l'on veut]({{< relref "/operations/build-tags.md" >}}) | une étiquette laisse un protocole entièrement de côté |
 | [Un processus par protocole]({{< relref "/operations/isolation.md" >}}) | `--isolate` |
+| [Bibliothèques]({{< relref "/libraries/_index.md" >}}) | `automount` : monter un partage SMB dans le gestionnaire de fichiers sans boîte de dialogue de mot de passe |
 | [État]({{< relref "/status.md" >}}) | ce qui est vérifié, et ce qui n'est pas encore là |
 
 ## Licence {#licence}
