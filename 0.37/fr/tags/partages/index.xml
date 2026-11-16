@@ -42,9 +42,12 @@ plantage, volumes à journal compris.&lt;/li&gt;
 refuse les écritures (&lt;code&gt;ErrVolumeFailed&lt;/code&gt;) jusqu&amp;rsquo;à la réouverture du partage.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;Cela reste &lt;strong&gt;sur consentement&lt;/strong&gt;, à cause de ce que hfsplus n&amp;rsquo;a pas terminé : une
-petite écriture durable coûte 3 fsync par validation et est environ 3 fois plus
-lente que sur macOS (go-filesystems/hfsplus#35), les tests de plantage ne sont
-pas encore durcis (go-filesystems/hfsplus#37), et après un plantage un volume à
+petite écriture durable (créer, un octet, fsync) prend 12,66 ms avec la
+durabilité par défaut contre 5,13 ms sur macOS, soit environ 2,5 fois plus
+lente, et 8,20 ms, 1,6 fois, avec &lt;code&gt;hfsplus_durability = &amp;quot;mounted&amp;quot;&lt;/code&gt; (mesuré avec
+hfsplus v0.12.2, go-filesystems/hfsplus#35 ; le reste de l&amp;rsquo;écart est
+go-filesystems/hfsplus#45, écrire les volumes à journal à travers leur
+journal), et après un plantage un volume à
 journal se monte sans son journal jusqu&amp;rsquo;à &lt;code&gt;diskutil enableJournal&lt;/code&gt;. Le défaut
 pourra revenir quand cela sera corrigé. Sauvegardez d&amp;rsquo;abord l&amp;rsquo;image. Un partage y
 consent avec &lt;code&gt;hfsplus_writable_max&lt;/code&gt;, &lt;code&gt;&amp;quot;0&amp;quot;&lt;/code&gt; par défaut (jamais ; un nombre
@@ -73,7 +76,7 @@ grande valeur comme &lt;code&gt;&amp;quot;1T&amp;quot;&lt;/code&gt; est le simpl
 s&amp;rsquo;ouvre en &lt;strong&gt;lecture seule&lt;/strong&gt;, toujours avec la lecture par plages et les dates,et le serveur écrit une ligne qui nomme l&amp;rsquo;image et la raison, par exemple sans
 réglage :&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
-&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/srv/mac.img is an HFS+ volume and hfsplus_writable_max is 0, the default: HFS+ images are written only when a share sets a size, because a durable small write is about 3x slower than on macOS (go-filesystems/hfsplus#35), the crash tests are not finished (go-filesystems/hfsplus#37), and after a crash a journaled volume mounts without its journal until diskutil enableJournal, so mac is read-only&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/srv/mac.img is an HFS+ volume and hfsplus_writable_max is 0, the default: HFS+ images are written only when a share sets a size, because a durable small write is about 2.5x slower than on macOS (go-filesystems/hfsplus#45), 1.6x at the &amp;#34;mounted&amp;#34; durability level, and after a crash a journaled volume mounts without its journal until diskutil enableJournal, so mac is read-only&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
 &lt;button
 class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
 title="Copier le code"

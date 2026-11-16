@@ -43,10 +43,9 @@ Absturz erkennt, auch bei Volumes mit Journal.&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Ein fehlgeschlagener Schreibvorgang stoppt das Volume.&lt;/strong&gt; Nach einem
 fehlgeschlagenen Flush verweigert das Volume Schreibzugriffe(&lt;code&gt;ErrVolumeFailed&lt;/code&gt;), bis die Freigabe neu geöffnet wird.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;Es bleibt &lt;strong&gt;auf Zustimmung&lt;/strong&gt;, wegen dessen, was hfsplus noch nicht fertig hat:Ein dauerhaft geschriebener kleiner Schreibvorgang kostet 3 fsyncs pro Commit
-und ist etwa 3-mal langsamer als unter macOS (go-filesystems/hfsplus#35), die
-Absturztests sind noch nicht gehärtet (go-filesystems/hfsplus#37), und nach einem
-Absturz wird ein Volume mit Journal ohne sein Journal eingehängt, bis&lt;code&gt;diskutil enableJournal&lt;/code&gt; läuft. Der Standard kann zurückkehren, wenn das behoben
+&lt;p&gt;Es bleibt &lt;strong&gt;auf Zustimmung&lt;/strong&gt;, wegen dessen, was hfsplus noch nicht fertig hat:Ein dauerhaft geschriebener kleiner Schreibvorgang (anlegen, ein Byte, fsync)dauert bei der Standard-Dauerhaftigkeit 12,66 ms gegenüber 5,13 ms unter macOS,also etwa 2,5-mal langsamer, und bei &lt;code&gt;hfsplus_durability = &amp;quot;mounted&amp;quot;&lt;/code&gt; 8,20 ms,1,6-mal (gemessen mit hfsplus v0.12.2, go-filesystems/hfsplus#35; der Rest der
+Lücke ist go-filesystems/hfsplus#45, Volumes mit Journal über ihr Journal zu
+schreiben), und nach einem Absturz wird ein Volume mit Journal ohne sein Journal eingehängt, bis&lt;code&gt;diskutil enableJournal&lt;/code&gt; läuft. Der Standard kann zurückkehren, wenn das behoben
 ist. Sichern Sie das Image zuerst. Eine Freigabe stimmt mit&lt;code&gt;hfsplus_writable_max&lt;/code&gt; zu, standardmäßig &lt;code&gt;&amp;quot;0&amp;quot;&lt;/code&gt; (nie; eine Zahl in Bytes oder eine
 mit K, M, G oder T):&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
@@ -72,7 +71,7 @@ beschreiben); ein großer Wert wie &lt;code&gt;&amp;quot;1T&amp;quot;&lt;/code&g
 Server schreibt eine Zeile mit dem Image und dem Grund, zum Beispiel ohne
 Einstellung:&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
-&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/srv/mac.img is an HFS+ volume and hfsplus_writable_max is 0, the default: HFS+ images are written only when a share sets a size, because a durable small write is about 3x slower than on macOS (go-filesystems/hfsplus#35), the crash tests are not finished (go-filesystems/hfsplus#37), and after a crash a journaled volume mounts without its journal until diskutil enableJournal, so mac is read-only&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/srv/mac.img is an HFS+ volume and hfsplus_writable_max is 0, the default: HFS+ images are written only when a share sets a size, because a durable small write is about 2.5x slower than on macOS (go-filesystems/hfsplus#45), 1.6x at the &amp;#34;mounted&amp;#34; durability level, and after a crash a journaled volume mounts without its journal until diskutil enableJournal, so mac is read-only&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
 &lt;button
 class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
 title="Code kopieren"

@@ -46,9 +46,11 @@ volumen rechaza las escrituras (&lt;code&gt;ErrVolumeFailed&lt;/code&gt;) hasta 
 recurso.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;Sigue siendo &lt;strong&gt;opcional&lt;/strong&gt;, por lo que hfsplus aún no ha terminado: una escritura
-pequeña y duradera cuesta 3 fsync por confirmación y es unas 3 veces más lenta
-que en macOS (go-filesystems/hfsplus#35), las pruebas de fallos aún no están
-reforzadas (go-filesystems/hfsplus#37), y tras un fallo un volumen con journal se
+pequeña y duradera (crear, un byte, fsync) tarda 12,66 ms con la durabilidad por
+defecto frente a 5,13 ms en macOS, unas 2,5 veces más lenta, y 8,20 ms, 1,6
+veces, con &lt;code&gt;hfsplus_durability = &amp;quot;mounted&amp;quot;&lt;/code&gt; (medido con hfsplus v0.12.2,go-filesystems/hfsplus#35; el resto de la diferencia es
+go-filesystems/hfsplus#45, escribir los volúmenes con journal a través de su
+journal), y tras un fallo un volumen con journal se
 monta sin su journal hasta &lt;code&gt;diskutil enableJournal&lt;/code&gt;. El valor por defecto podrá
 volver cuando se corrija. Haga antes una copia de la imagen. Un recurso lo
 acepta con &lt;code&gt;hfsplus_writable_max&lt;/code&gt;, que por defecto es &lt;code&gt;&amp;quot;0&amp;quot;&lt;/code&gt; (nunca; un número de
@@ -77,7 +79,7 @@ recurso se abre en &lt;strong&gt;solo lectura&lt;/strong&gt;, aún con lecturas 
 servidor escribe una línea con la imagen y el motivo, por ejemplo sin ningún
 ajuste:&lt;/p&gt;
 &lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
-&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/srv/mac.img is an HFS+ volume and hfsplus_writable_max is 0, the default: HFS+ images are written only when a share sets a size, because a durable small write is about 3x slower than on macOS (go-filesystems/hfsplus#35), the crash tests are not finished (go-filesystems/hfsplus#37), and after a crash a journaled volume mounts without its journal until diskutil enableJournal, so mac is read-only&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/srv/mac.img is an HFS+ volume and hfsplus_writable_max is 0, the default: HFS+ images are written only when a share sets a size, because a durable small write is about 2.5x slower than on macOS (go-filesystems/hfsplus#45), 1.6x at the &amp;#34;mounted&amp;#34; durability level, and after a crash a journaled volume mounts without its journal until diskutil enableJournal, so mac is read-only&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
 &lt;button
 class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
 title="Copiar código"
