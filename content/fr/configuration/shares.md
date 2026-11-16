@@ -55,9 +55,12 @@ un volume HFS+ inscriptible est écrit **en place** :
   refuse les écritures (`ErrVolumeFailed`) jusqu'à la réouverture du partage.
 
 Cela reste **sur consentement**, à cause de ce que hfsplus n'a pas terminé : une
-petite écriture durable coûte 3 fsync par validation et est environ 3 fois plus
-lente que sur macOS (go-filesystems/hfsplus#35), les tests de plantage ne sont
-pas encore durcis (go-filesystems/hfsplus#37), et après un plantage un volume à
+petite écriture durable (créer, un octet, fsync) prend 12,66 ms avec la
+durabilité par défaut contre 5,13 ms sur macOS, soit environ 2,5 fois plus
+lente, et 8,20 ms, 1,6 fois, avec `hfsplus_durability = "mounted"` (mesuré avec
+hfsplus v0.12.2, go-filesystems/hfsplus#35 ; le reste de l'écart est
+go-filesystems/hfsplus#45, écrire les volumes à journal à travers leur
+journal), et après un plantage un volume à
 journal se monte sans son journal jusqu'à `diskutil enableJournal`. Le défaut
 pourra revenir quand cela sera corrigé. Sauvegardez d'abord l'image. Un partage y
 consent avec `hfsplus_writable_max`, `"0"` par défaut (jamais ; un nombre
@@ -81,7 +84,7 @@ et le serveur écrit une ligne qui nomme l'image et la raison, par exemple sans
 réglage :
 
 ```text
-/srv/mac.img is an HFS+ volume and hfsplus_writable_max is 0, the default: HFS+ images are written only when a share sets a size, because a durable small write is about 3x slower than on macOS (go-filesystems/hfsplus#35), the crash tests are not finished (go-filesystems/hfsplus#37), and after a crash a journaled volume mounts without its journal until diskutil enableJournal, so mac is read-only
+/srv/mac.img is an HFS+ volume and hfsplus_writable_max is 0, the default: HFS+ images are written only when a share sets a size, because a durable small write is about 2.5x slower than on macOS (go-filesystems/hfsplus#45), 1.6x at the "mounted" durability level, and after a crash a journaled volume mounts without its journal until diskutil enableJournal, so mac is read-only
 ```
 
 et au-delà de la taille :

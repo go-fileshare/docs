@@ -56,10 +56,12 @@ ein beschreibbares HFS+-Volume **an Ort und Stelle** geschrieben:
   (`ErrVolumeFailed`), bis die Freigabe neu geöffnet wird.
 
 Es bleibt **auf Zustimmung**, wegen dessen, was hfsplus noch nicht fertig hat:
-Ein dauerhaft geschriebener kleiner Schreibvorgang kostet 3 fsyncs pro Commit
-und ist etwa 3-mal langsamer als unter macOS (go-filesystems/hfsplus#35), die
-Absturztests sind noch nicht gehärtet (go-filesystems/hfsplus#37), und nach einem
-Absturz wird ein Volume mit Journal ohne sein Journal eingehängt, bis
+Ein dauerhaft geschriebener kleiner Schreibvorgang (anlegen, ein Byte, fsync)
+dauert bei der Standard-Dauerhaftigkeit 12,66 ms gegenüber 5,13 ms unter macOS,
+also etwa 2,5-mal langsamer, und bei `hfsplus_durability = "mounted"` 8,20 ms,
+1,6-mal (gemessen mit hfsplus v0.12.2, go-filesystems/hfsplus#35; der Rest der
+Lücke ist go-filesystems/hfsplus#45, Volumes mit Journal über ihr Journal zu
+schreiben), und nach einem Absturz wird ein Volume mit Journal ohne sein Journal eingehängt, bis
 `diskutil enableJournal` läuft. Der Standard kann zurückkehren, wenn das behoben
 ist. Sichern Sie das Image zuerst. Eine Freigabe stimmt mit
 `hfsplus_writable_max` zu, standardmäßig `"0"` (nie; eine Zahl in Bytes oder eine
@@ -83,7 +85,7 @@ Server schreibt eine Zeile mit dem Image und dem Grund, zum Beispiel ohne
 Einstellung:
 
 ```text
-/srv/mac.img is an HFS+ volume and hfsplus_writable_max is 0, the default: HFS+ images are written only when a share sets a size, because a durable small write is about 3x slower than on macOS (go-filesystems/hfsplus#35), the crash tests are not finished (go-filesystems/hfsplus#37), and after a crash a journaled volume mounts without its journal until diskutil enableJournal, so mac is read-only
+/srv/mac.img is an HFS+ volume and hfsplus_writable_max is 0, the default: HFS+ images are written only when a share sets a size, because a durable small write is about 2.5x slower than on macOS (go-filesystems/hfsplus#45), 1.6x at the "mounted" durability level, and after a crash a journaled volume mounts without its journal until diskutil enableJournal, so mac is read-only
 ```
 
 und über der Größe:

@@ -52,10 +52,12 @@ v0.46.0 (hfsplus v0.10.0)** a writable HFS+ volume is written **in place**:
   writes (`ErrVolumeFailed`) until the share is reopened.
 
 It stays **opt-in**, because of what hfsplus has not finished: a durable small
-write costs 3 fsyncs per commit and is about 3x slower than on macOS
-(go-filesystems/hfsplus#35), the crash tests are not hardened yet
-(go-filesystems/hfsplus#37), and after a crash a journaled volume mounts without
-its journal until `diskutil enableJournal`. The default can come back when
+write (create, one byte, fsync) takes 12.66 ms at the default durability against
+5.13 ms on macOS, about 2.5x slower, and 8.20 ms, 1.6x, at
+`hfsplus_durability = "mounted"` (measured at hfsplus v0.12.2,
+go-filesystems/hfsplus#35; the rest of the gap is go-filesystems/hfsplus#45,
+writing journaled volumes through their journal), and after a crash a journaled
+volume mounts without its journal until `diskutil enableJournal`. The default can come back when
 those are fixed. Back the image up first. A share opts in with
 `hfsplus_writable_max`, which is `"0"` (never) by default (a number of bytes, or
 one with K, M, G or T):
@@ -77,7 +79,7 @@ With the default, above the size, or when the size is unknown, the share opens
 naming the image and the reason, for instance with no setting:
 
 ```text
-/srv/mac.img is an HFS+ volume and hfsplus_writable_max is 0, the default: HFS+ images are written only when a share sets a size, because a durable small write is about 3x slower than on macOS (go-filesystems/hfsplus#35), the crash tests are not finished (go-filesystems/hfsplus#37), and after a crash a journaled volume mounts without its journal until diskutil enableJournal, so mac is read-only
+/srv/mac.img is an HFS+ volume and hfsplus_writable_max is 0, the default: HFS+ images are written only when a share sets a size, because a durable small write is about 2.5x slower than on macOS (go-filesystems/hfsplus#45), 1.6x at the "mounted" durability level, and after a crash a journaled volume mounts without its journal until diskutil enableJournal, so mac is read-only
 ```
 
 and above the size:

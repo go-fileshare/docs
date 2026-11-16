@@ -50,8 +50,10 @@ v0.44.0(hfsplus v0.9.0)부터 HFS+가 들어 있는 이미지의 공유는 FAT, 
   거부합니다(`ErrVolumeFailed`).
 
 그래도 **옵트인**으로 남아 있습니다. hfsplus에 아직 끝나지 않은 일이 있기 때문입니다. 내구성 있는
-작은 쓰기는 커밋당 fsync 3번이 필요해 macOS보다 약 3배 느리고(go-filesystems/hfsplus#35),
-충돌 테스트는 아직 강화되지 않았으며(go-filesystems/hfsplus#37), 충돌 뒤에는 저널이 있는 볼륨이
+작은 쓰기(생성, 1바이트, fsync)는 기본 내구성에서 12.66 ms가 걸려 macOS의 5.13 ms보다
+약 2.5배 느리고, `hfsplus_durability = "mounted"`에서는 8.20 ms로 1.6배 느리며
+(hfsplus v0.12.2에서 측정, go-filesystems/hfsplus#35; 남은 차이는
+go-filesystems/hfsplus#45, 저널이 있는 볼륨을 그 저널을 통해 쓰는 일입니다), 충돌 뒤에는 저널이 있는 볼륨이
 `diskutil enableJournal`을 실행할 때까지 저널 없이 마운트됩니다. 이것들이 고쳐지면 기본값을 되돌릴
 수 있습니다. 먼저 이미지를 백업하세요. 공유는 `hfsplus_writable_max`로 동의하며, 기본값은
 `"0"`(쓰지 않음; 바이트 수, 또는 K, M, G, T가 붙은 수)입니다.
@@ -71,7 +73,7 @@ v0.46.0부터 이 크기는 더 이상 메모리를 제한하지 않습니다. v
 그대로 동작합니다), 서버는 이미지와 이유를 밝히는 한 줄을 씁니다. 예를 들어 설정이 없을 때:
 
 ```text
-/srv/mac.img is an HFS+ volume and hfsplus_writable_max is 0, the default: HFS+ images are written only when a share sets a size, because a durable small write is about 3x slower than on macOS (go-filesystems/hfsplus#35), the crash tests are not finished (go-filesystems/hfsplus#37), and after a crash a journaled volume mounts without its journal until diskutil enableJournal, so mac is read-only
+/srv/mac.img is an HFS+ volume and hfsplus_writable_max is 0, the default: HFS+ images are written only when a share sets a size, because a durable small write is about 2.5x slower than on macOS (go-filesystems/hfsplus#45), 1.6x at the "mounted" durability level, and after a crash a journaled volume mounts without its journal until diskutil enableJournal, so mac is read-only
 ```
 
 크기를 넘을 때:

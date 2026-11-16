@@ -51,8 +51,10 @@ v0.44.0(hfsplus v0.9.0)以降、HFS+ を含むイメージの共有は、FAT、e
   書き込みを拒否します(`ErrVolumeFailed`)。
 
 それでも**オプトイン**のままです。hfsplus にまだ終わっていないことがあるためです。耐久性のある小さな
-書き込みは 1 コミットあたり 3 回の fsync を要し、macOS の約 3 倍遅くなります
-(go-filesystems/hfsplus#35)。クラッシュテストはまだ強化されておらず(go-filesystems/hfsplus#37)、
+書き込み(作成、1 バイト、fsync)は、既定の耐久性では 12.66 ms かかり、macOS の 5.13 ms に対して
+約 2.5 倍遅く、`hfsplus_durability = "mounted"` では 8.20 ms で 1.6 倍遅くなります
+(hfsplus v0.12.2 で計測、go-filesystems/hfsplus#35。残りの差は
+go-filesystems/hfsplus#45、ジャーナル付きボリュームをそのジャーナル経由で書き込むことです)。
 クラッシュ後、ジャーナル付きボリュームは `diskutil enableJournal` を実行するまでジャーナルなしで
 マウントされます。これらが直れば既定は戻せます。先にイメージをバックアップしてください。共有は
 `hfsplus_writable_max` で同意します。既定は `"0"`(書き込まない。バイト数、または K、M、G、T を付けた数)です。
@@ -72,7 +74,7 @@ v0.46.0 以降、このサイズはメモリの上限ではなくなりました
 時刻は引き続き使えます)、サーバーはイメージと理由を示す 1 行を書きます。たとえば設定がない場合:
 
 ```text
-/srv/mac.img is an HFS+ volume and hfsplus_writable_max is 0, the default: HFS+ images are written only when a share sets a size, because a durable small write is about 3x slower than on macOS (go-filesystems/hfsplus#35), the crash tests are not finished (go-filesystems/hfsplus#37), and after a crash a journaled volume mounts without its journal until diskutil enableJournal, so mac is read-only
+/srv/mac.img is an HFS+ volume and hfsplus_writable_max is 0, the default: HFS+ images are written only when a share sets a size, because a durable small write is about 2.5x slower than on macOS (go-filesystems/hfsplus#45), 1.6x at the "mounted" durability level, and after a crash a journaled volume mounts without its journal until diskutil enableJournal, so mac is read-only
 ```
 
 サイズを超える場合:
