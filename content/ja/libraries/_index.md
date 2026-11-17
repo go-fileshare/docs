@@ -8,4 +8,4 @@ go-fileshare 組織のライブラリのうち、他のプログラムがイン�
 
 | ページ | バージョン | 内容 |
 |---|---|---|
-| [automount]({{< relref "/libraries/automount.md" >}}) | v0.1.0 | パスワードダイアログなしで SMB 共有をファイルマネージャにマウントする |
+| [automount]({{< relref "/libraries/automount.md" >}}) | v0.1.2 | パスワードダイアログなしで SMB 共有をファイルマネージャにマウントする |

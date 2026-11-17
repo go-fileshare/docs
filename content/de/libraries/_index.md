@@ -8,4 +8,4 @@ neben dem Server `fileshare`, den diese Seiten beschreiben.
 
 | Seite | Version | Was sie beantwortet |
 |---|---|---|
-| [automount]({{< relref "/libraries/automount.md" >}}) | v0.1.0 | eine SMB-Freigabe ohne Passwortdialog im Dateimanager einhängen |
+| [automount]({{< relref "/libraries/automount.md" >}}) | v0.1.2 | eine SMB-Freigabe ohne Passwortdialog im Dateimanager einhängen |
