@@ -4,7 +4,7 @@ weight: 10
 description: "Monter un partage SMB dans le gestionnaire de fichiers du système sans boîte de dialogue de mot de passe, et le démonter."
 ---
 
-[go-fileshare/automount](https://github.com/go-fileshare/automount) v0.1.0
+[go-fileshare/automount](https://github.com/go-fileshare/automount) v0.1.2
 monte un partage SMB dans le gestionnaire de fichiers du système **sans aucune
 boîte de dialogue de mot de passe**, et le démonte. C'est une petite façade en
 Go pur (sans cgo) au-dessus de trois moteurs existants. Cette page est écrite à
@@ -42,11 +42,18 @@ message d'erreur ou un journal.
   processus de test sur `127.0.0.1:<port aléatoire>` ; la façade le monte, un
   fichier est lu et écrit via `Path()`, `Unmount` retire le volume. Un mauvais
   mot de passe échoue avec `netfs.ErrAuth`.
-- **Linux : non mesuré** en conditions réelles (les tests unitaires remplacent
-  les appels GVfs).
-- **Windows : non mesuré** en conditions réelles (les tests unitaires
-  remplacent les appels win32). L'appel `MapSMB` en utilisateur standard est
-  mesuré dans go-mswin/win32 ; un montage fait depuis une session de bureau
-  interactive ne l'a pas été.
+- **Linux (Ubuntu 24.04, gvfs 1.54.4) : mesuré** dans une session sans écran
+  (`dbus-run-session`, gvfsd, gvfsd-smb et gvfsd-fuse) : la même séquence que sous
+  macOS, un mauvais mot de passe aboutissant à `gvfs.ErrAuthFailed`. Non mesuré :
+  une vraie session de bureau GNOME. L'essai a trouvé un défaut dans
+  go-freedesktop/gvfs v0.1.0 (`/` rendu comme chemin quand gvfs-fuse ne sert pas la
+  session), corrigé en v0.1.1 ; `Path()` est alors l'URI `smb://`, que GIO sait
+  ouvrir et pas les appels `os`.
+- **Windows 11 25H2 (arm64, QEMU) : mesuré en utilisateur standard et en
+  administrateur** (v0.1.2 ajoute l'essai en utilisateur standard) : un mauvais
+  mot de passe aboutit à `*win32.SMBPortError`, `Z:` est associé, lu et écrit,
+  démonté, `Z:` disparaît. Non mesuré : l'apparition de la lettre dans « Ce PC »
+  de l'Explorateur (une connexion ssh a sa propre session ; la vérification passe
+  par des appels `os`).
 
 Elle est utilisée par [theca](https://github.com/go-theca/theca) `serve --mount`.

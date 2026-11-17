@@ -8,4 +8,4 @@ from the `fileshare` server these pages describe.
 
 | Page | Release | What it answers |
 |---|---|---|
-| [automount]({{< relref "/libraries/automount.md" >}}) | v0.1.0 | mount an SMB share in the file manager with no password dialog |
+| [automount]({{< relref "/libraries/automount.md" >}}) | v0.1.2 | mount an SMB share in the file manager with no password dialog |

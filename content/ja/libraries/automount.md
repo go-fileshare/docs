@@ -4,7 +4,7 @@ weight: 10
 description: "パスワードダイアログなしで、SMB 共有を OS のファイルマネージャにマウントし、アンマウントする。"
 ---
 
-[go-fileshare/automount](https://github.com/go-fileshare/automount) v0.1.0 は、
+[go-fileshare/automount](https://github.com/go-fileshare/automount) v0.1.2 は、
 **パスワードダイアログを一切出さずに** SMB 共有を OS のファイルマネージャに
 マウントし、アンマウントします。既存の 3 つのバックエンドの上に載せた、純粋な
 Go（cgo なし）の小さなファサードです。このページは
@@ -39,9 +39,17 @@ defer m.Unmount(ctx)
   の SMB サーバーがテストプロセス内の `127.0.0.1:<ランダムなポート>` で動き、
   ファサードがそれをマウントし、`Path()` 経由でファイルを読み書きし、
   `Unmount` がボリュームを取り除きます。誤ったパスワードは `netfs.ErrAuth` で失敗します。
-- **Linux：実機では未計測**（単体テストは GVfs の呼び出しを置き換えています）。
-- **Windows：実機では未計測**（単体テストは win32 の呼び出しを置き換えています）。
-  標準ユーザーでの `MapSMB` 呼び出しは go-mswin/win32 で計測済みですが、
-  対話的なデスクトップセッションからのマッピングは未計測です。
+- **Linux（Ubuntu 24.04、gvfs 1.54.4）：計測済み。** 画面のないセッション
+  （`dbus-run-session`、gvfsd、gvfsd-smb、gvfsd-fuse）で macOS と同じ手順を実行し、
+  誤ったパスワードは `gvfs.ErrAuthFailed` になります。未計測：実際の GNOME
+  デスクトップセッション。この実行で go-freedesktop/gvfs v0.1.0 の不具合
+  （gvfs-fuse がセッションを提供していないとき `/` がパスとして返る）が見つかり、
+  v0.1.1 で修正されました。その場合 `Path()` は `smb://` URI で、GIO は開けますが
+  `os` の呼び出しでは開けません。
+- **Windows 11 25H2（arm64、QEMU）：標準ユーザーと管理者で計測済み**
+  （v0.1.2 で標準ユーザーでの実行が加わりました）。誤ったパスワードは
+  `*win32.SMBPortError` になり、`Z:` を割り当て、経由して読み書きし、アンマウントすると
+  `Z:` が消えます。未計測：エクスプローラーの「PC」に文字が現れること
+  （ssh ログオンは独自のログオンセッションを持つため、確認は `os` の呼び出しで行います）。
 
 [theca](https://github.com/go-theca/theca) の `serve --mount` が使っています。

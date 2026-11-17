@@ -4,7 +4,7 @@ weight: 10
 description: "Eine SMB-Freigabe ohne Passwortdialog im Dateimanager des Betriebssystems einhängen und wieder aushängen."
 ---
 
-[go-fileshare/automount](https://github.com/go-fileshare/automount) v0.1.0
+[go-fileshare/automount](https://github.com/go-fileshare/automount) v0.1.2
 hängt eine SMB-Freigabe **ohne jeden Passwortdialog** im Dateimanager des
 Betriebssystems ein und wieder aus. Es ist eine kleine Fassade in reinem Go
 (ohne cgo) über drei vorhandenen Backends. Diese Seite ist aus seiner
@@ -41,9 +41,18 @@ URL, eine Fehlermeldung oder ein Protokoll.
   Testprozess auf `127.0.0.1:<zufälliger Port>`; die Fassade hängt ihn ein, eine
   Datei wird über `Path()` gelesen und geschrieben, `Unmount` entfernt das Volume.
   Ein falsches Passwort scheitert mit `netfs.ErrAuth`.
-- **Linux: nicht live gemessen** (die Unit-Tests ersetzen die GVfs-Aufrufe).
-- **Windows: nicht live gemessen** (die Unit-Tests ersetzen die win32-Aufrufe).
-  Der `MapSMB`-Aufruf als Standardbenutzer ist in go-mswin/win32 gemessen; eine
-  Einbindung aus einer interaktiven Desktop-Sitzung nicht.
+- **Linux (Ubuntu 24.04, gvfs 1.54.4): gemessen** in einer Sitzung ohne Bildschirm
+  (`dbus-run-session`, gvfsd, gvfsd-smb und gvfsd-fuse): dieselbe Abfolge wie unter
+  macOS, ein falsches Passwort führt zu `gvfs.ErrAuthFailed`. Nicht gemessen: eine
+  echte GNOME-Desktop-Sitzung. Der Lauf fand einen Fehler in
+  go-freedesktop/gvfs v0.1.0 (`/` als Pfad, wenn gvfs-fuse die Sitzung nicht
+  bedient), behoben in v0.1.1; dann ist `Path()` die `smb://`-URI, die GIO öffnen
+  kann, `os`-Aufrufe nicht.
+- **Windows 11 25H2 (arm64, QEMU): gemessen als Standardbenutzer und als
+  Administrator** (v0.1.2 ergänzt den Lauf als Standardbenutzer): ein falsches
+  Passwort führt zu `*win32.SMBPortError`, `Z:` wird zugeordnet, Lesen und
+  Schreiben darüber, Aushängen, `Z:` ist weg. Nicht gemessen: das Erscheinen des
+  Buchstabens unter „Dieser PC“ im Explorer (eine ssh-Anmeldung hat ihre eigene
+  Anmeldesitzung, die Prüfung läuft über `os`-Aufrufe).
 
 Es wird von [theca](https://github.com/go-theca/theca) `serve --mount` verwendet.
