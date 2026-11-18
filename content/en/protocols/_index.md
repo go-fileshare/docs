@@ -11,7 +11,7 @@ the server can tell **who** is asking.
 
 | | |
 |---|---|
-| **[SMB]({{< relref "/protocols/smb.md" >}})** | NTLMv2. The password never crosses the wire, and the share tells a reader they are one — in the access mask, before they try. |
+| **[SMB]({{< relref "/protocols/smb.md" >}})** | NTLMv2, or Kerberos with a `kerberos` block (a ticket in place of a password; `ntlm = false` turns NTLM off). The password never crosses the wire, and the share tells a reader they are one — in the access mask, before they try. |
 | **[WebDAV]({{< relref "/protocols/webdav.md" >}})** | HTTP Basic, over [TLS]({{< relref "/security/tls.md" >}}): refused in the clear on a reachable address, unless `plaintext = true` says a proxy terminates TLS in front of it. A share a person may not use answers 404, not 403: it is not confirmed to exist. |
 | **[SFTP]({{< relref "/protocols/sftp.md" >}})** | A **public key**, or an **SSH certificate** from an authority you trust: the server never holds the secret, and with a certificate a person's access is issued and expires elsewhere. No password: a client that prompts for one is doing the thing keys exist to avoid. |
 | **[OIDC]({{< relref "/protocols/webdav.md" >}})** (over WebDAV) | A **bearer token** an identity provider signed. Verified by [go-authn/oidc](https://github.com/go-authn/oidc): signature, issuer, audience, expiry. No other protocol here has anywhere to put one — S3 signs with SigV4, which has no field for a bearer token. Over [SFTP]({{< relref "/protocols/sftp.md#people-the-identity-provider-vouches-for" >}}) the provider's word arrives in a certificate instead. |

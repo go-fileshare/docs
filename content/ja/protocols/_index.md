@@ -11,7 +11,7 @@ tags: [プロトコル]
 
 | | |
 |---|---|
-| **[SMB]({{< relref "/protocols/smb.md" >}})** | NTLMv2。パスワードはネットワークを流れず、共有は読み取り側に、読み取り専用であることを(試す前に)アクセスマスクで伝える。 |
+| **[SMB]({{< relref "/protocols/smb.md" >}})** | NTLMv2、または `kerberos` ブロックを置いた Kerberos(パスワードの代わりにチケット。`ntlm = false` で NTLM を無効化)。パスワードはネットワークを流れず、共有は読み取り側に、読み取り専用であることを(試す前に)アクセスマスクで伝える。 |
 | **[WebDAV]({{< relref "/protocols/webdav.md" >}})** | [TLS]({{< relref "/security/tls.md" >}})上の HTTP Basic。到達可能なアドレスでは平文を拒否する。前段のプロキシが TLS を終端する場合は `plaintext = true` を指定する。人が利用できない共有は 403 ではなく 404 で応答し、存在を確認させない。 |
 | **[SFTP]({{< relref "/protocols/sftp.md" >}})** | **公開鍵**、または信頼する認証局が発行した **SSH 証明書**。サーバーはシークレットを一切保持せず、証明書を使えば、人のアクセス権は別の場所で発行され、別の場所で失効する。パスワードはなし。パスワードを尋ねるクライアントは、鍵が避けるために存在するものそのものを行っている。 |
 | **[OIDC]({{< relref "/protocols/webdav.md" >}})**(WebDAV 経由) | ID プロバイダーが署名した**ベアラートークン**。[go-authn/oidc](https://github.com/go-authn/oidc) が署名、発行者、オーディエンス、有効期限を検証する。ここにある他のプロトコルには、トークンを載せる場所がない。S3 は SigV4 で署名し、ベアラートークンのためのフィールドがない。[SFTP]({{< relref "/protocols/sftp.md#people-the-identity-provider-vouches-for" >}})では、プロバイダーの言葉は代わりに証明書で届く。 |

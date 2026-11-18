@@ -11,7 +11,7 @@ tags: [协议]
 
 | | |
 |---|---|
-| **[SMB]({{< relref "/protocols/smb.md" >}})** | NTLMv2。密码从不在网络上传输，而且共享会在读者尝试之前，通过访问掩码告知读者其权限。 |
+| **[SMB]({{< relref "/protocols/smb.md" >}})** | NTLMv2，或配置了 `kerberos` 块时的 Kerberos（用票据代替密码；`ntlm = false` 关闭 NTLM）。密码从不在网络上传输，而且共享会在读者尝试之前，通过访问掩码告知读者其权限。 |
 | **[WebDAV]({{< relref "/protocols/webdav.md" >}})** | 基于 [TLS]({{< relref "/security/tls.md" >}}) 的 HTTP Basic：在可访问的地址上拒绝明文，除非 `plaintext = true` 表明有代理在前端终结 TLS。对于某人无权使用的共享，返回 404 而不是 403：不确认它是否存在。 |
 | **[SFTP]({{< relref "/protocols/sftp.md" >}})** | **公钥**，或来自你所信任的颁发机构的 **SSH 证书**：服务器从不持有机密，使用证书时，一个人的访问权限在别处签发并在别处到期。没有密码：提示输入密码的客户端正在做密钥本来要避免的事情。 |
 | **[OIDC]({{< relref "/protocols/webdav.md" >}})**（通过 WebDAV） | 由身份提供方签名的**持有者令牌**。由 [go-authn/oidc](https://github.com/go-authn/oidc) 验证：签名、颁发者、受众、有效期。这里没有其他协议能存放令牌：S3 使用 SigV4 签名，没有可容纳持有者令牌的字段。通过 [SFTP]({{< relref "/protocols/sftp.md#people-the-identity-provider-vouches-for" >}})时，提供方的凭证则随证书到达。 |
