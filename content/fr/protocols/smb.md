@@ -28,6 +28,55 @@ limite de ce programme.
 personne, au moment de la configuration, plutôt que de la laisser le découvrir lors d'un
 montage.
 
+## Kerberos : un ticket au lieu d'un mot de passe {#kerberos}
+
+```hcl
+kerberos {
+  realm  = "EXAMPLE.ORG"
+  keytab = "/etc/fileshare/krb5.keytab"   # nfs/fs.example.org et cifs/fs.example.org
+}
+
+serve "smb" {
+  addr = "0.0.0.0:445"
+  ntlm = false          # Kerberos seul : aucun mot de passe n'est jamais vérifié
+}
+```
+
+Le bloc `kerberos` qui permet à NFS de distinguer les personnes permet aussi à SMB
+d'accepter un ticket. **Un seul keytab** détient les deux services, chaque protocole
+répondant pour le sien : SMB ne lit que les principaux `cifs/<hôte>` du royaume du
+bloc, donc un ticket émis pour `nfs/` y est refusé. Un keytab sans principal `cifs/`
+laisse SMB tel qu'il était, NTLM seul, et le serveur le dit au démarrage.
+
+Le principal passe par la même règle que pour NFS (l'`alice` d'un autre royaume n'est
+personne) et doit ensuite être **quelqu'un que cette configuration connaît** : un
+ticket prouve que le KDC connaît la personne, pas que ce serveur la connaît. Les
+listes `allow` et `writers` du partage s'appliquent comme pour un mot de passe. Une
+session prend fin avec son ticket, et un client Windows s'authentifie de nouveau tout
+seul.
+
+Depuis fileshare v0.50.0, le **keytab** doit être un fichier ordinaire, appartenant à
+root ou au compte sous lequel tourne fileshare, ni lisible ni modifiable par les
+autres, ni modifiable par son groupe : `root:fileshare` `0640` et
+`fileshare:fileshare` `0600` sont acceptés, `krb5:fileshare` `0640` est refusé. Cela
+vaut pour SMB et NFS. Le nom et le royaume du client viennent du **ticket**, jamais
+de l'authentificateur que le client envoie aussi (jcmturner/gokrb5#577, RFC 4120
+section 3.2.3) ; NFS exige go-authn/krb5 v0.3.4 ou plus récent, ce que livre v0.50.0.
+
+`ntlm = false` est refusé au chargement sans bloc `kerberos`, et le serveur refuse de
+démarrer si le keytab ne contient aucune clé `cifs/` pour le royaume : un serveur où
+personne ne peut se connecter n'en est pas un. Avec le bloc, une personne dont
+l'annuaire ne détient aucun hachage NT peut quand même utiliser SMB, et
+[`check`]({{< relref "/configuration/check.md" >}}) le dit.
+
+Une machine Windows **hors domaine** l'atteint avec un ticket de ce royaume :
+`ksetup /addkdc` et `ksetup /addhosttorealmmap` une fois, un ticket d'octroi de tickets
+dans la session de connexion, puis `net use \\fs.example.org\photos` — par le nom,
+car Windows se rabat sur NTLM pour une adresse. Mesuré avec Windows 11 25H2 (non
+joint) : le client propose MS-KRB5, Kerberos, NEGOEX et NTLMSSP, envoie un AP-REQ
+Kerberos, monte le partage, liste, lit et écrit avec la signature exigée, et
+n'envoie aucun message NTLM.
+
 ## Un port privilégié sans serveur privilégié {#a-privileged-port-without-a-privileged-server}
 
 Sous [`--isolate`]({{< relref "/operations/isolation.md" >}}) sous Unix, le parent se lie au port 445

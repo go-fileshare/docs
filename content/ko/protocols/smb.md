@@ -26,6 +26,51 @@ NTLMv2에는 비밀번호 자체 또는 그 MD4(`sambaNTPassword`, `nt_hash` 열
 [`check`]({{< relref "/configuration/check.md" >}})는 이런 사용자에 대해 구성 시점에
 SMB 열에 `-`를 출력하며, 마운트할 때 비로소 알게 되도록 두지 않습니다.
 
+## Kerberos: 비밀번호 대신 티켓 {#kerberos}
+
+```hcl
+kerberos {
+  realm  = "EXAMPLE.ORG"
+  keytab = "/etc/fileshare/krb5.keytab"   # nfs/fs.example.org 및 cifs/fs.example.org
+}
+
+serve "smb" {
+  addr = "0.0.0.0:445"
+  ntlm = false          # Kerberos 전용: 비밀번호를 전혀 검증하지 않음
+}
+```
+
+NFS가 사람을 구분하는 데 쓰는 `kerberos` 블록은 SMB도 티켓을 받을 수 있게 합니다.
+**keytab 하나**가 두 서비스를 모두 담고, 각 프로토콜은 자기 서비스에만 응답합니다. SMB는
+블록의 렐름에 속한 `cifs/<호스트>` 프린시펄만 읽으므로 `nfs/`용으로 발급된 티켓은 여기서
+거부됩니다. `cifs/` 프린시펄이 없는 keytab이면 SMB는 이전과 같이 NTLM만 쓰며, 서버가 시작할
+때 그렇게 알립니다.
+
+프린시펄은 NFS와 같은 규칙을 거치고(다른 렐름의 `alice`는 아무도 아닙니다), 그다음
+**이 설정이 아는 사람**이어야 합니다. 티켓은 KDC가 그 사람을 안다는 것을 증명할 뿐, 이 서버가
+안다는 것을 증명하지 않습니다. 공유의 `allow`와 `writers` 목록은 비밀번호일 때와 같이
+적용됩니다. 세션은 티켓과 함께 끝나며, Windows 클라이언트는 스스로 다시 인증합니다.
+
+fileshare v0.50.0부터 **keytab**은 일반 파일이어야 하고, root 또는 fileshare를 실행하는
+계정이 소유해야 하며, 다른 사용자가 읽거나 쓸 수 없고 그룹이 쓸 수도 없어야 합니다.
+`root:fileshare` `0640`과 `fileshare:fileshare` `0600`은 허용되고
+`krb5:fileshare` `0640`은 거부됩니다. SMB와 NFS 모두에 적용됩니다. 클라이언트의
+이름과 렐름은 **티켓**에서 가져오며, 클라이언트가 함께 보내는 오센티케이터에서는
+절대 가져오지 않습니다(jcmturner/gokrb5#577, RFC 4120 3.2.3절). NFS에는
+go-authn/krb5 v0.3.4 이상이 필요하며 v0.50.0에 포함되어 있습니다.
+
+`ntlm = false`는 `kerberos` 블록이 없으면 로드 시 거부되고, keytab에 해당 렐름의 `cifs/` 키가
+없으면 서버가 시작을 거부합니다. 아무도 로그인할 수 없는 서버는 서버가 아니기 때문입니다.
+블록이 있으면 디렉터리에 NT 해시가 없는 사람도 SMB를 쓸 수 있으며,
+[`check`]({{< relref "/configuration/check.md" >}})가 이를 알려 줍니다.
+
+**도메인에 가입하지 않은** Windows 컴퓨터는 이 렐름의 티켓으로 접속합니다. `ksetup /addkdc`와
+`ksetup /addhosttorealmmap`을 한 번 실행하고, 로그온 세션에 TGT를 넣은 뒤
+`net use \\fs.example.org\photos`를 실행합니다. 주소로는 Windows가 NTLM으로 대체하므로 이름으로
+지정합니다. Windows 11 25H2(미가입)에서 측정한 결과: 클라이언트는 MS-KRB5, Kerberos, NEGOEX,
+NTLMSSP를 제시하고 Kerberos AP-REQ를 보내며, 서명을 요구한 채 마운트·목록·읽기·쓰기가
+되고, NTLM 메시지는 전혀 보내지 않습니다.
+
 ## 권한 있는 서버 없이 권한이 필요한 포트 {#a-privileged-port-without-a-privileged-server}
 
 Unix에서 [`--isolate`]({{< relref "/operations/isolation.md" >}}) 아래에서는 부모가

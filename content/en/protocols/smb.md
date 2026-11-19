@@ -28,6 +28,54 @@ limitation of this program.
 person, at configuration time, rather than leaving them to discover it at a
 mount.
 
+## Kerberos: a ticket instead of a password {#kerberos}
+
+```hcl
+kerberos {
+  realm  = "EXAMPLE.ORG"
+  keytab = "/etc/fileshare/krb5.keytab"   # nfs/fs.example.org and cifs/fs.example.org
+}
+
+serve "smb" {
+  addr = "0.0.0.0:445"
+  ntlm = false          # Kerberos only: no password is ever checked
+}
+```
+
+The `kerberos` block that lets NFS tell people apart also lets SMB take a
+ticket. **One keytab** holds both services, each protocol answering for its own:
+SMB reads only the `cifs/<host>` principals of the block's realm, so a ticket
+made for `nfs/` is refused here. A keytab with no `cifs/` principal leaves SMB
+as it was, NTLM only, and the server says so at startup.
+
+The principal goes through the same rule as over NFS (another realm's `alice` is
+nobody) and must then be **somebody this configuration knows**: a ticket proves
+the KDC knows the person, not that this server does. The share's `allow` and
+`writers` lists apply as for a password. A session ends with its ticket, and a
+Windows client authenticates again by itself.
+
+Since fileshare v0.50.0 the **keytab** must be a regular file, owned by root or by
+the account fileshare runs as, and neither readable or writable by others nor
+writable by its group: `root:fileshare` `0640` and `fileshare:fileshare` `0600`
+are accepted, `krb5:fileshare` `0640` is refused. This applies to SMB and NFS. The
+client's name and realm are taken from the **ticket**, never from the
+authenticator the client also sends (jcmturner/gokrb5#577, RFC 4120 section
+3.2.3); NFS needs go-authn/krb5 v0.3.4 or later, which v0.50.0 ships.
+
+`ntlm = false` is refused at load without a `kerberos` block, and the server
+refuses to start if the keytab holds no `cifs/` key for the realm: a server
+nobody can log in to is not one. With it, a person whose directory holds no NT
+hash can still use SMB, and [`check`]({{< relref "/configuration/check.md" >}})
+says so.
+
+A Windows machine that is **not in a domain** reaches it with a ticket from this
+realm: `ksetup /addkdc` and `ksetup /addhosttorealmmap` once, a ticket-granting
+ticket in the logon session, and `net use \\fs.example.org\photos` — by name,
+since Windows falls back to NTLM for an address. Measured with Windows 11 25H2
+(not joined): the client offers MS-KRB5, Kerberos, NEGOEX and NTLMSSP, sends a
+Kerberos AP-REQ, mounts, lists, reads and writes with signing required, and
+sends no NTLM message at all.
+
 ## A privileged port without a privileged server
 
 Under [`--isolate`]({{< relref "/operations/isolation.md" >}}) on Unix, the parent binds 445

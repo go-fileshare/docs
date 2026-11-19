@@ -27,6 +27,46 @@ NTLMv2 需要密码本身或其 MD4（`sambaNTPassword`，即 `nt_hash`
 对于这样的人员，[`check`]({{< relref "/configuration/check.md" >}})会在配置阶段于 SMB 列中打印 `-`，
 而不是让其在挂载时才发现。
 
+## Kerberos：用票据代替密码 {#kerberos}
+
+```hcl
+kerberos {
+  realm  = "EXAMPLE.ORG"
+  keytab = "/etc/fileshare/krb5.keytab"   # nfs/fs.example.org 和 cifs/fs.example.org
+}
+
+serve "smb" {
+  addr = "0.0.0.0:445"
+  ntlm = false          # 仅 Kerberos：从不校验任何密码
+}
+```
+
+让 NFS 能够区分人员的 `kerberos` 块，同样让 SMB 接受票据。**一个 keytab** 同时保存两个服务，
+每个协议只应答自己的服务：SMB 只读取该块所在领域（realm）的 `cifs/<主机>` 主体，所以为
+`nfs/` 签发的票据在这里会被拒绝。没有 `cifs/` 主体的 keytab 会让 SMB 保持原样，只用 NTLM，
+服务器会在启动时说明这一点。
+
+主体先经过与 NFS 相同的规则（另一个领域的 `alice` 什么人也不是），然后必须是**这份配置所认识的人**：
+票据只证明 KDC 认识这个人，并不证明这台服务器认识。共享的 `allow` 和 `writers` 列表与使用密码时
+一样生效。会话随票据一同结束，Windows 客户端会自行重新认证。
+
+自 fileshare v0.50.0 起，**keytab** 必须是普通文件，属于 root 或运行 fileshare 的账户，
+且不得被其他人读写，也不得被其所属组写入：`root:fileshare` `0640` 和
+`fileshare:fileshare` `0600` 会被接受，`krb5:fileshare` `0640` 会被拒绝。这同时适用于
+SMB 和 NFS。客户端的名称和领域取自**票据**，绝不取自客户端一并发送的认证器
+（jcmturner/gokrb5#577，RFC 4120 第 3.2.3 节）；NFS 需要 go-authn/krb5 v0.3.4 或更高版本，
+v0.50.0 已包含。
+
+没有 `kerberos` 块时，`ntlm = false` 在加载时即被拒绝；keytab 中没有该领域的 `cifs/` 密钥时，服务器
+拒绝启动：没人能登录的服务器不算服务器。有了该块，目录里没有 NT 哈希的人也能使用 SMB，
+[`check`]({{< relref "/configuration/check.md" >}}) 会如实显示。
+
+**未加入域**的 Windows 机器用本领域的票据访问：执行一次 `ksetup /addkdc` 和
+`ksetup /addhosttorealmmap`，在登录会话中放入票据授予票据，然后执行
+`net use \\fs.example.org\photos`——要用名称，因为使用地址时 Windows 会回退到 NTLM。
+用 Windows 11 25H2（未加入域）实测：客户端提供 MS-KRB5、Kerberos、NEGOEX 和 NTLMSSP，
+发送 Kerberos AP-REQ，在要求签名的情况下挂载、列目录、读取和写入，并且不发送任何 NTLM 消息。
+
 ## 无需特权服务器的特权端口 {#a-privileged-port-without-a-privileged-server}
 
 在 Unix 上使用 [`--isolate`]({{< relref "/operations/isolation.md" >}}) 时，父进程绑定 445，

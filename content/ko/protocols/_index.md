@@ -11,7 +11,7 @@ tags: [프로토콜]
 
 | | |
 |---|---|
-| **[SMB]({{< relref "/protocols/smb.md" >}})** | NTLMv2. 비밀번호가 네트워크를 건너지 않으며, 공유는 읽는 사람에게 접근 마스크를 통해 시도하기 전에 이미 읽기 전용임을 알려 줍니다. |
+| **[SMB]({{< relref "/protocols/smb.md" >}})** | NTLMv2, 또는 `kerberos` 블록이 있을 때의 Kerberos(비밀번호 대신 티켓, `ntlm = false`로 NTLM 끔). 비밀번호가 네트워크를 건너지 않으며, 공유는 읽는 사람에게 접근 마스크를 통해 시도하기 전에 이미 읽기 전용임을 알려 줍니다. |
 | **[WebDAV]({{< relref "/protocols/webdav.md" >}})** | [TLS]({{< relref "/security/tls.md" >}}) 위의 HTTP Basic. 접근 가능한 주소에서 평문은 거부되며, 앞단의 프록시가 TLS를 종료한다고 `plaintext = true`로 지정한 경우는 예외입니다. 사용자가 이용할 수 없는 공유는 403이 아니라 404로 응답하여 존재가 확인되지 않도록 합니다. |
 | **[SFTP]({{< relref "/protocols/sftp.md" >}})** | **공개 키** 또는 신뢰하는 기관이 발급한 **SSH 인증서**. 서버는 비밀을 보유하지 않으며, 인증서를 쓰면 사용자의 접근 권한이 다른 곳에서 발급되고 만료됩니다. 비밀번호는 없습니다. 비밀번호를 묻는 클라이언트는 키가 피하려고 존재하는 바로 그 일을 하고 있는 것입니다. |
 | **[OIDC]({{< relref "/protocols/webdav.md" >}})** (WebDAV 위에서) | ID 공급자가 서명한 **베어러 토큰**. [go-authn/oidc](https://github.com/go-authn/oidc)가 서명, 발급자, audience, 만료를 검증합니다. 여기의 다른 프로토콜에는 토큰을 실을 곳이 없습니다. S3는 SigV4로 서명하며 SigV4에는 베어러 토큰을 위한 필드가 없습니다. [SFTP]({{< relref "/protocols/sftp.md#people-the-identity-provider-vouches-for" >}})에서는 공급자의 보증이 인증서로 도착합니다. |
