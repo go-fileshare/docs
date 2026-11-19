@@ -23,6 +23,51 @@ que calcular la misma prueba que calculó el cliente. Es una propiedad del proto
 &lt;p&gt;&lt;a href="https://go-fileshare.github.io/docs/0.37/es/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt; imprime un &lt;code&gt;-&lt;/code&gt; en la columna SMB para esa
 persona, en el momento de la configuración, en lugar de dejar que lo descubra al
 montar.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="kerberos"&gt;Kerberos: un ticket en lugar de una contraseña&lt;span class="hx:absolute hx:-mt-20" id="kerberos"&gt;&lt;/span&gt;
+&lt;a href="#kerberos" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;kerberos&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; realm&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;EXAMPLE.ORG&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; keytab&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/krb5.keytab&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # nfs/fs.example.org y cifs/fs.example.org
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;smb&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:445&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; ntlm&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;false&lt;/span&gt;&lt;span class="c1"&gt; # solo Kerberos: nunca se comprueba una contraseña
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;El bloque &lt;code&gt;kerberos&lt;/code&gt; que permite a NFS distinguir a las personas también permite a SMB
+aceptar un ticket. &lt;strong&gt;Un solo keytab&lt;/strong&gt; guarda ambos servicios y cada protocolo responde
+por el suyo: SMB solo lee los principales &lt;code&gt;cifs/&amp;lt;host&amp;gt;&lt;/code&gt; del realm del bloque, así que
+un ticket emitido para &lt;code&gt;nfs/&lt;/code&gt; se rechaza aquí. Un keytab sin principal &lt;code&gt;cifs/&lt;/code&gt; deja
+SMB como estaba, solo NTLM, y el servidor lo dice al arrancar.&lt;/p&gt;
+&lt;p&gt;El principal pasa por la misma regla que en NFS (la &lt;code&gt;alice&lt;/code&gt; de otro realm no es nadie)y después debe ser &lt;strong&gt;alguien a quien esta configuración conoce&lt;/strong&gt;: un ticket prueba que
+el KDC conoce a la persona, no que este servidor la conozca. Las listas &lt;code&gt;allow&lt;/code&gt; y&lt;code&gt;writers&lt;/code&gt; del recurso se aplican como con una contraseña. Una sesión termina con su
+ticket, y un cliente Windows se autentica de nuevo por sí solo.&lt;/p&gt;
+&lt;p&gt;Desde fileshare v0.50.0, el &lt;strong&gt;keytab&lt;/strong&gt; debe ser un archivo regular, propiedad de root
+o de la cuenta con la que corre fileshare, que no sea legible ni escribible por
+otros ni escribible por su grupo: &lt;code&gt;root:fileshare&lt;/code&gt; &lt;code&gt;0640&lt;/code&gt; y &lt;code&gt;fileshare:fileshare&lt;/code&gt;
+&lt;code&gt;0600&lt;/code&gt; se aceptan, &lt;code&gt;krb5:fileshare&lt;/code&gt; &lt;code&gt;0640&lt;/code&gt; se rechaza. Vale para SMB y NFS. El nombre
+y el realm del cliente salen del &lt;strong&gt;ticket&lt;/strong&gt;, nunca del autenticador que el cliente
+también envía (jcmturner/gokrb5#577, RFC 4120 sección 3.2.3); NFS necesita
+go-authn/krb5 v0.3.4 o posterior, que incluye v0.50.0.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;ntlm = false&lt;/code&gt; se rechaza al cargar sin un bloque &lt;code&gt;kerberos&lt;/code&gt;, y el servidor se niega a
+arrancar si el keytab no contiene ninguna clave &lt;code&gt;cifs/&lt;/code&gt; para el realm: un servidor en
+el que nadie puede entrar no es un servidor. Con el bloque, una persona cuyo
+directorio no guarda ningún hash NT puede usar SMB igualmente, y&lt;a href="https://go-fileshare.github.io/docs/0.37/es/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt; lo indica.&lt;/p&gt;
+&lt;p&gt;Un equipo Windows &lt;strong&gt;fuera de un dominio&lt;/strong&gt; llega con un ticket de este realm: una vez&lt;code&gt;ksetup /addkdc&lt;/code&gt; y &lt;code&gt;ksetup /addhosttorealmmap&lt;/code&gt;, un ticket de concesión de tickets en
+la sesión de inicio y &lt;code&gt;net use \\fs.example.org\photos&lt;/code&gt;, por nombre, porque con una
+dirección Windows recurre a NTLM. Medido con Windows 11 25H2 (sin unir): el cliente
+ofrece MS-KRB5, Kerberos, NEGOEX y NTLMSSP, envía un AP-REQ de Kerberos, monta, lista,lee y escribe con la firma exigida, y no envía ningún mensaje NTLM.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="a-privileged-port-without-a-privileged-server"&gt;Un puerto privilegiado sin un servidor privilegiado&lt;span class="hx:absolute hx:-mt-20" id="a-privileged-port-without-a-privileged-server"&gt;&lt;/span&gt;
 &lt;a href="#a-privileged-port-without-a-privileged-server" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Con &lt;a href="https://go-fileshare.github.io/docs/0.37/es/operations/isolation/"&gt;&lt;code&gt;--isolate&lt;/code&gt;&lt;/a&gt; en Unix, el proceso padre se vincula
 al 445 y pasa la escucha al hijo, de modo que el proceso que realmente habla SMB
@@ -57,7 +102,7 @@ servidor puede saber &lt;strong&gt;quién&lt;/strong&gt; pregunta.&lt;/p&gt;
 &lt;tbody&gt;
 &lt;tr&gt;
 &lt;td&gt;&lt;strong&gt;&lt;a href="https://go-fileshare.github.io/docs/0.37/es/protocols/smb/"&gt;SMB&lt;/a&gt;&lt;/strong&gt;&lt;/td&gt;
-&lt;td&gt;NTLMv2. La contraseña nunca cruza la red, y el recurso compartido indica a quien solo puede leer que es así, en la máscara de acceso, antes de que lo intente.&lt;/td&gt;
+&lt;td&gt;NTLMv2, o Kerberos con un bloque &lt;code&gt;kerberos&lt;/code&gt; (un ticket en lugar de una contraseña; &lt;code&gt;ntlm = false&lt;/code&gt; desactiva NTLM). La contraseña nunca cruza la red, y el recurso compartido indica a quien solo puede leer que es así, en la máscara de acceso, antes de que lo intente.&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
 &lt;td&gt;&lt;strong&gt;&lt;a href="https://go-fileshare.github.io/docs/0.37/es/protocols/webdav/"&gt;WebDAV&lt;/a&gt;&lt;/strong&gt;&lt;/td&gt;

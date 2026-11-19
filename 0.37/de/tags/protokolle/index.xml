@@ -22,6 +22,52 @@ Nachweis berechnen muss wie der Client. Das ist eine Eigenschaft des Protokolls,
 Einschränkung dieses Programms.&lt;/p&gt;
 &lt;p&gt;&lt;a href="https://go-fileshare.github.io/docs/0.37/de/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt; gibt für eine solche Person ein &lt;code&gt;-&lt;/code&gt; in der SMB-Spalte aus,zum Zeitpunkt der Konfiguration, statt sie es erst beim Einhängen
 entdecken zu lassen.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="kerberos"&gt;Kerberos: ein Ticket statt eines Passworts&lt;span class="hx:absolute hx:-mt-20" id="kerberos"&gt;&lt;/span&gt;
+&lt;a href="#kerberos" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;kerberos&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; realm&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;EXAMPLE.ORG&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; keytab&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/krb5.keytab&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # nfs/fs.example.org und cifs/fs.example.org
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;smb&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:445&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; ntlm&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;false&lt;/span&gt;&lt;span class="c1"&gt; # nur Kerberos: es wird nie ein Passwort geprüft
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Code kopieren"
+aria-label="Code kopieren"
+data-copied-label="Kopiert!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Der &lt;code&gt;kerberos&lt;/code&gt;-Block, mit dem NFS Personen unterscheidet, lässt auch SMB ein Ticket
+annehmen. &lt;strong&gt;Eine Keytab&lt;/strong&gt; enthält beide Dienste, und jedes Protokoll antwortet für
+seinen eigenen: SMB liest nur die &lt;code&gt;cifs/&amp;lt;Host&amp;gt;&lt;/code&gt;-Principals des Realms des Blocks,ein für &lt;code&gt;nfs/&lt;/code&gt; ausgestelltes Ticket wird hier also abgelehnt. Eine Keytab ohne&lt;code&gt;cifs/&lt;/code&gt;-Principal lässt SMB, wie es war: nur NTLM, und der Server sagt das beim Start.&lt;/p&gt;
+&lt;p&gt;Der Principal durchläuft dieselbe Regel wie bei NFS (das &lt;code&gt;alice&lt;/code&gt; eines anderen Realms
+ist niemand) und muss dann &lt;strong&gt;jemand sein, den diese Konfiguration kennt&lt;/strong&gt;: Ein Ticket
+beweist, dass das KDC die Person kennt, nicht dass dieser Server sie kennt. Die Listen&lt;code&gt;allow&lt;/code&gt; und &lt;code&gt;writers&lt;/code&gt; der Freigabe gelten wie bei einem Passwort. Eine Sitzung endet
+mit ihrem Ticket, und ein Windows-Client authentifiziert sich von selbst neu.&lt;/p&gt;
+&lt;p&gt;Seit fileshare v0.50.0 muss die &lt;strong&gt;Keytab&lt;/strong&gt; eine reguläre Datei sein, die root oder dem
+Konto gehört, unter dem fileshare läuft, und weder für andere les- oder schreibbar
+noch für ihre Gruppe schreibbar: &lt;code&gt;root:fileshare&lt;/code&gt; &lt;code&gt;0640&lt;/code&gt; und &lt;code&gt;fileshare:fileshare&lt;/code&gt;
+&lt;code&gt;0600&lt;/code&gt; werden akzeptiert, &lt;code&gt;krb5:fileshare&lt;/code&gt; &lt;code&gt;0640&lt;/code&gt; wird abgelehnt. Das gilt für SMB
+und NFS. Name und Realm des Clients stammen aus dem &lt;strong&gt;Ticket&lt;/strong&gt;, nie aus dem
+Authenticator, den der Client ebenfalls sendet (jcmturner/gokrb5#577, RFC 4120
+Abschnitt 3.2.3); NFS braucht go-authn/krb5 ab v0.3.4, das v0.50.0 mitbringt.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;ntlm = false&lt;/code&gt; wird beim Laden ohne &lt;code&gt;kerberos&lt;/code&gt;-Block abgelehnt, und der Server startet
+nicht, wenn die Keytab keinen &lt;code&gt;cifs/&lt;/code&gt;-Schlüssel für den Realm enthält: Ein Server, an
+dem sich niemand anmelden kann, ist keiner. Mit dem Block kann auch eine Person, deren
+Verzeichnis keinen NT-Hash hält, SMB nutzen, und&lt;a href="https://go-fileshare.github.io/docs/0.37/de/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt; sagt das.&lt;/p&gt;
+&lt;p&gt;Ein Windows-Rechner &lt;strong&gt;ohne Domäne&lt;/strong&gt; erreicht es mit einem Ticket dieses Realms:einmal &lt;code&gt;ksetup /addkdc&lt;/code&gt; und &lt;code&gt;ksetup /addhosttorealmmap&lt;/code&gt;, ein Ticket-Granting-Ticket in
+der Anmeldesitzung und dann &lt;code&gt;net use \\fs.example.org\photos&lt;/code&gt; – über den Namen, denn
+bei einer Adresse fällt Windows auf NTLM zurück. Gemessen mit Windows 11 25H2 (nicht
+beigetreten): Der Client bietet MS-KRB5, Kerberos, NEGOEX und NTLMSSP an, sendet ein
+Kerberos-AP-REQ, verbindet, listet, liest und schreibt bei erzwungener Signierung und
+sendet keine einzige NTLM-Nachricht.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="a-privileged-port-without-a-privileged-server"&gt;Ein privilegierter Port ohne privilegierten Server&lt;span class="hx:absolute hx:-mt-20" id="a-privileged-port-without-a-privileged-server"&gt;&lt;/span&gt;
 &lt;a href="#a-privileged-port-without-a-privileged-server" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Unter &lt;a href="https://go-fileshare.github.io/docs/0.37/de/operations/isolation/"&gt;&lt;code&gt;--isolate&lt;/code&gt;&lt;/a&gt; bindet unter Unix der Elternprozess Port 445
 und übergibt den Listener an den Kindprozess, sodass der Prozess, der tatsächlich SMB spricht,das Privileg nie braucht. Windows hat keine &lt;code&gt;ExtraFiles&lt;/code&gt;, daher bindet dort der Kindprozess
@@ -53,7 +99,7 @@ der Server erkennen kann, &lt;strong&gt;wer&lt;/strong&gt; anfragt.&lt;/p&gt;
 &lt;tbody&gt;
 &lt;tr&gt;
 &lt;td&gt;&lt;strong&gt;&lt;a href="https://go-fileshare.github.io/docs/0.37/de/protocols/smb/"&gt;SMB&lt;/a&gt;&lt;/strong&gt;&lt;/td&gt;
-&lt;td&gt;NTLMv2. Das Passwort geht nie über die Leitung, und die Freigabe teilt einer lesenden Person mit, dass sie nur liest – in der Zugriffsmaske, bevor sie es versucht.&lt;/td&gt;
+&lt;td&gt;NTLMv2, oder Kerberos mit einem &lt;code&gt;kerberos&lt;/code&gt;-Block (ein Ticket statt eines Passworts; &lt;code&gt;ntlm = false&lt;/code&gt; schaltet NTLM ab). Das Passwort geht nie über die Leitung, und die Freigabe teilt einer lesenden Person mit, dass sie nur liest – in der Zugriffsmaske, bevor sie es versucht.&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
 &lt;td&gt;&lt;strong&gt;&lt;a href="https://go-fileshare.github.io/docs/0.37/de/protocols/webdav/"&gt;WebDAV&lt;/a&gt;&lt;/strong&gt;&lt;/td&gt;

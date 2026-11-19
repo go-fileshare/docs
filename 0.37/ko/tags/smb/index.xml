@@ -23,6 +23,45 @@ data-copied-label="복사됨!"
 계산해야 하기 때문입니다. 이는 이 프로그램의 한계가 아니라 프로토콜의 속성입니다.&lt;/p&gt;
 &lt;p&gt;&lt;a href="https://go-fileshare.github.io/docs/0.37/ko/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt;는 이런 사용자에 대해 구성 시점에
 SMB 열에 &lt;code&gt;-&lt;/code&gt;를 출력하며, 마운트할 때 비로소 알게 되도록 두지 않습니다.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="kerberos"&gt;Kerberos: 비밀번호 대신 티켓&lt;span class="hx:absolute hx:-mt-20" id="kerberos"&gt;&lt;/span&gt;
+&lt;a href="#kerberos" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;kerberos&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; realm&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;EXAMPLE.ORG&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; keytab&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/krb5.keytab&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # nfs/fs.example.org 및 cifs/fs.example.org
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;smb&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:445&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; ntlm&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;false&lt;/span&gt;&lt;span class="c1"&gt; # Kerberos 전용: 비밀번호를 전혀 검증하지 않음
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="코드 복사"
+aria-label="코드 복사"
+data-copied-label="복사됨!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;NFS가 사람을 구분하는 데 쓰는 &lt;code&gt;kerberos&lt;/code&gt; 블록은 SMB도 티켓을 받을 수 있게 합니다.&lt;strong&gt;keytab 하나&lt;/strong&gt;가 두 서비스를 모두 담고, 각 프로토콜은 자기 서비스에만 응답합니다. SMB는
+블록의 렐름에 속한 &lt;code&gt;cifs/&amp;lt;호스트&amp;gt;&lt;/code&gt; 프린시펄만 읽으므로 &lt;code&gt;nfs/&lt;/code&gt;용으로 발급된 티켓은 여기서
+거부됩니다. &lt;code&gt;cifs/&lt;/code&gt; 프린시펄이 없는 keytab이면 SMB는 이전과 같이 NTLM만 쓰며, 서버가 시작할
+때 그렇게 알립니다.&lt;/p&gt;
+&lt;p&gt;프린시펄은 NFS와 같은 규칙을 거치고(다른 렐름의 &lt;code&gt;alice&lt;/code&gt;는 아무도 아닙니다), 그다음&lt;strong&gt;이 설정이 아는 사람&lt;/strong&gt;이어야 합니다. 티켓은 KDC가 그 사람을 안다는 것을 증명할 뿐, 이 서버가
+안다는 것을 증명하지 않습니다. 공유의 &lt;code&gt;allow&lt;/code&gt;와 &lt;code&gt;writers&lt;/code&gt; 목록은 비밀번호일 때와 같이
+적용됩니다. 세션은 티켓과 함께 끝나며, Windows 클라이언트는 스스로 다시 인증합니다.&lt;/p&gt;
+&lt;p&gt;fileshare v0.50.0부터 &lt;strong&gt;keytab&lt;/strong&gt;은 일반 파일이어야 하고, root 또는 fileshare를 실행하는
+계정이 소유해야 하며, 다른 사용자가 읽거나 쓸 수 없고 그룹이 쓸 수도 없어야 합니다.&lt;code&gt;root:fileshare&lt;/code&gt; &lt;code&gt;0640&lt;/code&gt;과 &lt;code&gt;fileshare:fileshare&lt;/code&gt; &lt;code&gt;0600&lt;/code&gt;은 허용되고&lt;code&gt;krb5:fileshare&lt;/code&gt; &lt;code&gt;0640&lt;/code&gt;은 거부됩니다. SMB와 NFS 모두에 적용됩니다. 클라이언트의
+이름과 렐름은 &lt;strong&gt;티켓&lt;/strong&gt;에서 가져오며, 클라이언트가 함께 보내는 오센티케이터에서는
+절대 가져오지 않습니다(jcmturner/gokrb5#577, RFC 4120 3.2.3절). NFS에는
+go-authn/krb5 v0.3.4 이상이 필요하며 v0.50.0에 포함되어 있습니다.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;ntlm = false&lt;/code&gt;는 &lt;code&gt;kerberos&lt;/code&gt; 블록이 없으면 로드 시 거부되고, keytab에 해당 렐름의 &lt;code&gt;cifs/&lt;/code&gt; 키가
+없으면 서버가 시작을 거부합니다. 아무도 로그인할 수 없는 서버는 서버가 아니기 때문입니다.블록이 있으면 디렉터리에 NT 해시가 없는 사람도 SMB를 쓸 수 있으며,&lt;a href="https://go-fileshare.github.io/docs/0.37/ko/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt;가 이를 알려 줍니다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;도메인에 가입하지 않은&lt;/strong&gt; Windows 컴퓨터는 이 렐름의 티켓으로 접속합니다. &lt;code&gt;ksetup /addkdc&lt;/code&gt;와&lt;code&gt;ksetup /addhosttorealmmap&lt;/code&gt;을 한 번 실행하고, 로그온 세션에 TGT를 넣은 뒤&lt;code&gt;net use \\fs.example.org\photos&lt;/code&gt;를 실행합니다. 주소로는 Windows가 NTLM으로 대체하므로 이름으로
+지정합니다. Windows 11 25H2(미가입)에서 측정한 결과: 클라이언트는 MS-KRB5, Kerberos, NEGOEX,NTLMSSP를 제시하고 Kerberos AP-REQ를 보내며, 서명을 요구한 채 마운트·목록·읽기·쓰기가
+되고, NTLM 메시지는 전혀 보내지 않습니다.&lt;/p&gt;
 &lt;h2 data-hextra-search-id="a-privileged-port-without-a-privileged-server"&gt;권한 있는 서버 없이 권한이 필요한 포트&lt;span class="hx:absolute hx:-mt-20" id="a-privileged-port-without-a-privileged-server"&gt;&lt;/span&gt;
 &lt;a href="#a-privileged-port-without-a-privileged-server" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Unix에서 &lt;a href="https://go-fileshare.github.io/docs/0.37/ko/operations/isolation/"&gt;&lt;code&gt;--isolate&lt;/code&gt;&lt;/a&gt; 아래에서는 부모가
 445를 바인딩하고 리스너를 자식에게 넘기므로, 실제로 SMB를 처리하는 프로세스는

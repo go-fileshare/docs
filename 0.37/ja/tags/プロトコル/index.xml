@@ -17,6 +17,33 @@ data-copied-label="コピーしました！"
 &lt;a href="#what-a-directory-must-hold" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;NTLMv2 に必要なのは、パスワードそのものか、その MD4(&lt;code&gt;sambaNTPassword&lt;/code&gt;、&lt;code&gt;nt_hash&lt;/code&gt; 列)です。&lt;strong&gt;ほかのものでは代用できません。&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;パスワードを&lt;em&gt;確認&lt;/em&gt;するだけのディレクトリ(LDAP バインド、bcrypt の列)は、確認がどれほど優れていてもSMB には応答できません。サーバーがクライアントと同じ証明を計算しなければならないからです。これはプロトコルの性質であり、このプログラムの制約ではありません。&lt;/p&gt;
 &lt;p&gt;&lt;a href="https://go-fileshare.github.io/docs/0.37/ja/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt; は、そのような人について SMB の列に &lt;code&gt;-&lt;/code&gt; を設定時に表示し、マウントして初めて気づくことのないようにします。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="kerberos"&gt;Kerberos: パスワードの代わりにチケット&lt;span class="hx:absolute hx:-mt-20" id="kerberos"&gt;&lt;/span&gt;
+&lt;a href="#kerberos" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;kerberos&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; realm&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;EXAMPLE.ORG&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; keytab&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/krb5.keytab&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # nfs/fs.example.org と cifs/fs.example.org
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;smb&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:445&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; ntlm&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;false&lt;/span&gt;&lt;span class="c1"&gt; # Kerberos のみ: パスワードは一切検証しない
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="コードをコピー"
+aria-label="コードをコピー"
+data-copied-label="コピーしました！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;NFS が人を区別するために読む &lt;code&gt;kerberos&lt;/code&gt; ブロックは、SMB にもチケットを受け付けさせます。&lt;strong&gt;keytab は 1 つ&lt;/strong&gt;で両方のサービスを持ち、各プロトコルは自分のサービスにだけ応答します。SMB はブロックのレルムの &lt;code&gt;cifs/&amp;lt;ホスト&amp;gt;&lt;/code&gt; プリンシパルだけを読むため、&lt;code&gt;nfs/&lt;/code&gt; 向けに発行されたチケットはここでは拒否されます。&lt;code&gt;cifs/&lt;/code&gt; プリンシパルのない keytab では SMB は従来どおりNTLM のみで、サーバーは起動時にそう伝えます。&lt;/p&gt;
+&lt;p&gt;プリンシパルは NFS と同じ規則を通り(別のレルムの &lt;code&gt;alice&lt;/code&gt; は誰でもありません)、そのうえで&lt;strong&gt;この設定が知っている人&lt;/strong&gt;でなければなりません。チケットが証明するのは KDC がその人を知っていることであり、このサーバーが知っていることではありません。共有の &lt;code&gt;allow&lt;/code&gt; と&lt;code&gt;writers&lt;/code&gt; はパスワードの場合と同じように適用されます。セッションはチケットとともに終わり、Windows クライアントは自動的に再認証します。&lt;/p&gt;
+&lt;p&gt;fileshare v0.50.0 以降、&lt;strong&gt;keytab&lt;/strong&gt; は通常ファイルで、root か fileshare を実行するアカウントが所有し、他者に読み書きされず、グループにも書き込まれないものでなければなりません。&lt;code&gt;root:fileshare&lt;/code&gt; &lt;code&gt;0640&lt;/code&gt; と &lt;code&gt;fileshare:fileshare&lt;/code&gt; &lt;code&gt;0600&lt;/code&gt; は受理され、&lt;code&gt;krb5:fileshare&lt;/code&gt; &lt;code&gt;0640&lt;/code&gt; は拒否されます。これは SMB と NFS の両方に適用されます。クライアントの名前とレルムは&lt;strong&gt;チケット&lt;/strong&gt;から取り、クライアントが一緒に送るオーセンティケータからは決して取りません(jcmturner/gokrb5#577、RFC 4120 の3.2.3 節)。NFS には go-authn/krb5 v0.3.4 以降が必要で、v0.50.0 に含まれています。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;ntlm = false&lt;/code&gt; は &lt;code&gt;kerberos&lt;/code&gt; ブロックがないと読み込み時に拒否され、keytab にそのレルムの&lt;code&gt;cifs/&lt;/code&gt; の鍵がなければサーバーは起動を拒否します。誰もログインできないサーバーはサーバーではないからです。ブロックがあれば、ディレクトリが NT ハッシュを持たない人も SMB を使え、&lt;a href="https://go-fileshare.github.io/docs/0.37/ja/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt; がそれを示します。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;ドメインに参加していない&lt;/strong&gt; Windows マシンは、このレルムのチケットで接続します。&lt;code&gt;ksetup /addkdc&lt;/code&gt; と &lt;code&gt;ksetup /addhosttorealmmap&lt;/code&gt; を一度実行し、ログオンセッションにTGT を入れ、&lt;code&gt;net use \\fs.example.org\photos&lt;/code&gt; を実行します。アドレスでは Windows がNTLM にフォールバックするため、名前で指定します。Windows 11 25H2(未参加)で測定した結果:クライアントは MS-KRB5、Kerberos、NEGOEX、NTLMSSP を提示し、Kerberos の AP-REQ を送り、署名必須のままマウント・一覧・読み取り・書き込みができ、NTLM メッセージは一切送りません。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="a-privileged-port-without-a-privileged-server"&gt;特権サーバーなしの特権ポート&lt;span class="hx:absolute hx:-mt-20" id="a-privileged-port-without-a-privileged-server"&gt;&lt;/span&gt;
 &lt;a href="#a-privileged-port-without-a-privileged-server" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Unix で &lt;a href="https://go-fileshare.github.io/docs/0.37/ja/operations/isolation/"&gt;&lt;code&gt;--isolate&lt;/code&gt;&lt;/a&gt; を使う場合、親プロセスが 445 をバインドしてリスナーを子プロセスに渡すため、実際に SMB を話すプロセスが特権を必要とすることはありません。Windows には &lt;code&gt;ExtraFiles&lt;/code&gt; がないため、子プロセスが自分でアドレスをバインドします。分離は同じですが、特権ポートに関する利点は得られません。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="verified-against-a-client-this-project-did-not-write"&gt;このプロジェクトが作っていないクライアントで検証済み&lt;span class="hx:absolute hx:-mt-20" id="verified-against-a-client-this-project-did-not-write"&gt;&lt;/span&gt;
@@ -152,7 +179,7 @@ data-copied-label="コピーしました！"
 &lt;tbody&gt;
 &lt;tr&gt;
 &lt;td&gt;&lt;strong&gt;&lt;a href="https://go-fileshare.github.io/docs/0.37/ja/protocols/smb/"&gt;SMB&lt;/a&gt;&lt;/strong&gt;&lt;/td&gt;
-&lt;td&gt;NTLMv2。パスワードはネットワークを流れず、共有は読み取り側に、読み取り専用であることを(試す前に)アクセスマスクで伝える。&lt;/td&gt;
+&lt;td&gt;NTLMv2、または &lt;code&gt;kerberos&lt;/code&gt; ブロックを置いた Kerberos(パスワードの代わりにチケット。&lt;code&gt;ntlm = false&lt;/code&gt; で NTLM を無効化)。パスワードはネットワークを流れず、共有は読み取り側に、読み取り専用であることを(試す前に)アクセスマスクで伝える。&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
 &lt;td&gt;&lt;strong&gt;&lt;a href="https://go-fileshare.github.io/docs/0.37/ja/protocols/webdav/"&gt;WebDAV&lt;/a&gt;&lt;/strong&gt;&lt;/td&gt;

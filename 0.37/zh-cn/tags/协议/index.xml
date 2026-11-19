@@ -18,6 +18,33 @@ data-copied-label="已复制！"
 列）。&lt;strong&gt;其他任何东西都不行。&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;只能&lt;em&gt;检查&lt;/em&gt;密码的目录服务，例如 LDAP 绑定或 bcrypt 列，无法应答 SMB，无论检查有多好，因为服务器必须计算出与客户端相同的证明。这是协议的属性，而不是本程序的限制。&lt;/p&gt;
 &lt;p&gt;对于这样的人员，&lt;a href="https://go-fileshare.github.io/docs/0.37/zh-cn/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt;会在配置阶段于 SMB 列中打印 &lt;code&gt;-&lt;/code&gt;，而不是让其在挂载时才发现。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="kerberos"&gt;Kerberos：用票据代替密码&lt;span class="hx:absolute hx:-mt-20" id="kerberos"&gt;&lt;/span&gt;
+&lt;a href="#kerberos" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;kerberos&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; realm&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;EXAMPLE.ORG&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; keytab&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/krb5.keytab&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # nfs/fs.example.org 和 cifs/fs.example.org
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;smb&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:445&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; ntlm&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;false&lt;/span&gt;&lt;span class="c1"&gt; # 仅 Kerberos：从不校验任何密码
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="复制代码"
+aria-label="复制代码"
+data-copied-label="已复制！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;让 NFS 能够区分人员的 &lt;code&gt;kerberos&lt;/code&gt; 块，同样让 SMB 接受票据。&lt;strong&gt;一个 keytab&lt;/strong&gt; 同时保存两个服务，每个协议只应答自己的服务：SMB 只读取该块所在领域（realm）的 &lt;code&gt;cifs/&amp;lt;主机&amp;gt;&lt;/code&gt; 主体，所以为&lt;code&gt;nfs/&lt;/code&gt; 签发的票据在这里会被拒绝。没有 &lt;code&gt;cifs/&lt;/code&gt; 主体的 keytab 会让 SMB 保持原样，只用 NTLM，服务器会在启动时说明这一点。&lt;/p&gt;
+&lt;p&gt;主体先经过与 NFS 相同的规则（另一个领域的 &lt;code&gt;alice&lt;/code&gt; 什么人也不是），然后必须是&lt;strong&gt;这份配置所认识的人&lt;/strong&gt;：票据只证明 KDC 认识这个人，并不证明这台服务器认识。共享的 &lt;code&gt;allow&lt;/code&gt; 和 &lt;code&gt;writers&lt;/code&gt; 列表与使用密码时一样生效。会话随票据一同结束，Windows 客户端会自行重新认证。&lt;/p&gt;
+&lt;p&gt;自 fileshare v0.50.0 起，&lt;strong&gt;keytab&lt;/strong&gt; 必须是普通文件，属于 root 或运行 fileshare 的账户，且不得被其他人读写，也不得被其所属组写入：&lt;code&gt;root:fileshare&lt;/code&gt; &lt;code&gt;0640&lt;/code&gt; 和&lt;code&gt;fileshare:fileshare&lt;/code&gt; &lt;code&gt;0600&lt;/code&gt; 会被接受，&lt;code&gt;krb5:fileshare&lt;/code&gt; &lt;code&gt;0640&lt;/code&gt; 会被拒绝。这同时适用于SMB 和 NFS。客户端的名称和领域取自&lt;strong&gt;票据&lt;/strong&gt;，绝不取自客户端一并发送的认证器（jcmturner/gokrb5#577，RFC 4120 第 3.2.3 节）；NFS 需要 go-authn/krb5 v0.3.4 或更高版本，v0.50.0 已包含。&lt;/p&gt;
+&lt;p&gt;没有 &lt;code&gt;kerberos&lt;/code&gt; 块时，&lt;code&gt;ntlm = false&lt;/code&gt; 在加载时即被拒绝；keytab 中没有该领域的 &lt;code&gt;cifs/&lt;/code&gt; 密钥时，服务器拒绝启动：没人能登录的服务器不算服务器。有了该块，目录里没有 NT 哈希的人也能使用 SMB，&lt;a href="https://go-fileshare.github.io/docs/0.37/zh-cn/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt; 会如实显示。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;未加入域&lt;/strong&gt;的 Windows 机器用本领域的票据访问：执行一次 &lt;code&gt;ksetup /addkdc&lt;/code&gt; 和&lt;code&gt;ksetup /addhosttorealmmap&lt;/code&gt;，在登录会话中放入票据授予票据，然后执行&lt;code&gt;net use \\fs.example.org\photos&lt;/code&gt;——要用名称，因为使用地址时 Windows 会回退到 NTLM。用 Windows 11 25H2（未加入域）实测：客户端提供 MS-KRB5、Kerberos、NEGOEX 和 NTLMSSP，发送 Kerberos AP-REQ，在要求签名的情况下挂载、列目录、读取和写入，并且不发送任何 NTLM 消息。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="a-privileged-port-without-a-privileged-server"&gt;无需特权服务器的特权端口&lt;span class="hx:absolute hx:-mt-20" id="a-privileged-port-without-a-privileged-server"&gt;&lt;/span&gt;
 &lt;a href="#a-privileged-port-without-a-privileged-server" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;在 Unix 上使用 &lt;a href="https://go-fileshare.github.io/docs/0.37/zh-cn/operations/isolation/"&gt;&lt;code&gt;--isolate&lt;/code&gt;&lt;/a&gt; 时，父进程绑定 445，并把监听器传给子进程，因此真正使用 SMB 的进程从不需要该特权。Windows 没有 &lt;code&gt;ExtraFiles&lt;/code&gt;，因此在那里由子进程自行绑定地址；隔离效果相同，但特权端口这一半则不然。&lt;/p&gt;
 &lt;h2 data-hextra-search-id="verified-against-a-client-this-project-did-not-write"&gt;已对照本项目未编写的客户端进行验证&lt;span class="hx:absolute hx:-mt-20" id="verified-against-a-client-this-project-did-not-write"&gt;&lt;/span&gt;
@@ -155,7 +182,7 @@ data-copied-label="已复制！"
 &lt;tbody&gt;
 &lt;tr&gt;
 &lt;td&gt;&lt;strong&gt;&lt;a href="https://go-fileshare.github.io/docs/0.37/zh-cn/protocols/smb/"&gt;SMB&lt;/a&gt;&lt;/strong&gt;&lt;/td&gt;
-&lt;td&gt;NTLMv2。密码从不在网络上传输，而且共享会在读者尝试之前，通过访问掩码告知读者其权限。&lt;/td&gt;
+&lt;td&gt;NTLMv2，或配置了 &lt;code&gt;kerberos&lt;/code&gt; 块时的 Kerberos（用票据代替密码；&lt;code&gt;ntlm = false&lt;/code&gt; 关闭 NTLM）。密码从不在网络上传输，而且共享会在读者尝试之前，通过访问掩码告知读者其权限。&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
 &lt;td&gt;&lt;strong&gt;&lt;a href="https://go-fileshare.github.io/docs/0.37/zh-cn/protocols/webdav/"&gt;WebDAV&lt;/a&gt;&lt;/strong&gt;&lt;/td&gt;
