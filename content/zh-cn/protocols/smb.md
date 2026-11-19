@@ -50,6 +50,13 @@ serve "smb" {
 票据只证明 KDC 认识这个人，并不证明这台服务器认识。共享的 `allow` 和 `writers` 列表与使用密码时
 一样生效。会话随票据一同结束，Windows 客户端会自行重新认证。
 
+自 fileshare v0.50.0 起，**keytab** 必须是普通文件，属于 root 或运行 fileshare 的账户，
+且不得被其他人读写，也不得被其所属组写入：`root:fileshare` `0640` 和
+`fileshare:fileshare` `0600` 会被接受，`krb5:fileshare` `0640` 会被拒绝。这同时适用于
+SMB 和 NFS。客户端的名称和领域取自**票据**，绝不取自客户端一并发送的认证器
+（jcmturner/gokrb5#577，RFC 4120 第 3.2.3 节）；NFS 需要 go-authn/krb5 v0.3.4 或更高版本，
+v0.50.0 已包含。
+
 没有 `kerberos` 块时，`ntlm = false` 在加载时即被拒绝；keytab 中没有该领域的 `cifs/` 密钥时，服务器
 拒绝启动：没人能登录的服务器不算服务器。有了该块，目录里没有 NT 哈希的人也能使用 SMB，
 [`check`]({{< relref "/configuration/check.md" >}}) 会如实显示。

@@ -55,6 +55,14 @@ listes `allow` et `writers` du partage s'appliquent comme pour un mot de passe. 
 session prend fin avec son ticket, et un client Windows s'authentifie de nouveau tout
 seul.
 
+Depuis fileshare v0.50.0, le **keytab** doit être un fichier ordinaire, appartenant à
+root ou au compte sous lequel tourne fileshare, ni lisible ni modifiable par les
+autres, ni modifiable par son groupe : `root:fileshare` `0640` et
+`fileshare:fileshare` `0600` sont acceptés, `krb5:fileshare` `0640` est refusé. Cela
+vaut pour SMB et NFS. Le nom et le royaume du client viennent du **ticket**, jamais
+de l'authentificateur que le client envoie aussi (jcmturner/gokrb5#577, RFC 4120
+section 3.2.3) ; NFS exige go-authn/krb5 v0.3.4 ou plus récent, ce que livre v0.50.0.
+
 `ntlm = false` est refusé au chargement sans bloc `kerberos`, et le serveur refuse de
 démarrer si le keytab ne contient aucune clé `cifs/` pour le royaume : un serveur où
 personne ne peut se connecter n'en est pas un. Avec le bloc, une personne dont

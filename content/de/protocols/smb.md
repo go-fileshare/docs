@@ -54,6 +54,14 @@ beweist, dass das KDC die Person kennt, nicht dass dieser Server sie kennt. Die 
 `allow` und `writers` der Freigabe gelten wie bei einem Passwort. Eine Sitzung endet
 mit ihrem Ticket, und ein Windows-Client authentifiziert sich von selbst neu.
 
+Seit fileshare v0.50.0 muss die **Keytab** eine reguläre Datei sein, die root oder dem
+Konto gehört, unter dem fileshare läuft, und weder für andere les- oder schreibbar
+noch für ihre Gruppe schreibbar: `root:fileshare` `0640` und `fileshare:fileshare`
+`0600` werden akzeptiert, `krb5:fileshare` `0640` wird abgelehnt. Das gilt für SMB
+und NFS. Name und Realm des Clients stammen aus dem **Ticket**, nie aus dem
+Authenticator, den der Client ebenfalls sendet (jcmturner/gokrb5#577, RFC 4120
+Abschnitt 3.2.3); NFS braucht go-authn/krb5 ab v0.3.4, das v0.50.0 mitbringt.
+
 `ntlm = false` wird beim Laden ohne `kerberos`-Block abgelehnt, und der Server startet
 nicht, wenn die Keytab keinen `cifs/`-Schlüssel für den Realm enthält: Ein Server, an
 dem sich niemand anmelden kann, ist keiner. Mit dem Block kann auch eine Person, deren

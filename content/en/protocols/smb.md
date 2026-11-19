@@ -54,6 +54,14 @@ the KDC knows the person, not that this server does. The share's `allow` and
 `writers` lists apply as for a password. A session ends with its ticket, and a
 Windows client authenticates again by itself.
 
+Since fileshare v0.50.0 the **keytab** must be a regular file, owned by root or by
+the account fileshare runs as, and neither readable or writable by others nor
+writable by its group: `root:fileshare` `0640` and `fileshare:fileshare` `0600`
+are accepted, `krb5:fileshare` `0640` is refused. This applies to SMB and NFS. The
+client's name and realm are taken from the **ticket**, never from the
+authenticator the client also sends (jcmturner/gokrb5#577, RFC 4120 section
+3.2.3); NFS needs go-authn/krb5 v0.3.4 or later, which v0.50.0 ships.
+
 `ntlm = false` is refused at load without a `kerberos` block, and the server
 refuses to start if the keytab holds no `cifs/` key for the realm: a server
 nobody can log in to is not one. With it, a person whose directory holds no NT
