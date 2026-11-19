@@ -791,9 +791,9 @@ every write anyway. Refusing beats a half-written object.&lt;/p&gt;
 &lt;p&gt;&lt;a href="https://go-fileshare.github.io/docs/0.37/protocols/webdav/"&gt;OIDC&lt;/a&gt; works over WebDAV and nowhere else. S3 authenticates with
 a SigV4 signature — an HMAC over the request, with no field a bearer token
 fits in.&lt;/p&gt;
-&lt;p&gt;The usual route is STS &lt;code&gt;AssumeRoleWithWebIdentity&lt;/code&gt;, which exchanges an OIDC
-token for temporary credentials the client then signs with. That is a
-different mechanism, and it is &lt;strong&gt;not implemented&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;The route is STS &lt;code&gt;AssumeRoleWithWebIdentity&lt;/code&gt;, which exchanges an OIDC
+token for temporary credentials the client then signs with. It is served on
+this listener since v0.50.0: see &lt;a href="#sts"&gt;below&lt;/a&gt;.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -801,6 +801,135 @@ different mechanism, and it is &lt;strong&gt;not implemented&lt;/strong&gt;.&lt;
 tagging are not implemented. Setting any of them, and starting a multipart
 upload, is a write, and answers &lt;code&gt;AccessDenied&lt;/code&gt; like any other. A &lt;code&gt;GET&lt;/code&gt; that
 asks for one of them (&lt;code&gt;?versioning&lt;/code&gt;, &lt;code&gt;?acl&lt;/code&gt;, &lt;code&gt;?tagging&lt;/code&gt;&amp;hellip;) is not told apart:the query is ignored and the bucket&amp;rsquo;s listing or the object is returned.&lt;code&gt;NotImplemented&lt;/code&gt; answers a listing other than &lt;code&gt;list-type=2&lt;/code&gt;, any method but&lt;code&gt;GET&lt;/code&gt; on &lt;code&gt;/&lt;/code&gt;, and a method no operation here uses.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="sts"&gt;Temporary credentials: STS &lt;code&gt;AssumeRoleWithWebIdentity&lt;/code&gt;&lt;span class="hx:absolute hx:-mt-20" id="sts"&gt;&lt;/span&gt;
+&lt;a href="#sts" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Since v0.50.0 the S3 listener also answers the AWS STS API(&lt;code&gt;AssumeRoleWithWebIdentity&lt;/code&gt;, version 2011-06-15): a token from the&lt;a href="https://go-fileshare.github.io/docs/0.37/protocols/webdav/"&gt;&lt;code&gt;oidc&lt;/code&gt; block&lt;/a&gt;&amp;rsquo;s provider is exchanged for an access key, a secret
+key and a session token that &lt;strong&gt;expire&lt;/strong&gt;. &lt;code&gt;aws&lt;/code&gt;, &lt;code&gt;rclone&lt;/code&gt; and the AWS SDKs speak
+it as they do to AWS, and nobody holds a password.&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;oidc&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; issuer&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://login.example.org&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; audience&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;fileshare&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;s3&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:9000&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; tls&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; sts&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt; true # POST / with Action&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;AssumeRoleWithWebIdentity&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; sts_duration&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;1h&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # the default, 15m to 12h
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; sts_max_duration&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;4h&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # the most DurationSeconds may ask; defaults to sts_duration
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; static_keys&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;false&lt;/span&gt;&lt;span class="c1"&gt; # no more access-key-is-a-user: only temporary credentials sign
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;The token&lt;/strong&gt; is an access token (&lt;code&gt;typ&lt;/code&gt; &lt;code&gt;at+jwt&lt;/code&gt;) from the &lt;code&gt;oidc&lt;/code&gt; block&amp;rsquo;s
+provider, for that block&amp;rsquo;s issuer and audience — there is no second provider
+configuration. A person&amp;rsquo;s token, or a machine&amp;rsquo;s: go-authn/bridge&amp;rsquo;s&lt;code&gt;client_credentials&lt;/code&gt; token for a client that authenticates with a private key(&lt;code&gt;private_key_jwt&lt;/code&gt;) has &lt;code&gt;sub&lt;/code&gt; = the client ID, which is the name here.&lt;/li&gt;
+&lt;li&gt;⛔ &lt;strong&gt;It passes the same rule as a token over WebDAV.&lt;/strong&gt; A valid token for a name
+no source here knows is refused unless &lt;code&gt;trust_all = true&lt;/code&gt; or a share&amp;rsquo;s &lt;code&gt;oidc:&lt;/code&gt;
+rule names it (&lt;code&gt;allow = [&amp;quot;oidc:user:winpc-17&amp;quot;]&lt;/code&gt;). The share&amp;rsquo;s rules then
+decide what is visible.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;The answer&lt;/strong&gt; is &lt;code&gt;AccessKeyId&lt;/code&gt; (&lt;code&gt;ASIA…&lt;/code&gt;), &lt;code&gt;SecretAccessKey&lt;/code&gt;, &lt;code&gt;SessionToken&lt;/code&gt;
+and &lt;code&gt;Expiration&lt;/code&gt;. Requests are signed with them and carry the session token in&lt;code&gt;x-amz-security-token&lt;/code&gt;, &lt;strong&gt;signed&lt;/strong&gt;. They are random, kept in memory only and
+never written; a restart ends them and the client asks again.&lt;/li&gt;
+&lt;li&gt;⛔ &lt;strong&gt;Lifetime = min(requested, what the token has left).&lt;/strong&gt; The credentials never
+outlive the token that bought them (&lt;code&gt;sts_duration&lt;/code&gt;, or &lt;code&gt;DurationSeconds&lt;/code&gt; up to&lt;code&gt;sts_max_duration&lt;/code&gt;, is only the ceiling). A token with &lt;strong&gt;less than 6 minutes&lt;/strong&gt;
+left is refused with &lt;code&gt;ExpiredTokenException&lt;/code&gt;: the AWS SDKs renew about 5
+minutes before &lt;code&gt;Expiration&lt;/code&gt;, and shorter credentials would be renewed at once,for ever. A client presents a fresh token at each exchange.&lt;/li&gt;
+&lt;li&gt;⛔ &lt;strong&gt;A session is judged at every request&lt;/strong&gt;: it expires; its session token is
+bound to its access key; it ends when the provider revokes the person after the
+token was issued (&lt;a href="https://go-fileshare.github.io/docs/0.37/security/shared-signals/"&gt;shared signals&lt;/a&gt;);and when the configuration stops admitting the name.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Policy&lt;/code&gt;, &lt;code&gt;PolicyArns&lt;/code&gt; and a second &lt;code&gt;WebIdentityToken&lt;/code&gt; are refused, and the
+parameters must be in the POST body, never the URL.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;static_keys = false&lt;/code&gt;&lt;/strong&gt; turns the access-key-is-a-user, secret-key-is-the-password
+way off. It needs &lt;code&gt;sts = true&lt;/code&gt;: the configuration is refused at load otherwise,since a listener nobody could sign for would look configured. Over a
+non-loopback address &lt;code&gt;sts&lt;/code&gt; needs &lt;code&gt;tls = true&lt;/code&gt;, or &lt;code&gt;plaintext = true&lt;/code&gt; when TLS
+is terminated in front.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 data-hextra-search-id="on-an-unattended-machine-awscred"&gt;On an unattended machine: awscred&lt;span class="hx:absolute hx:-mt-20" id="on-an-unattended-machine-awscred"&gt;&lt;/span&gt;
+&lt;a href="#on-an-unattended-machine-awscred" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;&lt;a href="https://github.com/go-authn/awscred" target="_blank" rel="noopener"&gt;&lt;code&gt;awscred&lt;/code&gt;&lt;/a&gt; v0.1.0 is an AWS&lt;code&gt;credential_process&lt;/code&gt; for machines that hold a private key and no password: it
+signs a &lt;code&gt;private_key_jwt&lt;/code&gt;, gets a token from go-authn/bridge, calls this
+endpoint and prints the credentials as the SDKs read them. The SDKs run it
+again before &lt;code&gt;Expiration&lt;/code&gt;.&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-ini" data-lang="ini"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;[profile fileshare]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;credential_process&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;awscred --issuer https://login.example.org --client winpc-17 --key /etc/awscred/winpc-17.pem --sts https://s3.example.org&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;⛔ On Unix &lt;code&gt;awscred&lt;/code&gt; refuses a key file readable by group or others(&lt;code&gt;chmod 600&lt;/code&gt;). On Windows file modes mean nothing: keep the key in the service
+account&amp;rsquo;s profile or in a directory whose ACL admits that account only. A key in
+the Windows CNG store or a TPM is not supported yet.&lt;/p&gt;
+&lt;h3 data-hextra-search-id="behind-a-proxy-trusted_proxies"&gt;Behind a proxy: &lt;code&gt;trusted_proxies&lt;/code&gt;&lt;span class="hx:absolute hx:-mt-20" id="behind-a-proxy-trusted_proxies"&gt;&lt;/span&gt;
+&lt;a href="#behind-a-proxy-trusted_proxies" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Behind the proxy that &lt;code&gt;plaintext = true&lt;/code&gt; is for, every client would be one
+source for the rate limits below. Name the proxies, on the &lt;code&gt;s3&lt;/code&gt; serve block:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;s3&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;127.0.0.1:9000&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; plaintext&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; sts&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; trusted_proxies&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;10.0.0.2&amp;#34;, &amp;#34;10.0.1.0/29&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Only a request arriving &lt;strong&gt;from&lt;/strong&gt; a trusted proxy is believed about its client,by the right-most &lt;code&gt;X-Forwarded-For&lt;/code&gt; hop that is not itself a trusted proxy; from
+anybody else the header is ignored.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;The list must name the proxies and nothing else&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;A prefix wider than one host (a &lt;code&gt;/24&lt;/code&gt;, an IPv6 &lt;code&gt;/64&lt;/code&gt;) is accepted — a pool of
+proxies, a &lt;code&gt;/29&lt;/code&gt;, is legitimate — and a warning is printed at start: a client
+that can have an address inside it chooses its own &lt;code&gt;X-Forwarded-For&lt;/code&gt;, and with
+it the bucket it is counted in.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h3 data-hextra-search-id="limits"&gt;Limits&lt;span class="hx:absolute hx:-mt-20" id="limits"&gt;&lt;/span&gt;
+&lt;a href="#limits" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;16 sessions per name&lt;/strong&gt;: the oldest of the same name goes first, another
+name&amp;rsquo;s sessions stay (20000 in all).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;60 requests a minute per source address&lt;/strong&gt;, answered &lt;code&gt;429 Throttling&lt;/code&gt;. Every
+request counts, valid or not, before the token is verified. A source is an
+IPv4 address, or an IPv6 &lt;strong&gt;/64&lt;/strong&gt;.&lt;/li&gt;
+&lt;li&gt;The count is O(1) per request, under its own lock, in a sliding minute made
+of two generations; the credentialed S3 requests never wait for it.&lt;/li&gt;
+&lt;li&gt;A source seen in the last minute is counted as long as the table holds fewer
+than &lt;strong&gt;2 × 10000&lt;/strong&gt; entries (the bound, however long a flood lasts). A source
+the full table has not seen is counted in an overflow bucket of its network —its &lt;strong&gt;/48&lt;/strong&gt; (IPv6) or &lt;strong&gt;/24&lt;/strong&gt; (IPv4), ten times the rate each — so a flood
+exhausts the buckets of the networks it comes from, not everybody&amp;rsquo;s. IPv4
+neighbours behind one /24 (CGNAT, a campus) share one bucket.&lt;/li&gt;
+&lt;li&gt;⛔ &lt;strong&gt;Past 1024 networks a minute, one shared bucket serves the rest&lt;/strong&gt;: an
+attacker holding more networks than that exhausts it, and every source the
+table has not already seen — &lt;strong&gt;existing clients that renew about hourly
+included&lt;/strong&gt; — is refused until the minute turns. That is this design&amp;rsquo;s limit.&lt;/li&gt;
+&lt;/ul&gt;
 &lt;h2 data-hextra-search-id="two-limits-worth-knowing-before-pointing-it-at-something-large"&gt;Two limits worth knowing before pointing it at something large&lt;span class="hx:absolute hx:-mt-20" id="two-limits-worth-knowing-before-pointing-it-at-something-large"&gt;&lt;/span&gt;
 &lt;a href="#two-limits-worth-knowing-before-pointing-it-at-something-large" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;GetObject&lt;/code&gt; reads the whole object into memory.&lt;/strong&gt; The driver interface offers&lt;code&gt;ReadFile&lt;/code&gt; and nothing else — no opener, no reader — so there is no streaming
 read to use. A bound, 256 MiB, answers &lt;code&gt;EntityTooLarge&lt;/code&gt; rather than taking

@@ -118,9 +118,9 @@ ohnehin jeden Schreibvorgang ab. Ablehnen ist besser als ein halb geschriebenes 
 &lt;p&gt;&lt;a href="https://go-fileshare.github.io/docs/0.37/de/protocols/webdav/"&gt;OIDC&lt;/a&gt; funktioniert über WebDAV und nirgendwo sonst. S3 authentifiziert mit
 einer SigV4-Signatur – einem HMAC über die Anfrage, ohne ein Feld, in das ein Bearer-Token
 passt.&lt;/p&gt;
-&lt;p&gt;Der übliche Weg ist STS &lt;code&gt;AssumeRoleWithWebIdentity&lt;/code&gt;, das ein OIDC-Token
-gegen temporäre Zugangsdaten tauscht, mit denen der Client dann signiert. Das ist ein
-anderer Mechanismus, und er ist &lt;strong&gt;nicht implementiert&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;Der Weg ist STS &lt;code&gt;AssumeRoleWithWebIdentity&lt;/code&gt;, das ein OIDC-Token
+gegen temporäre Zugangsdaten tauscht, mit denen der Client dann signiert. Er wird
+seit v0.50.0 an diesem Listener bedient: siehe &lt;a href="#sts"&gt;unten&lt;/a&gt;.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -128,6 +128,135 @@ anderer Mechanismus, und er ist &lt;strong&gt;nicht implementiert&lt;/strong&gt;
 Tagging sind nicht implementiert. Eines davon zu setzen oder einen Multipart-Upload
 zu beginnen, ist ein Schreibvorgang und antwortet wie jeder andere mit &lt;code&gt;AccessDenied&lt;/code&gt;. Ein &lt;code&gt;GET&lt;/code&gt;, das
 nach einem davon fragt (&lt;code&gt;?versioning&lt;/code&gt;, &lt;code&gt;?acl&lt;/code&gt;, &lt;code&gt;?tagging&lt;/code&gt;&amp;hellip;), wird nicht unterschieden:Die Query wird ignoriert, und das Listing des Buckets bzw. das Objekt wird zurückgegeben.&lt;code&gt;NotImplemented&lt;/code&gt; beantwortet ein anderes Listing als &lt;code&gt;list-type=2&lt;/code&gt;, jede Methode außer&lt;code&gt;GET&lt;/code&gt; auf &lt;code&gt;/&lt;/code&gt; und eine Methode, die keine Operation hier verwendet.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="sts"&gt;Temporäre Zugangsdaten: STS &lt;code&gt;AssumeRoleWithWebIdentity&lt;/code&gt;&lt;span class="hx:absolute hx:-mt-20" id="sts"&gt;&lt;/span&gt;
+&lt;a href="#sts" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Seit v0.50.0 beantwortet der S3-Listener auch die AWS-STS-API(&lt;code&gt;AssumeRoleWithWebIdentity&lt;/code&gt;, Version 2011-06-15): Ein Token des Anbieters aus dem&lt;a href="https://go-fileshare.github.io/docs/0.37/de/protocols/webdav/"&gt;&lt;code&gt;oidc&lt;/code&gt;-Block&lt;/a&gt; wird gegen einen Access Key, einen Secret Key und ein
+Session-Token getauscht, die &lt;strong&gt;ablaufen&lt;/strong&gt;. &lt;code&gt;aws&lt;/code&gt;, &lt;code&gt;rclone&lt;/code&gt; und die AWS-SDKs sprechen es
+wie mit AWS, und niemand hält ein Passwort.&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;oidc&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; issuer&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://login.example.org&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; audience&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;fileshare&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;s3&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:9000&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; tls&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; sts&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt; true # POST / mit Action&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;AssumeRoleWithWebIdentity&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; sts_duration&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;1h&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # der Standard, 15m bis 12h
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; sts_max_duration&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;4h&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # das Meiste, was DurationSeconds verlangen darf; Standard: sts_duration
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; static_keys&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;false&lt;/span&gt;&lt;span class="c1"&gt; # kein „Access Key ist ein Benutzer“ mehr: nur temporäre Zugangsdaten signieren
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Code kopieren"
+aria-label="Code kopieren"
+data-copied-label="Kopiert!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Das Token&lt;/strong&gt; ist ein Access Token (&lt;code&gt;typ&lt;/code&gt; &lt;code&gt;at+jwt&lt;/code&gt;) des Anbieters des &lt;code&gt;oidc&lt;/code&gt;-Blocks, für
+Issuer und Audience dieses Blocks – es gibt keine zweite Anbieterkonfiguration. Das Token
+einer Person oder einer Maschine: Das &lt;code&gt;client_credentials&lt;/code&gt;-Token von go-authn/bridge für einen
+Client, der sich mit einem privaten Schlüssel authentifiziert (&lt;code&gt;private_key_jwt&lt;/code&gt;), hat&lt;code&gt;sub&lt;/code&gt; = die Client-ID, und das ist hier der Name.&lt;/li&gt;
+&lt;li&gt;⛔ &lt;strong&gt;Es durchläuft dieselbe Regel wie ein Token über WebDAV.&lt;/strong&gt; Ein gültiges Token für einen
+Namen, den hier keine Quelle kennt, wird abgelehnt, es sei denn &lt;code&gt;trust_all = true&lt;/code&gt; oder die&lt;code&gt;oidc:&lt;/code&gt;-Regel einer Freigabe nennt ihn (&lt;code&gt;allow = [&amp;quot;oidc:user:winpc-17&amp;quot;]&lt;/code&gt;). Die Regeln der
+Freigabe entscheiden dann, was sichtbar ist.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Die Antwort&lt;/strong&gt; ist &lt;code&gt;AccessKeyId&lt;/code&gt; (&lt;code&gt;ASIA…&lt;/code&gt;), &lt;code&gt;SecretAccessKey&lt;/code&gt;, &lt;code&gt;SessionToken&lt;/code&gt; und&lt;code&gt;Expiration&lt;/code&gt;. Anfragen werden damit signiert und tragen das Session-Token in&lt;code&gt;x-amz-security-token&lt;/code&gt;, &lt;strong&gt;signiert&lt;/strong&gt;. Sie sind zufällig, nur im Speicher und nie
+geschrieben; ein Neustart beendet sie, und der Client fragt erneut.&lt;/li&gt;
+&lt;li&gt;⛔ &lt;strong&gt;Lebensdauer = min(angefragt, was das Token noch hat).&lt;/strong&gt; Die Zugangsdaten überleben nie das
+Token, das sie gekauft hat (&lt;code&gt;sts_duration&lt;/code&gt; oder &lt;code&gt;DurationSeconds&lt;/code&gt; bis &lt;code&gt;sts_max_duration&lt;/code&gt; ist nur
+die Obergrenze). Ein Token mit &lt;strong&gt;weniger als 6 Minuten&lt;/strong&gt; Rest wird mit &lt;code&gt;ExpiredTokenException&lt;/code&gt;
+abgelehnt: Die AWS-SDKs erneuern etwa 5 Minuten vor &lt;code&gt;Expiration&lt;/code&gt;, und kürzere Zugangsdaten
+würden sofort und immer wieder erneuert. Ein Client legt bei jedem Tausch ein frisches Token vor.&lt;/li&gt;
+&lt;li&gt;⛔ &lt;strong&gt;Eine Sitzung wird bei jeder Anfrage beurteilt&lt;/strong&gt;: Sie läuft ab; ihr Session-Token ist an ihren
+Access Key gebunden; sie endet, wenn der Anbieter die Person nach Ausstellung des Tokens sperrt(&lt;a href="https://go-fileshare.github.io/docs/0.37/de/security/shared-signals/"&gt;Shared Signals&lt;/a&gt;); und wenn die Konfiguration den
+Namen nicht mehr zulässt.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Policy&lt;/code&gt;, &lt;code&gt;PolicyArns&lt;/code&gt; und ein zweites &lt;code&gt;WebIdentityToken&lt;/code&gt; werden abgelehnt, und die Parameter
+gehören in den POST-Body, nie in die URL.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;static_keys = false&lt;/code&gt;&lt;/strong&gt; schaltet den Weg „Access Key ist ein Benutzer, Secret Key ist das
+Passwort“ ab. Es braucht &lt;code&gt;sts = true&lt;/code&gt;: Sonst wird die Konfiguration beim Laden abgelehnt, denn
+ein Listener, für den niemand signieren könnte, sähe konfiguriert aus. Über eine Adresse
+außerhalb von Loopback braucht &lt;code&gt;sts&lt;/code&gt; &lt;code&gt;tls = true&lt;/code&gt;, oder &lt;code&gt;plaintext = true&lt;/code&gt;, wenn TLS davor
+terminiert wird.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 data-hextra-search-id="on-an-unattended-machine-awscred"&gt;Auf einer unbeaufsichtigten Maschine: awscred&lt;span class="hx:absolute hx:-mt-20" id="on-an-unattended-machine-awscred"&gt;&lt;/span&gt;
+&lt;a href="#on-an-unattended-machine-awscred" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;&lt;a href="https://github.com/go-authn/awscred" target="_blank" rel="noopener"&gt;&lt;code&gt;awscred&lt;/code&gt;&lt;/a&gt; v0.1.0 ist ein AWS-&lt;code&gt;credential_process&lt;/code&gt; für
+Maschinen mit privatem Schlüssel und ohne Passwort: Es signiert ein &lt;code&gt;private_key_jwt&lt;/code&gt;, holt ein
+Token von go-authn/bridge, ruft diesen Endpunkt auf und gibt die Zugangsdaten so aus, wie die SDKs
+sie lesen. Die SDKs führen es vor &lt;code&gt;Expiration&lt;/code&gt; erneut aus.&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-ini" data-lang="ini"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;[profile fileshare]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;credential_process&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;awscred --issuer https://login.example.org --client winpc-17 --key /etc/awscred/winpc-17.pem --sts https://s3.example.org&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Code kopieren"
+aria-label="Code kopieren"
+data-copied-label="Kopiert!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;⛔ Unter Unix lehnt &lt;code&gt;awscred&lt;/code&gt; eine Schlüsseldatei ab, die für Gruppe oder andere lesbar ist(&lt;code&gt;chmod 600&lt;/code&gt;). Unter Windows bedeuten Dateimodi nichts: Der Schlüssel gehört ins Profil des
+Dienstkontos oder in ein Verzeichnis, dessen ACL nur dieses Konto zulässt. Ein Schlüssel im
+Windows-CNG-Speicher oder in einem TPM wird noch nicht unterstützt.&lt;/p&gt;
+&lt;h3 data-hextra-search-id="behind-a-proxy-trusted_proxies"&gt;Hinter einem Proxy: &lt;code&gt;trusted_proxies&lt;/code&gt;&lt;span class="hx:absolute hx:-mt-20" id="behind-a-proxy-trusted_proxies"&gt;&lt;/span&gt;
+&lt;a href="#behind-a-proxy-trusted_proxies" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Hinter dem Proxy, für den &lt;code&gt;plaintext = true&lt;/code&gt; da ist, wäre jeder Client für die Ratenbegrenzungen
+unten eine einzige Quelle. Benennen Sie die Proxys im &lt;code&gt;s3&lt;/code&gt;-serve-Block:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;s3&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;127.0.0.1:9000&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; plaintext&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; sts&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; trusted_proxies&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;10.0.0.2&amp;#34;, &amp;#34;10.0.1.0/29&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Code kopieren"
+aria-label="Code kopieren"
+data-copied-label="Kopiert!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Nur einer Anfrage, die &lt;strong&gt;von&lt;/strong&gt; einem vertrauten Proxy kommt, wird zu ihrem Client geglaubt, und
+zwar über den am weitesten rechts stehenden &lt;code&gt;X-Forwarded-For&lt;/code&gt;-Hop, der nicht selbst ein vertrauter
+Proxy ist; bei allen anderen wird der Header ignoriert.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Die Liste muss die Proxys nennen und sonst nichts&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Ein Präfix, der mehr als einen Host umfasst (ein &lt;code&gt;/24&lt;/code&gt;, ein IPv6-&lt;code&gt;/64&lt;/code&gt;), wird akzeptiert – ein Pool
+von Proxys, ein &lt;code&gt;/29&lt;/code&gt;, ist legitim –, und beim Start wird eine Warnung ausgegeben: Ein Client, der
+eine Adresse darin haben kann, wählt seinen eigenen &lt;code&gt;X-Forwarded-For&lt;/code&gt; und damit den Eimer, in dem er
+gezählt wird.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h3 data-hextra-search-id="limits"&gt;Grenzen&lt;span class="hx:absolute hx:-mt-20" id="limits"&gt;&lt;/span&gt;
+&lt;a href="#limits" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;16 Sitzungen pro Name&lt;/strong&gt;: Die älteste desselben Namens geht zuerst, die Sitzungen anderer Namen
+bleiben (insgesamt 20000).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;60 Anfragen pro Minute und Quelladresse&lt;/strong&gt;, beantwortet mit &lt;code&gt;429 Throttling&lt;/code&gt;. Jede Anfrage zählt,gültig oder nicht, bevor das Token geprüft wird. Eine Quelle ist eine IPv4-Adresse oder ein
+IPv6-&lt;strong&gt;/64&lt;/strong&gt;.&lt;/li&gt;
+&lt;li&gt;Das Zählen ist O(1) pro Anfrage, unter einer eigenen Sperre, in einer gleitenden Minute aus zwei
+Generationen; die S3-Anfragen mit Zugangsdaten warten nie darauf.&lt;/li&gt;
+&lt;li&gt;Eine in der letzten Minute gesehene Quelle wird gezählt, solange die Tabelle weniger als&lt;strong&gt;2 × 10000&lt;/strong&gt; Einträge hält (die Schranke, egal wie lange eine Flut dauert). Eine Quelle, die die
+volle Tabelle nicht gesehen hat, wird in einem Überlauf-Eimer ihres Netzes gezählt – ihr &lt;strong&gt;/48&lt;/strong&gt;
+(IPv6) oder &lt;strong&gt;/24&lt;/strong&gt; (IPv4), je das Zehnfache der Rate –, sodass eine Flut die Eimer der Netze
+erschöpft, aus denen sie kommt, nicht die aller. IPv4-Nachbarn hinter einem /24 (CGNAT, ein
+Campus) teilen sich einen Eimer.&lt;/li&gt;
+&lt;li&gt;⛔ &lt;strong&gt;Jenseits von 1024 Netzen pro Minute bedient ein gemeinsamer Eimer den Rest&lt;/strong&gt;: Ein Angreifer mit
+mehr Netzen erschöpft ihn, und jede Quelle, die die Tabelle nicht schon gesehen hat –&lt;strong&gt;bestehende Clients, die etwa stündlich erneuern, eingeschlossen&lt;/strong&gt; – wird abgelehnt, bis die Minute
+umspringt. Das ist die Grenze dieses Entwurfs.&lt;/li&gt;
+&lt;/ul&gt;
 &lt;h2 data-hextra-search-id="two-limits-worth-knowing-before-pointing-it-at-something-large"&gt;Zwei Grenzen, die man kennen sollte, bevor man es auf etwas Großes richtet&lt;span class="hx:absolute hx:-mt-20" id="two-limits-worth-knowing-before-pointing-it-at-something-large"&gt;&lt;/span&gt;
 &lt;a href="#two-limits-worth-knowing-before-pointing-it-at-something-large" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;GetObject&lt;/code&gt; liest das ganze Objekt in den Arbeitsspeicher.&lt;/strong&gt; Die Treiberschnittstelle bietet&lt;code&gt;ReadFile&lt;/code&gt; und sonst nichts – keinen Opener, keinen Reader –, daher gibt es kein streamendes
 Lesen, das man nutzen könnte. Eine Obergrenze von 256 MiB antwortet mit &lt;code&gt;EntityTooLarge&lt;/code&gt;, statt

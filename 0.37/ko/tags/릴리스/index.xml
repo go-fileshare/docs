@@ -308,10 +308,6 @@ bridge에 대해 판정합니다. KRL, NFS의 CRL, 공유 신호로 폐기된 We
 &lt;a href="#not-yet" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;S3를 통한 쓰기.&lt;/strong&gt; &lt;code&gt;PUT&lt;/code&gt;과 &lt;code&gt;DELETE&lt;/code&gt;는 403으로 응답합니다. 라이브러리는 쓸 수
 있지만, 사용자가 읽기만 할 수 있는 공유는 SFTP와 같은 지점에서 거부해야 하는데
 아직 연결되지 않았습니다. 거부하는 편이 반쯤 쓰인 오브젝트보다 낫습니다.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;S3를 통한 OIDC 토큰.&lt;/strong&gt; 토큰은 &lt;a href="https://go-fileshare.github.io/docs/0.37/ko/protocols/webdav/"&gt;WebDAV&lt;/a&gt;에서만
-동작하며 다른 곳에서는 동작하지 않습니다. S3의 일반적인 경로는 STS&lt;code&gt;AssumeRoleWithWebIdentity&lt;/code&gt;로, 토큰을 클라이언트가 이후 서명에 쓰는 임시 자격
-증명으로 교환합니다. 베어러 토큰을 수락하는 것과는 다른 메커니즘이며 구현되어 있지
-않습니다.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;&lt;code&gt;admin&lt;/code&gt; 또는 &lt;code&gt;metrics&lt;/code&gt; 블록이 있는 &lt;code&gt;--isolate&lt;/code&gt;.&lt;/strong&gt; 거부됩니다. API 변경을 적용할
 단일 프로세스가 없기 때문입니다.&lt;a href="https://go-fileshare.github.io/docs/0.37/ko/operations/isolation/#not-with-an-admin-or-a-metrics-block-yet"&gt;프로토콜마다 하나의 프로세스&lt;/a&gt;를
 참고하십시오.&lt;/p&gt;

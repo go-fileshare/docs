@@ -119,9 +119,9 @@ toutes les écritures. Refuser vaut mieux qu&amp;rsquo;un objet à moitié écri
 &lt;p&gt;&lt;a href="https://go-fileshare.github.io/docs/0.37/fr/protocols/webdav/"&gt;OIDC&lt;/a&gt; fonctionne sur WebDAV et nulle part ailleurs. S3 s&amp;rsquo;authentifie avec
 une signature SigV4 — un HMAC sur la requête, sans aucun champ où un jeton porteur
 pourrait se loger.&lt;/p&gt;
-&lt;p&gt;La voie habituelle est STS &lt;code&gt;AssumeRoleWithWebIdentity&lt;/code&gt;, qui échange un jeton OIDC
-contre des identifiants temporaires avec lesquels le client signe ensuite. C&amp;rsquo;est un
-mécanisme différent, et il &lt;strong&gt;n&amp;rsquo;est pas implémenté&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;La voie est STS &lt;code&gt;AssumeRoleWithWebIdentity&lt;/code&gt;, qui échange un jeton OIDC
+contre des identifiants temporaires avec lesquels le client signe ensuite. Elle est
+servie sur ce listener depuis la v0.50.0 : voir &lt;a href="#sts"&gt;ci-dessous&lt;/a&gt;.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -129,6 +129,130 @@ mécanisme différent, et il &lt;strong&gt;n&amp;rsquo;est pas implémenté&lt;/
 les étiquettes ne sont pas implémentés. Définir l&amp;rsquo;un d&amp;rsquo;eux, ou commencer un téléversement
 multipart, est une écriture, et répond &lt;code&gt;AccessDenied&lt;/code&gt; comme toute autre. Un &lt;code&gt;GET&lt;/code&gt; qui
 en demande un (&lt;code&gt;?versioning&lt;/code&gt;, &lt;code&gt;?acl&lt;/code&gt;, &lt;code&gt;?tagging&lt;/code&gt;&amp;hellip;) n&amp;rsquo;est pas distingué :la requête est ignorée et c&amp;rsquo;est le listage du bucket ou l&amp;rsquo;objet qui est renvoyé.&lt;code&gt;NotImplemented&lt;/code&gt; répond à un listage autre que &lt;code&gt;list-type=2&lt;/code&gt;, à toute méthode autre que&lt;code&gt;GET&lt;/code&gt; sur &lt;code&gt;/&lt;/code&gt;, et à une méthode qu&amp;rsquo;aucune opération ici n&amp;rsquo;utilise.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="sts"&gt;Identifiants temporaires : STS &lt;code&gt;AssumeRoleWithWebIdentity&lt;/code&gt;&lt;span class="hx:absolute hx:-mt-20" id="sts"&gt;&lt;/span&gt;
+&lt;a href="#sts" class="subheading-anchor" aria-label="Lien permanent vers cette section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Depuis la v0.50.0, le listener S3 répond aussi à l&amp;rsquo;API STS d&amp;rsquo;AWS(&lt;code&gt;AssumeRoleWithWebIdentity&lt;/code&gt;, version 2011-06-15) : un jeton du fournisseur du&lt;a href="https://go-fileshare.github.io/docs/0.37/fr/protocols/webdav/"&gt;bloc &lt;code&gt;oidc&lt;/code&gt;&lt;/a&gt; est échangé contre une clé d&amp;rsquo;accès, une clé secrète et un jeton de
+session qui &lt;strong&gt;expirent&lt;/strong&gt;. &lt;code&gt;aws&lt;/code&gt;, &lt;code&gt;rclone&lt;/code&gt; et les SDK AWS le parlent comme avec AWS, et personne
+ne détient de mot de passe.&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;oidc&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; issuer&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://login.example.org&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; audience&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;fileshare&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;s3&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:9000&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; tls&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; sts&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt; true # POST / avec Action&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;AssumeRoleWithWebIdentity&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; sts_duration&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;1h&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # la valeur par défaut, de 15m à 12h
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; sts_max_duration&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;4h&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # le plus que DurationSeconds peut demander ; par défaut sts_duration
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; static_keys&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;false&lt;/span&gt;&lt;span class="c1"&gt; # plus de « la clé d&amp;#39;accès est un utilisateur » : seuls les identifiants temporaires signent
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copier le code"
+aria-label="Copier le code"
+data-copied-label="Copié !"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Le jeton&lt;/strong&gt; est un jeton d&amp;rsquo;accès (&lt;code&gt;typ&lt;/code&gt; &lt;code&gt;at+jwt&lt;/code&gt;) du fournisseur du bloc &lt;code&gt;oidc&lt;/code&gt;, pour l&amp;rsquo;émetteur
+et l&amp;rsquo;audience de ce bloc — il n&amp;rsquo;y a pas de seconde configuration de fournisseur. Le jeton d&amp;rsquo;une
+personne, ou d&amp;rsquo;une machine : le jeton &lt;code&gt;client_credentials&lt;/code&gt; de go-authn/bridge pour un client qui
+s&amp;rsquo;authentifie avec une clé privée (&lt;code&gt;private_key_jwt&lt;/code&gt;) a &lt;code&gt;sub&lt;/code&gt; = l&amp;rsquo;ID du client, qui est le nom ici.&lt;/li&gt;
+&lt;li&gt;⛔ &lt;strong&gt;Il passe la même règle qu&amp;rsquo;un jeton en WebDAV.&lt;/strong&gt; Un jeton valide pour un nom qu&amp;rsquo;aucune source
+d&amp;rsquo;ici ne connaît est refusé, sauf &lt;code&gt;trust_all = true&lt;/code&gt; ou si la règle &lt;code&gt;oidc:&lt;/code&gt; d&amp;rsquo;un partage le nomme(&lt;code&gt;allow = [&amp;quot;oidc:user:winpc-17&amp;quot;]&lt;/code&gt;). Les règles du partage décident ensuite de ce qui est visible.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;La réponse&lt;/strong&gt; est &lt;code&gt;AccessKeyId&lt;/code&gt; (&lt;code&gt;ASIA…&lt;/code&gt;), &lt;code&gt;SecretAccessKey&lt;/code&gt;, &lt;code&gt;SessionToken&lt;/code&gt; et &lt;code&gt;Expiration&lt;/code&gt;. Les
+requêtes sont signées avec eux et portent le jeton de session dans &lt;code&gt;x-amz-security-token&lt;/code&gt;,&lt;strong&gt;signé&lt;/strong&gt;. Ils sont aléatoires, gardés en mémoire seulement et jamais écrits ; un redémarrage les
+termine et le client redemande.&lt;/li&gt;
+&lt;li&gt;⛔ &lt;strong&gt;Durée = min(demandée, ce qu&amp;rsquo;il reste au jeton).&lt;/strong&gt; Les identifiants ne survivent jamais au jeton
+qui les a achetés (&lt;code&gt;sts_duration&lt;/code&gt;, ou &lt;code&gt;DurationSeconds&lt;/code&gt; jusqu&amp;rsquo;à &lt;code&gt;sts_max_duration&lt;/code&gt;, n&amp;rsquo;est que le
+plafond). Un jeton auquel il reste &lt;strong&gt;moins de 6 minutes&lt;/strong&gt; est refusé avec &lt;code&gt;ExpiredTokenException&lt;/code&gt; :les SDK AWS renouvellent environ 5 minutes avant &lt;code&gt;Expiration&lt;/code&gt;, et des identifiants plus courts
+seraient renouvelés aussitôt, indéfiniment. Un client présente un jeton frais à chaque échange.&lt;/li&gt;
+&lt;li&gt;⛔ &lt;strong&gt;Une session est jugée à chaque requête&lt;/strong&gt; : elle expire ; son jeton de session est lié à sa clé
+d&amp;rsquo;accès ; elle prend fin quand le fournisseur révoque la personne après l&amp;rsquo;émission du jeton(&lt;a href="https://go-fileshare.github.io/docs/0.37/fr/security/shared-signals/"&gt;signaux partagés&lt;/a&gt;) ; et quand la configuration
+n&amp;rsquo;admet plus le nom.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Policy&lt;/code&gt;, &lt;code&gt;PolicyArns&lt;/code&gt; et un second &lt;code&gt;WebIdentityToken&lt;/code&gt; sont refusés, et les paramètres vont dans le
+corps du POST, jamais dans l&amp;rsquo;URL.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;static_keys = false&lt;/code&gt;&lt;/strong&gt; désactive la voie « la clé d&amp;rsquo;accès est un utilisateur, la clé secrète est
+son mot de passe ». Il faut &lt;code&gt;sts = true&lt;/code&gt; : sinon la configuration est refusée au chargement, car un
+listener pour lequel personne ne pourrait signer aurait l&amp;rsquo;air configuré. Sur une adresse hors
+loopback, &lt;code&gt;sts&lt;/code&gt; demande &lt;code&gt;tls = true&lt;/code&gt;, ou &lt;code&gt;plaintext = true&lt;/code&gt; quand le TLS est terminé en amont.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 data-hextra-search-id="on-an-unattended-machine-awscred"&gt;Sur une machine sans surveillance : awscred&lt;span class="hx:absolute hx:-mt-20" id="on-an-unattended-machine-awscred"&gt;&lt;/span&gt;
+&lt;a href="#on-an-unattended-machine-awscred" class="subheading-anchor" aria-label="Lien permanent vers cette section"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;&lt;a href="https://github.com/go-authn/awscred" target="_blank" rel="noopener"&gt;&lt;code&gt;awscred&lt;/code&gt;&lt;/a&gt; v0.1.0 est un &lt;code&gt;credential_process&lt;/code&gt; AWS pour les
+machines qui détiennent une clé privée et aucun mot de passe : il signe un &lt;code&gt;private_key_jwt&lt;/code&gt;,obtient un jeton de go-authn/bridge, appelle ce point d&amp;rsquo;accès et affiche les identifiants comme les
+SDK les lisent. Les SDK le relancent avant &lt;code&gt;Expiration&lt;/code&gt;.&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-ini" data-lang="ini"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;[profile fileshare]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;credential_process&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;awscred --issuer https://login.example.org --client winpc-17 --key /etc/awscred/winpc-17.pem --sts https://s3.example.org&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copier le code"
+aria-label="Copier le code"
+data-copied-label="Copié !"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;⛔ Sous Unix, &lt;code&gt;awscred&lt;/code&gt; refuse un fichier de clé lisible par le groupe ou par les autres(&lt;code&gt;chmod 600&lt;/code&gt;). Sous Windows, les modes de fichier ne signifient rien : gardez la clé dans le profil
+du compte de service ou dans un répertoire dont l&amp;rsquo;ACL n&amp;rsquo;admet que ce compte. Une clé dans le magasin
+CNG de Windows ou dans un TPM n&amp;rsquo;est pas encore prise en charge.&lt;/p&gt;
+&lt;h3 data-hextra-search-id="behind-a-proxy-trusted_proxies"&gt;Derrière un proxy : &lt;code&gt;trusted_proxies&lt;/code&gt;&lt;span class="hx:absolute hx:-mt-20" id="behind-a-proxy-trusted_proxies"&gt;&lt;/span&gt;
+&lt;a href="#behind-a-proxy-trusted_proxies" class="subheading-anchor" aria-label="Lien permanent vers cette section"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Derrière le proxy pour lequel existe &lt;code&gt;plaintext = true&lt;/code&gt;, tous les clients seraient une seule source
+pour les limites ci-dessous. Nommez les proxys dans le bloc serve de &lt;code&gt;s3&lt;/code&gt; :&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;s3&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;127.0.0.1:9000&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; plaintext&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; sts&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; trusted_proxies&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;10.0.0.2&amp;#34;, &amp;#34;10.0.1.0/29&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copier le code"
+aria-label="Copier le code"
+data-copied-label="Copié !"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Seule une requête arrivant &lt;strong&gt;d&amp;rsquo;un&lt;/strong&gt; proxy de confiance est crue sur son client, par le saut le plus à
+droite de &lt;code&gt;X-Forwarded-For&lt;/code&gt; qui n&amp;rsquo;est pas lui-même un proxy de confiance ; de toute autre, l&amp;rsquo;en-tête
+est ignoré.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;La liste doit nommer les proxys et rien d&amp;rsquo;autre&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Un préfixe plus large qu&amp;rsquo;un hôte (un &lt;code&gt;/24&lt;/code&gt;, un &lt;code&gt;/64&lt;/code&gt; IPv6) est accepté — un parc de proxys, un &lt;code&gt;/29&lt;/code&gt;,est légitime — et un avertissement est affiché au démarrage : un client qui peut avoir une adresse
+dedans choisit son propre &lt;code&gt;X-Forwarded-For&lt;/code&gt;, et avec lui le seau où il est compté.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h3 data-hextra-search-id="limits"&gt;Limites&lt;span class="hx:absolute hx:-mt-20" id="limits"&gt;&lt;/span&gt;
+&lt;a href="#limits" class="subheading-anchor" aria-label="Lien permanent vers cette section"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;16 sessions par nom&lt;/strong&gt; : la plus ancienne du même nom part d&amp;rsquo;abord, les sessions des autres noms
+restent (20000 en tout).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;60 requêtes par minute par adresse source&lt;/strong&gt;, avec la réponse &lt;code&gt;429 Throttling&lt;/code&gt;. Chaque requête
+compte, valide ou non, avant la vérification du jeton. Une source est une adresse IPv4, ou un &lt;strong&gt;/64&lt;/strong&gt;
+IPv6.&lt;/li&gt;
+&lt;li&gt;Le comptage est en O(1) par requête, sous son propre verrou, dans une minute glissante faite de deux
+générations ; les requêtes S3 avec identifiants ne l&amp;rsquo;attendent jamais.&lt;/li&gt;
+&lt;li&gt;Une source vue dans la dernière minute est comptée tant que la table contient moins de&lt;strong&gt;2 × 10000&lt;/strong&gt; entrées (la borne, quelle que soit la durée d&amp;rsquo;un déluge). Une source que la table
+pleine n&amp;rsquo;a pas vue est comptée dans un seau de débordement de son réseau — son &lt;strong&gt;/48&lt;/strong&gt; (IPv6) ou&lt;strong&gt;/24&lt;/strong&gt; (IPv4), dix fois le débit chacun — de sorte qu&amp;rsquo;un déluge épuise les seaux des réseaux d&amp;rsquo;où il
+vient, pas ceux de tout le monde. Les voisins IPv4 derrière un /24 (CGNAT, un campus) partagent un
+seau.&lt;/li&gt;
+&lt;li&gt;⛔ &lt;strong&gt;Au-delà de 1024 réseaux par minute, un seau partagé sert le reste&lt;/strong&gt; : un attaquant qui détient
+plus de réseaux l&amp;rsquo;épuise, et toute source que la table n&amp;rsquo;a pas déjà vue — &lt;strong&gt;y compris les clients
+existants qui renouvellent environ toutes les heures&lt;/strong&gt; — est refusée jusqu&amp;rsquo;au changement de minute.C&amp;rsquo;est la limite de cette conception.&lt;/li&gt;
+&lt;/ul&gt;
 &lt;h2 data-hextra-search-id="two-limits-worth-knowing-before-pointing-it-at-something-large"&gt;Deux limites à connaître avant de le pointer vers quelque chose de volumineux&lt;span class="hx:absolute hx:-mt-20" id="two-limits-worth-knowing-before-pointing-it-at-something-large"&gt;&lt;/span&gt;
 &lt;a href="#two-limits-worth-knowing-before-pointing-it-at-something-large" class="subheading-anchor" aria-label="Lien permanent vers cette section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;GetObject&lt;/code&gt; lit l&amp;rsquo;objet entier en mémoire.&lt;/strong&gt; L&amp;rsquo;interface des pilotes n&amp;rsquo;offre que&lt;code&gt;ReadFile&lt;/code&gt; — ni ouvreur, ni lecteur — il n&amp;rsquo;y a donc aucune lecture en flux
 à utiliser. Une borne, 256 Mio, répond &lt;code&gt;EntityTooLarge&lt;/code&gt; plutôt que de faire

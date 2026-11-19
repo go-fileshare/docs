@@ -612,12 +612,102 @@ data-copied-label="コピーしました！"
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;ベアラートークンはここでは受け付けられません&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;&lt;a href="https://go-fileshare.github.io/docs/0.37/ja/protocols/webdav/"&gt;OIDC&lt;/a&gt;が機能するのは WebDAV だけです。S3 は SigV4 署名、つまりリクエストに対する HMAC で認証し、ベアラートークンを収められるフィールドがありません。&lt;/p&gt;
-&lt;p&gt;通常の方法は STS の &lt;code&gt;AssumeRoleWithWebIdentity&lt;/code&gt; で、OIDC トークンを一時的な認証情報と交換し、クライアントがそれで署名します。これは別の仕組みであり、&lt;strong&gt;実装されていません&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;方法は STS の &lt;code&gt;AssumeRoleWithWebIdentity&lt;/code&gt; で、OIDC トークンを一時的な認証情報と交換し、クライアントがそれで署名します。v0.50.0 からこのリスナーで提供されます。&lt;a href="#sts"&gt;下記&lt;/a&gt;を参照してください。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;p&gt;マルチパートアップロード、バージョニング、ACL、ポリシー、ライフサイクルルール、レプリケーション、タグ付けは実装されていません。これらのいずれかの設定とマルチパートアップロードの開始は書き込みであり、ほかの書き込みと同様に &lt;code&gt;AccessDenied&lt;/code&gt; で応答されます。これらのいずれかを求める &lt;code&gt;GET&lt;/code&gt;
 (&lt;code&gt;?versioning&lt;/code&gt;、&lt;code&gt;?acl&lt;/code&gt;、&lt;code&gt;?tagging&lt;/code&gt; など)は区別されません。クエリは無視され、バケットの一覧またはオブジェクトが返されます。&lt;code&gt;NotImplemented&lt;/code&gt; が返されるのは、&lt;code&gt;list-type=2&lt;/code&gt; 以外の一覧、&lt;code&gt;/&lt;/code&gt; に対する&lt;code&gt;GET&lt;/code&gt; 以外のメソッド、ここで使われる操作のいずれにも該当しないメソッドです。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="sts"&gt;一時的な認証情報: STS &lt;code&gt;AssumeRoleWithWebIdentity&lt;/code&gt;&lt;span class="hx:absolute hx:-mt-20" id="sts"&gt;&lt;/span&gt;
+&lt;a href="#sts" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;v0.50.0 から、S3 リスナーは AWS STS API(&lt;code&gt;AssumeRoleWithWebIdentity&lt;/code&gt;、バージョン 2011-06-15)にも応答します。&lt;a href="https://go-fileshare.github.io/docs/0.37/ja/protocols/webdav/"&gt;&lt;code&gt;oidc&lt;/code&gt; ブロック&lt;/a&gt;のプロバイダーのトークンが、&lt;strong&gt;失効する&lt;/strong&gt;アクセスキー、シークレットキー、セッショントークンと交換されます。&lt;code&gt;aws&lt;/code&gt;、&lt;code&gt;rclone&lt;/code&gt;、AWS SDK は AWS に対するのと同じように話し、誰もパスワードを持ちません。&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;oidc&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; issuer&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://login.example.org&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; audience&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;fileshare&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;s3&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:9000&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; tls&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; sts&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt; true # Action&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;AssumeRoleWithWebIdentity&lt;/span&gt; &lt;span class="k"&gt;の&lt;/span&gt; &lt;span class="k"&gt;POST&lt;/span&gt; &lt;span class="err"&gt;/&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; sts_duration&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;1h&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # 既定値。15m から 12h
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; sts_max_duration&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;4h&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # DurationSeconds が求められる上限。既定は sts_duration
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; static_keys&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;false&lt;/span&gt;&lt;span class="c1"&gt; # 「アクセスキーはユーザー」をやめる: 一時的な認証情報だけが署名する
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="コードをコピー"
+aria-label="コードをコピー"
+data-copied-label="コピーしました！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;トークン&lt;/strong&gt;は、&lt;code&gt;oidc&lt;/code&gt; ブロックのプロバイダーが発行するアクセストークン(&lt;code&gt;typ&lt;/code&gt; が &lt;code&gt;at+jwt&lt;/code&gt;)で、そのブロックの issuer と audience 向けです。2 つ目のプロバイダー設定はありません。人のトークンでも機械のトークンでも構いません。秘密鍵で認証するクライアント(&lt;code&gt;private_key_jwt&lt;/code&gt;)に対するgo-authn/bridge の &lt;code&gt;client_credentials&lt;/code&gt; トークンは &lt;code&gt;sub&lt;/code&gt; = クライアント ID で、それがここでの名前です。&lt;/li&gt;
+&lt;li&gt;⛔ &lt;strong&gt;WebDAV のトークンと同じ規則を通ります。&lt;/strong&gt; ここのどのソースも知らない名前の有効なトークンは、&lt;code&gt;trust_all = true&lt;/code&gt; か、共有の &lt;code&gt;oidc:&lt;/code&gt; 規則がその名前を挙げていない限り拒否されます(&lt;code&gt;allow = [&amp;quot;oidc:user:winpc-17&amp;quot;]&lt;/code&gt;)。何が見えるかは、その後で共有の規則が決めます。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;応答&lt;/strong&gt;は &lt;code&gt;AccessKeyId&lt;/code&gt;(&lt;code&gt;ASIA…&lt;/code&gt;)、&lt;code&gt;SecretAccessKey&lt;/code&gt;、&lt;code&gt;SessionToken&lt;/code&gt;、&lt;code&gt;Expiration&lt;/code&gt; です。リクエストはそれで署名され、セッショントークンを &lt;code&gt;x-amz-security-token&lt;/code&gt; に載せます(&lt;strong&gt;署名対象&lt;/strong&gt;)。ランダムで、メモリ上にのみあり、書き出されません。再起動で終わり、クライアントは再度求めます。&lt;/li&gt;
+&lt;li&gt;⛔ &lt;strong&gt;有効期間 = min(要求した期間, トークンの残り)。&lt;/strong&gt; 認証情報は、それを得たトークンより長く生きることはありません(&lt;code&gt;sts_duration&lt;/code&gt;、または &lt;code&gt;sts_max_duration&lt;/code&gt; までの &lt;code&gt;DurationSeconds&lt;/code&gt; は上限にすぎません)。残りが &lt;strong&gt;6 分未満&lt;/strong&gt;のトークンは &lt;code&gt;ExpiredTokenException&lt;/code&gt; で拒否されます。AWS SDK は&lt;code&gt;Expiration&lt;/code&gt; の約 5 分前に更新するため、それより短い認証情報は直ちに、永遠に更新されてしまうからです。クライアントは交換のたびに新しいトークンを提示します。&lt;/li&gt;
+&lt;li&gt;⛔ &lt;strong&gt;セッションはリクエストごとに判断されます。&lt;/strong&gt; 期限が切れます。セッショントークンはそのアクセスキーに結び付けられています。トークン発行後にプロバイダーがその人を失効させると(&lt;a href="https://go-fileshare.github.io/docs/0.37/ja/security/shared-signals/"&gt;共有シグナル&lt;/a&gt;)、終わります。設定がその名前を受け入れなくなった場合も終わります。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Policy&lt;/code&gt;、&lt;code&gt;PolicyArns&lt;/code&gt;、2 つ目の &lt;code&gt;WebIdentityToken&lt;/code&gt; は拒否され、パラメーターは POST ボディに置きます。URL には置きません。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;static_keys = false&lt;/code&gt;&lt;/strong&gt; は、「アクセスキーはユーザー、シークレットキーはそのパスワード」の方式をオフにします。&lt;code&gt;sts = true&lt;/code&gt; が必要で、なければ設定は読み込み時に拒否されます。誰も署名できないリスナーは設定済みに見えてしまうからです。ループバック以外のアドレスでは、&lt;code&gt;sts&lt;/code&gt; に &lt;code&gt;tls = true&lt;/code&gt;、または TLS を手前で終端する場合は &lt;code&gt;plaintext = true&lt;/code&gt; が必要です。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 data-hextra-search-id="on-an-unattended-machine-awscred"&gt;無人のマシンでは: awscred&lt;span class="hx:absolute hx:-mt-20" id="on-an-unattended-machine-awscred"&gt;&lt;/span&gt;
+&lt;a href="#on-an-unattended-machine-awscred" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;&lt;a href="https://github.com/go-authn/awscred" target="_blank" rel="noopener"&gt;&lt;code&gt;awscred&lt;/code&gt;&lt;/a&gt; v0.1.0 は、秘密鍵を持ちパスワードを持たないマシンのための AWS &lt;code&gt;credential_process&lt;/code&gt; です。&lt;code&gt;private_key_jwt&lt;/code&gt; に署名し、go-authn/bridge からトークンを得て、このエンドポイントを呼び、SDK が読む形で認証情報を出力します。SDK は&lt;code&gt;Expiration&lt;/code&gt; の前に再実行します。&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-ini" data-lang="ini"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;[profile fileshare]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;credential_process&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;awscred --issuer https://login.example.org --client winpc-17 --key /etc/awscred/winpc-17.pem --sts https://s3.example.org&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="コードをコピー"
+aria-label="コードをコピー"
+data-copied-label="コピーしました！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;⛔ Unix では、&lt;code&gt;awscred&lt;/code&gt; はグループまたは他者が読める鍵ファイルを拒否します(&lt;code&gt;chmod 600&lt;/code&gt;)。Windows ではファイルモードは意味を持ちません。鍵はサービスアカウントのプロファイル、またはそのアカウントだけを許可する ACL のディレクトリに置いてください。Windows の CNG ストアや TPMの鍵はまだサポートされていません。&lt;/p&gt;
+&lt;h3 data-hextra-search-id="behind-a-proxy-trusted_proxies"&gt;プロキシの背後では: &lt;code&gt;trusted_proxies&lt;/code&gt;&lt;span class="hx:absolute hx:-mt-20" id="behind-a-proxy-trusted_proxies"&gt;&lt;/span&gt;
+&lt;a href="#behind-a-proxy-trusted_proxies" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;&lt;code&gt;plaintext = true&lt;/code&gt; が想定するプロキシの背後では、すべてのクライアントが下のレート制限にとって1 つのソースになります。&lt;code&gt;s3&lt;/code&gt; の serve ブロックでプロキシを指定します。&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;s3&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;127.0.0.1:9000&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; plaintext&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; sts&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; trusted_proxies&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;10.0.0.2&amp;#34;, &amp;#34;10.0.1.0/29&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="コードをコピー"
+aria-label="コードをコピー"
+data-copied-label="コピーしました！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;信頼されたプロキシ&lt;strong&gt;から&lt;/strong&gt;届いたリクエストだけが、そのクライアントについて信じられます。&lt;code&gt;X-Forwarded-For&lt;/code&gt; の右端の、それ自身が信頼されたプロキシではないホップを使います。それ以外からはヘッダーは無視されます。&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;リストにはプロキシだけを挙げてください&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;1 ホストより広いプレフィックス(&lt;code&gt;/24&lt;/code&gt;、IPv6 の &lt;code&gt;/64&lt;/code&gt;)は受け付けられ(プロキシのプール、&lt;code&gt;/29&lt;/code&gt; は正当です)、起動時に警告が出力されます。その中のアドレスを持てるクライアントは、自分の&lt;code&gt;X-Forwarded-For&lt;/code&gt; を、したがって数えられるバケットを自分で選べます。&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h3 data-hextra-search-id="limits"&gt;制限&lt;span class="hx:absolute hx:-mt-20" id="limits"&gt;&lt;/span&gt;
+&lt;a href="#limits" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;名前あたり 16 セッション&lt;/strong&gt;: 同じ名前の最も古いものから消え、他の名前のセッションは残ります(全体で 20000)。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;ソースアドレスあたり毎分 60 リクエスト&lt;/strong&gt;。応答は &lt;code&gt;429 Throttling&lt;/code&gt; です。すべてのリクエストは、有効かどうかにかかわらず、トークンが検証される前に数えられます。ソースは IPv4 アドレス、またはIPv6 の &lt;strong&gt;/64&lt;/strong&gt; です。&lt;/li&gt;
+&lt;li&gt;数えるのはリクエストあたり O(1) で、専用のロックの下、2 世代からなる滑る 1 分で行われます。認証情報付きの S3 リクエストがそれを待つことはありません。&lt;/li&gt;
+&lt;li&gt;直近 1 分に見たソースは、テーブルが &lt;strong&gt;2 × 10000&lt;/strong&gt; 未満のエントリを保持している間は数えられます(洪水がどれだけ続いても、これが上限です)。満杯のテーブルが見ていないソースは、そのネットワークのオーバーフローバケット(&lt;strong&gt;/48&lt;/strong&gt;(IPv6)または &lt;strong&gt;/24&lt;/strong&gt;(IPv4)、それぞれレートの 10 倍)で数えられるので、洪水は、それが来たネットワークのバケットを使い切るだけで、全員のものは使い切りません。1 つの/24 の背後の IPv4 の隣人(CGNAT、キャンパス)は 1 つのバケットを共有します。&lt;/li&gt;
+&lt;li&gt;⛔ &lt;strong&gt;毎分 1024 ネットワークを超えると、1 つの共有バケットが残りを受け持ちます。&lt;/strong&gt; それより多くのネットワークを持つ攻撃者はそれを使い切り、テーブルがまだ見ていないソースはすべて、&lt;strong&gt;約 1 時間ごとに更新する既存のクライアントも含めて&lt;/strong&gt;、分が変わるまで拒否されます。これがこの設計の限界です。&lt;/li&gt;
+&lt;/ul&gt;
 &lt;h2 data-hextra-search-id="two-limits-worth-knowing-before-pointing-it-at-something-large"&gt;大きなものに向ける前に知っておくべき 2 つの制限&lt;span class="hx:absolute hx:-mt-20" id="two-limits-worth-knowing-before-pointing-it-at-something-large"&gt;&lt;/span&gt;
 &lt;a href="#two-limits-worth-knowing-before-pointing-it-at-something-large" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;GetObject&lt;/code&gt; はオブジェクト全体をメモリに読み込みます。&lt;/strong&gt; ドライバーインターフェースが提供するのは&lt;code&gt;ReadFile&lt;/code&gt; だけで、オープナーもリーダーもないため、使えるストリーミング読み取りがありません。上限の 256 MiB を超えると、プロセスを落とす代わりに &lt;code&gt;EntityTooLarge&lt;/code&gt; で応答します。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;&lt;code&gt;LastModified&lt;/code&gt; はエポックです。&lt;/strong&gt; &lt;code&gt;filesystem.Stat&lt;/code&gt; が持つのは &lt;code&gt;Mode&lt;/code&gt;、&lt;code&gt;Size&lt;/code&gt;、&lt;code&gt;Inode&lt;/code&gt; で、更新時刻はまったくありません。S3 のスキーマではこのフィールドは省略できないため、何かを送る必要があります。エポックは明らかに実際の時刻ではありません。&lt;code&gt;time.Now()&lt;/code&gt; では、ファイルがたった今変わったように見え、どの同期ツールも毎回すべてをコピーしてしまいます。&lt;/p&gt;</description></item><item><title>NFS — Kerberos か証明書がなければ何もなし</title><link>https://go-fileshare.github.io/docs/0.37/ja/protocols/nfs/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.37/ja/protocols/nfs/</guid><description>

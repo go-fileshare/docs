@@ -617,11 +617,101 @@ read-only”）。fileshare 让 S3 服务器保持只读，因为对于某人只
 &lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
 &lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;这里不接受持有者令牌&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;&lt;a href="https://go-fileshare.github.io/docs/0.37/zh-cn/protocols/webdav/"&gt;OIDC&lt;/a&gt;只在 WebDAV 上有效，其他地方都不行。S3 使用SigV4 签名进行身份验证，这是对请求的 HMAC，没有可容纳持有者令牌的字段。&lt;/p&gt;
-&lt;p&gt;通常的做法是 STS &lt;code&gt;AssumeRoleWithWebIdentity&lt;/code&gt;，它把 OIDC令牌换成临时凭据，客户端随后用这些凭据签名。那是另一种机制，并且&lt;strong&gt;尚未实现&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;做法是 STS &lt;code&gt;AssumeRoleWithWebIdentity&lt;/code&gt;，它把 OIDC令牌换成临时凭据，客户端随后用这些凭据签名。自 v0.50.0 起，此监听器提供它：见&lt;a href="#sts"&gt;下文&lt;/a&gt;。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;p&gt;分段上传、版本控制、ACL、策略、生命周期规则、复制和标签均未实现。设置其中任何一项以及开始分段上传，都属于写入，和其他写入一样返回 &lt;code&gt;AccessDenied&lt;/code&gt;。请求其中某一项的&lt;code&gt;GET&lt;/code&gt;（&lt;code&gt;?versioning&lt;/code&gt;、&lt;code&gt;?acl&lt;/code&gt;、&lt;code&gt;?tagging&lt;/code&gt;……）不会被区分出来：查询参数被忽略，返回存储桶的列表或对象。对于 &lt;code&gt;list-type=2&lt;/code&gt; 以外的列表、在 &lt;code&gt;/&lt;/code&gt; 上除 &lt;code&gt;GET&lt;/code&gt; 之外的任何方法，以及这里没有任何操作使用的方法，返回 &lt;code&gt;NotImplemented&lt;/code&gt;。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="sts"&gt;临时凭据：STS &lt;code&gt;AssumeRoleWithWebIdentity&lt;/code&gt;&lt;span class="hx:absolute hx:-mt-20" id="sts"&gt;&lt;/span&gt;
+&lt;a href="#sts" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;自 v0.50.0 起，S3 监听器也响应 AWS STS API（&lt;code&gt;AssumeRoleWithWebIdentity&lt;/code&gt;，版本 2011-06-15）：&lt;a href="https://go-fileshare.github.io/docs/0.37/zh-cn/protocols/webdav/"&gt;&lt;code&gt;oidc&lt;/code&gt; 块&lt;/a&gt;的提供方所发的令牌，被换成&lt;strong&gt;会过期&lt;/strong&gt;的访问密钥、机密密钥和会话令牌。&lt;code&gt;aws&lt;/code&gt;、&lt;code&gt;rclone&lt;/code&gt; 和 AWS SDK 像对 AWS 那样使用它，没有人持有密码。&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;oidc&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; issuer&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://login.example.org&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; audience&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;fileshare&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;s3&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:9000&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; tls&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; sts&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt; true # POST /，Action&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;AssumeRoleWithWebIdentity&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; sts_duration&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;1h&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # 默认值，15m 到 12h
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; sts_max_duration&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;4h&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # DurationSeconds 最多可要求的值；默认为 sts_duration
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; static_keys&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;false&lt;/span&gt;&lt;span class="c1"&gt; # 不再有“访问密钥就是用户”：只有临时凭据签名
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="复制代码"
+aria-label="复制代码"
+data-copied-label="已复制！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;令牌&lt;/strong&gt;是 &lt;code&gt;oidc&lt;/code&gt; 块的提供方所发的访问令牌（&lt;code&gt;typ&lt;/code&gt; 为 &lt;code&gt;at+jwt&lt;/code&gt;），针对该块的 issuer 和audience——没有第二套提供方配置。可以是人的令牌，也可以是机器的：go-authn/bridge 为用私钥认证（&lt;code&gt;private_key_jwt&lt;/code&gt;）的客户端签发的 &lt;code&gt;client_credentials&lt;/code&gt; 令牌，其 &lt;code&gt;sub&lt;/code&gt; = 客户端 ID，那就是这里的名字。&lt;/li&gt;
+&lt;li&gt;⛔ &lt;strong&gt;它经过与 WebDAV 上的令牌相同的规则。&lt;/strong&gt; 对于这里没有任何来源认识的名字，有效令牌也会被拒绝，除非 &lt;code&gt;trust_all = true&lt;/code&gt;，或某个共享的 &lt;code&gt;oidc:&lt;/code&gt; 规则点了它的名（&lt;code&gt;allow = [&amp;quot;oidc:user:winpc-17&amp;quot;]&lt;/code&gt;）。随后由共享的规则决定什么可见。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;应答&lt;/strong&gt;是 &lt;code&gt;AccessKeyId&lt;/code&gt;（&lt;code&gt;ASIA…&lt;/code&gt;）、&lt;code&gt;SecretAccessKey&lt;/code&gt;、&lt;code&gt;SessionToken&lt;/code&gt; 和 &lt;code&gt;Expiration&lt;/code&gt;。请求用它们签名，并在 &lt;code&gt;x-amz-security-token&lt;/code&gt; 中带上会话令牌（&lt;strong&gt;被签名&lt;/strong&gt;）。它们是随机的，只在内存中，从不写出；重启会使其终止，客户端再次请求。&lt;/li&gt;
+&lt;li&gt;⛔ &lt;strong&gt;有效期 = min(请求的时长, 令牌剩余的时间)。&lt;/strong&gt; 凭据绝不会比买到它们的令牌活得更久（&lt;code&gt;sts_duration&lt;/code&gt;，或至多到 &lt;code&gt;sts_max_duration&lt;/code&gt; 的 &lt;code&gt;DurationSeconds&lt;/code&gt;，只是上限）。剩余时间&lt;strong&gt;不足 6 分钟&lt;/strong&gt;的令牌会被 &lt;code&gt;ExpiredTokenException&lt;/code&gt; 拒绝：AWS SDK 在 &lt;code&gt;Expiration&lt;/code&gt; 前约 5 分钟续期，更短的凭据会被立即、永远地续期。客户端每次交换都出示新的令牌。&lt;/li&gt;
+&lt;li&gt;⛔ &lt;strong&gt;会话在每个请求上都被判断&lt;/strong&gt;：它会过期；其会话令牌与其访问密钥绑定；在令牌签发之后提供方撤销此人时它即告结束（&lt;a href="https://go-fileshare.github.io/docs/0.37/zh-cn/security/shared-signals/"&gt;共享信号&lt;/a&gt;）；配置不再接纳该名字时也告结束。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Policy&lt;/code&gt;、&lt;code&gt;PolicyArns&lt;/code&gt; 和第二个 &lt;code&gt;WebIdentityToken&lt;/code&gt; 会被拒绝，参数必须放在 POST 正文里，绝不能放在 URL 中。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;static_keys = false&lt;/code&gt;&lt;/strong&gt; 关闭“访问密钥就是用户、机密密钥就是其密码”的方式。它需要&lt;code&gt;sts = true&lt;/code&gt;：否则配置在加载时被拒绝，因为一个没人能为之签名的监听器看起来像已配置好。在非回环地址上，&lt;code&gt;sts&lt;/code&gt; 需要 &lt;code&gt;tls = true&lt;/code&gt;，或在前面终结 TLS 时用 &lt;code&gt;plaintext = true&lt;/code&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 data-hextra-search-id="on-an-unattended-machine-awscred"&gt;在无人值守的机器上：awscred&lt;span class="hx:absolute hx:-mt-20" id="on-an-unattended-machine-awscred"&gt;&lt;/span&gt;
+&lt;a href="#on-an-unattended-machine-awscred" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;&lt;a href="https://github.com/go-authn/awscred" target="_blank" rel="noopener"&gt;&lt;code&gt;awscred&lt;/code&gt;&lt;/a&gt; v0.1.0 是给持有私钥而没有密码的机器用的 AWS&lt;code&gt;credential_process&lt;/code&gt;：它签发一个 &lt;code&gt;private_key_jwt&lt;/code&gt;，从 go-authn/bridge 取得令牌，调用此端点，并按 SDK 读取的格式打印凭据。SDK 会在 &lt;code&gt;Expiration&lt;/code&gt; 之前再次运行它。&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-ini" data-lang="ini"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;[profile fileshare]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;credential_process&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;awscred --issuer https://login.example.org --client winpc-17 --key /etc/awscred/winpc-17.pem --sts https://s3.example.org&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="复制代码"
+aria-label="复制代码"
+data-copied-label="已复制！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;⛔ 在 Unix 上，&lt;code&gt;awscred&lt;/code&gt; 拒绝组或其他用户可读的密钥文件（&lt;code&gt;chmod 600&lt;/code&gt;）。在 Windows 上文件权限位没有意义：请把密钥放在服务账户的配置文件目录中，或放在 ACL 只允许该账户的目录里。Windows CNG 存储或 TPM 中的密钥尚不支持。&lt;/p&gt;
+&lt;h3 data-hextra-search-id="behind-a-proxy-trusted_proxies"&gt;在代理之后：&lt;code&gt;trusted_proxies&lt;/code&gt;&lt;span class="hx:absolute hx:-mt-20" id="behind-a-proxy-trusted_proxies"&gt;&lt;/span&gt;
+&lt;a href="#behind-a-proxy-trusted_proxies" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;在 &lt;code&gt;plaintext = true&lt;/code&gt; 所针对的代理之后，所有客户端对下面的速率限制来说都是同一个来源。请在 &lt;code&gt;s3&lt;/code&gt; 的 serve 块中列出代理：&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;s3&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;127.0.0.1:9000&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; plaintext&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; sts&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; trusted_proxies&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;10.0.0.2&amp;#34;, &amp;#34;10.0.1.0/29&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="复制代码"
+aria-label="复制代码"
+data-copied-label="已复制！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;只有&lt;strong&gt;来自&lt;/strong&gt;受信任代理的请求，其关于客户端的说法才会被相信，取 &lt;code&gt;X-Forwarded-For&lt;/code&gt; 中最右边、且本身不是受信任代理的那一跳；对其他任何来源，该头会被忽略。&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;列表必须只列出代理，别的都不要列&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;比一台主机更宽的前缀（&lt;code&gt;/24&lt;/code&gt;、IPv6 的 &lt;code&gt;/64&lt;/code&gt;）会被接受——代理池，比如 &lt;code&gt;/29&lt;/code&gt;，是正当的——并在启动时打印一条警告：在其中可以拥有地址的客户端，会自己选择 &lt;code&gt;X-Forwarded-For&lt;/code&gt;，从而选择自己被计入的桶。&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h3 data-hextra-search-id="limits"&gt;限制&lt;span class="hx:absolute hx:-mt-20" id="limits"&gt;&lt;/span&gt;
+&lt;a href="#limits" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;每个名字 16 个会话&lt;/strong&gt;：同名的最老的先出局，其他名字的会话保留（总共 20000）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;每个来源地址每分钟 60 个请求&lt;/strong&gt;，应答 &lt;code&gt;429 Throttling&lt;/code&gt;。每个请求，无论有效与否，都在验证令牌之前计数。来源是一个 IPv4 地址，或一个 IPv6 &lt;strong&gt;/64&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;计数每个请求为 O(1)，处于它自己的锁之下，在由两代组成的滑动一分钟内进行；带凭据的 S3 请求从不等待它。&lt;/li&gt;
+&lt;li&gt;最近一分钟见过的来源，只要表中少于 &lt;strong&gt;2 × 10000&lt;/strong&gt; 个条目就会被计数（无论洪水持续多久，这是上界）。满表没见过的来源，计入其网络的溢出桶——其 &lt;strong&gt;/48&lt;/strong&gt;（IPv6）或 &lt;strong&gt;/24&lt;/strong&gt;（IPv4），各为速率的十倍——所以洪水耗尽的是它所来自网络的桶，而不是所有人的桶。同一 /24 之后的 IPv4 邻居（CGNAT、校园网）共用一个桶。&lt;/li&gt;
+&lt;li&gt;⛔ &lt;strong&gt;每分钟超过 1024 个网络后，由一个共享桶服务其余来源&lt;/strong&gt;：拥有更多网络的攻击者会耗尽它，表中尚未见过的每个来源——&lt;strong&gt;包括大约每小时续期一次的现有客户端&lt;/strong&gt;——都会被拒绝，直到这一分钟翻过去。这是此设计的限度。&lt;/li&gt;
+&lt;/ul&gt;
 &lt;h2 data-hextra-search-id="two-limits-worth-knowing-before-pointing-it-at-something-large"&gt;在指向大对象之前值得了解的两个限制&lt;span class="hx:absolute hx:-mt-20" id="two-limits-worth-knowing-before-pointing-it-at-something-large"&gt;&lt;/span&gt;
 &lt;a href="#two-limits-worth-knowing-before-pointing-it-at-something-large" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;GetObject&lt;/code&gt; 会把整个对象读入内存。&lt;/strong&gt; 驱动接口只提供&lt;code&gt;ReadFile&lt;/code&gt;，没有别的，没有 opener，也没有 reader，因此没有可用的流式读取。256 MiB 的上限会返回 &lt;code&gt;EntityTooLarge&lt;/code&gt;，而不是让进程崩溃。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;&lt;code&gt;LastModified&lt;/code&gt; 是纪元时间。&lt;/strong&gt; &lt;code&gt;filesystem.Stat&lt;/code&gt; 携带 &lt;code&gt;Mode&lt;/code&gt;、&lt;code&gt;Size&lt;/code&gt; 和&lt;code&gt;Inode&lt;/code&gt;，完全没有修改时间。该字段在 S3模式中不是可选的，因此必须发送一个值；纪元时间显然不是真实时间，而 &lt;code&gt;time.Now()&lt;/code&gt; 则会像是刚刚更改的文件，使每个同步工具在每次运行时都复制所有内容。&lt;/p&gt;</description></item><item><title>NFS：什么都没有，除非有 Kerberos 或证书</title><link>https://go-fileshare.github.io/docs/0.37/zh-cn/protocols/nfs/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.37/zh-cn/protocols/nfs/</guid><description>

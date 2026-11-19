@@ -288,8 +288,6 @@ data-copied-label="コピーしました！"
 &lt;/ul&gt;
 &lt;h2 data-hextra-search-id="not-yet"&gt;まだ実装されていないもの&lt;span class="hx:absolute hx:-mt-20" id="not-yet"&gt;&lt;/span&gt;
 &lt;a href="#not-yet" class="subheading-anchor" aria-label="このセクションへのパーマリンク"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;S3 での書き込み。&lt;/strong&gt; &lt;code&gt;PUT&lt;/code&gt; と &lt;code&gt;DELETE&lt;/code&gt; は 403 を返します。ライブラリは書き込めますが、読み取りしか許されていない人の共有は、SFTP と同じ場所で拒否しなければならず、それがまだ組み込まれていません。中途半端に書かれたオブジェクトよりも、拒否するほうが安全です。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;S3 での OIDC トークン。&lt;/strong&gt; トークンが使えるのは &lt;a href="https://go-fileshare.github.io/docs/0.37/ja/protocols/webdav/"&gt;WebDAV&lt;/a&gt;
-だけです。S3 の通常の方法は STS の &lt;code&gt;AssumeRoleWithWebIdentity&lt;/code&gt; で、トークンを一時的な認証情報と交換し、クライアントがそれで署名します。これはベアラートークンを受け入れるのとは別の仕組みであり、実装されていません。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;&lt;code&gt;admin&lt;/code&gt; ブロックまたは &lt;code&gt;metrics&lt;/code&gt; ブロックがある場合の &lt;code&gt;--isolate&lt;/code&gt;。&lt;/strong&gt; 拒否されます。API の変更を適用できる単一のプロセスが存在しないためです。&lt;a href="https://go-fileshare.github.io/docs/0.37/ja/operations/isolation/#not-with-an-admin-or-a-metrics-block-yet"&gt;プロトコルごとに 1 プロセス&lt;/a&gt;を参照してください。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;共有 Linux NFS クライアントでの、証明書によるユーザーごとの人の特定。&lt;/strong&gt; Linuxクライアントは証明書をマウントに紐づけるため、そのマウントのすべてのユーザーが、証明書が指名する人として扱われます。これはクライアントの性質であり、その場合の答えは &lt;code&gt;sec=krb5&lt;/code&gt; です。&lt;a href="https://go-fileshare.github.io/docs/0.37/ja/security/nfs-certificates/#what-it-cannot-promise"&gt;保証できないこと&lt;/a&gt;を参照してください。&lt;/p&gt;
 &lt;p&gt;&lt;a href="https://go-fileshare.github.io/docs/0.37/ja/protocols/s3/"&gt;S3 自体&lt;/a&gt;は提供済みです。共有はバケットであり、SFTP が使うのと同じユーザーごとのツリー上で提供されます。&lt;/p&gt;

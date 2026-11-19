@@ -304,9 +304,6 @@ WebDAV-Tokens, ein per Scope deaktivierter IdP und opkssh über Shared Signals.&
 &lt;a href="#not-yet" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;Schreibzugriffe über S3.&lt;/strong&gt; &lt;code&gt;PUT&lt;/code&gt; und &lt;code&gt;DELETE&lt;/code&gt; antworten mit 403. Die Bibliothek kann schreiben, aber
 eine Freigabe, die eine Person nur lesen darf, muss an derselben Stelle ablehnen wie SFTP, und
 das ist nicht verdrahtet. Ablehnen ist besser als ein halb geschriebenes Objekt.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Ein OIDC-Token über S3.&lt;/strong&gt; Tokens funktionieren über &lt;a href="https://go-fileshare.github.io/docs/0.37/de/protocols/webdav/"&gt;WebDAV&lt;/a&gt; und
-nirgendwo sonst. Der übliche Weg für S3 ist STS &lt;code&gt;AssumeRoleWithWebIdentity&lt;/code&gt;,das das Token gegen temporäre Zugangsdaten tauscht, mit denen der Client dann signiert –ein anderer Mechanismus als das Akzeptieren eines Bearer-Tokens, und nicht
-implementiert.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;&lt;code&gt;--isolate&lt;/code&gt; mit einem &lt;code&gt;admin&lt;/code&gt;- oder einem &lt;code&gt;metrics&lt;/code&gt;-Block.&lt;/strong&gt; Abgelehnt: Es gibt keinen einzelnen
 Prozess, auf den eine Änderung über die API angewendet werden könnte. Siehe&lt;a href="https://go-fileshare.github.io/docs/0.37/de/operations/isolation/#not-with-an-admin-or-a-metrics-block-yet"&gt;ein Prozess pro Protokoll&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Eine Person pro Benutzer auf einem gemeinsam genutzten Linux-NFS-Client, aus einem Zertifikat.&lt;/strong&gt; Ein Linux-Client

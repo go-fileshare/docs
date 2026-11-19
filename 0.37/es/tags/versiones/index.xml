@@ -311,8 +311,6 @@ señales compartidas, un IdP desactivado por ámbito, y opkssh con señales comp
 &lt;a href="#not-yet" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;Escrituras por S3.&lt;/strong&gt; &lt;code&gt;PUT&lt;/code&gt; y &lt;code&gt;DELETE&lt;/code&gt; responden 403. La biblioteca sabe escribir,pero un recurso compartido que una persona solo puede leer tiene que rechazar en el
 mismo punto en que lo hace SFTP, y eso no está conectado. Rechazar es mejor que un
 objeto escrito a medias.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Un token OIDC por S3.&lt;/strong&gt; Los tokens funcionan por &lt;a href="https://go-fileshare.github.io/docs/0.37/es/protocols/webdav/"&gt;WebDAV&lt;/a&gt; y
-en ningún otro sitio. La vía habitual para S3 es STS &lt;code&gt;AssumeRoleWithWebIdentity&lt;/code&gt;,que canjea el token por credenciales temporales con las que luego firma el cliente:un mecanismo distinto de aceptar un token bearer, y no implementado.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;&lt;code&gt;--isolate&lt;/code&gt; con un bloque &lt;code&gt;admin&lt;/code&gt; o &lt;code&gt;metrics&lt;/code&gt;.&lt;/strong&gt; Rechazado: no hay un único
 proceso al que se pueda aplicar un cambio de la API. Consulte&lt;a href="https://go-fileshare.github.io/docs/0.37/es/operations/isolation/#not-with-an-admin-or-a-metrics-block-yet"&gt;un proceso por protocolo&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Una persona por usuario en un cliente NFS Linux compartido, a partir de un

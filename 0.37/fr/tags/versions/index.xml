@@ -306,10 +306,6 @@ signaux partagés, un IdP désactivé par portée, et opkssh par signaux partag�
 &lt;a href="#not-yet" class="subheading-anchor" aria-label="Lien permanent vers cette section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;Les écritures en S3.&lt;/strong&gt; &lt;code&gt;PUT&lt;/code&gt; et &lt;code&gt;DELETE&lt;/code&gt; répondent 403. La bibliothèque sait écrire, mais
 un partage qu&amp;rsquo;une personne ne peut que lire doit refuser au même endroit que SFTP, et
 ce n&amp;rsquo;est pas câblé. Refuser vaut mieux qu&amp;rsquo;un objet à moitié écrit.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Un jeton OIDC en S3.&lt;/strong&gt; Les jetons fonctionnent en &lt;a href="https://go-fileshare.github.io/docs/0.37/fr/protocols/webdav/"&gt;WebDAV&lt;/a&gt; et
-nulle part ailleurs. La voie habituelle pour S3 est STS &lt;code&gt;AssumeRoleWithWebIdentity&lt;/code&gt;,qui échange le jeton contre des identifiants temporaires avec lesquels le client signe
-ensuite — un mécanisme différent de l&amp;rsquo;acceptation d&amp;rsquo;un jeton porteur, et non
-implémenté.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;&lt;code&gt;--isolate&lt;/code&gt; avec un bloc &lt;code&gt;admin&lt;/code&gt; ou &lt;code&gt;metrics&lt;/code&gt;.&lt;/strong&gt; Refusé : il n&amp;rsquo;y a aucun processus
 unique auquel une modification par l&amp;rsquo;API pourrait s&amp;rsquo;appliquer. Voir&lt;a href="https://go-fileshare.github.io/docs/0.37/fr/operations/isolation/#not-with-an-admin-or-a-metrics-block-yet"&gt;un processus par protocole&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Une personne par utilisateur sur un client NFS Linux partagé, à partir d&amp;rsquo;un certificat.&lt;/strong&gt; Un client

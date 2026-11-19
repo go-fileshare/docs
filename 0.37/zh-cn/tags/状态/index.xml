@@ -290,7 +290,6 @@ data-copied-label="已复制！"
 &lt;/ul&gt;
 &lt;h2 data-hextra-search-id="not-yet"&gt;尚未实现&lt;span class="hx:absolute hx:-mt-20" id="not-yet"&gt;&lt;/span&gt;
 &lt;a href="#not-yet" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;通过 S3 写入。&lt;/strong&gt; &lt;code&gt;PUT&lt;/code&gt; 和 &lt;code&gt;DELETE&lt;/code&gt; 返回 403。库可以写入，但某人只能读取的共享必须在与 SFTP 相同的位置拒绝，而这一点尚未接入。拒绝胜过写了一半的对象。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;通过 S3 使用 OIDC 令牌。&lt;/strong&gt; 令牌只在 &lt;a href="https://go-fileshare.github.io/docs/0.37/zh-cn/protocols/webdav/"&gt;WebDAV&lt;/a&gt;上有效，其他地方都不行。S3 的通常做法是 STS &lt;code&gt;AssumeRoleWithWebIdentity&lt;/code&gt;，它把令牌换成临时凭据，客户端随后用这些凭据签名，这是与接受持有者令牌不同的机制，且尚未实现。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;带 &lt;code&gt;admin&lt;/code&gt; 或 &lt;code&gt;metrics&lt;/code&gt; 块的 &lt;code&gt;--isolate&lt;/code&gt;。&lt;/strong&gt; 会被拒绝：没有任何单一进程可供 API 变更应用。参见&lt;a href="https://go-fileshare.github.io/docs/0.37/zh-cn/operations/isolation/#not-with-an-admin-or-a-metrics-block-yet"&gt;每个协议一个进程&lt;/a&gt;。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;在共享的 Linux NFS 客户端上，凭证书区分每个用户。&lt;/strong&gt; Linux客户端把证书附加到挂载上，因此该挂载的每个用户都是证书所指明的那个人。这是客户端的属性，那里的答案是&lt;code&gt;sec=krb5&lt;/code&gt;。参见&lt;a href="https://go-fileshare.github.io/docs/0.37/zh-cn/security/nfs-certificates/#what-it-cannot-promise"&gt;它无法承诺什么&lt;/a&gt;。&lt;/p&gt;
 &lt;p&gt;&lt;a href="https://go-fileshare.github.io/docs/0.37/zh-cn/protocols/s3/"&gt;S3 本身&lt;/a&gt;已经发布：共享就是存储桶，通过SFTP 使用的同一棵每用户目录树提供。&lt;/p&gt;

@@ -305,10 +305,6 @@ shared signals, an IdP disabled by scope, and opkssh over shared signals.&lt;/li
 &lt;a href="#not-yet" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;Writes over S3.&lt;/strong&gt; &lt;code&gt;PUT&lt;/code&gt; and &lt;code&gt;DELETE&lt;/code&gt; answer 403. The library can write, but
 a share a person may only read has to refuse at the same place SFTP does, and
 that is not wired. Refusing beats a half-written object.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;An OIDC token over S3.&lt;/strong&gt; Tokens work over &lt;a href="https://go-fileshare.github.io/docs/0.37/protocols/webdav/"&gt;WebDAV&lt;/a&gt; and
-nowhere else. The usual route for S3 is STS &lt;code&gt;AssumeRoleWithWebIdentity&lt;/code&gt;,which exchanges the token for temporary credentials the client then signs
-with — a different mechanism from accepting a bearer token, and not
-implemented.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;&lt;code&gt;--isolate&lt;/code&gt; with an &lt;code&gt;admin&lt;/code&gt; or a &lt;code&gt;metrics&lt;/code&gt; block.&lt;/strong&gt; Refused: there is no one
 process an API change could be applied to. See&lt;a href="https://go-fileshare.github.io/docs/0.37/operations/isolation/#not-with-an-admin-or-a-metrics-block-yet"&gt;one process per protocol&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;A person per user on a shared Linux NFS client, from a certificate.&lt;/strong&gt; A Linux
