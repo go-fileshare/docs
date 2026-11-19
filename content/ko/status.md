@@ -155,12 +155,6 @@ share is full)"입니다. WebDAV `500`이고 NFS `NFS3ERR_IO`였던 `EDQUOT`는 
 있지만, 사용자가 읽기만 할 수 있는 공유는 SFTP와 같은 지점에서 거부해야 하는데
 아직 연결되지 않았습니다. 거부하는 편이 반쯤 쓰인 오브젝트보다 낫습니다.
 
-**S3를 통한 OIDC 토큰.** 토큰은 [WebDAV]({{< relref "/protocols/webdav.md" >}})에서만
-동작하며 다른 곳에서는 동작하지 않습니다. S3의 일반적인 경로는 STS
-`AssumeRoleWithWebIdentity`로, 토큰을 클라이언트가 이후 서명에 쓰는 임시 자격
-증명으로 교환합니다. 베어러 토큰을 수락하는 것과는 다른 메커니즘이며 구현되어 있지
-않습니다.
-
 **`admin` 또는 `metrics` 블록이 있는 `--isolate`.** 거부됩니다. API 변경을 적용할
 단일 프로세스가 없기 때문입니다.
 [프로토콜마다 하나의 프로세스]({{< relref "/operations/isolation.md#not-with-an-admin-or-a-metrics-block-yet" >}})를

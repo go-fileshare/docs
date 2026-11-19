@@ -155,11 +155,6 @@ TLS を終端するプロキシの背後であれば `plaintext = true` を指�
 読み取りしか許されていない人の共有は、SFTP と同じ場所で拒否しなければならず、
 それがまだ組み込まれていません。中途半端に書かれたオブジェクトよりも、拒否するほうが安全です。
 
-**S3 での OIDC トークン。** トークンが使えるのは [WebDAV]({{< relref "/protocols/webdav.md" >}})
-だけです。S3 の通常の方法は STS の `AssumeRoleWithWebIdentity` で、
-トークンを一時的な認証情報と交換し、クライアントがそれで署名します。
-これはベアラートークンを受け入れるのとは別の仕組みであり、実装されていません。
-
 **`admin` ブロックまたは `metrics` ブロックがある場合の `--isolate`。** 拒否されます。
 API の変更を適用できる単一のプロセスが存在しないためです。
 [プロトコルごとに 1 プロセス]({{< relref "/operations/isolation.md#not-with-an-admin-or-a-metrics-block-yet" >}})を参照してください。

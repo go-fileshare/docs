@@ -159,11 +159,6 @@ pero un recurso compartido que una persona solo puede leer tiene que rechazar en
 mismo punto en que lo hace SFTP, y eso no está conectado. Rechazar es mejor que un
 objeto escrito a medias.
 
-**Un token OIDC por S3.** Los tokens funcionan por [WebDAV]({{< relref "/protocols/webdav.md" >}}) y
-en ningún otro sitio. La vía habitual para S3 es STS `AssumeRoleWithWebIdentity`,
-que canjea el token por credenciales temporales con las que luego firma el cliente:
-un mecanismo distinto de aceptar un token bearer, y no implementado.
-
 **`--isolate` con un bloque `admin` o `metrics`.** Rechazado: no hay un único
 proceso al que se pueda aplicar un cambio de la API. Consulte
 [un proceso por protocolo]({{< relref "/operations/isolation.md#not-with-an-admin-or-a-metrics-block-yet" >}}).

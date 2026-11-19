@@ -155,12 +155,6 @@ des affirmations sur le code.
 un partage qu'une personne ne peut que lire doit refuser au même endroit que SFTP, et
 ce n'est pas câblé. Refuser vaut mieux qu'un objet à moitié écrit.
 
-**Un jeton OIDC en S3.** Les jetons fonctionnent en [WebDAV]({{< relref "/protocols/webdav.md" >}}) et
-nulle part ailleurs. La voie habituelle pour S3 est STS `AssumeRoleWithWebIdentity`,
-qui échange le jeton contre des identifiants temporaires avec lesquels le client signe
-ensuite — un mécanisme différent de l'acceptation d'un jeton porteur, et non
-implémenté.
-
 **`--isolate` avec un bloc `admin` ou `metrics`.** Refusé : il n'y a aucun processus
 unique auquel une modification par l'API pourrait s'appliquer. Voir
 [un processus par protocole]({{< relref "/operations/isolation.md#not-with-an-admin-or-a-metrics-block-yet" >}}).

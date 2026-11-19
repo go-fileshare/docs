@@ -155,12 +155,6 @@ Behauptungen über den Code.
 eine Freigabe, die eine Person nur lesen darf, muss an derselben Stelle ablehnen wie SFTP, und
 das ist nicht verdrahtet. Ablehnen ist besser als ein halb geschriebenes Objekt.
 
-**Ein OIDC-Token über S3.** Tokens funktionieren über [WebDAV]({{< relref "/protocols/webdav.md" >}}) und
-nirgendwo sonst. Der übliche Weg für S3 ist STS `AssumeRoleWithWebIdentity`,
-das das Token gegen temporäre Zugangsdaten tauscht, mit denen der Client dann signiert –
-ein anderer Mechanismus als das Akzeptieren eines Bearer-Tokens, und nicht
-implementiert.
-
 **`--isolate` mit einem `admin`- oder einem `metrics`-Block.** Abgelehnt: Es gibt keinen einzelnen
 Prozess, auf den eine Änderung über die API angewendet werden könnte. Siehe
 [ein Prozess pro Protokoll]({{< relref "/operations/isolation.md#not-with-an-admin-or-a-metrics-block-yet" >}}).

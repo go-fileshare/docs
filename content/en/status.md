@@ -155,12 +155,6 @@ assertions about the code.
 a share a person may only read has to refuse at the same place SFTP does, and
 that is not wired. Refusing beats a half-written object.
 
-**An OIDC token over S3.** Tokens work over [WebDAV]({{< relref "/protocols/webdav.md" >}}) and
-nowhere else. The usual route for S3 is STS `AssumeRoleWithWebIdentity`,
-which exchanges the token for temporary credentials the client then signs
-with — a different mechanism from accepting a bearer token, and not
-implemented.
-
 **`--isolate` with an `admin` or a `metrics` block.** Refused: there is no one
 process an API change could be applied to. See
 [one process per protocol]({{< relref "/operations/isolation.md#not-with-an-admin-or-a-metrics-block-yet" >}}).
