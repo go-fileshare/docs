@@ -154,11 +154,6 @@ govulncheck -mode binary ./fileshare
 某人只能读取的共享必须在与 SFTP 相同的位置拒绝，而这一点
 尚未接入。拒绝胜过写了一半的对象。
 
-**通过 S3 使用 OIDC 令牌。** 令牌只在 [WebDAV]({{< relref "/protocols/webdav.md" >}})上有效，
-其他地方都不行。S3 的通常做法是 STS `AssumeRoleWithWebIdentity`，
-它把令牌换成临时凭据，客户端随后用这些凭据签名，
-这是与接受持有者令牌不同的机制，且尚未实现。
-
 **带 `admin` 或 `metrics` 块的 `--isolate`。** 会被拒绝：没有任何单一
 进程可供 API 变更应用。参见
 [每个协议一个进程]({{< relref "/operations/isolation.md#not-with-an-admin-or-a-metrics-block-yet" >}})。
