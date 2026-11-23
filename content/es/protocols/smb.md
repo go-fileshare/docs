@@ -76,6 +76,43 @@ dirección Windows recurre a NTLM. Medido con Windows 11 25H2 (sin unir): el cli
 ofrece MS-KRB5, Kerberos, NEGOEX y NTLMSSP, envía un AP-REQ de Kerberos, monta, lista,
 lee y escribe con la firma exigida, y no envía ningún mensaje NTLM.
 
+## SMB sobre QUIC {#quic}
+
+```hcl
+tls {
+  cert_file = "/var/lib/caddy/certificates/acme-v02.api.letsencrypt.org-directory/files.example.org/files.example.org.crt"
+  key_file  = "/var/lib/caddy/certificates/acme-v02.api.letsencrypt.org-directory/files.example.org/files.example.org.key"
+}
+
+serve "smb" {
+  addr      = ":443"          # UDP: no choca con un proxy HTTPS en TCP 443
+  transport = "quic"
+  tls       = true
+  # client_cert    = "required"
+  # client_ca_file = "/etc/fileshare/client-ca.pem"
+}
+```
+
+SMB 3.1.1 sobre QUIC es el mismo protocolo dentro de TLS 1.3 en UDP 443, con
+ALPN `smb`: `net use \\files.example.org\share /TRANSPORT:QUIC` en Windows 11,
+con TCP 445 cerrado. El certificado es el del bloque `tls` y sus archivos se
+recargan al cambiar: apuntarlos al almacén ACME de un proxy inverso sigue sus
+renovaciones. Un cliente Windows compara el nombre del servidor con los nombres
+DNS del certificado: use un nombre, nunca una dirección (una dirección también
+fuerza NTLM). Un proxy en la misma máquina no debe ofrecer HTTP/3 en ese puerto
+UDP (Caddy: `protocols h1 h2`).
+
+Por defecto solo Kerberos distingue a las personas, con un principal
+`cifs/files.example.org` en la keytab. `client_cert = "required"` añade un
+certificado de cliente encadenado a `client_ca_file`, exigido en el handshake
+TLS antes de cualquier byte SMB: dice qué máquina puede conectarse, y el
+principal Kerberos sigue siendo la persona. El archivo de CA se lee al
+arrancar. Sobre QUIC el servidor concede un crédito por petición y no anuncia
+large MTU ([MS-SMB2] 3.3.5.4): una lectura o escritura es de 64 KiB como
+máximo. `identity = "system"` y los hijos aislados aún no sirven QUIC y el
+servidor se niega a arrancar con ellos. Un bloque `serve "smb"` lleva un solo
+transporte: lance una segunda instancia para TCP.
+
 ## Un puerto privilegiado sin un servidor privilegiado {#a-privileged-port-without-a-privileged-server}
 
 Con [`--isolate`]({{< relref "/operations/isolation.md" >}}) en Unix, el proceso padre se vincula

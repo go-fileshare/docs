@@ -67,6 +67,39 @@ v0.50.0 已包含。
 用 Windows 11 25H2（未加入域）实测：客户端提供 MS-KRB5、Kerberos、NEGOEX 和 NTLMSSP，
 发送 Kerberos AP-REQ，在要求签名的情况下挂载、列目录、读取和写入，并且不发送任何 NTLM 消息。
 
+## QUIC 上的 SMB {#quic}
+
+```hcl
+tls {
+  cert_file = "/var/lib/caddy/certificates/acme-v02.api.letsencrypt.org-directory/files.example.org/files.example.org.crt"
+  key_file  = "/var/lib/caddy/certificates/acme-v02.api.letsencrypt.org-directory/files.example.org/files.example.org.key"
+}
+
+serve "smb" {
+  addr      = ":443"          # UDP：不与 TCP 443 上的 HTTPS 代理冲突
+  transport = "quic"
+  tls       = true
+  # client_cert    = "required"
+  # client_ca_file = "/etc/fileshare/client-ca.pem"
+}
+```
+
+QUIC 上的 SMB 3.1.1 是同一协议，运行在 UDP 443 的 TLS 1.3 之内，ALPN 为
+`smb`：在 Windows 11 上关闭 TCP 445，执行
+`net use \\files.example.org\share /TRANSPORT:QUIC`。证书是 `tls` 块的证书，
+文件变化时会重新加载，因此指向反向代理的 ACME 存储即可跟随其续期。Windows
+客户端会把服务器名与证书的 DNS 名比对：请使用名称而不是地址（地址还会强制
+使用 NTLM）。同一主机上的代理不得在该 UDP 端口提供 HTTP/3（Caddy：
+`protocols h1 h2`）。
+
+默认只有 Kerberos 区分人员，keytab 中需有 `cifs/files.example.org` 主体。
+`client_cert = "required"` 额外要求链到 `client_ca_file` 的客户端证书，在读取
+任何 SMB 字节之前的 TLS 握手中验证：它表明哪台机器可以连接，人员仍由
+Kerberos 主体确定。CA 文件在启动时读取。在 QUIC 上，服务器对每个请求授予
+一个 credit，且不宣告 large MTU（[MS-SMB2] 3.3.5.4），因此每次读写最多
+64 KiB。`identity = "system"` 和隔离的子进程暂不提供 QUIC，服务器会拒绝
+启动。一个 `serve "smb"` 块只承载一种传输：TCP 请另启一个实例。
+
 ## 无需特权服务器的特权端口 {#a-privileged-port-without-a-privileged-server}
 
 在 Unix 上使用 [`--isolate`]({{< relref "/operations/isolation.md" >}}) 时，父进程绑定 445，

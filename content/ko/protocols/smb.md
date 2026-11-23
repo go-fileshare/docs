@@ -71,6 +71,43 @@ go-authn/krb5 v0.3.4 이상이 필요하며 v0.50.0에 포함되어 있습니다
 NTLMSSP를 제시하고 Kerberos AP-REQ를 보내며, 서명을 요구한 채 마운트·목록·읽기·쓰기가
 되고, NTLM 메시지는 전혀 보내지 않습니다.
 
+## QUIC 위의 SMB {#quic}
+
+```hcl
+tls {
+  cert_file = "/var/lib/caddy/certificates/acme-v02.api.letsencrypt.org-directory/files.example.org/files.example.org.crt"
+  key_file  = "/var/lib/caddy/certificates/acme-v02.api.letsencrypt.org-directory/files.example.org/files.example.org.key"
+}
+
+serve "smb" {
+  addr      = ":443"          # UDP: TCP 443의 HTTPS 프록시와 충돌하지 않음
+  transport = "quic"
+  tls       = true
+  # client_cert    = "required"
+  # client_ca_file = "/etc/fileshare/client-ca.pem"
+}
+```
+
+QUIC 위의 SMB 3.1.1은 UDP 443의 TLS 1.3(ALPN `smb`) 안에서 동작하는 같은
+프로토콜입니다. Windows 11에서 TCP 445를 닫은 채
+`net use \\files.example.org\share /TRANSPORT:QUIC`을 실행합니다. 인증서는
+`tls` 블록의 것이며 파일이 바뀌면 다시 읽으므로, 리버스 프록시의 ACME
+저장소를 가리키면 갱신을 따라갑니다. Windows 클라이언트는 서버 이름을
+인증서의 DNS 이름과 대조하므로 주소가 아닌 이름으로 접속하십시오(주소는 NTLM도
+강제합니다). 같은 호스트의 프록시는 해당 UDP 포트에서 HTTP/3을 제공하면 안
+됩니다(Caddy: `protocols h1 h2`).
+
+기본적으로 Kerberos만 사람을 구분하며, 키탭에 `cifs/files.example.org`
+principal이 있어야 합니다. `client_cert = "required"`는 `client_ca_file`로
+이어지는 클라이언트 인증서를 추가로 요구하며, SMB의 첫 바이트보다 앞선 TLS
+핸드셰이크에서 검증됩니다. 어느 머신이 접속할 수 있는지를 나타내고, 사람은
+여전히 Kerberos principal입니다. CA 파일은 시작할 때 읽습니다. QUIC에서
+서버는 요청당 크레딧 1개를 부여하고 large MTU를 알리지 않으므로
+([MS-SMB2] 3.3.5.4) 읽기와 쓰기는 한 번에 최대 64 KiB입니다.
+`identity = "system"`과 격리된 자식 프로세스는 아직 QUIC을 제공하지 않으며
+서버가 시작을 거부합니다. `serve "smb"` 블록 하나는 전송 방식 하나만 담당하므로
+TCP에는 두 번째 인스턴스를 실행하십시오.
+
 ## 권한 있는 서버 없이 권한이 필요한 포트 {#a-privileged-port-without-a-privileged-server}
 
 Unix에서 [`--isolate`]({{< relref "/operations/isolation.md" >}}) 아래에서는 부모가

@@ -77,6 +77,43 @@ joint) : le client propose MS-KRB5, Kerberos, NEGOEX et NTLMSSP, envoie un AP-RE
 Kerberos, monte le partage, liste, lit et écrit avec la signature exigée, et
 n'envoie aucun message NTLM.
 
+## SMB sur QUIC {#quic}
+
+```hcl
+tls {
+  cert_file = "/var/lib/caddy/certificates/acme-v02.api.letsencrypt.org-directory/files.example.org/files.example.org.crt"
+  key_file  = "/var/lib/caddy/certificates/acme-v02.api.letsencrypt.org-directory/files.example.org/files.example.org.key"
+}
+
+serve "smb" {
+  addr      = ":443"          # UDP : sans conflit avec un proxy HTTPS sur TCP 443
+  transport = "quic"
+  tls       = true
+  # client_cert    = "required"
+  # client_ca_file = "/etc/fileshare/client-ca.pem"
+}
+```
+
+SMB 3.1.1 sur QUIC est le même protocole dans TLS 1.3 sur UDP 443, avec l'ALPN
+`smb` : `net use \\files.example.org\share /TRANSPORT:QUIC` sous Windows 11, TCP
+445 fermé. Le certificat est celui du bloc `tls`, ses fichiers sont rechargés
+quand ils changent : les pointer vers le stockage ACME d'un proxy inverse suit
+ses renouvellements. Un client Windows compare le nom du serveur aux noms DNS
+du certificat : composez un nom, jamais une adresse (une adresse force aussi
+NTLM). Un proxy sur la même machine ne doit pas offrir HTTP/3 sur ce port UDP
+(Caddy : `protocols h1 h2`).
+
+Par défaut, seul Kerberos distingue les personnes, avec un principal
+`cifs/files.example.org` dans la keytab. `client_cert = "required"` ajoute un
+certificat client chaîné à `client_ca_file`, exigé dans la poignée de main TLS
+avant tout octet SMB : il dit quelle machine peut se connecter, le principal
+Kerberos reste la personne. Le fichier de CA est lu au démarrage. Sur QUIC le
+serveur accorde un crédit par requête et n'annonce aucun large MTU
+([MS-SMB2] 3.3.5.4) : une lecture ou écriture fait au plus 64 Kio.
+`identity = "system"` et les enfants isolés ne servent pas encore QUIC et le
+serveur refuse de démarrer avec eux. Un bloc `serve "smb"` porte un seul
+transport : lancez une seconde instance pour TCP.
+
 ## Un port privilégié sans serveur privilégié {#a-privileged-port-without-a-privileged-server}
 
 Sous [`--isolate`]({{< relref "/operations/isolation.md" >}}) sous Unix, le parent se lie au port 445
