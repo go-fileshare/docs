@@ -1,0 +1,122 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Smb</title><link>https://go-fileshare.github.io/docs/0.51/ko/tags/smb/</link><description>Recent content in Smb on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>ko</language><atom:link href="https://go-fileshare.github.io/docs/0.51/ko/tags/smb/index.xml" rel="self" type="application/rss+xml"/><item><title>SMB — NTLMv2</title><link>https://go-fileshare.github.io/docs/0.51/ko/protocols/smb/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.51/ko/protocols/smb/</guid><description>
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;serve &amp;#34;smb&amp;#34; { addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:445&amp;#34;&lt;/span&gt; }&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="코드 복사"
+aria-label="코드 복사"
+data-copied-label="복사됨!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;비밀번호는 &lt;strong&gt;네트워크를 건너지 않습니다&lt;/strong&gt;. 클라이언트는 비밀번호로 계산한 증명을
+보냅니다. 공유는 읽는 사람에게 나중에 쓰기가 실패하는 방식이 아니라, 시도하기
+전에 접근 마스크로 읽기 전용임을 알려 줍니다.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-a-directory-must-hold"&gt;디렉터리가 보유해야 하는 것&lt;span class="hx:absolute hx:-mt-20" id="what-a-directory-must-hold"&gt;&lt;/span&gt;
+&lt;a href="#what-a-directory-must-hold" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;NTLMv2에는 비밀번호 자체 또는 그 MD4(&lt;code&gt;sambaNTPassword&lt;/code&gt;, &lt;code&gt;nt_hash&lt;/code&gt; 열)가
+필요합니다. &lt;strong&gt;다른 것으로는 안 됩니다.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;비밀번호를 &lt;em&gt;확인&lt;/em&gt;하기만 하는 디렉터리(LDAP 바인드, bcrypt 열)는 확인이 아무리
+훌륭해도 SMB에 응답할 수 없습니다. 서버가 클라이언트가 계산한 것과 같은 증명을
+계산해야 하기 때문입니다. 이는 이 프로그램의 한계가 아니라 프로토콜의 속성입니다.&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://go-fileshare.github.io/docs/0.51/ko/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt;는 이런 사용자에 대해 구성 시점에
+SMB 열에 &lt;code&gt;-&lt;/code&gt;를 출력하며, 마운트할 때 비로소 알게 되도록 두지 않습니다.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="kerberos"&gt;Kerberos: 비밀번호 대신 티켓&lt;span class="hx:absolute hx:-mt-20" id="kerberos"&gt;&lt;/span&gt;
+&lt;a href="#kerberos" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;kerberos&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; realm&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;EXAMPLE.ORG&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; keytab&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/krb5.keytab&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # nfs/fs.example.org 및 cifs/fs.example.org
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;smb&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:445&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; ntlm&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;false&lt;/span&gt;&lt;span class="c1"&gt; # Kerberos 전용: 비밀번호를 전혀 검증하지 않음
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="코드 복사"
+aria-label="코드 복사"
+data-copied-label="복사됨!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;NFS가 사람을 구분하는 데 쓰는 &lt;code&gt;kerberos&lt;/code&gt; 블록은 SMB도 티켓을 받을 수 있게 합니다.&lt;strong&gt;keytab 하나&lt;/strong&gt;가 두 서비스를 모두 담고, 각 프로토콜은 자기 서비스에만 응답합니다. SMB는
+블록의 렐름에 속한 &lt;code&gt;cifs/&amp;lt;호스트&amp;gt;&lt;/code&gt; 프린시펄만 읽으므로 &lt;code&gt;nfs/&lt;/code&gt;용으로 발급된 티켓은 여기서
+거부됩니다. &lt;code&gt;cifs/&lt;/code&gt; 프린시펄이 없는 keytab이면 SMB는 이전과 같이 NTLM만 쓰며, 서버가 시작할
+때 그렇게 알립니다.&lt;/p&gt;
+&lt;p&gt;프린시펄은 NFS와 같은 규칙을 거치고(다른 렐름의 &lt;code&gt;alice&lt;/code&gt;는 아무도 아닙니다), 그다음&lt;strong&gt;이 설정이 아는 사람&lt;/strong&gt;이어야 합니다. 티켓은 KDC가 그 사람을 안다는 것을 증명할 뿐, 이 서버가
+안다는 것을 증명하지 않습니다. 공유의 &lt;code&gt;allow&lt;/code&gt;와 &lt;code&gt;writers&lt;/code&gt; 목록은 비밀번호일 때와 같이
+적용됩니다. 세션은 티켓과 함께 끝나며, Windows 클라이언트는 스스로 다시 인증합니다.&lt;/p&gt;
+&lt;p&gt;fileshare v0.50.0부터 &lt;strong&gt;keytab&lt;/strong&gt;은 일반 파일이어야 하고, root 또는 fileshare를 실행하는
+계정이 소유해야 하며, 다른 사용자가 읽거나 쓸 수 없고 그룹이 쓸 수도 없어야 합니다.&lt;code&gt;root:fileshare&lt;/code&gt; &lt;code&gt;0640&lt;/code&gt;과 &lt;code&gt;fileshare:fileshare&lt;/code&gt; &lt;code&gt;0600&lt;/code&gt;은 허용되고&lt;code&gt;krb5:fileshare&lt;/code&gt; &lt;code&gt;0640&lt;/code&gt;은 거부됩니다. SMB와 NFS 모두에 적용됩니다. 클라이언트의
+이름과 렐름은 &lt;strong&gt;티켓&lt;/strong&gt;에서 가져오며, 클라이언트가 함께 보내는 오센티케이터에서는
+절대 가져오지 않습니다(jcmturner/gokrb5#577, RFC 4120 3.2.3절). NFS에는
+go-authn/krb5 v0.3.4 이상이 필요하며 v0.50.0에 포함되어 있습니다.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;ntlm = false&lt;/code&gt;는 &lt;code&gt;kerberos&lt;/code&gt; 블록이 없으면 로드 시 거부되고, keytab에 해당 렐름의 &lt;code&gt;cifs/&lt;/code&gt; 키가
+없으면 서버가 시작을 거부합니다. 아무도 로그인할 수 없는 서버는 서버가 아니기 때문입니다.블록이 있으면 디렉터리에 NT 해시가 없는 사람도 SMB를 쓸 수 있으며,&lt;a href="https://go-fileshare.github.io/docs/0.51/ko/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt;가 이를 알려 줍니다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;도메인에 가입하지 않은&lt;/strong&gt; Windows 컴퓨터는 이 렐름의 티켓으로 접속합니다. &lt;code&gt;ksetup /addkdc&lt;/code&gt;와&lt;code&gt;ksetup /addhosttorealmmap&lt;/code&gt;을 한 번 실행하고, 로그온 세션에 TGT를 넣은 뒤&lt;code&gt;net use \\fs.example.org\photos&lt;/code&gt;를 실행합니다. 주소로는 Windows가 NTLM으로 대체하므로 이름으로
+지정합니다. Windows 11 25H2(미가입)에서 측정한 결과: 클라이언트는 MS-KRB5, Kerberos, NEGOEX,NTLMSSP를 제시하고 Kerberos AP-REQ를 보내며, 서명을 요구한 채 마운트·목록·읽기·쓰기가
+되고, NTLM 메시지는 전혀 보내지 않습니다.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="quic"&gt;QUIC 위의 SMB&lt;span class="hx:absolute hx:-mt-20" id="quic"&gt;&lt;/span&gt;
+&lt;a href="#quic" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;tls&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; cert_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/var/lib/caddy/certificates/acme-v02.api.letsencrypt.org-directory/files.example.org/files.example.org.crt&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; key_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/var/lib/caddy/certificates/acme-v02.api.letsencrypt.org-directory/files.example.org/files.example.org.key&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;smb&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;:443&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # UDP: TCP 443의 HTTPS 프록시와 충돌하지 않음
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; transport&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;quic&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; tls&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;&lt;span class="c1"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt; # client_cert = &amp;#34;required&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt; # client_ca_file = &amp;#34;/etc/fileshare/client-ca.pem&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="코드 복사"
+aria-label="코드 복사"
+data-copied-label="복사됨!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;QUIC 위의 SMB 3.1.1은 UDP 443의 TLS 1.3(ALPN &lt;code&gt;smb&lt;/code&gt;) 안에서 동작하는 같은
+프로토콜입니다. Windows 11에서 TCP 445를 닫은 채&lt;code&gt;net use \\files.example.org\share /TRANSPORT:QUIC&lt;/code&gt;을 실행합니다. 인증서는&lt;code&gt;tls&lt;/code&gt; 블록의 것이며 파일이 바뀌면 다시 읽으므로, 리버스 프록시의 ACME
+저장소를 가리키면 갱신을 따라갑니다. Windows 클라이언트는 서버 이름을
+인증서의 DNS 이름과 대조하므로 주소가 아닌 이름으로 접속하십시오(주소는 NTLM도
+강제합니다). 같은 호스트의 프록시는 해당 UDP 포트에서 HTTP/3을 제공하면 안
+됩니다(Caddy: &lt;code&gt;protocols h1 h2&lt;/code&gt;).&lt;/p&gt;
+&lt;p&gt;기본적으로 Kerberos만 사람을 구분하며, 키탭에 &lt;code&gt;cifs/files.example.org&lt;/code&gt;
+principal이 있어야 합니다. &lt;code&gt;client_cert = &amp;quot;required&amp;quot;&lt;/code&gt;는 &lt;code&gt;client_ca_file&lt;/code&gt;로
+이어지는 클라이언트 인증서를 추가로 요구하며, SMB의 첫 바이트보다 앞선 TLS
+핸드셰이크에서 검증됩니다. 어느 머신이 접속할 수 있는지를 나타내고, 사람은
+여전히 Kerberos principal입니다. CA 파일은 시작할 때 읽습니다. QUIC에서
+서버는 요청당 크레딧 1개를 부여하고 large MTU를 알리지 않으므로([MS-SMB2] 3.3.5.4) 읽기와 쓰기는 한 번에 최대 64 KiB입니다.&lt;code&gt;identity = &amp;quot;system&amp;quot;&lt;/code&gt;과 격리된 자식 프로세스는 아직 QUIC을 제공하지 않으며
+서버가 시작을 거부합니다. &lt;code&gt;serve &amp;quot;smb&amp;quot;&lt;/code&gt; 블록 하나는 전송 방식 하나만 담당하므로
+TCP에는 두 번째 인스턴스를 실행하십시오.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="a-privileged-port-without-a-privileged-server"&gt;권한 있는 서버 없이 권한이 필요한 포트&lt;span class="hx:absolute hx:-mt-20" id="a-privileged-port-without-a-privileged-server"&gt;&lt;/span&gt;
+&lt;a href="#a-privileged-port-without-a-privileged-server" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Unix에서 &lt;a href="https://go-fileshare.github.io/docs/0.51/ko/operations/isolation/"&gt;&lt;code&gt;--isolate&lt;/code&gt;&lt;/a&gt; 아래에서는 부모가
+445를 바인딩하고 리스너를 자식에게 넘기므로, 실제로 SMB를 처리하는 프로세스는
+권한이 전혀 필요 없습니다. Windows에는 &lt;code&gt;ExtraFiles&lt;/code&gt;가 없으므로 자식이 직접 주소를
+바인딩합니다. 격리는 같지만, 권한이 필요한 포트에 관한 절반은 해당하지 않습니다.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="verified-against-a-client-this-project-did-not-write"&gt;이 프로젝트가 작성하지 않은 클라이언트로 검증&lt;span class="hx:absolute hx:-mt-20" id="verified-against-a-client-this-project-did-not-write"&gt;&lt;/span&gt;
+&lt;a href="#verified-against-a-client-this-project-did-not-write" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;a href="https://github.com/cloudsoda/go-smb2" target="_blank" rel="noopener"&gt;go-smb2&lt;/a&gt;가 CI에서 &lt;code&gt;-race&lt;/code&gt;로 SMB를 통한
+동시 읽기 스무 건과 WebDAV를 통한 스무 건을 함께 구동합니다. macOS는 공유를
+SMB로 마운트하고 &lt;code&gt;curl&lt;/code&gt;은 같은 이미지에 WebDAV로 쓴 다음, WebDAV가 쓴 내용을
+다시 읽어 옵니다.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="when-the-people-change"&gt;사용자가 바뀔 때&lt;span class="hx:absolute hx:-mt-20" id="when-the-people-change"&gt;&lt;/span&gt;
+&lt;a href="#when-the-people-change" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;SMB는 &lt;strong&gt;공유가 추가될 때&lt;/strong&gt; 누가 그 공유에 연결할 수 있는지를 확정하고, 트리
+연결마다 한 번 검사합니다. 따라서 &lt;a href="https://go-fileshare.github.io/docs/0.51/ko/administration/reload/"&gt;디렉터리 다시 불러오기&lt;/a&gt;가
+찾아낸 새 사용자는 SMB의 실행 중인 서버를 포함해 제자리에서 추가되며 어떤 연결도
+건드리지 않습니다. 그러나 사용자, 자격 증명, 공유의 확장된 목록 등 무엇이든
+제거되는 것은 새 세대이며 SMB의 열린 연결은 닫히므로, 폐기가 이미 열린 세션에도
+미칩니다. &lt;code&gt;allow&lt;/code&gt; 그룹이 비어 버린 공유는 &lt;strong&gt;SMB로 아예 제공되지 않습니다&lt;/strong&gt;. 빈&lt;code&gt;AllowUsers&lt;/code&gt;는 모든 사람으로 해석되기 때문입니다.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="requests-in-flight"&gt;처리 중인 요청&lt;span class="hx:absolute hx:-mt-20" id="requests-in-flight"&gt;&lt;/span&gt;
+&lt;a href="#requests-in-flight" class="subheading-anchor" aria-label="이 섹션에 대한 고유 링크"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;go-filesystems/smb v0.8.1부터 하나의 연결은 최대 32개의 요청을 동시에 처리하며, 서버 전체로는 모든 연결을 합쳐 최대 128개입니다. 응답은 &lt;code&gt;MessageId&lt;/code&gt;로 짝지어집니다. 일반 파일의 &lt;code&gt;READ&lt;/code&gt; 하나를 담은 프레임은 다른 요청과 나란히 실행됩니다. 복합 체인(전체를 순서대로 한꺼번에 응답), 비동기 요청, &lt;code&gt;WRITE&lt;/code&gt;는 단독으로 실행됩니다. 프레임은 시작된 뒤 30초 안에 도착해야 합니다. 이 메커니즘은 공유 모듈 go-filesystems/inflight이며 SFTP와 NFS도 사용합니다.&lt;/p&gt;</description></item></channel></rss>

@@ -1,0 +1,633 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Shares</title><link>https://go-fileshare.github.io/docs/0.51/tags/shares/</link><description>Recent content in Shares on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>en</language><atom:link href="https://go-fileshare.github.io/docs/0.51/tags/shares/index.xml" rel="self" type="application/rss+xml"/><item><title>Shares: images, devices, directories</title><link>https://go-fileshare.github.io/docs/0.51/configuration/shares/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.51/configuration/shares/</guid><description>
+&lt;p&gt;A share serves one of three things: a &lt;strong&gt;disk image&lt;/strong&gt;, a &lt;strong&gt;device&lt;/strong&gt; node, or a&lt;strong&gt;directory of the host&lt;/strong&gt;. An image and a device carry a filesystem this
+program reads itself; a directory is the host&amp;rsquo;s own.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="an-image-and-the-filesystem-inside-it"&gt;An image, and the filesystem inside it&lt;span class="hx:absolute hx:-mt-20" id="an-image-and-the-filesystem-inside-it"&gt;&lt;/span&gt;
+&lt;a href="#an-image-and-the-filesystem-inside-it" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;The filesystem inside an image is &lt;strong&gt;worked out rather than declared&lt;/strong&gt;.&lt;a href="https://github.com/go-filesystems/detect" target="_blank" rel="noopener"&gt;&lt;code&gt;go-filesystems/detect&lt;/code&gt;&lt;/a&gt; reads the
+magic and hands back the driver that owns it: &lt;strong&gt;fat32, exfat, ext4, ntfs, ufs,iso9660, squashfs or hfsplus&lt;/strong&gt; — every driver of the one shape,&lt;code&gt;OpenReader(io.ReaderAt, int64)&lt;/code&gt;, a filesystem at offset zero.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="the-four-that-cannot-be-sniffed"&gt;The four that cannot be sniffed&lt;span class="hx:absolute hx:-mt-20" id="the-four-that-cannot-be-sniffed"&gt;&lt;/span&gt;
+&lt;a href="#the-four-that-cannot-be-sniffed" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;apfs, btrfs, xfs and zfs&lt;/strong&gt; each open a &lt;em&gt;disk&lt;/em&gt; image and pick a &lt;strong&gt;partition&lt;/strong&gt;,so there is no magic at offset zero to find. A share says which:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;photos&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/disk.img&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; filesystem&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;xfs&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; partition&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;2&lt;/span&gt;&lt;span class="c1"&gt; # or leave it out: the driver takes the first data partition
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="hfsplus-images-are-writable"&gt;HFS+ images are read-only unless a share opts in&lt;span class="hx:absolute hx:-mt-20" id="hfsplus-images-are-writable"&gt;&lt;/span&gt;
+&lt;a href="#hfsplus-images-are-writable" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Since v0.44.0 (hfsplus v0.9.0) a share whose image holds HFS+ can be opened for
+writing, like FAT, exFAT and ext4: a client can create, change and delete
+files, and the times, modes and owners it sets are stored. Before, an HFS+
+image was opened read-only.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Off by default since v0.45.1, and still off.&lt;/strong&gt; hfsplus v0.9.0 was not
+crash-safe (it held the whole image in memory, rewrote it whole on every
+operation and never marked the volume as in use), so v0.45.1 turned writing off
+after v0.44.0 and v0.45.0 had written by default (up to 256 MiB). &lt;strong&gt;Since
+v0.46.0 (hfsplus v0.10.0)&lt;/strong&gt; a writable HFS+ volume is written &lt;strong&gt;in place&lt;/strong&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;No memory cost.&lt;/strong&gt; The image is not copied into memory (an 8 MiB read cache);only the sectors a commit changes are written. The 64 GiB ceiling is gone.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;A crash is visible.&lt;/strong&gt; Each commit marks the volume as in use: the unmounted
+bit and the journaled bit are cleared in the first header write and restored
+at the end, so &lt;code&gt;fsck_hfs -q&lt;/code&gt; sees a crash, journaled volumes included.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;A failed write stops the volume.&lt;/strong&gt; After a failed flush the volume refuses
+writes (&lt;code&gt;ErrVolumeFailed&lt;/code&gt;) until the share is reopened.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;It stays &lt;strong&gt;opt-in&lt;/strong&gt;, because of what hfsplus has not finished: a durable small
+write (create, one byte, fsync) takes 12.66 ms at the default durability against
+5.13 ms on macOS, about 2.5x slower, and 8.20 ms, 1.6x, at&lt;code&gt;hfsplus_durability = &amp;quot;mounted&amp;quot;&lt;/code&gt; (measured at hfsplus v0.12.2,go-filesystems/hfsplus#35; the rest of the gap is go-filesystems/hfsplus#45,writing journaled volumes through their journal), and after a crash a journaled
+volume mounts without its journal until &lt;code&gt;diskutil enableJournal&lt;/code&gt;. The default can come back when
+those are fixed. Back the image up first. A share opts in with&lt;code&gt;hfsplus_writable_max&lt;/code&gt;, which is &lt;code&gt;&amp;quot;0&amp;quot;&lt;/code&gt; (never) by default (a number of bytes, or
+one with K, M, G or T):&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;mac&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/mac.img&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; hfsplus_writable_max&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;256M&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # opt in
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Since v0.46.0 the size no longer bounds memory. It stays a size, so that a
+configuration written for v0.44.0 to v0.45.1 means what it did (a share that
+said &lt;code&gt;&amp;quot;256M&amp;quot;&lt;/code&gt; does not start writing a 2 TiB image); a large value such as&lt;code&gt;&amp;quot;1T&amp;quot;&lt;/code&gt; is the plain opt-in.&lt;/p&gt;
+&lt;p&gt;With the default, above the size, or when the size is unknown, the share opens&lt;strong&gt;read-only&lt;/strong&gt;, still with range reads and times, and the server writes one line
+naming the image and the reason, for instance with no setting:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/srv/mac.img is an HFS+ volume and hfsplus_writable_max is 0, the default: HFS+ images are written only when a share sets a size, because a durable small write is about 2.5x slower than on macOS (go-filesystems/hfsplus#45), 1.6x at the &amp;#34;mounted&amp;#34; durability level, and after a crash a journaled volume mounts without its journal until diskutil enableJournal, so mac is read-only&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;and above the size:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/srv/mac.img is an HFS+ volume and it is 1073741824 bytes, over hfsplus_writable_max (268435456 bytes), so mac is read-only&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;A reload follows the setting (since v0.46.0).&lt;/strong&gt; When a reload changes whether
+an HFS+ image is written (the setting removed, added, or moved across the image&amp;rsquo;s
+size), the image is opened again: removing the opt-in makes the share read-only
+at once, adding it makes the share writable. Before v0.46.0 the open driver was
+kept, so a share stayed writable after its opt-in was removed until the server
+restarted. A size changed from one writable value to another changes nothing.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Durability (hfsplus v0.12.0).&lt;/strong&gt; &lt;code&gt;hfsplus_durability&lt;/code&gt; chooses, per share, when
+a write is on the medium. It applies to a writable HFS+ image only; a share
+opened read-only ignores it, without an error. A value other than the three
+below makes the configuration refuse to load, naming the share.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;strict&lt;/code&gt; (the default): every commit is durable when it returns: 3 write
+barriers per commit on a volume that was clean when opened, 1 for a &lt;code&gt;Sync&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;mounted&lt;/code&gt;: data is written before the metadata that points at it, and the
+volume stays marked as in use between commits, as TN1150 describes a mounted
+volume: 2 barriers for the first write, 1 for a commit without data, 2 with
+data, 1 for a &lt;code&gt;Sync&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;lazy&lt;/code&gt;: data is written back with no order: 1 barrier for the first write, 0
+after, 2 for a &lt;code&gt;Sync&lt;/code&gt;. A change is on the medium only once the volume is
+synced: by a client&amp;rsquo;s flush (an SMB FLUSH, an NFS COMMIT, or an SFTP&lt;code&gt;fsync@openssh.com&lt;/code&gt;, which also marks a &lt;code&gt;mounted&lt;/code&gt; volume clean), when the
+volume is closed, or when a reload changes the level. A failed sync is
+returned to the client as an I/O error. WebDAV and S3 have no flush, so their
+acknowledgements are not durable at &lt;code&gt;lazy&lt;/code&gt;. &lt;strong&gt;Do not use &lt;code&gt;lazy&lt;/code&gt; for a share that other clients mount at the same
+time&lt;/strong&gt;: nothing orders file data before the metadata
+that points at it, so after a crash a file may hold stale bytes of a deleted
+one, and the changes since the volume was last settled are lost. After a crash, &lt;code&gt;mounted&lt;/code&gt;
+and &lt;code&gt;lazy&lt;/code&gt; leave the volume marked as not cleanly unmounted, so the next
+mount runs &lt;code&gt;fsck_hfs&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;What a flush reaches.&lt;/strong&gt; An SMB FLUSH, an NFS COMMIT (an UNSTABLE WRITE is
+answered UNSTABLE, so the client sends the COMMIT; a WRITE that asks for
+stability is synced) and an SFTP &lt;code&gt;fsync@openssh.com&lt;/code&gt; sync the volume. The SFTP
+request names a handle, and fileshare syncs only the share under the handle&amp;rsquo;s
+path (go-filesystems/sftp v0.15.0): N writable shares cost one sync, and a
+share that has failed fails only its own fsyncs, not those on the other shares.A share that is read-only for the person syncs nothing. The same flush is truthful for the other writable image
+drivers: fat32, exfat and ext4 fsync the image through the file&amp;rsquo;s own &lt;code&gt;Sync&lt;/code&gt;,and ntfs and ufs, which write each change through to the image, are synced with
+an fsync of the image file. A directory share has nothing to sync. A sync that
+failed stays failed for hfsplus and for the image fsync used for fat32, exfat,ext4, ntfs and ufs (the first error is kept until the share is reopened): a
+retried flush or COMMIT is refused too, and is not told its data is durable.&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;mac&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/mac.img&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; hfsplus_writable_max&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;256M&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; hfsplus_durability&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;mounted&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;hfsplus_durability&lt;/code&gt; does not turn writing on: &lt;code&gt;hfsplus_writable_max&lt;/code&gt; still
+defaults to &lt;code&gt;&amp;quot;0&amp;quot;&lt;/code&gt;. A reload that changes it changes the open volume in place(the driver is kept, so no second writer has to take the image lock), after the
+old connections are stopped and before the new list of shares is served (since
+v0.49.1): a reload that is refused leaves the level as it was. Leaving a lazier
+level flushes first; if that flush fails, one log line says so, the volume stays
+at its level, and the share accepts no write until it is reopened.&lt;/p&gt;
+&lt;p&gt;A &lt;strong&gt;journaled&lt;/strong&gt; volume (made by &lt;code&gt;hdiutil create -fs &amp;quot;Journaled HFS+&amp;quot;&lt;/code&gt; or by
+macOS) is written only when its journal is empty, which is what a clean
+unmount leaves. A journal that holds transactions, or one that cannot be
+verified, would be replayed by macOS over what the server writes, so the driver
+refuses it and &lt;strong&gt;the share opens read-only instead&lt;/strong&gt;. The server keeps
+starting; it writes one line when the share opens, naming the image, the share
+and why:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/srv/mac.img is an HFS+ volume and its journal holds transactions (hfsplus: journaled volume with a journal that is not empty: transactions pending (start 17408, end 34816)), so mac is read-only&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;To make such a share writable, have the journal replayed first: mount the
+image on a Mac and eject it cleanly, or run &lt;code&gt;fsck_hfs&lt;/code&gt; on it. While a journaled
+volume is being written its journaled bit is cleared; after a crash it stays
+cleared, so the volume mounts non-journaled until &lt;code&gt;diskutil enableJournal&lt;/code&gt;. A
+share with &lt;code&gt;read_only = true&lt;/code&gt;, a device and a partition never try the writable
+open.&lt;/p&gt;
+&lt;p&gt;The volume is written through the share&amp;rsquo;s own file descriptor (hfsplus v0.11.0):the file that is already confined and locked, never the image&amp;rsquo;s name opened
+again. A size that does not match the volume opens the share read-only, with one
+line.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Another writer.&lt;/strong&gt; A second writer on the same image would corrupt it. A
+writable open takes an exclusive advisory &lt;code&gt;flock&lt;/code&gt; on the image (Linux, macOS and
+the BSDs); if another process holds it, for instance a second fileshare on the
+same image, the share opens read-only and says so. The lock is advisory: a macOS
+mount does not take it, and on other platforms there is no lock.&lt;/p&gt;
+&lt;p&gt;⛔ &lt;strong&gt;Do not write an image that is mounted&lt;/strong&gt;, by this server or by anything
+else: neither side knows about the other&amp;rsquo;s changes. Serve an image that nothing
+else has open.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="an-image-the-os-has-mounted"&gt;A writable image the OS has mounted is served read-only&lt;span class="hx:absolute hx:-mt-20" id="an-image-the-os-has-mounted"&gt;&lt;/span&gt;
+&lt;a href="#an-image-the-os-has-mounted" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Since v0.45.0, before &lt;strong&gt;any&lt;/strong&gt; writable image share (FAT32, exFAT, ext4, UFS,btrfs, XFS, ZFS, HFS+: whatever the driver) is opened for writing, the server
+asks the OS whether it has that image attached or mounted. If it has, the share
+opens &lt;strong&gt;read-only&lt;/strong&gt;, is marked read-only, and the server writes one line naming
+the image, the OS&amp;rsquo;s device and mount, and the share:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/srv/disk.img is in use by the OS (/dev/loop3, mounted at /mnt/disk), and a second writer would corrupt it, so disk is read-only&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;The advisory &lt;code&gt;flock&lt;/code&gt; above cannot do this: the OS takes no lock when it mounts an
+image. The image is matched by device and inode, never by comparing path strings,so a symbolic link or a hard link to the mounted file is caught too.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;OS&lt;/th&gt;
+&lt;th&gt;How it is asked&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Linux&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;/sys/block/loop*/loop/backing_file&lt;/code&gt; of each loop device (what &lt;code&gt;mount -o loop&lt;/code&gt;, &lt;code&gt;losetup&lt;/code&gt; and udisks make); the mount point comes from &lt;code&gt;/proc/self/mountinfo&lt;/code&gt;. An attached loop device counts even when nothing is mounted on it.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;macOS&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;hdiutil info -plist&lt;/code&gt;, the &lt;code&gt;image-path&lt;/code&gt; of each attached image, one call per load, bounded by a 15 s timeout. An image attached with &lt;code&gt;-nomount&lt;/code&gt; counts.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;FreeBSD, other BSDs, Windows&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;Cannot be detected.&lt;/strong&gt; The share is writable, as before.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;strong&gt;When the check itself fails&lt;/strong&gt; (no &lt;code&gt;/sys/block&lt;/code&gt; in a container, &lt;code&gt;hdiutil&lt;/code&gt;
+missing or timing out, output that is not a property list), nobody knows whether
+the image is mounted. &lt;code&gt;image_mount_unknown&lt;/code&gt; decides:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;disk&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/disk.img&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image_mount_unknown&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;read_only&amp;#34; # the default; &amp;#34;write&amp;#34;&lt;/span&gt; &lt;span class="k"&gt;serves&lt;/span&gt; &lt;span class="k"&gt;it&lt;/span&gt; &lt;span class="k"&gt;writable&lt;/span&gt; &lt;span class="k"&gt;anyway&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;The default is &lt;code&gt;read_only&lt;/code&gt;: a read-only share is a visible state with a log line
+that names its cause, and a person can fix it; a writable share under a mount
+corrupts both sides&amp;rsquo; data, and nobody sees it until later. &lt;code&gt;write&lt;/code&gt; is for a host
+where the check cannot work (a container with no sysfs) and nobody mounts
+images. An image the OS is known to have mounted is read-only whatever this says.A backing path the check cannot read (permission denied, a symbolic-link loop) is&amp;ldquo;could not be judged&amp;rdquo;, not &amp;ldquo;another image&amp;rdquo;: it goes to the same setting. Only a
+path that is not there is skipped. On Linux a loop device whose backing file was
+deleted is matched through the kernel&amp;rsquo;s own record (&lt;code&gt;LOOP_GET_STATUS64&lt;/code&gt;) when the
+process may open &lt;code&gt;/dev/loopN&lt;/code&gt;, and is otherwise not matched.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;What the check cannot see&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;A mount made after the share opened the image.&lt;/strong&gt; The check runs when an image
+is opened: at start, for a share created through the admin API, and when a
+reload rebuilds the shares (a change of people or lists) and finds the image
+mounted since, in which case that share gets a read-only open of its own. A
+reload that changes nothing does not look again, and nothing watches for a later&lt;code&gt;hdiutil attach&lt;/code&gt; or &lt;code&gt;mount -o loop&lt;/code&gt;. Stop the share, or restart the server,before mounting an image it serves writable.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Mounts that go through no loop device or &lt;code&gt;hdiutil&lt;/code&gt;:&lt;/strong&gt; &lt;code&gt;qemu-nbd -c&lt;/code&gt; (an nbd
+device), FUSE mounts (&lt;code&gt;fuse2fs&lt;/code&gt;, &lt;code&gt;guestmount&lt;/code&gt;), and a virtual machine or other
+program that has the image open.&lt;/li&gt;
+&lt;li&gt;Other operating systems (see the table), and a Linux loop device attached in
+another mount namespace.&lt;/li&gt;
+&lt;li&gt;A share made read-only because of a mount stays read-only on a reload even if
+the mount has gone; restart it to open it for writing again.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 data-hextra-search-id="a-partition-for-any-filesystem"&gt;A partition, for any filesystem&lt;span class="hx:absolute hx:-mt-20" id="a-partition-for-any-filesystem"&gt;&lt;/span&gt;
+&lt;a href="#a-partition-for-any-filesystem" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;A disk image holding FAT32, ext4 or exFAT has a partition table in front of it
+as often as one holding XFS does — and detection reads offset zero, where a
+partitioned image has the &lt;em&gt;table&lt;/em&gt;. So the partition is chosen first, and the
+driver is handed a view of it:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;photos&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/disk.img&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; partition_label&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;photos&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # what lsblk calls PARTLABEL
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Three ways to name one, and &lt;strong&gt;only one may be given&lt;/strong&gt; — two that disagree would
+serve whichever the code tried first:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;partition = 2&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;counting from 1, the way partitioning tools print them&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;partition_label = &amp;quot;photos&amp;quot;&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;the GPT partition name&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;partition_uuid = &amp;quot;…&amp;quot;&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;the GPT unique GUID — Linux&amp;rsquo;s &lt;code&gt;PARTUUID&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;An index moves&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;A disk repartitioned, a tool that writes entries in another order, an image
+restored with one partition fewer — and &lt;code&gt;partition = 2&lt;/code&gt; names something
+else, &lt;strong&gt;silently&lt;/strong&gt;, because a filesystem is still found there. A label or a
+UUID names the partition itself, which is why fstabs stopped using indexes
+years ago. The index is here for MBR images, which have neither.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;A share that chose a partition is &lt;strong&gt;read-only&lt;/strong&gt;, and says so at startup: the
+driver&amp;rsquo;s offsets are the partition&amp;rsquo;s while the file underneath is the whole
+disk, so a write would land at that offset from the start of the &lt;em&gt;image&lt;/em&gt; — on
+the partition table, as often as not.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="naming-a-filesystem-turns-detection-off"&gt;Naming a filesystem turns detection off&lt;span class="hx:absolute hx:-mt-20" id="naming-a-filesystem-turns-detection-off"&gt;&lt;/span&gt;
+&lt;a href="#naming-a-filesystem-turns-detection-off" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;That is the point, and it is the risk&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The image is opened as &lt;em&gt;that&lt;/em&gt; or refused. A FAT32 image told it is XFS does
+not become an XFS share; it fails to start, saying what it was asked to
+open it as.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;filesystem&lt;/code&gt; is accepted for the sniffable ones too, and then the two are
+compared: a share that says &lt;code&gt;ext4&lt;/code&gt; over a FAT32 image is refused with &lt;em&gt;the
+share says ext4 and the image holds fat32&lt;/em&gt;. That is how a site refuses a
+misdetection rather than discovering one later.&lt;a href="https://go-fileshare.github.io/docs/0.51/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt; marks a named driver with an asterisk, because that row was
+not recognised — it was asserted.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="a-device-not-only-an-image"&gt;A device, not only an image&lt;span class="hx:absolute hx:-mt-20" id="a-device-not-only-an-image"&gt;&lt;/span&gt;
+&lt;a href="#a-device-not-only-an-image" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;photos&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/dev/sda&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # a device node, not a file
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;No privilege is involved.&lt;/strong&gt; Nothing here mounts anything — the&lt;a href="https://github.com/go-filesystems" target="_blank" rel="noopener"&gt;&lt;code&gt;go-filesystems&lt;/code&gt;&lt;/a&gt; drivers read ext4, xfs and
+the rest in user space — so there is no &lt;code&gt;mount(2)&lt;/code&gt; and therefore no&lt;code&gt;CAP_SYS_ADMIN&lt;/code&gt;. Opening a device is an ordinary &lt;code&gt;open(2)&lt;/code&gt;, governed by the
+permissions on the node:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;owner&lt;/th&gt;
+&lt;th&gt;mode&lt;/th&gt;
+&lt;th&gt;enough&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Linux &lt;code&gt;/dev/sda&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;root:disk&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;0660&lt;/td&gt;
+&lt;td&gt;membership of &lt;code&gt;disk&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;macOS &lt;code&gt;/dev/disk0&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;root:operator&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;0640&lt;/td&gt;
+&lt;td&gt;membership of &lt;code&gt;operator&lt;/code&gt;, plus Full Disk Access&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;A refusal says which group, rather than &lt;code&gt;permission denied&lt;/code&gt; — the answer is
+never &lt;code&gt;sudo&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;⛔ &lt;strong&gt;A device share is read-only&lt;/strong&gt;, for the same reason as a share that chose a
+partition: writing to a live disk is not a decision to make on your behalf.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;The device is opened exclusively, and that is about correctness, not caution&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;If the kernel has a filesystem mounted from it, the filesystem&amp;rsquo;s page cache
+holds newer metadata than the device does — so a raw reader sees a
+directory block from before an update beside an inode block from after it,a state that never existed on disk at any one moment. &lt;code&gt;O_EXCL&lt;/code&gt; on a block
+device is the kernel&amp;rsquo;s own primitive for &amp;ldquo;nobody else, a mount included&amp;rdquo;;it is what &lt;code&gt;mkfs&lt;/code&gt; and &lt;code&gt;fsck&lt;/code&gt; use. A device in use is refused, by name, with
+the reason.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Two things were measured rather than assumed:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Stat().Size()&lt;/code&gt; is &lt;strong&gt;0&lt;/strong&gt; for a device, so the length is asked of the device
+itself. Seeking to the end answers on Linux and returns &lt;strong&gt;0 with no error&lt;/strong&gt;
+on macOS, which is why Darwin uses &lt;code&gt;DKIOCGETBLOCKCOUNT&lt;/code&gt; instead.&lt;/li&gt;
+&lt;li&gt;A &lt;strong&gt;raw&lt;/strong&gt; node (&lt;code&gt;/dev/rdiskN&lt;/code&gt;, or &lt;code&gt;O_DIRECT&lt;/code&gt; on Linux) refuses an unaligned
+read, and reading a two-byte field at offset 11 is what parsing a FAT BPB&lt;em&gt;is&lt;/em&gt;. Reads to a device are rounded out to whole blocks; without that,&lt;code&gt;/dev/rdisk4&lt;/code&gt; reported &lt;code&gt;unknown filesystem&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 data-hextra-search-id="a-directory-not-only-an-image"&gt;A directory, not only an image&lt;span class="hx:absolute hx:-mt-20" id="a-directory-not-only-an-image"&gt;&lt;/span&gt;
+&lt;a href="#a-directory-not-only-an-image" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Since v0.8.0 a share may serve a directory of the host — a container&amp;rsquo;s volume,say — instead of an image:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;photos&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; directory&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/data/photos&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; allow&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;@family&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;It is &lt;a href="https://github.com/go-filesystems/osfs" target="_blank" rel="noopener"&gt;go-filesystems/osfs&lt;/a&gt;, which
+reaches the tree through an &lt;strong&gt;&lt;code&gt;os.Root&lt;/code&gt;&lt;/strong&gt;: &lt;code&gt;..&lt;/code&gt; that climbs out, an absolute
+path, and a symbolic link leading out are refused by the kernel-backed root,not by a string test. A client may &lt;em&gt;create&lt;/em&gt; a link to &lt;code&gt;/etc&lt;/code&gt;; nothing will
+follow it. A FIFO planted in the tree is refused rather than left to hang the
+server.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;One share may not hold another (since v0.17.0)&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;A directory share whose tree holds another share&amp;rsquo;s image or directory is&lt;strong&gt;refused at start&lt;/strong&gt;, and by the admin API: whoever may use the outer
+share would read and write the inner one without being allowed it —anonymous NFS included. So are two shares on the same source, except two
+different partitions of one disk image.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Not behind the image lock&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;An image driver owns one file and promises nothing about two calls at once,which is why &lt;a href="https://go-fileshare.github.io/docs/0.51/operations/locking/"&gt;every image is wrapped in one lock&lt;/a&gt;.A host tree is the kernel&amp;rsquo;s, which serialises what must be serialised per
+call and no more; one mutex in front of every file of every client would be
+the slowest thing a file server can do.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;⛔ A share has an &lt;code&gt;image&lt;/code&gt; &lt;strong&gt;or&lt;/strong&gt; a &lt;code&gt;directory&lt;/code&gt;, never both, and never neither.&lt;code&gt;filesystem&lt;/code&gt; and &lt;code&gt;partition&lt;/code&gt; are for an image: a directory share naming one is
+refused, because saying one means the share was meant to be an image.&lt;code&gt;read_only = true&lt;/code&gt; works on a directory as on an image; a share that says it
+and also lists &lt;code&gt;writers&lt;/code&gt; is refused, because &lt;code&gt;read_only&lt;/code&gt; would win.&lt;/p&gt;
+&lt;p&gt;The capacity a client is told is that of the filesystem the tree lives on; a
+platform that cannot say leaves it at zero, which the protocols read as&amp;ldquo;unknown&amp;rdquo; rather than &amp;ldquo;full&amp;rdquo;.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-smb-does-with-a-time-it-cannot-store"&gt;What SMB does with a time it cannot store&lt;span class="hx:absolute hx:-mt-20" id="what-smb-does-with-a-time-it-cannot-store"&gt;&lt;/span&gt;
+&lt;a href="#what-smb-does-with-a-time-it-cannot-store" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;A time a client sets that the storage cannot keep is &lt;strong&gt;ignored&lt;/strong&gt; by default.Since v0.42.0 a share can choose, with &lt;code&gt;unstorable_times&lt;/code&gt;. A time is unstorable
+when it is a CreationTime that differs from the reported one, a ChangeTime sent
+alone, or an access or write time on an image whose driver cannot set times(NTFS, APFS, ISO 9660, SquashFS; a host directory and a FAT, exFAT, ext4 or HFS+ image store those):&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;photos&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; directory&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/data/photos&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; unstorable_times&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;log&amp;#34; # &amp;#34;ignore&amp;#34; (the default), &amp;#34;refuse&amp;#34; or &amp;#34;log&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;refuse&lt;/code&gt; answers the client with an error, and &lt;code&gt;log&lt;/code&gt; writes one line naming the
+share and the path. The exact cases, per kind of share, are in&lt;a href="https://go-fileshare.github.io/docs/0.51/protocols/times/#when-unstorable"&gt;Real file times&lt;/a&gt;.&lt;/p&gt;</description></item><item><title>Directories served as each person</title><link>https://go-fileshare.github.io/docs/0.51/configuration/as-each-person/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.51/configuration/as-each-person/</guid><description>
+&lt;p&gt;Ordinarily one fileshare process serves everybody as one account: fileshare
+decides who may do what, and every file it creates belongs to that account.A directory share can instead be served &lt;strong&gt;as each person&lt;/strong&gt;. Whoever logged
+in has their files opened by a process running with their uid, gid and
+groups, so the kernel applies the tree&amp;rsquo;s permissions and what they create
+belongs to them.&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;identity&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; service_user&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;fileshare&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # the account the protocols are served as
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; min_uid&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;1000&lt;/span&gt;&lt;span class="c1"&gt; # the default; uid 0 is refused whatever this says
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; min_gid&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;1000&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; deny_uids&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="m"&gt;65534&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; idle&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;2m&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # how long an unused worker is kept
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;home&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; directory&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/home&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; identity&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;system&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copy code"
+aria-label="Copy code"
+data-copied-label="Copied!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="three-processes"&gt;Three processes&lt;span class="hx:absolute hx:-mt-20" id="three-processes"&gt;&lt;/span&gt;
+&lt;a href="#three-processes" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;fileshare serve&lt;/code&gt; must be &lt;strong&gt;started as root&lt;/strong&gt;. It stays root only to start
+each person&amp;rsquo;s worker. Everything that faces the network runs in a second
+process, as &lt;code&gt;service_user&lt;/code&gt;.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;process&lt;/th&gt;
+&lt;th&gt;runs as&lt;/th&gt;
+&lt;th&gt;does&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;the &lt;strong&gt;launcher&lt;/strong&gt; (&lt;code&gt;fileshare serve&lt;/code&gt;)&lt;/td&gt;
+&lt;td&gt;root&lt;/td&gt;
+&lt;td&gt;binds the listeners, starts the front, starts workers when the front asks. It speaks no protocol.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;the &lt;strong&gt;front&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;service_user&lt;/code&gt;, with that account&amp;rsquo;s groups&lt;/td&gt;
+&lt;td&gt;speaks the protocols and authenticates, as &lt;code&gt;serve&lt;/code&gt; always has. For such a share it asks the launcher for a &lt;strong&gt;person and a share&lt;/strong&gt;, never a uid or a path.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;a &lt;strong&gt;worker&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;the person&lt;/td&gt;
+&lt;td&gt;serves one share to the front, over a socket the launcher handed across&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;A worker first checks that it is running as exactly the expected uid, gid
+and groups, and that &lt;code&gt;setuid(0)&lt;/code&gt; fails. Only then does it open the tree,through an &lt;code&gt;os.Root&lt;/code&gt;. One worker serves all of that person&amp;rsquo;s connections to
+the share, over SFTP and WebDAV alike, and it stops once nothing has used it
+for &lt;code&gt;idle&lt;/code&gt;. When the server stops, the workers stop with it.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="who-a-person-is-on-this-system"&gt;Who a person is on this system&lt;span class="hx:absolute hx:-mt-20" id="who-a-person-is-on-this-system"&gt;&lt;/span&gt;
+&lt;a href="#who-a-person-is-on-this-system" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;The launcher resolves the person &lt;strong&gt;itself&lt;/strong&gt;, in this order:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;The directory&lt;/strong&gt;, if it carries &lt;code&gt;uidNumber&lt;/code&gt; and &lt;code&gt;gidNumber&lt;/code&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;a &lt;code&gt;user&lt;/code&gt; block&amp;rsquo;s &lt;code&gt;attributes = { uidNumber = &amp;quot;2001&amp;quot;, gidNumber = &amp;quot;2001&amp;quot; }&lt;/code&gt;;&lt;/li&gt;
+&lt;li&gt;an LDAP source with &lt;code&gt;attributes = [&amp;quot;uidNumber&amp;quot;, &amp;quot;gidNumber&amp;quot;]&lt;/code&gt;;&lt;/li&gt;
+&lt;li&gt;an SQL source&amp;rsquo;s &lt;code&gt;users_attributes&lt;/code&gt; query.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The supplementary groups are the groups that list the person (a &lt;code&gt;group&lt;/code&gt;
+block&amp;rsquo;s &lt;code&gt;members&lt;/code&gt;, &lt;code&gt;memberUid&lt;/code&gt;) and those the person names (&lt;code&gt;memberOf&lt;/code&gt;),each by its &lt;code&gt;gidNumber&lt;/code&gt;. A group without one is not a system group.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&lt;code&gt;/etc/passwd&lt;/code&gt; and &lt;code&gt;/etc/group&lt;/code&gt;&lt;/strong&gt;, by name.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;Refused&lt;/strong&gt;: uid 0, gid 0, &lt;code&gt;(uid_t)-1&lt;/code&gt;, a uid below &lt;code&gt;min_uid&lt;/code&gt;, a primary gid
+below &lt;code&gt;min_gid&lt;/code&gt;, and every uid in &lt;code&gt;deny_uids&lt;/code&gt;. A supplementary group below&lt;code&gt;min_gid&lt;/code&gt; is left out, and the log says so. A person found in neither place
+is refused too: there is no shared fallback account. A person the identity
+provider vouches for gets a worker only with&lt;a href="https://go-fileshare.github.io/docs/0.51/configuration/identity/"&gt;&lt;code&gt;local_names&lt;/code&gt;&lt;/a&gt;, which makes
+their name a local one.&lt;/p&gt;
+&lt;p&gt;So a front that has been taken over can ask only for a person who exists
+and is allowed, on a share that exists. It still decides &lt;strong&gt;who&lt;/strong&gt; has
+authenticated, and the launcher cannot check that for it.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-a-client-sees"&gt;What a client sees&lt;span class="hx:absolute hx:-mt-20" id="what-a-client-sees"&gt;&lt;/span&gt;
+&lt;a href="#what-a-client-sees" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;SFTP&lt;/th&gt;
+&lt;th&gt;WebDAV&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;a worker is taken&lt;/td&gt;
+&lt;td&gt;at login, for the whole connection&lt;/td&gt;
+&lt;td&gt;per request; locks live as long as the worker does&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;the launcher refuses the person&lt;/td&gt;
+&lt;td&gt;the share is not in their tree (a tree with nothing in it is a refused login)&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;403&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;no worker can be started&lt;/td&gt;
+&lt;td&gt;the same&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;503&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;The reason goes to the server&amp;rsquo;s log, never to the client.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Not over SMB, NFS or S3 yet&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;They refuse such a share, and &lt;a href="https://go-fileshare.github.io/docs/0.51/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt;
+says so. SMB and NFS need a filesystem per session in their libraries. NFS
+will only ever do it under Kerberos, because &lt;code&gt;AUTH_UNIX&lt;/code&gt; is the client&amp;rsquo;s own
+claim (RFC 5531 §14).&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="what-it-asks-of-the-system"&gt;What it asks of the system&lt;span class="hx:absolute hx:-mt-20" id="what-it-asks-of-the-system"&gt;&lt;/span&gt;
+&lt;a href="#what-it-asks-of-the-system" class="subheading-anchor" aria-label="Permalink for this section"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Unix&lt;/strong&gt;: Linux, the BSDs and macOS. On Windows the share is refused.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Readable by &lt;code&gt;service_user&lt;/code&gt;&lt;/strong&gt;: the configuration and every file it names(password files, host key, certificates), since the front reads them.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Executable by the people&lt;/strong&gt;: the binary, since each worker runs it as
+its person.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;A restart&lt;/strong&gt; to add or change such a share. The launcher reads the
+configuration once, and refuses a share it does not know rather than let
+the front serve it.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--isolate&lt;/code&gt; does not go with it.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The design, and why each choice was made, is in&lt;a href="https://github.com/go-fileshare/fileshare/blob/main/docs/identity.md" target="_blank" rel="noopener"&gt;docs/identity.md&lt;/a&gt;.&lt;/p&gt;</description></item></channel></rss>

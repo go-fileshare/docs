@@ -1,0 +1,1356 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Protocolos</title><link>https://go-fileshare.github.io/docs/0.51/es/tags/protocolos/</link><description>Recent content in Protocolos on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>es</language><atom:link href="https://go-fileshare.github.io/docs/0.51/es/tags/protocolos/index.xml" rel="self" type="application/rss+xml"/><item><title>SMB — NTLMv2</title><link>https://go-fileshare.github.io/docs/0.51/es/protocols/smb/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.51/es/protocols/smb/</guid><description>
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;serve &amp;#34;smb&amp;#34; { addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:445&amp;#34;&lt;/span&gt; }&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;La contraseña &lt;strong&gt;nunca cruza la red&lt;/strong&gt;: el cliente envía una prueba calculada a partir
+de ella. El recurso compartido indica a quien solo puede leer que es así —en la
+máscara de acceso, antes de que lo intente—, en lugar de hacer fallar una escritura
+más tarde.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-a-directory-must-hold"&gt;Lo que debe guardar un directorio&lt;span class="hx:absolute hx:-mt-20" id="what-a-directory-must-hold"&gt;&lt;/span&gt;
+&lt;a href="#what-a-directory-must-hold" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;NTLMv2 necesita la propia contraseña o su MD4 (&lt;code&gt;sambaNTPassword&lt;/code&gt;, una columna&lt;code&gt;nt_hash&lt;/code&gt;). &lt;strong&gt;Nada más sirve.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Un directorio que solo &lt;em&gt;comprueba&lt;/em&gt; contraseñas —un bind LDAP, una columna bcrypt—no puede responder a SMB, por buena que sea la comprobación, porque el servidor tiene
+que calcular la misma prueba que calculó el cliente. Es una propiedad del protocolo,no una limitación de este programa.&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://go-fileshare.github.io/docs/0.51/es/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt; imprime un &lt;code&gt;-&lt;/code&gt; en la columna SMB para esa
+persona, en el momento de la configuración, en lugar de dejar que lo descubra al
+montar.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="kerberos"&gt;Kerberos: un ticket en lugar de una contraseña&lt;span class="hx:absolute hx:-mt-20" id="kerberos"&gt;&lt;/span&gt;
+&lt;a href="#kerberos" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;kerberos&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; realm&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;EXAMPLE.ORG&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; keytab&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/krb5.keytab&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # nfs/fs.example.org y cifs/fs.example.org
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;smb&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:445&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; ntlm&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;false&lt;/span&gt;&lt;span class="c1"&gt; # solo Kerberos: nunca se comprueba una contraseña
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;El bloque &lt;code&gt;kerberos&lt;/code&gt; que permite a NFS distinguir a las personas también permite a SMB
+aceptar un ticket. &lt;strong&gt;Un solo keytab&lt;/strong&gt; guarda ambos servicios y cada protocolo responde
+por el suyo: SMB solo lee los principales &lt;code&gt;cifs/&amp;lt;host&amp;gt;&lt;/code&gt; del realm del bloque, así que
+un ticket emitido para &lt;code&gt;nfs/&lt;/code&gt; se rechaza aquí. Un keytab sin principal &lt;code&gt;cifs/&lt;/code&gt; deja
+SMB como estaba, solo NTLM, y el servidor lo dice al arrancar.&lt;/p&gt;
+&lt;p&gt;El principal pasa por la misma regla que en NFS (la &lt;code&gt;alice&lt;/code&gt; de otro realm no es nadie)y después debe ser &lt;strong&gt;alguien a quien esta configuración conoce&lt;/strong&gt;: un ticket prueba que
+el KDC conoce a la persona, no que este servidor la conozca. Las listas &lt;code&gt;allow&lt;/code&gt; y&lt;code&gt;writers&lt;/code&gt; del recurso se aplican como con una contraseña. Una sesión termina con su
+ticket, y un cliente Windows se autentica de nuevo por sí solo.&lt;/p&gt;
+&lt;p&gt;Desde fileshare v0.50.0, el &lt;strong&gt;keytab&lt;/strong&gt; debe ser un archivo regular, propiedad de root
+o de la cuenta con la que corre fileshare, que no sea legible ni escribible por
+otros ni escribible por su grupo: &lt;code&gt;root:fileshare&lt;/code&gt; &lt;code&gt;0640&lt;/code&gt; y &lt;code&gt;fileshare:fileshare&lt;/code&gt;
+&lt;code&gt;0600&lt;/code&gt; se aceptan, &lt;code&gt;krb5:fileshare&lt;/code&gt; &lt;code&gt;0640&lt;/code&gt; se rechaza. Vale para SMB y NFS. El nombre
+y el realm del cliente salen del &lt;strong&gt;ticket&lt;/strong&gt;, nunca del autenticador que el cliente
+también envía (jcmturner/gokrb5#577, RFC 4120 sección 3.2.3); NFS necesita
+go-authn/krb5 v0.3.4 o posterior, que incluye v0.50.0.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;ntlm = false&lt;/code&gt; se rechaza al cargar sin un bloque &lt;code&gt;kerberos&lt;/code&gt;, y el servidor se niega a
+arrancar si el keytab no contiene ninguna clave &lt;code&gt;cifs/&lt;/code&gt; para el realm: un servidor en
+el que nadie puede entrar no es un servidor. Con el bloque, una persona cuyo
+directorio no guarda ningún hash NT puede usar SMB igualmente, y&lt;a href="https://go-fileshare.github.io/docs/0.51/es/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt; lo indica.&lt;/p&gt;
+&lt;p&gt;Un equipo Windows &lt;strong&gt;fuera de un dominio&lt;/strong&gt; llega con un ticket de este realm: una vez&lt;code&gt;ksetup /addkdc&lt;/code&gt; y &lt;code&gt;ksetup /addhosttorealmmap&lt;/code&gt;, un ticket de concesión de tickets en
+la sesión de inicio y &lt;code&gt;net use \\fs.example.org\photos&lt;/code&gt;, por nombre, porque con una
+dirección Windows recurre a NTLM. Medido con Windows 11 25H2 (sin unir): el cliente
+ofrece MS-KRB5, Kerberos, NEGOEX y NTLMSSP, envía un AP-REQ de Kerberos, monta, lista,lee y escribe con la firma exigida, y no envía ningún mensaje NTLM.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="quic"&gt;SMB sobre QUIC&lt;span class="hx:absolute hx:-mt-20" id="quic"&gt;&lt;/span&gt;
+&lt;a href="#quic" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;tls&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; cert_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/var/lib/caddy/certificates/acme-v02.api.letsencrypt.org-directory/files.example.org/files.example.org.crt&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; key_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/var/lib/caddy/certificates/acme-v02.api.letsencrypt.org-directory/files.example.org/files.example.org.key&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;smb&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;:443&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # UDP: no choca con un proxy HTTPS en TCP 443
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; transport&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;quic&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; tls&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;&lt;span class="c1"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt; # client_cert = &amp;#34;required&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt; # client_ca_file = &amp;#34;/etc/fileshare/client-ca.pem&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;SMB 3.1.1 sobre QUIC es el mismo protocolo dentro de TLS 1.3 en UDP 443, con
+ALPN &lt;code&gt;smb&lt;/code&gt;: &lt;code&gt;net use \\files.example.org\share /TRANSPORT:QUIC&lt;/code&gt; en Windows 11,con TCP 445 cerrado. El certificado es el del bloque &lt;code&gt;tls&lt;/code&gt; y sus archivos se
+recargan al cambiar: apuntarlos al almacén ACME de un proxy inverso sigue sus
+renovaciones. Un cliente Windows compara el nombre del servidor con los nombres
+DNS del certificado: use un nombre, nunca una dirección (una dirección también
+fuerza NTLM). Un proxy en la misma máquina no debe ofrecer HTTP/3 en ese puerto
+UDP (Caddy: &lt;code&gt;protocols h1 h2&lt;/code&gt;).&lt;/p&gt;
+&lt;p&gt;Por defecto solo Kerberos distingue a las personas, con un principal&lt;code&gt;cifs/files.example.org&lt;/code&gt; en la keytab. &lt;code&gt;client_cert = &amp;quot;required&amp;quot;&lt;/code&gt; añade un
+certificado de cliente encadenado a &lt;code&gt;client_ca_file&lt;/code&gt;, exigido en el handshake
+TLS antes de cualquier byte SMB: dice qué máquina puede conectarse, y el
+principal Kerberos sigue siendo la persona. El archivo de CA se lee al
+arrancar. Sobre QUIC el servidor concede un crédito por petición y no anuncia
+large MTU ([MS-SMB2] 3.3.5.4): una lectura o escritura es de 64 KiB como
+máximo. &lt;code&gt;identity = &amp;quot;system&amp;quot;&lt;/code&gt; y los hijos aislados aún no sirven QUIC y el
+servidor se niega a arrancar con ellos. Un bloque &lt;code&gt;serve &amp;quot;smb&amp;quot;&lt;/code&gt; lleva un solo
+transporte: lance una segunda instancia para TCP.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="a-privileged-port-without-a-privileged-server"&gt;Un puerto privilegiado sin un servidor privilegiado&lt;span class="hx:absolute hx:-mt-20" id="a-privileged-port-without-a-privileged-server"&gt;&lt;/span&gt;
+&lt;a href="#a-privileged-port-without-a-privileged-server" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Con &lt;a href="https://go-fileshare.github.io/docs/0.51/es/operations/isolation/"&gt;&lt;code&gt;--isolate&lt;/code&gt;&lt;/a&gt; en Unix, el proceso padre se vincula
+al 445 y pasa la escucha al hijo, de modo que el proceso que realmente habla SMB
+nunca necesita el privilegio. Windows no tiene &lt;code&gt;ExtraFiles&lt;/code&gt;, así que allí el hijo se
+vincula él mismo a la dirección; el aislamiento es el mismo, la parte del puerto
+privilegiado no.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="verified-against-a-client-this-project-did-not-write"&gt;Verificado con un cliente que este proyecto no escribió&lt;span class="hx:absolute hx:-mt-20" id="verified-against-a-client-this-project-did-not-write"&gt;&lt;/span&gt;
+&lt;a href="#verified-against-a-client-this-project-did-not-write" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;a href="https://github.com/cloudsoda/go-smb2" target="_blank" rel="noopener"&gt;go-smb2&lt;/a&gt; realiza veinte lecturas
+concurrentes por SMB mientras otras veinte pasan por WebDAV, con &lt;code&gt;-race&lt;/code&gt;, en la CI.macOS monta un recurso compartido por SMB mientras &lt;code&gt;curl&lt;/code&gt; escribe en la misma imagen
+por WebDAV, y vuelve a leer lo que WebDAV escribió.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="when-the-people-change"&gt;Cuando cambian las personas&lt;span class="hx:absolute hx:-mt-20" id="when-the-people-change"&gt;&lt;/span&gt;
+&lt;a href="#when-the-people-change" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;SMB fija quién puede conectarse a un recurso compartido &lt;strong&gt;cuando se añade el recurso
+compartido&lt;/strong&gt;, y lo comprueba una vez por conexión de árbol (tree connect). Así, a
+alguien nuevo que encuentra una &lt;a href="https://go-fileshare.github.io/docs/0.51/es/administration/reload/"&gt;recarga del directorio&lt;/a&gt;
+se le añade en caliente, incluido el servidor SMB en ejecución, sin tocar ninguna
+conexión; pero cualquier cosa que se retire —una persona, una credencial, las listas
+expandidas de un recurso compartido— es una nueva generación, y las conexiones SMB
+abiertas se cierran, de modo que una revocación alcanza también a las sesiones ya
+abiertas. Un recurso compartido cuyo grupo &lt;code&gt;allow&lt;/code&gt; se ha vaciado &lt;strong&gt;no se ofrece por
+SMB en absoluto&lt;/strong&gt;: su &lt;code&gt;AllowUsers&lt;/code&gt; vacío se interpretaría como «todo el mundo».&lt;/p&gt;
+&lt;h2 data-hextra-search-id="requests-in-flight"&gt;Solicitudes en vuelo&lt;span class="hx:absolute hx:-mt-20" id="requests-in-flight"&gt;&lt;/span&gt;
+&lt;a href="#requests-in-flight" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Desde go-filesystems/smb v0.8.1, una conexión mantiene hasta 32 solicitudes en vuelo, y el servidor hasta 128 entre todas las conexiones. Las respuestas se asocian por &lt;code&gt;MessageId&lt;/code&gt;. Una trama que contiene un único &lt;code&gt;READ&lt;/code&gt; de un archivo normal se ejecuta junto a otras; las cadenas compuestas (respondidas enteras y en orden), las solicitudes asíncronas y &lt;code&gt;WRITE&lt;/code&gt; se ejecutan solas. Una trama dispone de 30 s para llegar una vez iniciada. El mecanismo es el módulo compartido go-filesystems/inflight, que también usan SFTP y NFS.&lt;/p&gt;</description></item><item><title>Lo que un protocolo puede prometer</title><link>https://go-fileshare.github.io/docs/0.51/es/protocols/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.51/es/protocols/</guid><description>
+&lt;p&gt;Los protocolos no coinciden en lo único que necesita el control de acceso: si el
+servidor puede saber &lt;strong&gt;quién&lt;/strong&gt; pregunta.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;&lt;a href="https://go-fileshare.github.io/docs/0.51/es/protocols/smb/"&gt;SMB&lt;/a&gt;&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;NTLMv2, o Kerberos con un bloque &lt;code&gt;kerberos&lt;/code&gt; (un ticket en lugar de una contraseña; &lt;code&gt;ntlm = false&lt;/code&gt; desactiva NTLM). La contraseña nunca cruza la red, y el recurso compartido indica a quien solo puede leer que es así, en la máscara de acceso, antes de que lo intente.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;&lt;a href="https://go-fileshare.github.io/docs/0.51/es/protocols/webdav/"&gt;WebDAV&lt;/a&gt;&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;HTTP Basic, sobre &lt;a href="https://go-fileshare.github.io/docs/0.51/es/security/tls/"&gt;TLS&lt;/a&gt;: rechazado sin cifrar en una dirección alcanzable, salvo que &lt;code&gt;plaintext = true&lt;/code&gt; indique que un proxy termina TLS delante. Un recurso compartido que una persona no puede usar responde 404, no 403: no se confirma que exista.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;&lt;a href="https://go-fileshare.github.io/docs/0.51/es/protocols/sftp/"&gt;SFTP&lt;/a&gt;&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Una &lt;strong&gt;clave pública&lt;/strong&gt;, o un &lt;strong&gt;certificado SSH&lt;/strong&gt; de una autoridad en la que usted confía: el servidor nunca guarda el secreto y, con un certificado, el acceso de una persona se emite y caduca en otro lugar. Sin contraseña: un cliente que la pide hace justo lo que las claves existen para evitar.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;&lt;a href="https://go-fileshare.github.io/docs/0.51/es/protocols/webdav/"&gt;OIDC&lt;/a&gt;&lt;/strong&gt; (sobre WebDAV)&lt;/td&gt;
+&lt;td&gt;Un &lt;strong&gt;token bearer&lt;/strong&gt; firmado por un proveedor de identidad. Verificado por &lt;a href="https://github.com/go-authn/oidc" target="_blank" rel="noopener"&gt;go-authn/oidc&lt;/a&gt;: firma, emisor, audiencia, caducidad. Ningún otro protocolo de los aquí descritos tiene dónde ponerlo: S3 firma con SigV4, que no tiene campo para un token bearer. Por &lt;a href="https://go-fileshare.github.io/docs/0.51/es/protocols/sftp/#people-the-identity-provider-vouches-for"&gt;SFTP&lt;/a&gt;, la palabra del proveedor llega en cambio dentro de un certificado.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;&lt;a href="https://go-fileshare.github.io/docs/0.51/es/protocols/s3/"&gt;S3&lt;/a&gt;&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;SigV4&lt;/strong&gt;, en cabecera o prefirmado. El secreto se demuestra calculando un HMAC y nunca cruza la red; por eso, como con NTLMv2, el directorio debe GUARDAR la contraseña, y no solo comprobarla. Un recurso compartido es un bucket.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;&lt;a href="https://go-fileshare.github.io/docs/0.51/es/protocols/nfs/"&gt;NFSv3&lt;/a&gt;&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;Nada&lt;/strong&gt;, por sí solo. &lt;code&gt;AUTH_UNIX&lt;/code&gt; es una afirmación: el cliente dice «uid 501» y la red no puede contradecirlo. Un bloque &lt;code&gt;kerberos&lt;/code&gt; levanta esta limitación, y también las &lt;a href="https://go-fileshare.github.io/docs/0.51/es/security/nfs-certificates/"&gt;identidades a partir de certificados&lt;/a&gt;. &lt;a href="https://go-fileshare.github.io/docs/0.51/es/security/tls/"&gt;TLS&lt;/a&gt; lo cifra, y prueba la máquina, no la persona.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2 data-hextra-search-id="the-consequence-stated-once"&gt;La consecuencia, dicha una sola vez&lt;span class="hx:absolute hx:-mt-20" id="the-consequence-stated-once"&gt;&lt;/span&gt;
+&lt;a href="#the-consequence-stated-once" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;Un recurso compartido que nombra quién puede usarlo no se exporta por NFS&lt;/strong&gt;, salvo
+que Kerberos esté configurado o que NFS tome&lt;a href="https://go-fileshare.github.io/docs/0.51/es/security/nfs-certificates/"&gt;identidades a partir de certificados&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;No es una advertencia ni una opción: una configuración que dice &lt;em&gt;photos pertenece a
+alice&lt;/em&gt; y un protocolo que entrega photos a quien se conecte no pueden respetarse a la
+vez, y ampliar el acceso en silencio es el peor de los dos fallos. El rechazo se
+imprime al arrancar y en &lt;a href="https://go-fileshare.github.io/docs/0.51/es/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt;, con el motivo.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-each-one-needs-from-a-directory"&gt;Lo que cada uno necesita de un directorio&lt;span class="hx:absolute hx:-mt-20" id="what-each-one-needs-from-a-directory"&gt;&lt;/span&gt;
+&lt;a href="#what-each-one-needs-from-a-directory" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Qué protocolos pueden servir a una persona determinada lo decide lo que su origen
+puede probar, no solo la configuración. Consulte&lt;a href="https://go-fileshare.github.io/docs/0.51/es/configuration/identity/#what-a-source-can-prove-and-what-each-protocol-needs"&gt;lo que un origen puede probar&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-is-encrypted"&gt;Lo que está cifrado&lt;span class="hx:absolute hx:-mt-20" id="what-is-encrypted"&gt;&lt;/span&gt;
+&lt;a href="#what-is-encrypted" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;WebDAV, S3 y NFS admiten &lt;code&gt;tls = true&lt;/code&gt;; SMB 3 cifra con sus propias claves, y SFTP
+es SSH. Consulte &lt;a href="https://go-fileshare.github.io/docs/0.51/es/security/tls/"&gt;TLS, y certificados de ACME&lt;/a&gt;.&lt;/p&gt;</description></item><item><title>WebDAV — Basic, o un token bearer</title><link>https://go-fileshare.github.io/docs/0.51/es/protocols/webdav/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.51/es/protocols/webdav/</guid><description>
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;tls&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; cert_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/tls/fullchain.pem&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; key_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/tls/key.pem&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;webdav&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:443&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; tls&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;HTTP Basic, o un token bearer, sobre &lt;a href="https://go-fileshare.github.io/docs/0.51/es/security/tls/"&gt;TLS&lt;/a&gt;, a partir de
+archivos o de ACME.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Sin cifrar no, desde la v0.9.0&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;HTTP Basic es la contraseña en cada petición, y un token bearer vale tanto
+como ella. WebDAV &lt;strong&gt;sin TLS&lt;/strong&gt;, en una dirección que otras máquinas pueden
+alcanzar, mientras haya alguien que se autentique, se &lt;strong&gt;rechaza al
+arrancar&lt;/strong&gt;: &lt;code&gt;serve &amp;quot;webdav&amp;quot; { addr = &amp;quot;0.0.0.0:8080&amp;quot; }&lt;/code&gt;, el ejemplo que
+mostraba antes esta página, ya no arranca. Cuando un proxy termina TLS
+delante, indíquelo:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;webdav&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;10.0.0.5:8080&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; plaintext&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Loopback, y un servidor sin nadie a quien autenticar, no se ven afectados.Consulte &lt;a href="https://go-fileshare.github.io/docs/0.51/es/security/tls/#webdav-is-not-served-in-the-clear"&gt;TLS&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;404, no 403&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Un recurso compartido que una persona no puede usar responde &lt;strong&gt;404&lt;/strong&gt;. No se
+confirma que exista.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="a-token-over-the-one-protocol-that-can-carry-one"&gt;Un token, por el único protocolo que puede transportarlo&lt;span class="hx:absolute hx:-mt-20" id="a-token-over-the-one-protocol-that-can-carry-one"&gt;&lt;/span&gt;
+&lt;a href="#a-token-over-the-one-protocol-that-can-carry-one" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;oidc&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; issuer&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://login.example.org&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; audience&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;fileshare&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Un navegador tiene un token y ninguna contraseña. Por eso WebDAV acepta&lt;code&gt;Authorization: Bearer&lt;/code&gt; y, donde también hay personas locales, el desafío que envía
+ofrece &lt;strong&gt;ambos&lt;/strong&gt;: el cliente elige el que puede responder. El token lo verifica&lt;a href="https://github.com/go-authn/oidc" target="_blank" rel="noopener"&gt;go-authn/oidc&lt;/a&gt;: firma, emisor, audiencia,caducidad.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Un token bearer: solo WebDAV&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;SMB autentica con NTLMv2, SFTP con una clave o un certificado, NFS con nada
+en absoluto, y S3 con una firma SigV4: ninguno tiene dónde poner una
+cabecera &lt;code&gt;Authorization&lt;/code&gt;. Es un hecho de los protocolos, no un límite de este
+programa.&lt;/p&gt;
+&lt;p&gt;La palabra del proveedor llega en cambio a &lt;strong&gt;SFTP&lt;/strong&gt; dentro de un certificado:consulte &lt;a href="https://go-fileshare.github.io/docs/0.51/es/protocols/sftp/#people-the-identity-provider-vouches-for"&gt;SFTP&lt;/a&gt;. Una
+configuración que nombra un proveedor y no sirve ni WebDAV ni un SFTP de ese
+tipo se &lt;strong&gt;rechaza en lugar de arrancar&lt;/strong&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Un token dice quién cree el proveedor que es alguien. No dice que este servidor tenga un recurso compartido para esa persona.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Un token válido para un nombre que ningún origen de aquí conoce se rechaza:la lectura segura de &lt;em&gt;no le conozco&lt;/em&gt; no es &lt;em&gt;tiene permiso&lt;/em&gt;. Tampoco un nombre
+que también tiene una cuenta local obtiene esa cuenta, salvo que&lt;code&gt;local_names = true&lt;/code&gt; indique que los nombres del proveedor son los de este
+servidor (desactivado por defecto, desde la v0.20.0); sin ello, ese token
+también se rechaza, salvo que una regla &lt;code&gt;oidc:&lt;/code&gt; nombre a la persona.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Un sitio en el que el proveedor &lt;strong&gt;es&lt;/strong&gt; el directorio lo indica:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;oidc&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; issuer&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://login.example.org&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; audience&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;fileshare&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; trust_all&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;&lt;span class="c1"&gt; # everybody that provider vouches for, not just these people
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Aquí &lt;strong&gt;no hay flujo de inicio de sesión&lt;/strong&gt;: ni redirección, ni secreto de cliente, ni
+cookies. Esto es el servidor de recursos.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;El nombre&lt;/strong&gt; que da un token es &lt;code&gt;preferred_username&lt;/code&gt;, o el claim que nombre&lt;code&gt;username_claim&lt;/code&gt;. Sin &lt;code&gt;preferred_username&lt;/code&gt;, es el correo electrónico solo si el
+proveedor indica &lt;code&gt;email_verified: true&lt;/code&gt;, y si no, &lt;code&gt;sub&lt;/code&gt;. Con&lt;code&gt;username_claim = &amp;quot;email&amp;quot;&lt;/code&gt;, un token cuyo correo no está verificado se rechaza, tanto
+por WebDAV como para un inicio de sesión opkssh por SFTP. Mientras no está
+verificado, el correo es solo lo que la persona escribió, y un token firmado que lo
+llevara quedaría vinculado a una dirección que nadie comprobó (OpenID Connect Core
+5.1; go-authn/oidc v0.2.0, fileshare v0.16.3).&lt;/p&gt;
+&lt;p&gt;Qué personas del proveedor obtienen un recurso compartido —grupos, personas con
+nombre, instituciones enteras— se escribe con reglas &lt;code&gt;oidc:&lt;/code&gt; y &lt;code&gt;domains&lt;/code&gt;; consulte&lt;a href="https://go-fileshare.github.io/docs/0.51/es/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;las personas que nombra el proveedor de identidad&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="a-token-outlives-the-person-unless-something-says-otherwise"&gt;Un token sobrevive a la persona, salvo que algo diga lo contrario&lt;span class="hx:absolute hx:-mt-20" id="a-token-outlives-the-person-unless-something-says-otherwise"&gt;&lt;/span&gt;
+&lt;a href="#a-token-outlives-the-person-unless-something-says-otherwise" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Un token se verifica aquí, por sí solo, y es válido hasta que caduca, pase lo que
+pase después con la persona. Ninguna lista de revocación puede nombrarlo. Un&lt;a href="https://go-fileshare.github.io/docs/0.51/es/security/shared-signals/"&gt;bloque &lt;code&gt;ssf&lt;/code&gt;&lt;/a&gt; hace que un &lt;code&gt;session-revoked&lt;/code&gt; de CAEP
+procedente del proveedor invalide todos los tokens emitidos (&lt;code&gt;iat&lt;/code&gt;) antes de él.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="the-root-and-uploads-in-pieces"&gt;La raíz, y las subidas por partes&lt;span class="hx:absolute hx:-mt-20" id="the-root-and-uploads-in-pieces"&gt;&lt;/span&gt;
+&lt;a href="#the-root-and-uploads-in-pieces" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;La raíz lista los recursos compartidos&lt;/strong&gt; (desde v0.29.0). Un navegador en &lt;code&gt;/&lt;/code&gt;
+recibe una página con los recursos que puede abrir; un &lt;code&gt;PROPFIND&lt;/code&gt; de &lt;code&gt;/&lt;/code&gt; los
+recibe como colecciones (&lt;code&gt;207&lt;/code&gt;), así que un gestor de archivos puede montar todo
+el servidor en lugar de un solo recurso. La profundidad &lt;code&gt;infinity&lt;/code&gt; se rechaza(&lt;code&gt;403&lt;/code&gt;, &lt;code&gt;propfind-finite-depth&lt;/code&gt;, como permite la RFC 4918), igual que todo lo que
+escribiría en la raíz (&lt;code&gt;405&lt;/code&gt;). Hasta v0.28, cualquier método en &lt;code&gt;/&lt;/code&gt; recibía la
+página.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Una subida grande puede hacerse por partes&lt;/strong&gt; (desde v0.29.0). Un &lt;code&gt;PUT&lt;/code&gt; se
+guarda entero en memoria, hasta 1 GiB, así que un cliente que no puede enviar en
+flujo — un navegador, el &lt;a href="https://go-fileshare.github.io/docs/0.51/es/administration/"&gt;explorador de archivos&lt;/a&gt; —envía un &lt;code&gt;PUT&lt;/code&gt; vacío, luego cada parte con un &lt;code&gt;Content-Range&lt;/code&gt; que empieza
+exactamente donde terminó la anterior, y luego un &lt;code&gt;MOVE&lt;/code&gt; al nombre real. Un rango
+que empieza después del final sigue siendo &lt;code&gt;416&lt;/code&gt;: dejaría bytes que nadie envió.&lt;/p&gt;</description></item><item><title>SFTP — claves, o certificados</title><link>https://go-fileshare.github.io/docs/0.51/es/protocols/sftp/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.51/es/protocols/sftp/</guid><description>
+&lt;p&gt;Todos los clientes ya lo tienen: &lt;code&gt;sftp&lt;/code&gt; viene con OpenSSH, el Finder y GNOME lo
+montan, los editores lo hablan. Es también el único protocolo de los aquí descritos
+cuya forma no encaja: una persona inicia sesión y llega a &lt;strong&gt;un&lt;/strong&gt; sistema de archivos,no a una lista de recursos compartidos.&lt;/p&gt;
+&lt;p&gt;Así que los recursos compartidos se convierten en los directorios de nivel superior
+de un árbol construido para quien acaba de autenticarse:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;pre&gt;&lt;code&gt;$ sftp -i ~/.ssh/id_ed25519 -P 2222 alice@attic
+sftp&amp;gt; ls
+photos scratch
+sftp&amp;gt; cd photos
+sftp&amp;gt; get holiday.jpg&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Un recurso compartido que alice no puede usar &lt;strong&gt;no es un directorio que alice pueda
+ver&lt;/strong&gt;, y un recurso compartido que solo puede leer rechaza sus escrituras &lt;em&gt;en el
+árbol&lt;/em&gt;, antes de llegar a un controlador que las habría permitido.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Un renombrado entre dos recursos compartidos se rechaza&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Sería una copia y un borrado sobre dos imágenes, y eso no es lo que un
+renombrado promete en ningún sitio.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="configuration"&gt;Configuración&lt;span class="hx:absolute hx:-mt-20" id="configuration"&gt;&lt;/span&gt;
+&lt;a href="#configuration" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;host_key_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/ssh_host_ed25519_key&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;trusted_user_ca_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/ca.pub&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # optional
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;user&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;alice&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; authorized_keys_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/alice.pub&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;user&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;carol&amp;#34;&lt;/span&gt; {} &lt;span class="err"&gt;#&lt;/span&gt; &lt;span class="k"&gt;nothing&lt;/span&gt; &lt;span class="k"&gt;here&lt;/span&gt;&lt;span class="err"&gt;:&lt;/span&gt; &lt;span class="k"&gt;her&lt;/span&gt; &lt;span class="k"&gt;certificate&lt;/span&gt; &lt;span class="k"&gt;is&lt;/span&gt; &lt;span class="k"&gt;her&lt;/span&gt; &lt;span class="k"&gt;credential&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Con &lt;code&gt;trusted_user_ca_file&lt;/code&gt;, basta un certificado firmado por esa autoridad que nombre
+al usuario entre sus principales; así, el acceso de una persona &lt;strong&gt;se emite y caduca
+en otro lugar&lt;/strong&gt;, y no se edita ningún archivo de aquí cuando alguien llega o se va.&lt;/p&gt;
+&lt;p&gt;La firma, el periodo de validez y los principales los comprueba el &lt;code&gt;CertChecker&lt;/code&gt; de&lt;code&gt;x/crypto/ssh&lt;/code&gt;; verificado frente al &lt;strong&gt;propio cliente de OpenSSH&lt;/strong&gt;, que también
+rechaza la misma clave en cuanto su certificado se aparta.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Sin &lt;code&gt;host_key_file&lt;/code&gt; se genera una identidad nueva en cada arranque&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;El servidor lo indica, y todo cliente que ya la haya visto advertirá de una
+clave cambiada, que es el cliente haciendo su trabajo.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="certificates-meant-for-this-host-the-domain-grant"&gt;Certificados destinados a este host: la concesión de dominio&lt;span class="hx:absolute hx:-mt-20" id="certificates-meant-for-this-host-the-domain-grant"&gt;&lt;/span&gt;
+&lt;a href="#certificates-meant-for-this-host-the-domain-grant" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Desde la v0.22.0. La &lt;a href="https://integration.docs.my-eurohpc.eu/aai/ssh-ca-overview/" target="_blank" rel="noopener"&gt;CA SSH de la EuroHPC Federation Platform&lt;/a&gt;
+(GÉANT / MyAccessID) firma certificados en los que confían todos los sitios de la
+federación. Cada certificado indica a qué hosts está destinado, en la extensión&lt;code&gt;ssh-domain-grant@core.aai.geant.org&lt;/code&gt;. sshd ignora esa extensión, y fileshare también
+lo hacía hasta la v0.22.0: un certificado concedido para las máquinas de otro valía
+igual aquí. Con &lt;code&gt;ssh_domains&lt;/code&gt;, la concesión se lee, se analiza y se compara mediante&lt;a href="https://github.com/go-authn/sshcert" target="_blank" rel="noopener"&gt;go-authn/sshcert&lt;/a&gt;, tal como dice la
+especificación. Un certificado cuya concesión no nombra ninguno de los nombres de
+este host se rechaza.&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;trusted_user_ca_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/efp-ssh-ca.pub&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;ssh_domains&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;files.example.org&amp;#34;, &amp;#34;sftp.example.org&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;# ssh_accept_ungranted&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt; &lt;span class="err"&gt;#&lt;/span&gt; &lt;span class="k"&gt;only&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="k"&gt;a&lt;/span&gt; &lt;span class="k"&gt;trusted&lt;/span&gt; &lt;span class="k"&gt;CA&lt;/span&gt; &lt;span class="k"&gt;never&lt;/span&gt; &lt;span class="k"&gt;writes&lt;/span&gt; &lt;span class="k"&gt;a&lt;/span&gt; &lt;span class="k"&gt;grant&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;clave&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ssh_domains&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;los nombres de este host, tal como los nombra una concesión. Un certificado se acepta si uno de los patrones de su concesión coincide con uno de ellos. &lt;code&gt;*&lt;/code&gt; es &lt;strong&gt;uno o más caracteres dentro de una misma etiqueta&lt;/strong&gt;: &lt;code&gt;*.example.org&lt;/code&gt; concede &lt;code&gt;files.example.org&lt;/code&gt; pero no &lt;code&gt;a.files.example.org&lt;/code&gt;, y &lt;code&gt;files-*.example.org&lt;/code&gt; no concede &lt;code&gt;files-.example.org&lt;/code&gt;. La comparación no distingue mayúsculas de minúsculas. Son nombres de host, no patrones, cada uno listado una sola vez, y al menos una autoridad (&lt;code&gt;trusted_user_ca_file&lt;/code&gt;, o el &lt;code&gt;ssh_ca_file&lt;/code&gt; del bloque &lt;code&gt;oidc&lt;/code&gt;) debe ser de confianza.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ssh_accept_ungranted&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;deja entrar un certificado &lt;strong&gt;sin&lt;/strong&gt; concesión. Desactivado por defecto; sin &lt;code&gt;ssh_domains&lt;/code&gt; se rechaza por carecer de sentido.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;certificado&lt;/th&gt;
+&lt;th&gt;&lt;code&gt;ssh_domains&lt;/code&gt;&lt;/th&gt;
+&lt;th&gt;&lt;code&gt;+ ssh_accept_ungranted&lt;/code&gt;&lt;/th&gt;
+&lt;th&gt;sin &lt;code&gt;ssh_domains&lt;/code&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;concedido para uno de &lt;code&gt;ssh_domains&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;entra&lt;/td&gt;
+&lt;td&gt;entra&lt;/td&gt;
+&lt;td&gt;entra&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;concedido solo para otros hosts, o &lt;code&gt;[]&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;rechazado&lt;/td&gt;
+&lt;td&gt;rechazado&lt;/td&gt;
+&lt;td&gt;entra&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;sin concesión&lt;/td&gt;
+&lt;td&gt;rechazado&lt;/td&gt;
+&lt;td&gt;entra, registrado&lt;/td&gt;
+&lt;td&gt;entra&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;una concesión que no se puede analizar (&lt;code&gt;null&lt;/code&gt;, &lt;code&gt;[1]&lt;/code&gt;, no compacta&amp;hellip;)&lt;/td&gt;
+&lt;td&gt;rechazado&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;rechazado&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;entra&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Sin &lt;code&gt;ssh_domains&lt;/code&gt; no se lee nada y nada cambia. La concesión se lee en los
+certificados que firmó una &lt;strong&gt;autoridad&lt;/strong&gt;: los de &lt;code&gt;trusted_user_ca_file&lt;/code&gt; y los del
+proveedor (&lt;code&gt;ssh_ca_file&lt;/code&gt;). Un certificado OpenPubkey lo firma la propia clave del
+usuario, así que una concesión en él sería la palabra del usuario sobre sí mismo. Su
+audiencia es en cambio &lt;code&gt;opkssh_client_id&lt;/code&gt;. Las claves simples no llevan concesión y
+no se ven afectadas.&lt;/p&gt;
+&lt;p&gt;Cada rechazo se registra con el número de serie del certificado, su key ID y el
+motivo:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;pre&gt;&lt;code&gt;sftp: alice: certificate 42 (&amp;#34;alice@efp&amp;#34;) refused: its domain grant [login.example.eu] names none of this host&amp;#39;s names [files.example.org sftp.example.org]
+sftp: alice: certificate 43 (&amp;#34;staff&amp;#34;) refused: it has no domain grant (ssh-domain-grant@core.aai.geant.org), and ssh_domains requires one&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Cada decisión se cuenta también en &lt;code&gt;fileshare_sftp_domain_grant_total{result}&lt;/code&gt;, con
+el resultado &lt;code&gt;granted&lt;/code&gt;, &lt;code&gt;accepted_ungranted&lt;/code&gt;, &lt;code&gt;refused_not_granted&lt;/code&gt;,&lt;code&gt;refused_absent&lt;/code&gt; o &lt;code&gt;refused_malformed&lt;/code&gt;. Un cliente ofrece un certificado antes de
+demostrar que posee la clave, así que esto cuenta intentos, no personas.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Por qué en modo cerrado ante el fallo&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Tome un host que confía en una segunda autoridad: su propia CA para el
+personal, una CA de pruebas, la CA de preproducción de EFP añadida al mismo
+archivo, o un cliente de go-authn/bridge sin concesiones. Los certificados
+de esa autoridad no llevan concesión. Si una concesión ausente significara«sin restricción», el filtro no filtraría nada en ese host.&lt;/p&gt;
+&lt;p&gt;Aquí, un certificado sin concesión se rechaza salvo que&lt;code&gt;ssh_accept_ungranted&lt;/code&gt; diga lo contrario. Una concesión presente que no se
+puede analizar se rechaza diga lo que diga: una autoridad que la escribió
+pretendía restringir el certificado. go-authn/sshcert describe paso a paso
+el &lt;a href="https://github.com/go-authn/sshcert#why-fail-closed-the-multi-ca-scenario" target="_blank" rel="noopener"&gt;escenario de varias CA&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h3 data-hextra-search-id="with-efps-ca"&gt;Con la CA de EFP&lt;span class="hx:absolute hx:-mt-20" id="with-efps-ca"&gt;&lt;/span&gt;
+&lt;a href="#with-efps-ca" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;&lt;code&gt;trusted_user_ca_file&lt;/code&gt; es el &lt;code&gt;TrustedUserCAKeys&lt;/code&gt; de OpenSSH. Ponga en él la clave que
+EFP publica en &lt;a href="https://sshca.my-eurohpc.eu/config" target="_blank" rel="noopener"&gt;https://sshca.my-eurohpc.eu/config&lt;/a&gt;, como indica la&lt;a href="https://integration.docs.my-eurohpc.eu/aai/ssh-ca-trust/" target="_blank" rel="noopener"&gt;página de confianza&lt;/a&gt; de
+EFP. Esa URL devuelve &lt;code&gt;{&amp;quot;PublicKey&amp;quot;: &amp;quot;ssh-ed25519 ...&amp;quot;}&lt;/code&gt;; el archivo contiene el
+valor de &lt;code&gt;PublicKey&lt;/code&gt; en una línea propia:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;curl -s https://sshca.my-eurohpc.eu/config &lt;span class="p"&gt;|&lt;/span&gt; jq -r &lt;span class="s1"&gt;&amp;#39;.PublicKey&amp;#39;&lt;/span&gt; &amp;gt; /etc/fileshare/efp-ssh-ca.pub&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Después, establezca &lt;code&gt;ssh_domains&lt;/code&gt; con los nombres que usa la concesión de su entidad
+de alojamiento. El único principal de un certificado de EFP es el identificador de
+MyAccessID (&lt;code&gt;&amp;lt;id&amp;gt;@myaccessid.org&lt;/code&gt;), así que ese es el nombre de usuario con el que
+inicia sesión. Un bloque &lt;code&gt;user&lt;/code&gt; con ese nombre, sin credencial propia, lo recibe:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;user&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;u1234@myaccessid.org&amp;#34;&lt;/span&gt; {}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h3 data-hextra-search-id="with-go-authnbridge"&gt;Con go-authn/bridge&lt;span class="hx:absolute hx:-mt-20" id="with-go-authnbridge"&gt;&lt;/span&gt;
+&lt;a href="#with-go-authnbridge" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Un cliente de &lt;a href="https://github.com/go-authn/bridge" target="_blank" rel="noopener"&gt;go-authn/bridge&lt;/a&gt; (v0.19.0 o
+posterior) con &lt;code&gt;ssh_certificates = true&lt;/code&gt; y&lt;code&gt;ssh_domain_grants = [&amp;quot;files.example.org&amp;quot;]&lt;/code&gt; emite certificados concedidos para este
+host. Con &lt;code&gt;ssh_principal_claim = &amp;quot;voperson_id&amp;quot;&lt;/code&gt;, su único principal es el&lt;code&gt;voperson_id&lt;/code&gt; de la persona, como en el perfil de EFP, y ese es el bloque &lt;code&gt;user&lt;/code&gt; que
+hay que escribir aquí. Confíe en la CA de bridge como este servidor confía en
+cualquier otra:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;como &lt;code&gt;trusted_user_ca_file&lt;/code&gt;, para cuentas locales. bridge sirve su clave en el
+formato de EFP en &lt;code&gt;/ssh/config&lt;/code&gt;, así que la línea &lt;code&gt;curl | jq&lt;/code&gt; de arriba funciona
+con la URL de bridge;&lt;/li&gt;
+&lt;li&gt;o como el &lt;code&gt;ssh_ca_file&lt;/code&gt; del bloque &lt;code&gt;oidc&lt;/code&gt;, para&lt;a href="#people-the-identity-provider-vouches-for"&gt;las personas que el proveedor avala&lt;/a&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Los demás clientes de bridge no escriben concesión. Si sus certificados deben seguir
+funcionando aquí, para eso está &lt;code&gt;ssh_accept_ungranted&lt;/code&gt;. Pero deja entrar &lt;strong&gt;todos&lt;/strong&gt;
+los certificados sin concesión de todas las autoridades de confianza, así que es
+preferible dar una concesión a esos clientes.&lt;/p&gt;
+&lt;h3 data-hextra-search-id="a-certificate-pinned-to-an-address"&gt;Un certificado vinculado a una dirección&lt;span class="hx:absolute hx:-mt-20" id="a-certificate-pinned-to-an-address"&gt;&lt;/span&gt;
+&lt;a href="#a-certificate-pinned-to-an-address" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;El &lt;code&gt;ssh_source_address&lt;/code&gt; de bridge escribe la opción crítica &lt;code&gt;source-address&lt;/code&gt;, como
+hace &lt;code&gt;ssh-keygen -O source-address=...&lt;/code&gt;. Un certificado que la lleva se acepta&lt;strong&gt;solo desde esas direcciones&lt;/strong&gt;, con o sin &lt;code&gt;ssh_domains&lt;/code&gt;. Un inicio de sesión desde
+una dirección que el certificado permite se deja entrar, siempre que su concesión
+nombre también este host cuando &lt;code&gt;ssh_domains&lt;/code&gt; está establecido. Un inicio de sesión
+desde cualquier otra dirección se rechaza.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;fileshare&lt;/th&gt;
+&lt;th&gt;&lt;code&gt;trusted_user_ca_file&lt;/code&gt;&lt;/th&gt;
+&lt;th&gt;&lt;code&gt;ssh_ca_file&lt;/code&gt; de &lt;code&gt;oidc&lt;/code&gt;, y OpenPubkey&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;antes de la v0.22.0&lt;/td&gt;
+&lt;td&gt;aplicada&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;rechazado desde cualquier dirección&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.22.0, sin &lt;code&gt;ssh_domains&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;aplicada&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;rechazado desde cualquier dirección&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.22.0, con &lt;code&gt;ssh_domains&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;rechazado desde cualquier dirección&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;rechazado desde cualquier dirección&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;v0.22.1, con o sin &lt;code&gt;ssh_domains&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;aplicada&lt;/td&gt;
+&lt;td&gt;aplicada&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;«Rechazado desde cualquier dirección» falla en modo cerrado: la restricción del
+certificado nunca se relajó, solo se perdió el inicio de sesión. Antes de la v0.22.1,el sshd de go-filesystems/sftp rechazaba cualquier opción crítica en los certificados
+que pasaba a fileshare para que este decidiera; eso abarca los del proveedor, los de
+OpenPubkey y, con &lt;code&gt;ssh_domains&lt;/code&gt;, todos los certificados. La v0.22.1 se basa en
+go-filesystems/sftp v0.5.1, cuyo sshd acepta ahí &lt;code&gt;source-address&lt;/code&gt; y lo aplica en
+todas las rutas de certificado, frente a la dirección de la que procede la conexión,IPv4 o IPv6.&lt;/p&gt;
+&lt;p&gt;Cualquier otra opción crítica (&lt;code&gt;force-command&lt;/code&gt;, &lt;code&gt;verify-required&lt;/code&gt;, &amp;hellip;) se rechaza,ya que este servidor no actúa en consecuencia.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="people-the-identity-provider-vouches-for"&gt;Las personas que el proveedor de identidad avala&lt;span class="hx:absolute hx:-mt-20" id="people-the-identity-provider-vouches-for"&gt;&lt;/span&gt;
+&lt;a href="#people-the-identity-provider-vouches-for" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Desde la v0.11.0, un bloque &lt;code&gt;oidc&lt;/code&gt; llega también a SFTP; no con un token, que SSH no
+tiene dónde poner, sino con un &lt;strong&gt;certificado&lt;/strong&gt;:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;oidc&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; issuer&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://login.example.org&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; audience&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;fileshare&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; ssh_ca_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/bridge-ca.pub&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # go-authn/bridge&amp;#39;s ssh_ca
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; opkssh_client_id&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;opkssh&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # OpenPubkey logins
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; opkssh_max_age&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;24h&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # 12h, 24h, 48h, 1week
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Un certificado firmado por la CA SSH del proveedor&lt;/strong&gt;: &lt;code&gt;authn-bridge ssh-cert&lt;/code&gt; escribe
+uno tras un inicio de sesión a través de la federación. Su principal es la
+persona, su extensión &lt;code&gt;groups@go-authn.org&lt;/code&gt; sus grupos, de modo que se aplican las&lt;a href="https://go-fileshare.github.io/docs/0.51/es/configuration/identity/#people-the-identity-provider-names-not-this-file"&gt;reglas &lt;code&gt;oidc:groups:&lt;/code&gt;&lt;/a&gt;.&lt;strong&gt;No&lt;/strong&gt; es &lt;code&gt;trusted_user_ca_file&lt;/code&gt;, cuyos certificados se refieren a cuentas
+locales: el certificado de una autoridad local que reivindica los grupos del
+proveedor se interpreta como la cuenta local que nombra.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Un certificado OpenPubkey&lt;/strong&gt;, como el que escribe &lt;code&gt;opkssh login&lt;/code&gt;: firmado por la
+propia clave del usuario, con un ID token que se compromete con esa clave. Se
+comprueba como lo comprueba &lt;code&gt;opkssh verify&lt;/code&gt; —el verificador de&lt;a href="https://github.com/openpubkey/openpubkey" target="_blank" rel="noopener"&gt;openpubkey&lt;/a&gt; (la firma del proveedor
+frente a sus claves publicadas, el compromiso del nonce, el client ID, la
+antigüedad) y después la clave del certificado frente a la del token—, y el nombre
+de usuario SSH debe ser el nombre de usuario del token, porque aquí no hay archivo&lt;code&gt;auth_id&lt;/code&gt; que haga corresponder el uno con el otro:&lt;code&gt;sftp alice@univ-example.fr@files.example.org&lt;/code&gt;. &lt;code&gt;opkssh_client_id&lt;/code&gt; debería ser un
+client ID propio, nunca el de otra aplicación: el ID token viaja a cada servidor en
+el que la persona inicia sesión.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Para ver los grupos que lleva un certificado:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;ssh-keygen -L -f ~/.ssh/id_ed25519-cert.pub &lt;span class="c1"&gt;# the Extensions section&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;y el servidor indica, en cada inicio de sesión federado,&lt;code&gt;sftp: alice@univ-a.fr, vouched for by the provider, in groups [...]&lt;/code&gt;.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Avalado no significa admitido&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Alguien a quien el proveedor avala sigue siendo un desconocido aquí salvo
+que una regla lo nombre, que &lt;code&gt;trust_all&lt;/code&gt; indique que el proveedor es el
+directorio, o que &lt;code&gt;local_names = true&lt;/code&gt; indique que los nombres del proveedor
+son los de este servidor y que una cuenta local tiene el suyo: la misma
+prueba que supera un token por WebDAV. Un certificado del proveedor &lt;strong&gt;sin
+principal&lt;/strong&gt;, válido para &lt;em&gt;cualquiera&lt;/em&gt; según la propia definición del
+formato, se rechaza.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;-tags noopenpubkey&lt;/code&gt; deja fuera el verificador de OpenPubkey (unos 2 MB); una
+configuración con &lt;code&gt;opkssh_client_id&lt;/code&gt; en una compilación así se rechaza.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="taking-a-certificate-back"&gt;Retirar un certificado&lt;span class="hx:absolute hx:-mt-20" id="taking-a-certificate-back"&gt;&lt;/span&gt;
+&lt;a href="#taking-a-certificate-back" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Un certificado se comprueba al iniciar sesión&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Revocar a la persona en el proveedor no revoca por sí solo un certificado ya
+emitido: este abre SFTP hasta que caduca, y una sesión SFTP ya abierta sigue
+abierta hasta entonces; estas personas no están en el directorio, así que
+ninguna &lt;a href="https://go-fileshare.github.io/docs/0.51/es/administration/reload/"&gt;recarga&lt;/a&gt; les concierne. El margen
+es la vida útil del certificado: el &lt;code&gt;ssh_ca { validity }&lt;/code&gt; de bridge (12h por
+defecto, 168h como máximo, nunca más allá del final de la sesión del IdP) y&lt;code&gt;opkssh_max_age&lt;/code&gt; aquí. Manténgalo tan corto como permita el reinicio de
+sesión de los clientes. Desde la v0.17.0, una sesión opkssh ya abierta
+también termina en &lt;code&gt;opkssh_max_age&lt;/code&gt;, diga lo que diga el certificado (que la
+persona firma ella misma).&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Dos mecanismos cierran ese margen:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;la &lt;strong&gt;&lt;a href="https://go-fileshare.github.io/docs/0.51/es/security/revocation-lists/"&gt;KRL&lt;/a&gt;&lt;/strong&gt; del proveedor (&lt;code&gt;ssh_krl_url&lt;/code&gt;):un certificado revocado se rechaza al iniciar sesión, y cada operación de una
+sesión que abrió vuelve a consultar la lista, incluidos los archivos abiertos;&lt;/li&gt;
+&lt;li&gt;las &lt;strong&gt;&lt;a href="https://go-fileshare.github.io/docs/0.51/es/security/shared-signals/"&gt;señales compartidas&lt;/a&gt;&lt;/strong&gt; (&lt;code&gt;ssf&lt;/code&gt;): todo
+lo que el proveedor emitió a la persona antes de un &lt;code&gt;session-revoked&lt;/code&gt; de CAEP se
+rechaza; es la única forma de alcanzar un certificado OpenPubkey, que no figura en
+ninguna lista.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Ambos fallan en modo cerrado.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="no-password"&gt;Sin contraseña&lt;span class="hx:absolute hx:-mt-20" id="no-password"&gt;&lt;/span&gt;
+&lt;a href="#no-password" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Un cliente que la pide hace justo lo que las claves existen para evitar.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="transfer-size-and-open-files"&gt;Tamaño de las transferencias y archivos abiertos&lt;span class="hx:absolute hx:-mt-20" id="transfer-size-and-open-files"&gt;&lt;/span&gt;
+&lt;a href="#transfer-size-and-open-files" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;fileshare responde a &lt;code&gt;limits@openssh.com&lt;/code&gt; de OpenSSH (desde la v0.25.0), así
+que el &lt;code&gt;sftp&lt;/code&gt; de OpenSSH lee y escribe hasta 255 KiB por petición en lugar
+de 32 KiB: alrededor de +25 % medido con OpenSSH 10.3. Una sesión puede tener
+como mucho 1024 archivos y directorios abiertos a la vez; en un recurso
+compartido de directorio cada uno es un descriptor del host, y el límite
+impide que un usuario los gaste todos.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="requests-in-flight"&gt;Solicitudes en vuelo&lt;span class="hx:absolute hx:-mt-20" id="requests-in-flight"&gt;&lt;/span&gt;
+&lt;a href="#requests-in-flight" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Desde go-filesystems/sftp v0.9.0, una sesión responde hasta 64 solicitudes a la
+vez y las respuestas salen en el orden en que llegaron las solicitudes, porque
+el &lt;code&gt;sftp&lt;/code&gt; de OpenSSH (64 pendientes por defecto, &lt;code&gt;-R&lt;/code&gt;) se niega a reanudar una
+transferencia cuyas respuestas vuelven reordenadas; desde v0.10.0 el mecanismo
+vive en el módulo compartido go-filesystems/inflight, y desde v0.10.1 el resto
+de un paquete dispone de 30 s para llegar una vez iniciado(&lt;code&gt;WithPacketTimeout&lt;/code&gt;). Las versiones anteriores respondían
+a un paquete antes de leer el siguiente. &lt;code&gt;READ&lt;/code&gt; y &lt;code&gt;WRITE&lt;/code&gt; se ejecutan en
+paralelo; dos solicitudes cuyos rangos de bytes se solapan en un mismo archivo,con una escritura entre ellas, se ejecutan en orden de llegada; y &lt;code&gt;OPEN&lt;/code&gt;,&lt;code&gt;CLOSE&lt;/code&gt;, &lt;code&gt;READDIR&lt;/code&gt; y toda solicitud de metadatos esperan a lo que está en vuelo
+y se ejecutan solas, de modo que un &lt;code&gt;CLOSE&lt;/code&gt; siempre sigue a las operaciones
+pendientes de su descriptor. Un cliente que encadena más rápido de lo que el
+servidor responde espera en la conexión, no en la memoria del servidor.&lt;/p&gt;
+&lt;p&gt;Desde go-filesystems/sftp v0.11.0, las respuestas a una ráfaga de solicitudes se escriben juntas, y el transporte SSH (el fork go-filesystems/ssh de &lt;code&gt;golang.org/x/crypto/ssh&lt;/code&gt;) vacía el búfer una vez por escritura del canal en lugar de una vez por paquete: 32 llamadas &lt;code&gt;write(2)&lt;/code&gt; por MiB enviada en lugar de 96.&lt;/p&gt;
+&lt;p&gt;Un recurso de &lt;strong&gt;directorio&lt;/strong&gt; llega a los archivos del host sin un bloqueo
+propio y aprovecha toda la mejora. Un recurso respaldado por una &lt;strong&gt;imagen&lt;/strong&gt;
+sigue detrás del único bloqueo que mantiene correcto su controlador, y sigue
+siendo serial. El banco &lt;code&gt;throughput_test.go&lt;/code&gt; del repositorio lo mide(&lt;code&gt;FILESHARE_THROUGHPUT_MIB&lt;/code&gt;): sftp con 64 solicitudes en vuelo y con 1, nfs
+sobre 1, 4 y 8 conexiones.&lt;/p&gt;</description></item><item><title>S3 — un recurso compartido es un bucket</title><link>https://go-fileshare.github.io/docs/0.51/es/protocols/s3/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.51/es/protocols/s3/</guid><description>
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;serve &amp;#34;s3&amp;#34; { addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:9000&amp;#34;&lt;/span&gt; }&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;O por HTTPS, desde la v0.9.0, con &lt;code&gt;tls = true&lt;/code&gt; y un&lt;a href="https://go-fileshare.github.io/docs/0.51/es/security/tls/"&gt;bloque &lt;code&gt;tls&lt;/code&gt;&lt;/a&gt;:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;s3&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:9000&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; tls&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;El quinto protocolo, y el que hace que una imagen sea accesible desde cualquier cosa
+que hable almacenamiento de objetos: una herramienta de copias de seguridad, una
+canalización de datos, &lt;code&gt;rclone&lt;/code&gt;, el &lt;code&gt;fetch()&lt;/code&gt; de un navegador. &lt;strong&gt;No se monta nada.&lt;/strong&gt;&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;pre&gt;&lt;code&gt;GET / the shares this person may use, as buckets
+GET /photos?list-type=2 the files in that share, as keys
+GET /photos/holiday.jpg the file itself, Range and all&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="a-share-is-a-bucket"&gt;Un recurso compartido es un bucket&lt;span class="hx:absolute hx:-mt-20" id="a-share-is-a-bucket"&gt;&lt;/span&gt;
+&lt;a href="#a-share-is-a-bucket" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Servido sobre el &lt;strong&gt;mismo árbol por usuario que usa SFTP&lt;/strong&gt;: un sistema de archivos
+cuyo nivel superior son los recursos compartidos que esa persona puede usar. Así, un
+recurso compartido que alice no puede usar no es un bucket que alice pueda ver, y las
+reglas de acceso se aplican en un solo lugar en vez de copiarse a un segundo
+protocolo.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Un directorio dentro de un recurso compartido es un prefijo, no un objeto&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Que es lo que los clientes S3 ya creen: muestran como carpetas los prefijos
+que terminan en el delimitador. Un &lt;code&gt;GET&lt;/code&gt; de un directorio responde&lt;code&gt;NoSuchKey&lt;/code&gt;, porque responder 200 haría creer a un cliente que puede
+descargar los bytes de una carpeta.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="an-access-key-is-a-user-the-secret-key-is-their-password"&gt;Una clave de acceso es un usuario; la clave secreta es su contraseña&lt;span class="hx:absolute hx:-mt-20" id="an-access-key-is-a-user-the-secret-key-is-their-password"&gt;&lt;/span&gt;
+&lt;a href="#an-access-key-is-a-user-the-secret-key-is-their-password" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;export&lt;/span&gt; &lt;span class="nv"&gt;AWS_ACCESS_KEY_ID&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;alice
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;export&lt;/span&gt; &lt;span class="nv"&gt;AWS_SECRET_ACCESS_KEY&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;cat alice.pw&lt;span class="k"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;aws --endpoint-url http://attic.example.org:9000 s3 ls&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;SigV4 prueba la posesión del secreto calculando un HMAC a partir de él: la contraseña
+nunca cruza la red, exactamente como con NTLMv2.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Por eso el directorio debe GUARDAR la contraseña, y no solo comprobarla&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Un origen que solo puede &lt;em&gt;verificar&lt;/em&gt; una contraseña —un bind LDAP, una
+columna bcrypt— puede responder a WebDAV y &lt;strong&gt;no puede&lt;/strong&gt; responder a S3.&lt;/p&gt;
+&lt;p&gt;Y tampoco sirve un hash NT: es el MD4 con el que SMB puede trabajar, y a
+partir de él no se puede calcular un HMAC. &lt;strong&gt;Una identidad que solo guarda
+un hash NT sirve SMB y no S3&lt;/strong&gt;: vecinos cercanos, pero no la misma
+respuesta. &lt;a href="https://go-fileshare.github.io/docs/0.51/es/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt; imprime la columna.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;⛔ No existe ningún accesor &lt;code&gt;Password()&lt;/code&gt; en todo el programa: a la contraseña solo
+se llega mediante &lt;code&gt;Identity.Derive&lt;/code&gt;, que recibe una derivación y devuelve su
+resultado. Para S3 la derivación es la identidad, porque el cálculo de claves de
+SigV4 vive en go-filesystems/s3; el secreto va a esa comprobación de firma, para ese
+único usuario, y a ningún otro sitio.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-is-served"&gt;Lo que se sirve&lt;span class="hx:absolute hx:-mt-20" id="what-is-served"&gt;&lt;/span&gt;
+&lt;a href="#what-is-served" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;ListBuckets&lt;/code&gt;, &lt;code&gt;HeadBucket&lt;/code&gt;, &lt;code&gt;ListObjectsV2&lt;/code&gt; con prefijo, delimitador, max-keys y
+continuación, &lt;code&gt;HeadObject&lt;/code&gt;, y &lt;code&gt;GetObject&lt;/code&gt; con &lt;code&gt;Range&lt;/code&gt;. SigV4 en sus dos formas, en
+cabecera y prefirmada.&lt;/p&gt;
+&lt;p&gt;La API de objetos en sí es&lt;a href="https://github.com/go-filesystems/s3" target="_blank" rel="noopener"&gt;&lt;code&gt;go-filesystems/s3&lt;/code&gt;&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-is-refused-and-why"&gt;Lo que se rechaza, y por qué&lt;span class="hx:absolute hx:-mt-20" id="what-is-refused-and-why"&gt;&lt;/span&gt;
+&lt;a href="#what-is-refused-and-why" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Las escrituras responden 403&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;PUT&lt;/code&gt;, &lt;code&gt;POST&lt;/code&gt; y &lt;code&gt;DELETE&lt;/code&gt; se rechazan con &lt;code&gt;AccessDenied&lt;/code&gt; (&amp;ldquo;this export is
+read-only&amp;rdquo;). fileshare mantiene el servidor S3 en solo lectura porque un
+recurso compartido que una persona solo puede leer tiene que rechazar en el
+mismo punto en que lo hace SFTP, y eso aún no está conectado;go-filesystems/s3 v0.3.0, sobre la que se construye esta versión, rechaza de
+todos modos cualquier escritura. Rechazar es mejor que un objeto escrito a
+medias.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Aquí no se acepta un token bearer&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://go-fileshare.github.io/docs/0.51/es/protocols/webdav/"&gt;OIDC&lt;/a&gt; funciona por WebDAV y en ningún otro sitio. S3
+autentica con una firma SigV4 —un HMAC sobre la petición—, sin ningún campo
+en el que quepa un token bearer.&lt;/p&gt;
+&lt;p&gt;La vía es STS &lt;code&gt;AssumeRoleWithWebIdentity&lt;/code&gt;, que canjea un token OIDC
+por credenciales temporales con las que luego firma el cliente. Se sirve en
+este listener desde v0.50.0: véase &lt;a href="#sts"&gt;abajo&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;La subida multiparte, el versionado, las ACL, las políticas, las reglas de ciclo de
+vida, la replicación y el etiquetado no están implementados. Configurar cualquiera de
+ellos, e iniciar una subida multiparte, es una escritura, y responde &lt;code&gt;AccessDenied&lt;/code&gt;
+como cualquier otra. Un &lt;code&gt;GET&lt;/code&gt; que pide uno de ellos (&lt;code&gt;?versioning&lt;/code&gt;, &lt;code&gt;?acl&lt;/code&gt;,&lt;code&gt;?tagging&lt;/code&gt;&amp;hellip;) no se distingue: la consulta se ignora y se devuelve el listado del
+bucket o el objeto. &lt;code&gt;NotImplemented&lt;/code&gt; responde a un listado distinto de&lt;code&gt;list-type=2&lt;/code&gt;, a cualquier método salvo &lt;code&gt;GET&lt;/code&gt; sobre &lt;code&gt;/&lt;/code&gt;, y a un método que ninguna
+operación de aquí utiliza.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="sts"&gt;Credenciales temporales: STS &lt;code&gt;AssumeRoleWithWebIdentity&lt;/code&gt;&lt;span class="hx:absolute hx:-mt-20" id="sts"&gt;&lt;/span&gt;
+&lt;a href="#sts" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Desde v0.50.0 el listener S3 también responde a la API STS de AWS(&lt;code&gt;AssumeRoleWithWebIdentity&lt;/code&gt;, versión 2011-06-15): un token del proveedor del&lt;a href="https://go-fileshare.github.io/docs/0.51/es/protocols/webdav/"&gt;bloque &lt;code&gt;oidc&lt;/code&gt;&lt;/a&gt; se canjea por una clave de acceso, una clave secreta y un token de
+sesión que &lt;strong&gt;caducan&lt;/strong&gt;. &lt;code&gt;aws&lt;/code&gt;, &lt;code&gt;rclone&lt;/code&gt; y los SDK de AWS lo hablan como con AWS, y nadie
+guarda una contraseña.&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;oidc&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; issuer&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://login.example.org&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; audience&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;fileshare&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;s3&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:9000&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; tls&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; sts&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt; true # POST / con Action&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;AssumeRoleWithWebIdentity&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; sts_duration&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;1h&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # el valor por defecto, de 15m a 12h
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; sts_max_duration&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;4h&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # lo máximo que puede pedir DurationSeconds; por defecto sts_duration
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; static_keys&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;false&lt;/span&gt;&lt;span class="c1"&gt; # se acabó «la clave de acceso es un usuario»: solo firman las credenciales temporales
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;El token&lt;/strong&gt; es un token de acceso (&lt;code&gt;typ&lt;/code&gt; &lt;code&gt;at+jwt&lt;/code&gt;) del proveedor del bloque &lt;code&gt;oidc&lt;/code&gt;, para el
+emisor y la audiencia de ese bloque: no hay una segunda configuración de proveedor. El token de
+una persona o el de una máquina: el token &lt;code&gt;client_credentials&lt;/code&gt; de go-authn/bridge para un cliente
+que se autentica con una clave privada (&lt;code&gt;private_key_jwt&lt;/code&gt;) tiene &lt;code&gt;sub&lt;/code&gt; = el ID del cliente, que
+es el nombre aquí.&lt;/li&gt;
+&lt;li&gt;⛔ &lt;strong&gt;Pasa por la misma regla que un token por WebDAV.&lt;/strong&gt; Un token válido para un nombre que
+ninguna fuente de aquí conoce se rechaza, salvo &lt;code&gt;trust_all = true&lt;/code&gt; o que la regla &lt;code&gt;oidc:&lt;/code&gt; de un
+recurso compartido lo nombre (&lt;code&gt;allow = [&amp;quot;oidc:user:winpc-17&amp;quot;]&lt;/code&gt;). Las reglas del recurso deciden
+entonces qué es visible.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;La respuesta&lt;/strong&gt; es &lt;code&gt;AccessKeyId&lt;/code&gt; (&lt;code&gt;ASIA…&lt;/code&gt;), &lt;code&gt;SecretAccessKey&lt;/code&gt;, &lt;code&gt;SessionToken&lt;/code&gt; y &lt;code&gt;Expiration&lt;/code&gt;.Las peticiones se firman con ellos y llevan el token de sesión en &lt;code&gt;x-amz-security-token&lt;/code&gt;,&lt;strong&gt;firmado&lt;/strong&gt;. Son aleatorios, solo en memoria y nunca se escriben; un reinicio los termina y el
+cliente vuelve a pedir.&lt;/li&gt;
+&lt;li&gt;⛔ &lt;strong&gt;Duración = mín(pedida, lo que le queda al token).&lt;/strong&gt; Las credenciales nunca sobreviven al token
+que las compró (&lt;code&gt;sts_duration&lt;/code&gt;, o &lt;code&gt;DurationSeconds&lt;/code&gt; hasta &lt;code&gt;sts_max_duration&lt;/code&gt;, es solo el techo).Un token al que le quedan &lt;strong&gt;menos de 6 minutos&lt;/strong&gt; se rechaza con &lt;code&gt;ExpiredTokenException&lt;/code&gt;: los SDK
+de AWS renuevan unos 5 minutos antes de &lt;code&gt;Expiration&lt;/code&gt;, y unas credenciales más cortas se
+renovarían al instante, para siempre. Un cliente presenta un token nuevo en cada canje.&lt;/li&gt;
+&lt;li&gt;⛔ &lt;strong&gt;Una sesión se juzga en cada petición&lt;/strong&gt;: caduca; su token de sesión está ligado a su clave de
+acceso; termina cuando el proveedor revoca a la persona después de emitido el token(&lt;a href="https://go-fileshare.github.io/docs/0.51/es/security/shared-signals/"&gt;señales compartidas&lt;/a&gt;); y cuando la configuración
+deja de admitir el nombre.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Policy&lt;/code&gt;, &lt;code&gt;PolicyArns&lt;/code&gt; y un segundo &lt;code&gt;WebIdentityToken&lt;/code&gt; se rechazan, y los parámetros van en el
+cuerpo del POST, nunca en la URL.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;static_keys = false&lt;/code&gt;&lt;/strong&gt; desactiva el modo «la clave de acceso es un usuario, la clave secreta es
+su contraseña». Necesita &lt;code&gt;sts = true&lt;/code&gt;: si no, la configuración se rechaza al cargar, porque un
+listener para el que nadie podría firmar parecería configurado. En una dirección que no es de
+loopback, &lt;code&gt;sts&lt;/code&gt; necesita &lt;code&gt;tls = true&lt;/code&gt;, o &lt;code&gt;plaintext = true&lt;/code&gt; cuando el TLS se termina delante.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 data-hextra-search-id="on-an-unattended-machine-awscred"&gt;En una máquina desatendida: awscred&lt;span class="hx:absolute hx:-mt-20" id="on-an-unattended-machine-awscred"&gt;&lt;/span&gt;
+&lt;a href="#on-an-unattended-machine-awscred" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;&lt;a href="https://github.com/go-authn/awscred" target="_blank" rel="noopener"&gt;&lt;code&gt;awscred&lt;/code&gt;&lt;/a&gt; v0.1.0 es un &lt;code&gt;credential_process&lt;/code&gt; de AWS para
+máquinas que tienen una clave privada y ninguna contraseña: firma un &lt;code&gt;private_key_jwt&lt;/code&gt;, obtiene un
+token de go-authn/bridge, llama a este endpoint e imprime las credenciales como las leen los SDK.Los SDK lo ejecutan de nuevo antes de &lt;code&gt;Expiration&lt;/code&gt;.&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-ini" data-lang="ini"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;[profile fileshare]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;credential_process&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;awscred --issuer https://login.example.org --client winpc-17 --key /etc/awscred/winpc-17.pem --sts https://s3.example.org&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;⛔ En Unix, &lt;code&gt;awscred&lt;/code&gt; rechaza un archivo de clave legible por el grupo o por otros (&lt;code&gt;chmod 600&lt;/code&gt;).En Windows los modos de archivo no significan nada: guarde la clave en el perfil de la cuenta de
+servicio o en un directorio cuya ACL admita solo esa cuenta. Una clave en el almacén CNG de
+Windows o en un TPM aún no se admite.&lt;/p&gt;
+&lt;h3 data-hextra-search-id="behind-a-proxy-trusted_proxies"&gt;Detrás de un proxy: &lt;code&gt;trusted_proxies&lt;/code&gt;&lt;span class="hx:absolute hx:-mt-20" id="behind-a-proxy-trusted_proxies"&gt;&lt;/span&gt;
+&lt;a href="#behind-a-proxy-trusted_proxies" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Detrás del proxy para el que existe &lt;code&gt;plaintext = true&lt;/code&gt;, todos los clientes serían una sola fuente
+para los límites de abajo. Nombre los proxies en el bloque serve de &lt;code&gt;s3&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;s3&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;127.0.0.1:9000&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; plaintext&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; sts&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; trusted_proxies&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;10.0.0.2&amp;#34;, &amp;#34;10.0.1.0/29&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Solo a una petición que llega &lt;strong&gt;desde&lt;/strong&gt; un proxy de confianza se le cree sobre su cliente, mediante
+el salto más a la derecha de &lt;code&gt;X-Forwarded-For&lt;/code&gt; que no sea a su vez un proxy de confianza; de
+cualquier otro la cabecera se ignora.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;La lista debe nombrar los proxies y nada más&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Un prefijo más ancho que un host (un &lt;code&gt;/24&lt;/code&gt;, un &lt;code&gt;/64&lt;/code&gt; IPv6) se acepta —un conjunto de proxies, un&lt;code&gt;/29&lt;/code&gt;, es legítimo— y se imprime una advertencia al arrancar: un cliente que pueda tener una
+dirección dentro elige su propio &lt;code&gt;X-Forwarded-For&lt;/code&gt; y, con él, el cubo en el que se le cuenta.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h3 data-hextra-search-id="limits"&gt;Límites&lt;span class="hx:absolute hx:-mt-20" id="limits"&gt;&lt;/span&gt;
+&lt;a href="#limits" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;16 sesiones por nombre&lt;/strong&gt;: la más antigua del mismo nombre sale primero, las sesiones de otros
+nombres se quedan (20000 en total).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;60 peticiones por minuto por dirección de origen&lt;/strong&gt;, con respuesta &lt;code&gt;429 Throttling&lt;/code&gt;. Cada
+petición cuenta, válida o no, antes de verificar el token. Un origen es una dirección IPv4 o un&lt;strong&gt;/64&lt;/strong&gt; IPv6.&lt;/li&gt;
+&lt;li&gt;El conteo es O(1) por petición, bajo su propio cerrojo, en un minuto deslizante de dos
+generaciones; las peticiones S3 con credenciales nunca esperan por él.&lt;/li&gt;
+&lt;li&gt;Un origen visto en el último minuto se cuenta mientras la tabla tenga menos de &lt;strong&gt;2 × 10000&lt;/strong&gt;
+entradas (la cota, por mucho que dure una avalancha). Un origen que la tabla llena no ha visto se
+cuenta en un cubo de desbordamiento de su red —su &lt;strong&gt;/48&lt;/strong&gt; (IPv6) o &lt;strong&gt;/24&lt;/strong&gt; (IPv4), diez veces la
+tasa cada uno—, de modo que una avalancha agota los cubos de las redes de las que viene, no los de
+todos. Los vecinos IPv4 detrás de un /24 (CGNAT, un campus) comparten un cubo.&lt;/li&gt;
+&lt;li&gt;⛔ &lt;strong&gt;Pasadas 1024 redes por minuto, un cubo compartido atiende al resto&lt;/strong&gt;: un atacante con más redes
+lo agota, y todo origen que la tabla no haya visto ya —&lt;strong&gt;incluidos los clientes existentes que
+renuevan más o menos cada hora&lt;/strong&gt;— es rechazado hasta que cambia el minuto. Es el límite de este diseño.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 data-hextra-search-id="two-limits-worth-knowing-before-pointing-it-at-something-large"&gt;Dos límites que conviene conocer antes de apuntarlo a algo grande&lt;span class="hx:absolute hx:-mt-20" id="two-limits-worth-knowing-before-pointing-it-at-something-large"&gt;&lt;/span&gt;
+&lt;a href="#two-limits-worth-knowing-before-pointing-it-at-something-large" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;GetObject&lt;/code&gt; lee el objeto entero en memoria.&lt;/strong&gt; La interfaz del controlador ofrece&lt;code&gt;ReadFile&lt;/code&gt; y nada más —ni función de apertura, ni lector—, así que no hay lectura en
+streaming que usar. Un límite, 256 MiB, responde &lt;code&gt;EntityTooLarge&lt;/code&gt; en lugar de tumbar
+el proceso.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;&lt;code&gt;LastModified&lt;/code&gt; es la época Unix.&lt;/strong&gt; &lt;code&gt;filesystem.Stat&lt;/code&gt; lleva &lt;code&gt;Mode&lt;/code&gt;, &lt;code&gt;Size&lt;/code&gt; e&lt;code&gt;Inode&lt;/code&gt;, y ninguna fecha de modificación. El campo no es opcional en el esquema de
+S3, así que hay que enviar algo; la época es obviamente una fecha que no es real,mientras que &lt;code&gt;time.Now()&lt;/code&gt; parecería un archivo que acaba de cambiar y haría que
+cualquier herramienta de sincronización lo copiara todo, en cada ejecución.&lt;/p&gt;</description></item><item><title>NFS — nada, salvo Kerberos o un certificado</title><link>https://go-fileshare.github.io/docs/0.51/es/protocols/nfs/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.51/es/protocols/nfs/</guid><description>
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;serve &amp;#34;nfs&amp;#34; { addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:2049&amp;#34;&lt;/span&gt; }&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;NFSv3 por sí solo no autentica a nadie&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;AUTH_UNIX&lt;/code&gt; es una &lt;strong&gt;afirmación&lt;/strong&gt;: el cliente dice «uid 501» y la red no
+puede contradecirlo. Tampoco hay cifrado.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Por eso &lt;strong&gt;un recurso compartido que nombra quién puede usarlo no se exporta por
+NFS&lt;/strong&gt;. El rechazo se imprime al arrancar y en &lt;a href="https://go-fileshare.github.io/docs/0.51/es/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt;,con el motivo:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;pre&gt;&lt;code&gt;nfs on 0.0.0.0:2049 — scratch
+photos is not served over nfs: it is restricted to alice and bob, and
+NFSv3 on its own has no authentication: AUTH_UNIX is a claim the client
+makes about itself and the wire cannot disagree with it. A kerberos
+block lifts this: sec=krb5 carries a principal a ticket proves; so
+does identity = &amp;#34;certificate&amp;#34; on the nfs serve block: RPC-over-TLS
+with a client certificate naming the person&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Un recurso compartido sin &lt;code&gt;allow&lt;/code&gt; ni &lt;code&gt;writers&lt;/code&gt; —cualquiera que se conecte, en lectura
+y escritura— sí se exporta por NFS, porque ahí no hay ninguna regla que el protocolo
+pueda dejar de respetar.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="the-refusal-that-used-to-be-permanent"&gt;El rechazo que antes era permanente&lt;span class="hx:absolute hx:-mt-20" id="the-refusal-that-used-to-be-permanent"&gt;&lt;/span&gt;
+&lt;a href="#the-refusal-that-used-to-be-permanent" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Un bloque &lt;code&gt;kerberos&lt;/code&gt; permite a NFS distinguir a las personas, y un recurso compartido
+restringido se sirve entonces por él como en cualquier otro sitio:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;kerberos&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; realm&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;EXAMPLE.ORG&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; keytab&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/krb5.keytab&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;sec=krb5&lt;/code&gt; transporta un principal que &lt;strong&gt;prueba un ticket&lt;/strong&gt;, en lugar de un uid que
+el cliente afirma.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Se compara el reino (realm), no solo el nombre antes de la &lt;code&gt;@&lt;/code&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Dos reinos pueden tener cada uno un &lt;code&gt;alice&lt;/code&gt;, y solo uno de ellos es el suyo.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="over-tls-the-machine-not-the-person"&gt;Sobre TLS: la máquina, no la persona&lt;span class="hx:absolute hx:-mt-20" id="over-tls-the-machine-not-the-person"&gt;&lt;/span&gt;
+&lt;a href="#over-tls-the-machine-not-the-person" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;nfs&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; tls&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; client_ca_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/tls/clients.pem&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Desde la v0.9.0, NFS se sirve sobre RPC-with-TLS (RFC 9289) con &lt;code&gt;tls = true&lt;/code&gt; y un&lt;a href="https://go-fileshare.github.io/docs/0.51/es/security/tls/"&gt;bloque &lt;code&gt;tls&lt;/code&gt;&lt;/a&gt;. Cifra; con &lt;code&gt;client_ca_file&lt;/code&gt; obliga al cliente
+a presentar un certificado de esa autoridad, que indica qué &lt;strong&gt;máquina&lt;/strong&gt; está
+montando. El uid de dentro sigue siendo el que afirma &lt;code&gt;AUTH_SYS&lt;/code&gt;, así que un recurso
+compartido restringido &lt;strong&gt;sigue rechazándose&lt;/strong&gt; por esta vía. TLS se ofrece, no se
+exige: a un cliente que nunca lo pide se le siguen sirviendo los recursos compartidos
+abiertos.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="a-person-from-their-certificate"&gt;Una persona, a partir de su certificado&lt;span class="hx:absolute hx:-mt-20" id="a-person-from-their-certificate"&gt;&lt;/span&gt;
+&lt;a href="#a-person-from-their-certificate" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Desde la v0.12.0, un certificado puede nombrar a una &lt;strong&gt;persona&lt;/strong&gt; —tal como lo emite
+go-authn/bridge tras un inicio de sesión en un proveedor de identidad—, y entonces un
+recurso compartido que nombra personas se sirve por NFS sin kerberos:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;nfs&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; tls&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; client_ca_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/bridge-x509-ca.pem&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; identity&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;certificate&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; crl_url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://bridge.example.org/x509/crl&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # or crl_file: one is required
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;El certificado de un cliente Linux pertenece a un montaje&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Todos los usuarios de ese montaje actúan como la persona que nombra el
+certificado. Correcto en una estación de trabajo que usa una sola persona;incorrecto en una máquina en la que inician sesión varias personas: use&lt;code&gt;sec=krb5&lt;/code&gt; allí.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Lo que transporta el certificado, la CRL que se exige y lo que se midió con un
+cliente Linux real (&lt;code&gt;MNT&lt;/code&gt; sin cifrar, las trampas de &lt;code&gt;tlshd&lt;/code&gt;) se encuentran en&lt;a href="https://go-fileshare.github.io/docs/0.51/es/security/nfs-certificates/"&gt;NFS, con identidades a partir de certificados&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="requests-in-flight"&gt;Solicitudes en vuelo&lt;span class="hx:absolute hx:-mt-20" id="requests-in-flight"&gt;&lt;/span&gt;
+&lt;a href="#requests-in-flight" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Desde go-filesystems/nfs v0.12.0, una conexión mantiene hasta 32 llamadas RPC en vuelo, y el servidor hasta 128 entre todas las conexiones, contadas antes de leer el registro. Las respuestas se asocian por xid. Las llamadas &lt;code&gt;READ&lt;/code&gt; de una conexión se responden unas junto a otras; el &lt;code&gt;ReadAt&lt;/code&gt; del controlador de cada una solo se solapa si la exportación lo activa con &lt;code&gt;WithConcurrentReads&lt;/code&gt; (desactivado por defecto: en un directorio del host, donde &lt;code&gt;ReadAt&lt;/code&gt; es un único &lt;code&gt;pread&lt;/code&gt;, midió un 25 % más lento con 4 y 8 conexiones; compensa con un controlador cuyo &lt;code&gt;ReadAt&lt;/code&gt; es costoso); cualquier otra llamada, incluida &lt;code&gt;WRITE&lt;/code&gt; porque abre su propio archivo en cada llamada, espera a las anteriores y se ejecuta sola. Un registro dispone de 30 s para llegar una vez iniciado. El mecanismo es el módulo compartido go-filesystems/inflight, que también usan SFTP y SMB.&lt;/p&gt;
+&lt;p&gt;Una exportación también puede activar &lt;code&gt;WithConcurrentPathOps&lt;/code&gt;, la palabra de quien integra de que las llamadas de ruta de solo lectura del controlador (&lt;code&gt;Stat&lt;/code&gt;, &lt;code&gt;Open&lt;/code&gt;, &lt;code&gt;Close&lt;/code&gt;) son seguras unas junto a otras. Un &lt;code&gt;READ&lt;/code&gt; toma entonces un único bloqueo compartido alrededor de los atributos, la apertura, el &lt;code&gt;ReadAt&lt;/code&gt;, el cierre y los atributos post-op, de modo que las llamadas &lt;code&gt;READ&lt;/code&gt; de cualquier conexión nunca se esperan entre sí, mientras que toda llamada que modifica algo sigue ejecutándose sola: un &lt;code&gt;WRITE&lt;/code&gt; nunca se solapa con un &lt;code&gt;READ&lt;/code&gt; en el controlador. Incluye &lt;code&gt;WithConcurrentReads&lt;/code&gt; en esa exportación. fileshare lo activa solo para los recursos de &lt;strong&gt;directorio&lt;/strong&gt;, cuyo árbol del host es seguro para el uso concurrente; un recurso de &lt;strong&gt;imagen&lt;/strong&gt; sigue tras su único bloqueo y no lo recibe.&lt;/p&gt;</description></item><item><title>Las fechas reales de los archivos</title><link>https://go-fileshare.github.io/docs/0.51/es/protocols/times/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.51/es/protocols/times/</guid><description>
+&lt;p&gt;Desde la v0.39.0, las fechas de un archivo son las que su sistema de archivos
+registró, no la hora de la petición. Esto requiere la capacidad opcional&lt;code&gt;TimesReader&lt;/code&gt; de &lt;code&gt;go-filesystems/interface&lt;/code&gt; v0.6.0, que un controlador tiene o
+no tiene.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="which-shares-report-real-times"&gt;Qué recursos informan fechas reales&lt;span class="hx:absolute hx:-mt-20" id="which-shares-report-real-times"&gt;&lt;/span&gt;
+&lt;a href="#which-shares-report-real-times" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Recurso&lt;/th&gt;
+&lt;th&gt;Fechas reales&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Directorio&lt;/strong&gt; (anfitrión)&lt;/td&gt;
+&lt;td&gt;sí: acceso, modificación, cambio y, si el anfitrión la guarda, creación, al nanosegundo&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Imagen FAT&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;sí, con la resolución de FAT: modificación 2 s, acceso un día, creación 10 ms; no hay fecha de cambio&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Imagen exFAT&lt;/strong&gt; (desde v0.40.0)&lt;/td&gt;
+&lt;td&gt;sí: creación y modificación 10 ms, acceso 2 s; no hay fecha de cambio&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Imagen NTFS&lt;/strong&gt; (desde v0.40.0)&lt;/td&gt;
+&lt;td&gt;sí: creación, modificación, cambio y acceso, 100 ns&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Imagen ext4&lt;/strong&gt; (desde v0.40.0)&lt;/td&gt;
+&lt;td&gt;sí: acceso, modificación y cambio a 1 ns (1 s en los inodos ext2/ext3 de 128 bytes); creación solo si el inodo es lo bastante grande&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Imagen HFS+&lt;/strong&gt; (desde v0.40.0)&lt;/td&gt;
+&lt;td&gt;sí: creación, modificación, cambio y acceso, 1 s&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Otros tipos de imagen&lt;/td&gt;
+&lt;td&gt;se responde como antes&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Recurso servido como la persona (worker &lt;code&gt;remote&lt;/code&gt;)&lt;/td&gt;
+&lt;td&gt;sí, si el directorio del worker es un directorio del anfitrión: la fecha cruza la frontera del worker&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Una fecha se compara con la resolución &lt;strong&gt;más gruesa&lt;/strong&gt; entre la del formato y
+la del protocolo: SFTP transporta segundos enteros, el &lt;code&gt;getlastmodified&lt;/code&gt; de
+WebDAV también, SMB 100 ns, NFS 1 ns.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="when-a-time-is-not-recorded"&gt;Cuando una fecha no está registrada&lt;span class="hx:absolute hx:-mt-20" id="when-a-time-is-not-recorded"&gt;&lt;/span&gt;
+&lt;a href="#when-a-time-is-not-recorded" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Protocolo&lt;/th&gt;
+&lt;th&gt;Qué se envía&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;SMB&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;0, «no especificado». Un controlador &lt;strong&gt;sin&lt;/strong&gt; la capacidad sigue respondiendo la hora actual.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;NFS&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Una fecha de acceso o de cambio ausente pasa a ser la de modificación; una fecha de modificación ausente pasa a ser la hora de arranque del servidor.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;SFTP&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Una fecha de modificación ausente borra el indicador &lt;code&gt;ACMODTIME&lt;/code&gt;: el cliente no ve ninguna fecha en lugar de una falsa.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;WebDAV&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;creationdate&lt;/code&gt; es la fecha de creación; una fecha no registrada no aparece en la respuesta.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2 data-hextra-search-id="setting-times"&gt;Fechas que un cliente establece por SMB&lt;span class="hx:absolute hx:-mt-20" id="setting-times"&gt;&lt;/span&gt;
+&lt;a href="#setting-times" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Desde la v0.41.0 (&lt;code&gt;go-filesystems/smb&lt;/code&gt; v0.10.0,go-filesystems/smb#45), las fechas de acceso y de modificación que un cliente
+establece por SMB (&lt;code&gt;SET_INFO&lt;/code&gt;, como hacen &lt;code&gt;touch&lt;/code&gt;, &lt;code&gt;robocopy /COPY:T&lt;/code&gt; y una
+copia en el Explorador) se aplican al archivo, en un recurso compartido de&lt;strong&gt;directorio&lt;/strong&gt;. Una fecha de 0 la deja como está; -1 la congela y -2 la
+reanuda, por identificador abierto.&lt;/p&gt;
+&lt;p&gt;Una fecha que no se puede almacenar se &lt;strong&gt;ignora por defecto&lt;/strong&gt;: la solicitud
+tiene éxito y ese campo se descarta, como hace Samba, para que las copias que
+conservan las fechas no fallen. Esto abarca la fecha de creación, una fecha de
+cambio enviada sola y cualquier fecha en un controlador que no puede
+establecer fechas.&lt;/p&gt;
+&lt;h3 data-hextra-search-id="unstorable-times"&gt;Elegir qué ocurre: &lt;code&gt;unstorable_times&lt;/code&gt;&lt;span class="hx:absolute hx:-mt-20" id="unstorable-times"&gt;&lt;/span&gt;
+&lt;a href="#unstorable-times" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Desde la v0.42.0, un recurso compartido indica qué ocurre con una fecha así
+mediante &lt;code&gt;unstorable_times&lt;/code&gt; (la opción &lt;code&gt;UnstorableTimes&lt;/code&gt; de &lt;code&gt;go-filesystems/smb&lt;/code&gt;):&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;share&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;attic&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; directory&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/srv/attic&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; unstorable_times&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;refuse&amp;#34; # &amp;#34;ignore&amp;#34; (por defecto), &amp;#34;refuse&amp;#34; o &amp;#34;log&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Valor&lt;/th&gt;
+&lt;th&gt;Lo que oye el cliente&lt;/th&gt;
+&lt;th&gt;Lo que se conserva&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ignore&lt;/code&gt; (también si falta el ajuste)&lt;/td&gt;
+&lt;td&gt;éxito&lt;/td&gt;
+&lt;td&gt;el campo se descarta, como hace Samba&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;refuse&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;STATUS_NOT_SUPPORTED&lt;/code&gt;, para que una herramienta de copia de seguridad nunca crea que se conservó una fecha&lt;/td&gt;
+&lt;td&gt;no se aplica nada de esa solicitud&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;log&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;éxito&lt;/td&gt;
+&lt;td&gt;el campo se descarta, y una línea por solicitud nombra el recurso, la ruta y los campos, escrita donde el servidor escribe sus propias líneas&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Cualquier otro valor se rechaza al leer la configuración, con un error que
+nombra el recurso y las tres palabras. El ajuste pertenece a SMB: se rechaza un
+recurso cuyo &lt;code&gt;protocols&lt;/code&gt; excluye SMB si lo establece. No hay un valor por
+defecto para todo el servidor; se indica en cada recurso. Un recurso creado
+mediante la API de administración usa &lt;code&gt;ignore&lt;/code&gt;.&lt;/p&gt;
+&lt;h3 data-hextra-search-id="when-unstorable"&gt;Cuándo no se puede almacenar una fecha&lt;span class="hx:absolute hx:-mt-20" id="when-unstorable"&gt;&lt;/span&gt;
+&lt;a href="#when-unstorable" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Una solicitud se juzga campo por campo, y basta un campo no almacenable:&lt;code&gt;refuse&lt;/code&gt; rechaza toda la solicitud y &lt;code&gt;log&lt;/code&gt; escribe su línea. Una fecha no es
+almacenable cuando:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;CreationTime&lt;/strong&gt; se establece en un valor distinto del que informa el
+controlador (o el controlador no informa ninguno). No hay forma de establecer
+una fecha de creación. Un valor igual al informado se acepta: no hay nada que
+cambiar.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;ChangeTime&lt;/strong&gt; se envía &lt;strong&gt;sola&lt;/strong&gt;, con un valor distinto del informado.Enviada junto con una fecha de acceso o de escritura se acepta, si el
+controlador puede establecer fechas, porque al establecerlas se actualiza la
+fecha de cambio a «ahora».&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Una fecha de acceso o de escritura&lt;/strong&gt;, en un recurso cuyo controlador no
+puede establecer fechas (&lt;code&gt;Chtimes&lt;/code&gt;): cualquier valor real, igual al actual o
+no.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Tres cosas no las decide la política. Una fecha de 0 (conservar), -1 (congelar)o -2 (reanudar) nunca es no almacenable. -1 en un controlador que puede
+establecer fechas pero no informar de ellas es siempre &lt;code&gt;STATUS_NOT_SUPPORTED&lt;/code&gt;,en todos los modos: es una capacidad que falta, no un campo descartado (afecta a
+las imágenes ufs, btrfs, xfs y zfs). Y una solicitud sobre un recurso de &lt;strong&gt;solo
+lectura&lt;/strong&gt; (&lt;code&gt;read_only = true&lt;/code&gt;, un dispositivo, un recurso que eligió una
+partición, una persona sin permiso de escritura) se responde con&lt;code&gt;STATUS_MEDIA_WRITE_PROTECTED&lt;/code&gt; antes de todo esto, en todos los modos.&lt;/p&gt;
+&lt;p&gt;Lo que un recurso puede almacenar depende de su controlador, en las versiones
+que fija esta versión:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Recurso&lt;/th&gt;
+&lt;th&gt;CreationTime&lt;/th&gt;
+&lt;th&gt;ChangeTime sola&lt;/th&gt;
+&lt;th&gt;Fecha de acceso o de escritura&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Directorio&lt;/strong&gt; (host)&lt;/td&gt;
+&lt;td&gt;no almacenable salvo que sea igual a la fecha de creación informada&lt;/td&gt;
+&lt;td&gt;no almacenable salvo que sea igual a la informada&lt;/td&gt;
+&lt;td&gt;almacenada (una ChangeTime enviada con ella se acepta)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Imagen, controlador con &lt;code&gt;Chtimes&lt;/code&gt;&lt;/strong&gt;: ext4, ufs, btrfs, xfs, zfs&lt;/td&gt;
+&lt;td&gt;no almacenable salvo que sea igual a la informada (solo ext4 informa una: en los demás, siempre)&lt;/td&gt;
+&lt;td&gt;igual&lt;/td&gt;
+&lt;td&gt;almacenada (una ChangeTime enviada con ella se acepta)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Imagen, FAT o exFAT&lt;/strong&gt; (desde la v0.43.0)&lt;/td&gt;
+&lt;td&gt;no almacenable salvo que sea igual a la informada (ambas informan una)&lt;/td&gt;
+&lt;td&gt;igual&lt;/td&gt;
+&lt;td&gt;almacenada con la resolución del formato: fecha de escritura de FAT a 2 s (redondeada hacia abajo) y fecha de acceso solo el día; fecha de escritura de exFAT a 10 ms y fecha de acceso a 2 s (una ChangeTime enviada con ella se acepta)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Imagen, HFS+&lt;/strong&gt; (desde la v0.44.0)&lt;/td&gt;
+&lt;td&gt;no almacenable salvo que sea igual a la informada (informa una)&lt;/td&gt;
+&lt;td&gt;igual&lt;/td&gt;
+&lt;td&gt;almacenada al segundo (una ChangeTime enviada con ella se acepta), cuando el recurso define &lt;code&gt;hfsplus_writable_max&lt;/code&gt; (desde la v0.45.1; por defecto es de solo lectura), y no si el diario ha dejado el recurso en &lt;a href="https://go-fileshare.github.io/docs/0.51/es/configuration/shares/#hfsplus-images-are-writable"&gt;solo lectura&lt;/a&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Imagen, controlador sin &lt;code&gt;Chtimes&lt;/code&gt;&lt;/strong&gt;: NTFS, APFS, ISO 9660, SquashFS&lt;/td&gt;
+&lt;td&gt;igual (NTFS informa una; los demás nunca)&lt;/td&gt;
+&lt;td&gt;igual, &lt;strong&gt;también&lt;/strong&gt; cuando se envía con una fecha de acceso o de escritura&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;siempre no almacenable&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Los controladores con &lt;code&gt;Chtimes&lt;/code&gt; son osfs (&lt;code&gt;osfs.go:383&lt;/code&gt;), ext4 (&lt;code&gt;metadata.go:93&lt;/code&gt;),ufs (&lt;code&gt;metadata.go:63&lt;/code&gt;), btrfs (&lt;code&gt;fs.go:382&lt;/code&gt;), xfs (&lt;code&gt;fs.go:521&lt;/code&gt;) y zfs(&lt;code&gt;metadata.go:94&lt;/code&gt;) y, desde la v0.43.0, fat32 v0.13.0 y exFAT v0.6.0 (el&lt;code&gt;MetadataSetter&lt;/code&gt; completo: su &lt;code&gt;Chmod&lt;/code&gt; y su &lt;code&gt;Chown&lt;/code&gt; responden «no compatible», pues FAT
+no tiene bits de modo ni propietarios), de modo que &lt;code&gt;touch -d&lt;/code&gt; y &lt;code&gt;cp -p&lt;/code&gt; sobre un
+recurso de imagen FAT o exFAT se almacenan; los demás no tienen. HFS+ también lo tiene:hfsplus v0.8.0 implementa &lt;code&gt;Chtimes&lt;/code&gt;, &lt;code&gt;Chmod&lt;/code&gt; y &lt;code&gt;Chown&lt;/code&gt;, y desde la v0.44.0(hfsplus v0.9.0) una imagen HFS+ servida puede abrirse para escritura, de modo que una
+fecha establecida por SMB se almacena, pero desde la v0.45.1 solo cuando el recurso
+define &lt;code&gt;hfsplus_writable_max&lt;/code&gt; (por defecto es de solo lectura). Una imagen con diario que contiene
+transacciones se abre en cambio en solo lectura y no almacena nada (véase&lt;a href="https://go-fileshare.github.io/docs/0.51/es/configuration/shares/#hfsplus-images-are-writable"&gt;Las imágenes HFS+ son escribibles&lt;/a&gt;). Antes de la v0.42.0 el bloqueo que
+fileshare coloca delante de cada controlador de imagen ocultaba &lt;code&gt;Chtimes&lt;/code&gt;, de
+modo que toda imagen descartaba las fechas de acceso y de escritura de un
+cliente, ext4 incluida; desde la v0.42.0 lo transmite exactamente cuando el
+controlador lo tiene. Las imágenes NTFS las lee un controlador de solo lectura,así que no se almacena nada diga lo que diga la política; esta solo decide lo que
+se le comunica al cliente.&lt;/p&gt;
+&lt;p&gt;Qué clientes provocan cada caso: el Explorador de Windows y &lt;code&gt;robocopy /COPY:T&lt;/code&gt;
+envían una CreationTime, que un recurso de cualquier tipo no puede conservar si
+cambia; &lt;code&gt;touch -d&lt;/code&gt; y &lt;code&gt;cp -p&lt;/code&gt; de Linux envían solo fechas de acceso y de
+escritura (el cliente del kernel añade una ChangeTime de «ahora»), que un
+directorio y un controlador con &lt;code&gt;Chtimes&lt;/code&gt; almacenan, y uno sin él no.&lt;/p&gt;</description></item></channel></rss>

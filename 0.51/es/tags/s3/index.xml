@@ -1,0 +1,272 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – S3</title><link>https://go-fileshare.github.io/docs/0.51/es/tags/s3/</link><description>Recent content in S3 on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>es</language><atom:link href="https://go-fileshare.github.io/docs/0.51/es/tags/s3/index.xml" rel="self" type="application/rss+xml"/><item><title>S3 — un recurso compartido es un bucket</title><link>https://go-fileshare.github.io/docs/0.51/es/protocols/s3/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.51/es/protocols/s3/</guid><description>
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;serve &amp;#34;s3&amp;#34; { addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:9000&amp;#34;&lt;/span&gt; }&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;O por HTTPS, desde la v0.9.0, con &lt;code&gt;tls = true&lt;/code&gt; y un&lt;a href="https://go-fileshare.github.io/docs/0.51/es/security/tls/"&gt;bloque &lt;code&gt;tls&lt;/code&gt;&lt;/a&gt;:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;s3&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:9000&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; tls&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;El quinto protocolo, y el que hace que una imagen sea accesible desde cualquier cosa
+que hable almacenamiento de objetos: una herramienta de copias de seguridad, una
+canalización de datos, &lt;code&gt;rclone&lt;/code&gt;, el &lt;code&gt;fetch()&lt;/code&gt; de un navegador. &lt;strong&gt;No se monta nada.&lt;/strong&gt;&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;pre&gt;&lt;code&gt;GET / the shares this person may use, as buckets
+GET /photos?list-type=2 the files in that share, as keys
+GET /photos/holiday.jpg the file itself, Range and all&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="a-share-is-a-bucket"&gt;Un recurso compartido es un bucket&lt;span class="hx:absolute hx:-mt-20" id="a-share-is-a-bucket"&gt;&lt;/span&gt;
+&lt;a href="#a-share-is-a-bucket" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Servido sobre el &lt;strong&gt;mismo árbol por usuario que usa SFTP&lt;/strong&gt;: un sistema de archivos
+cuyo nivel superior son los recursos compartidos que esa persona puede usar. Así, un
+recurso compartido que alice no puede usar no es un bucket que alice pueda ver, y las
+reglas de acceso se aplican en un solo lugar en vez de copiarse a un segundo
+protocolo.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-blue-200 hx:bg-blue-100 hx:text-blue-900 hx:dark:border-blue-200/30 hx:dark:bg-blue-900/30 hx:dark:text-blue-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Un directorio dentro de un recurso compartido es un prefijo, no un objeto&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Que es lo que los clientes S3 ya creen: muestran como carpetas los prefijos
+que terminan en el delimitador. Un &lt;code&gt;GET&lt;/code&gt; de un directorio responde&lt;code&gt;NoSuchKey&lt;/code&gt;, porque responder 200 haría creer a un cliente que puede
+descargar los bytes de una carpeta.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 data-hextra-search-id="an-access-key-is-a-user-the-secret-key-is-their-password"&gt;Una clave de acceso es un usuario; la clave secreta es su contraseña&lt;span class="hx:absolute hx:-mt-20" id="an-access-key-is-a-user-the-secret-key-is-their-password"&gt;&lt;/span&gt;
+&lt;a href="#an-access-key-is-a-user-the-secret-key-is-their-password" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;export&lt;/span&gt; &lt;span class="nv"&gt;AWS_ACCESS_KEY_ID&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;alice
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;export&lt;/span&gt; &lt;span class="nv"&gt;AWS_SECRET_ACCESS_KEY&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;cat alice.pw&lt;span class="k"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;aws --endpoint-url http://attic.example.org:9000 s3 ls&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;SigV4 prueba la posesión del secreto calculando un HMAC a partir de él: la contraseña
+nunca cruza la red, exactamente como con NTLMv2.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-red-200 hx:bg-red-100 hx:text-red-900 hx:dark:border-red-200/30 hx:dark:bg-red-900/30 hx:dark:text-red-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Por eso el directorio debe GUARDAR la contraseña, y no solo comprobarla&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Un origen que solo puede &lt;em&gt;verificar&lt;/em&gt; una contraseña —un bind LDAP, una
+columna bcrypt— puede responder a WebDAV y &lt;strong&gt;no puede&lt;/strong&gt; responder a S3.&lt;/p&gt;
+&lt;p&gt;Y tampoco sirve un hash NT: es el MD4 con el que SMB puede trabajar, y a
+partir de él no se puede calcular un HMAC. &lt;strong&gt;Una identidad que solo guarda
+un hash NT sirve SMB y no S3&lt;/strong&gt;: vecinos cercanos, pero no la misma
+respuesta. &lt;a href="https://go-fileshare.github.io/docs/0.51/es/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt; imprime la columna.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;⛔ No existe ningún accesor &lt;code&gt;Password()&lt;/code&gt; en todo el programa: a la contraseña solo
+se llega mediante &lt;code&gt;Identity.Derive&lt;/code&gt;, que recibe una derivación y devuelve su
+resultado. Para S3 la derivación es la identidad, porque el cálculo de claves de
+SigV4 vive en go-filesystems/s3; el secreto va a esa comprobación de firma, para ese
+único usuario, y a ningún otro sitio.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-is-served"&gt;Lo que se sirve&lt;span class="hx:absolute hx:-mt-20" id="what-is-served"&gt;&lt;/span&gt;
+&lt;a href="#what-is-served" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;ListBuckets&lt;/code&gt;, &lt;code&gt;HeadBucket&lt;/code&gt;, &lt;code&gt;ListObjectsV2&lt;/code&gt; con prefijo, delimitador, max-keys y
+continuación, &lt;code&gt;HeadObject&lt;/code&gt;, y &lt;code&gt;GetObject&lt;/code&gt; con &lt;code&gt;Range&lt;/code&gt;. SigV4 en sus dos formas, en
+cabecera y prefirmada.&lt;/p&gt;
+&lt;p&gt;La API de objetos en sí es&lt;a href="https://github.com/go-filesystems/s3" target="_blank" rel="noopener"&gt;&lt;code&gt;go-filesystems/s3&lt;/code&gt;&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-is-refused-and-why"&gt;Lo que se rechaza, y por qué&lt;span class="hx:absolute hx:-mt-20" id="what-is-refused-and-why"&gt;&lt;/span&gt;
+&lt;a href="#what-is-refused-and-why" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Las escrituras responden 403&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;PUT&lt;/code&gt;, &lt;code&gt;POST&lt;/code&gt; y &lt;code&gt;DELETE&lt;/code&gt; se rechazan con &lt;code&gt;AccessDenied&lt;/code&gt; (&amp;ldquo;this export is
+read-only&amp;rdquo;). fileshare mantiene el servidor S3 en solo lectura porque un
+recurso compartido que una persona solo puede leer tiene que rechazar en el
+mismo punto en que lo hace SFTP, y eso aún no está conectado;go-filesystems/s3 v0.3.0, sobre la que se construye esta versión, rechaza de
+todos modos cualquier escritura. Rechazar es mejor que un objeto escrito a
+medias.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;Aquí no se acepta un token bearer&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://go-fileshare.github.io/docs/0.51/es/protocols/webdav/"&gt;OIDC&lt;/a&gt; funciona por WebDAV y en ningún otro sitio. S3
+autentica con una firma SigV4 —un HMAC sobre la petición—, sin ningún campo
+en el que quepa un token bearer.&lt;/p&gt;
+&lt;p&gt;La vía es STS &lt;code&gt;AssumeRoleWithWebIdentity&lt;/code&gt;, que canjea un token OIDC
+por credenciales temporales con las que luego firma el cliente. Se sirve en
+este listener desde v0.50.0: véase &lt;a href="#sts"&gt;abajo&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;La subida multiparte, el versionado, las ACL, las políticas, las reglas de ciclo de
+vida, la replicación y el etiquetado no están implementados. Configurar cualquiera de
+ellos, e iniciar una subida multiparte, es una escritura, y responde &lt;code&gt;AccessDenied&lt;/code&gt;
+como cualquier otra. Un &lt;code&gt;GET&lt;/code&gt; que pide uno de ellos (&lt;code&gt;?versioning&lt;/code&gt;, &lt;code&gt;?acl&lt;/code&gt;,&lt;code&gt;?tagging&lt;/code&gt;&amp;hellip;) no se distingue: la consulta se ignora y se devuelve el listado del
+bucket o el objeto. &lt;code&gt;NotImplemented&lt;/code&gt; responde a un listado distinto de&lt;code&gt;list-type=2&lt;/code&gt;, a cualquier método salvo &lt;code&gt;GET&lt;/code&gt; sobre &lt;code&gt;/&lt;/code&gt;, y a un método que ninguna
+operación de aquí utiliza.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="sts"&gt;Credenciales temporales: STS &lt;code&gt;AssumeRoleWithWebIdentity&lt;/code&gt;&lt;span class="hx:absolute hx:-mt-20" id="sts"&gt;&lt;/span&gt;
+&lt;a href="#sts" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Desde v0.50.0 el listener S3 también responde a la API STS de AWS(&lt;code&gt;AssumeRoleWithWebIdentity&lt;/code&gt;, versión 2011-06-15): un token del proveedor del&lt;a href="https://go-fileshare.github.io/docs/0.51/es/protocols/webdav/"&gt;bloque &lt;code&gt;oidc&lt;/code&gt;&lt;/a&gt; se canjea por una clave de acceso, una clave secreta y un token de
+sesión que &lt;strong&gt;caducan&lt;/strong&gt;. &lt;code&gt;aws&lt;/code&gt;, &lt;code&gt;rclone&lt;/code&gt; y los SDK de AWS lo hablan como con AWS, y nadie
+guarda una contraseña.&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;oidc&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; issuer&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://login.example.org&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; audience&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;fileshare&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;s3&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:9000&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; tls&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; sts&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt; true # POST / con Action&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;AssumeRoleWithWebIdentity&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; sts_duration&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;1h&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # el valor por defecto, de 15m a 12h
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; sts_max_duration&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;4h&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # lo máximo que puede pedir DurationSeconds; por defecto sts_duration
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; static_keys&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;false&lt;/span&gt;&lt;span class="c1"&gt; # se acabó «la clave de acceso es un usuario»: solo firman las credenciales temporales
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;El token&lt;/strong&gt; es un token de acceso (&lt;code&gt;typ&lt;/code&gt; &lt;code&gt;at+jwt&lt;/code&gt;) del proveedor del bloque &lt;code&gt;oidc&lt;/code&gt;, para el
+emisor y la audiencia de ese bloque: no hay una segunda configuración de proveedor. El token de
+una persona o el de una máquina: el token &lt;code&gt;client_credentials&lt;/code&gt; de go-authn/bridge para un cliente
+que se autentica con una clave privada (&lt;code&gt;private_key_jwt&lt;/code&gt;) tiene &lt;code&gt;sub&lt;/code&gt; = el ID del cliente, que
+es el nombre aquí.&lt;/li&gt;
+&lt;li&gt;⛔ &lt;strong&gt;Pasa por la misma regla que un token por WebDAV.&lt;/strong&gt; Un token válido para un nombre que
+ninguna fuente de aquí conoce se rechaza, salvo &lt;code&gt;trust_all = true&lt;/code&gt; o que la regla &lt;code&gt;oidc:&lt;/code&gt; de un
+recurso compartido lo nombre (&lt;code&gt;allow = [&amp;quot;oidc:user:winpc-17&amp;quot;]&lt;/code&gt;). Las reglas del recurso deciden
+entonces qué es visible.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;La respuesta&lt;/strong&gt; es &lt;code&gt;AccessKeyId&lt;/code&gt; (&lt;code&gt;ASIA…&lt;/code&gt;), &lt;code&gt;SecretAccessKey&lt;/code&gt;, &lt;code&gt;SessionToken&lt;/code&gt; y &lt;code&gt;Expiration&lt;/code&gt;.Las peticiones se firman con ellos y llevan el token de sesión en &lt;code&gt;x-amz-security-token&lt;/code&gt;,&lt;strong&gt;firmado&lt;/strong&gt;. Son aleatorios, solo en memoria y nunca se escriben; un reinicio los termina y el
+cliente vuelve a pedir.&lt;/li&gt;
+&lt;li&gt;⛔ &lt;strong&gt;Duración = mín(pedida, lo que le queda al token).&lt;/strong&gt; Las credenciales nunca sobreviven al token
+que las compró (&lt;code&gt;sts_duration&lt;/code&gt;, o &lt;code&gt;DurationSeconds&lt;/code&gt; hasta &lt;code&gt;sts_max_duration&lt;/code&gt;, es solo el techo).Un token al que le quedan &lt;strong&gt;menos de 6 minutos&lt;/strong&gt; se rechaza con &lt;code&gt;ExpiredTokenException&lt;/code&gt;: los SDK
+de AWS renuevan unos 5 minutos antes de &lt;code&gt;Expiration&lt;/code&gt;, y unas credenciales más cortas se
+renovarían al instante, para siempre. Un cliente presenta un token nuevo en cada canje.&lt;/li&gt;
+&lt;li&gt;⛔ &lt;strong&gt;Una sesión se juzga en cada petición&lt;/strong&gt;: caduca; su token de sesión está ligado a su clave de
+acceso; termina cuando el proveedor revoca a la persona después de emitido el token(&lt;a href="https://go-fileshare.github.io/docs/0.51/es/security/shared-signals/"&gt;señales compartidas&lt;/a&gt;); y cuando la configuración
+deja de admitir el nombre.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Policy&lt;/code&gt;, &lt;code&gt;PolicyArns&lt;/code&gt; y un segundo &lt;code&gt;WebIdentityToken&lt;/code&gt; se rechazan, y los parámetros van en el
+cuerpo del POST, nunca en la URL.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;static_keys = false&lt;/code&gt;&lt;/strong&gt; desactiva el modo «la clave de acceso es un usuario, la clave secreta es
+su contraseña». Necesita &lt;code&gt;sts = true&lt;/code&gt;: si no, la configuración se rechaza al cargar, porque un
+listener para el que nadie podría firmar parecería configurado. En una dirección que no es de
+loopback, &lt;code&gt;sts&lt;/code&gt; necesita &lt;code&gt;tls = true&lt;/code&gt;, o &lt;code&gt;plaintext = true&lt;/code&gt; cuando el TLS se termina delante.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 data-hextra-search-id="on-an-unattended-machine-awscred"&gt;En una máquina desatendida: awscred&lt;span class="hx:absolute hx:-mt-20" id="on-an-unattended-machine-awscred"&gt;&lt;/span&gt;
+&lt;a href="#on-an-unattended-machine-awscred" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;&lt;a href="https://github.com/go-authn/awscred" target="_blank" rel="noopener"&gt;&lt;code&gt;awscred&lt;/code&gt;&lt;/a&gt; v0.1.0 es un &lt;code&gt;credential_process&lt;/code&gt; de AWS para
+máquinas que tienen una clave privada y ninguna contraseña: firma un &lt;code&gt;private_key_jwt&lt;/code&gt;, obtiene un
+token de go-authn/bridge, llama a este endpoint e imprime las credenciales como las leen los SDK.Los SDK lo ejecutan de nuevo antes de &lt;code&gt;Expiration&lt;/code&gt;.&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-ini" data-lang="ini"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;[profile fileshare]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;credential_process&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;awscred --issuer https://login.example.org --client winpc-17 --key /etc/awscred/winpc-17.pem --sts https://s3.example.org&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;⛔ En Unix, &lt;code&gt;awscred&lt;/code&gt; rechaza un archivo de clave legible por el grupo o por otros (&lt;code&gt;chmod 600&lt;/code&gt;).En Windows los modos de archivo no significan nada: guarde la clave en el perfil de la cuenta de
+servicio o en un directorio cuya ACL admita solo esa cuenta. Una clave en el almacén CNG de
+Windows o en un TPM aún no se admite.&lt;/p&gt;
+&lt;h3 data-hextra-search-id="behind-a-proxy-trusted_proxies"&gt;Detrás de un proxy: &lt;code&gt;trusted_proxies&lt;/code&gt;&lt;span class="hx:absolute hx:-mt-20" id="behind-a-proxy-trusted_proxies"&gt;&lt;/span&gt;
+&lt;a href="#behind-a-proxy-trusted_proxies" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Detrás del proxy para el que existe &lt;code&gt;plaintext = true&lt;/code&gt;, todos los clientes serían una sola fuente
+para los límites de abajo. Nombre los proxies en el bloque serve de &lt;code&gt;s3&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;s3&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;127.0.0.1:9000&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; plaintext&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; sts&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; trusted_proxies&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;10.0.0.2&amp;#34;, &amp;#34;10.0.1.0/29&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Copiar código"
+aria-label="Copiar código"
+data-copied-label="¡Copiado!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Solo a una petición que llega &lt;strong&gt;desde&lt;/strong&gt; un proxy de confianza se le cree sobre su cliente, mediante
+el salto más a la derecha de &lt;code&gt;X-Forwarded-For&lt;/code&gt; que no sea a su vez un proxy de confianza; de
+cualquier otro la cabecera se ignora.&lt;/p&gt;
+&lt;div class="hx:overflow-x-auto hx:mt-6 hx:flex hx:rounded-lg hx:border hx:py-2 hx:ltr:pr-4 hx:rtl:pl-4 hx:contrast-more:border-current hx:contrast-more:dark:border-current hx:border-amber-200 hx:bg-amber-100 hx:text-amber-900 hx:dark:border-amber-200/30 hx:dark:bg-amber-900/30 hx:dark:text-amber-200"&gt;
+&lt;div class="hx:ltr:pl-3 hx:ltr:pr-2 hx:rtl:pr-3 hx:rtl:pl-2"&gt;&lt;svg height=1.2em class="hx:inline-block hx:align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;div class="hx:w-full hx:min-w-0 hx:leading-7"&gt;
+&lt;div class="hx:mt-6 hx:leading-7 hx:first:mt-0"&gt;&lt;p&gt;&lt;strong&gt;La lista debe nombrar los proxies y nada más&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Un prefijo más ancho que un host (un &lt;code&gt;/24&lt;/code&gt;, un &lt;code&gt;/64&lt;/code&gt; IPv6) se acepta —un conjunto de proxies, un&lt;code&gt;/29&lt;/code&gt;, es legítimo— y se imprime una advertencia al arrancar: un cliente que pueda tener una
+dirección dentro elige su propio &lt;code&gt;X-Forwarded-For&lt;/code&gt; y, con él, el cubo en el que se le cuenta.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h3 data-hextra-search-id="limits"&gt;Límites&lt;span class="hx:absolute hx:-mt-20" id="limits"&gt;&lt;/span&gt;
+&lt;a href="#limits" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;16 sesiones por nombre&lt;/strong&gt;: la más antigua del mismo nombre sale primero, las sesiones de otros
+nombres se quedan (20000 en total).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;60 peticiones por minuto por dirección de origen&lt;/strong&gt;, con respuesta &lt;code&gt;429 Throttling&lt;/code&gt;. Cada
+petición cuenta, válida o no, antes de verificar el token. Un origen es una dirección IPv4 o un&lt;strong&gt;/64&lt;/strong&gt; IPv6.&lt;/li&gt;
+&lt;li&gt;El conteo es O(1) por petición, bajo su propio cerrojo, en un minuto deslizante de dos
+generaciones; las peticiones S3 con credenciales nunca esperan por él.&lt;/li&gt;
+&lt;li&gt;Un origen visto en el último minuto se cuenta mientras la tabla tenga menos de &lt;strong&gt;2 × 10000&lt;/strong&gt;
+entradas (la cota, por mucho que dure una avalancha). Un origen que la tabla llena no ha visto se
+cuenta en un cubo de desbordamiento de su red —su &lt;strong&gt;/48&lt;/strong&gt; (IPv6) o &lt;strong&gt;/24&lt;/strong&gt; (IPv4), diez veces la
+tasa cada uno—, de modo que una avalancha agota los cubos de las redes de las que viene, no los de
+todos. Los vecinos IPv4 detrás de un /24 (CGNAT, un campus) comparten un cubo.&lt;/li&gt;
+&lt;li&gt;⛔ &lt;strong&gt;Pasadas 1024 redes por minuto, un cubo compartido atiende al resto&lt;/strong&gt;: un atacante con más redes
+lo agota, y todo origen que la tabla no haya visto ya —&lt;strong&gt;incluidos los clientes existentes que
+renuevan más o menos cada hora&lt;/strong&gt;— es rechazado hasta que cambia el minuto. Es el límite de este diseño.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 data-hextra-search-id="two-limits-worth-knowing-before-pointing-it-at-something-large"&gt;Dos límites que conviene conocer antes de apuntarlo a algo grande&lt;span class="hx:absolute hx:-mt-20" id="two-limits-worth-knowing-before-pointing-it-at-something-large"&gt;&lt;/span&gt;
+&lt;a href="#two-limits-worth-knowing-before-pointing-it-at-something-large" class="subheading-anchor" aria-label="Enlace permanente a esta sección"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;GetObject&lt;/code&gt; lee el objeto entero en memoria.&lt;/strong&gt; La interfaz del controlador ofrece&lt;code&gt;ReadFile&lt;/code&gt; y nada más —ni función de apertura, ni lector—, así que no hay lectura en
+streaming que usar. Un límite, 256 MiB, responde &lt;code&gt;EntityTooLarge&lt;/code&gt; en lugar de tumbar
+el proceso.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;&lt;code&gt;LastModified&lt;/code&gt; es la época Unix.&lt;/strong&gt; &lt;code&gt;filesystem.Stat&lt;/code&gt; lleva &lt;code&gt;Mode&lt;/code&gt;, &lt;code&gt;Size&lt;/code&gt; e&lt;code&gt;Inode&lt;/code&gt;, y ninguna fecha de modificación. El campo no es opcional en el esquema de
+S3, así que hay que enviar algo; la época es obviamente una fecha que no es real,mientras que &lt;code&gt;time.Now()&lt;/code&gt; parecería un archivo que acaba de cambiar y haría que
+cualquier herramienta de sincronización lo copiara todo, en cada ejecución.&lt;/p&gt;</description></item></channel></rss>

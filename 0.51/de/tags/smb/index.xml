@@ -1,0 +1,130 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Smb</title><link>https://go-fileshare.github.io/docs/0.51/de/tags/smb/</link><description>Recent content in Smb on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>de</language><atom:link href="https://go-fileshare.github.io/docs/0.51/de/tags/smb/index.xml" rel="self" type="application/rss+xml"/><item><title>SMB – NTLMv2</title><link>https://go-fileshare.github.io/docs/0.51/de/protocols/smb/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.51/de/protocols/smb/</guid><description>
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;serve &amp;#34;smb&amp;#34; { addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:445&amp;#34;&lt;/span&gt; }&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Code kopieren"
+aria-label="Code kopieren"
+data-copied-label="Kopiert!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Das Passwort &lt;strong&gt;geht nie über die Leitung&lt;/strong&gt;: Ein Client sendet einen daraus berechneten
+Nachweis. Die Freigabe teilt einer lesenden Person mit, dass sie nur liest – in der Zugriffsmaske, bevor sie
+es versucht, statt durch einen später fehlschlagenden Schreibvorgang.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-a-directory-must-hold"&gt;Was ein Verzeichnis enthalten muss&lt;span class="hx:absolute hx:-mt-20" id="what-a-directory-must-hold"&gt;&lt;/span&gt;
+&lt;a href="#what-a-directory-must-hold" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;NTLMv2 braucht das Passwort selbst oder seinen MD4-Hash (&lt;code&gt;sambaNTPassword&lt;/code&gt;, eine &lt;code&gt;nt_hash&lt;/code&gt;-Spalte).&lt;strong&gt;Nichts anderes genügt.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Ein Verzeichnis, das Passwörter nur &lt;em&gt;prüft&lt;/em&gt; – ein LDAP-Bind, eine bcrypt-Spalte –,kann SMB nicht beantworten, wie gut die Prüfung auch sein mag, weil der Server denselben
+Nachweis berechnen muss wie der Client. Das ist eine Eigenschaft des Protokolls, keine
+Einschränkung dieses Programms.&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://go-fileshare.github.io/docs/0.51/de/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt; gibt für eine solche Person ein &lt;code&gt;-&lt;/code&gt; in der SMB-Spalte aus,zum Zeitpunkt der Konfiguration, statt sie es erst beim Einhängen
+entdecken zu lassen.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="kerberos"&gt;Kerberos: ein Ticket statt eines Passworts&lt;span class="hx:absolute hx:-mt-20" id="kerberos"&gt;&lt;/span&gt;
+&lt;a href="#kerberos" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;kerberos&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; realm&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;EXAMPLE.ORG&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; keytab&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/krb5.keytab&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # nfs/fs.example.org und cifs/fs.example.org
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;smb&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:445&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; ntlm&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;false&lt;/span&gt;&lt;span class="c1"&gt; # nur Kerberos: es wird nie ein Passwort geprüft
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Code kopieren"
+aria-label="Code kopieren"
+data-copied-label="Kopiert!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Der &lt;code&gt;kerberos&lt;/code&gt;-Block, mit dem NFS Personen unterscheidet, lässt auch SMB ein Ticket
+annehmen. &lt;strong&gt;Eine Keytab&lt;/strong&gt; enthält beide Dienste, und jedes Protokoll antwortet für
+seinen eigenen: SMB liest nur die &lt;code&gt;cifs/&amp;lt;Host&amp;gt;&lt;/code&gt;-Principals des Realms des Blocks,ein für &lt;code&gt;nfs/&lt;/code&gt; ausgestelltes Ticket wird hier also abgelehnt. Eine Keytab ohne&lt;code&gt;cifs/&lt;/code&gt;-Principal lässt SMB, wie es war: nur NTLM, und der Server sagt das beim Start.&lt;/p&gt;
+&lt;p&gt;Der Principal durchläuft dieselbe Regel wie bei NFS (das &lt;code&gt;alice&lt;/code&gt; eines anderen Realms
+ist niemand) und muss dann &lt;strong&gt;jemand sein, den diese Konfiguration kennt&lt;/strong&gt;: Ein Ticket
+beweist, dass das KDC die Person kennt, nicht dass dieser Server sie kennt. Die Listen&lt;code&gt;allow&lt;/code&gt; und &lt;code&gt;writers&lt;/code&gt; der Freigabe gelten wie bei einem Passwort. Eine Sitzung endet
+mit ihrem Ticket, und ein Windows-Client authentifiziert sich von selbst neu.&lt;/p&gt;
+&lt;p&gt;Seit fileshare v0.50.0 muss die &lt;strong&gt;Keytab&lt;/strong&gt; eine reguläre Datei sein, die root oder dem
+Konto gehört, unter dem fileshare läuft, und weder für andere les- oder schreibbar
+noch für ihre Gruppe schreibbar: &lt;code&gt;root:fileshare&lt;/code&gt; &lt;code&gt;0640&lt;/code&gt; und &lt;code&gt;fileshare:fileshare&lt;/code&gt;
+&lt;code&gt;0600&lt;/code&gt; werden akzeptiert, &lt;code&gt;krb5:fileshare&lt;/code&gt; &lt;code&gt;0640&lt;/code&gt; wird abgelehnt. Das gilt für SMB
+und NFS. Name und Realm des Clients stammen aus dem &lt;strong&gt;Ticket&lt;/strong&gt;, nie aus dem
+Authenticator, den der Client ebenfalls sendet (jcmturner/gokrb5#577, RFC 4120
+Abschnitt 3.2.3); NFS braucht go-authn/krb5 ab v0.3.4, das v0.50.0 mitbringt.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;ntlm = false&lt;/code&gt; wird beim Laden ohne &lt;code&gt;kerberos&lt;/code&gt;-Block abgelehnt, und der Server startet
+nicht, wenn die Keytab keinen &lt;code&gt;cifs/&lt;/code&gt;-Schlüssel für den Realm enthält: Ein Server, an
+dem sich niemand anmelden kann, ist keiner. Mit dem Block kann auch eine Person, deren
+Verzeichnis keinen NT-Hash hält, SMB nutzen, und&lt;a href="https://go-fileshare.github.io/docs/0.51/de/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt; sagt das.&lt;/p&gt;
+&lt;p&gt;Ein Windows-Rechner &lt;strong&gt;ohne Domäne&lt;/strong&gt; erreicht es mit einem Ticket dieses Realms:einmal &lt;code&gt;ksetup /addkdc&lt;/code&gt; und &lt;code&gt;ksetup /addhosttorealmmap&lt;/code&gt;, ein Ticket-Granting-Ticket in
+der Anmeldesitzung und dann &lt;code&gt;net use \\fs.example.org\photos&lt;/code&gt; – über den Namen, denn
+bei einer Adresse fällt Windows auf NTLM zurück. Gemessen mit Windows 11 25H2 (nicht
+beigetreten): Der Client bietet MS-KRB5, Kerberos, NEGOEX und NTLMSSP an, sendet ein
+Kerberos-AP-REQ, verbindet, listet, liest und schreibt bei erzwungener Signierung und
+sendet keine einzige NTLM-Nachricht.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="quic"&gt;SMB über QUIC&lt;span class="hx:absolute hx:-mt-20" id="quic"&gt;&lt;/span&gt;
+&lt;a href="#quic" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;tls&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; cert_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/var/lib/caddy/certificates/acme-v02.api.letsencrypt.org-directory/files.example.org/files.example.org.crt&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; key_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/var/lib/caddy/certificates/acme-v02.api.letsencrypt.org-directory/files.example.org/files.example.org.key&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;smb&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;:443&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # UDP: kollidiert nicht mit einem HTTPS-Proxy auf TCP 443
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; transport&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;quic&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; tls&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;&lt;span class="c1"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt; # client_cert = &amp;#34;required&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt; # client_ca_file = &amp;#34;/etc/fileshare/client-ca.pem&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="Code kopieren"
+aria-label="Code kopieren"
+data-copied-label="Kopiert!"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;SMB 3.1.1 über QUIC ist dasselbe Protokoll in TLS 1.3 auf UDP 443 mit dem ALPN&lt;code&gt;smb&lt;/code&gt;: &lt;code&gt;net use \\files.example.org\share /TRANSPORT:QUIC&lt;/code&gt; unter Windows 11, bei
+geschlossenem TCP 445. Das Zertifikat ist das des &lt;code&gt;tls&lt;/code&gt;-Blocks, seine Dateien
+werden bei Änderung neu geladen: Zeigen sie auf den ACME-Speicher eines
+Reverse-Proxys, folgt der Server dessen Erneuerungen. Ein Windows-Client
+vergleicht den Servernamen mit den DNS-Namen des Zertifikats: einen Namen
+wählen, nie eine Adresse (eine Adresse erzwingt zudem NTLM). Ein Proxy auf
+demselben Rechner darf auf diesem UDP-Port kein HTTP/3 anbieten (Caddy:&lt;code&gt;protocols h1 h2&lt;/code&gt;).&lt;/p&gt;
+&lt;p&gt;Standardmäßig unterscheidet nur Kerberos die Personen, mit einem Principal&lt;code&gt;cifs/files.example.org&lt;/code&gt; in der Keytab. &lt;code&gt;client_cert = &amp;quot;required&amp;quot;&lt;/code&gt; verlangt
+zusätzlich ein Client-Zertifikat, das zu &lt;code&gt;client_ca_file&lt;/code&gt; passt, schon im
+TLS-Handshake vor dem ersten SMB-Byte: Es sagt, welche Maschine sich verbinden
+darf, der Kerberos-Principal bleibt die Person. Die CA-Datei wird beim Start
+gelesen. Über QUIC gewährt der Server einen Credit je Anfrage und kündigt kein
+Large MTU an ([MS-SMB2] 3.3.5.4): Lesen und Schreiben umfassen höchstens
+64 KiB. &lt;code&gt;identity = &amp;quot;system&amp;quot;&lt;/code&gt; und isolierte Kindprozesse bedienen QUIC noch
+nicht, der Server startet damit nicht. Ein &lt;code&gt;serve &amp;quot;smb&amp;quot;&lt;/code&gt;-Block trägt einen
+Transport: für TCP eine zweite Instanz starten.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="a-privileged-port-without-a-privileged-server"&gt;Ein privilegierter Port ohne privilegierten Server&lt;span class="hx:absolute hx:-mt-20" id="a-privileged-port-without-a-privileged-server"&gt;&lt;/span&gt;
+&lt;a href="#a-privileged-port-without-a-privileged-server" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Unter &lt;a href="https://go-fileshare.github.io/docs/0.51/de/operations/isolation/"&gt;&lt;code&gt;--isolate&lt;/code&gt;&lt;/a&gt; bindet unter Unix der Elternprozess Port 445
+und übergibt den Listener an den Kindprozess, sodass der Prozess, der tatsächlich SMB spricht,das Privileg nie braucht. Windows hat keine &lt;code&gt;ExtraFiles&lt;/code&gt;, daher bindet dort der Kindprozess
+die Adresse selbst; die Isolierung ist dieselbe, die Hälfte mit dem privilegierten Port
+nicht.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="verified-against-a-client-this-project-did-not-write"&gt;Geprüft mit einem Client, den dieses Projekt nicht geschrieben hat&lt;span class="hx:absolute hx:-mt-20" id="verified-against-a-client-this-project-did-not-write"&gt;&lt;/span&gt;
+&lt;a href="#verified-against-a-client-this-project-did-not-write" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;a href="https://github.com/cloudsoda/go-smb2" target="_blank" rel="noopener"&gt;go-smb2&lt;/a&gt; führt in der CI zwanzig gleichzeitige
+Lesevorgänge über SMB aus, während zwanzig über WebDAV laufen, unter &lt;code&gt;-race&lt;/code&gt;. macOS
+hängt eine Freigabe über SMB ein, während &lt;code&gt;curl&lt;/code&gt; über WebDAV in dasselbe Image schreibt, und
+liest zurück, was WebDAV geschrieben hat.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="when-the-people-change"&gt;Wenn sich die Personen ändern&lt;span class="hx:absolute hx:-mt-20" id="when-the-people-change"&gt;&lt;/span&gt;
+&lt;a href="#when-the-people-change" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;SMB legt fest, wer sich mit einer Freigabe verbinden darf, &lt;strong&gt;wenn die Freigabe hinzugefügt wird&lt;/strong&gt;, und prüft das
+einmal pro Tree Connect. Wer also neu ist und von einem &lt;a href="https://go-fileshare.github.io/docs/0.51/de/administration/reload/"&gt;Neuladen des Verzeichnisses&lt;/a&gt;
+gefunden wird, wird an Ort und Stelle hinzugefügt, einschließlich des laufenden SMB-Servers, ohne dass eine Verbindung
+angetastet wird; alles hingegen, was entzogen wird – eine Person, Zugangsdaten, die expandierten Listen einer Freigabe –,ist eine neue Generation, und die offenen SMB-Verbindungen werden geschlossen, sodass ein
+Widerruf die bereits offenen Sitzungen erreicht. Eine Freigabe, deren &lt;code&gt;allow&lt;/code&gt;-Gruppe sich
+geleert hat, wird &lt;strong&gt;überhaupt nicht über SMB angeboten&lt;/strong&gt;: Ihr leeres &lt;code&gt;AllowUsers&lt;/code&gt; würde als„alle“ gelesen.&lt;/p&gt;
+&lt;h2 data-hextra-search-id="requests-in-flight"&gt;Anfragen in Bearbeitung&lt;span class="hx:absolute hx:-mt-20" id="requests-in-flight"&gt;&lt;/span&gt;
+&lt;a href="#requests-in-flight" class="subheading-anchor" aria-label="Permalink für diesen Abschnitt"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Seit go-filesystems/smb v0.8.1 hält eine Verbindung bis zu 32 Anfragen gleichzeitig in Bearbeitung, der Server insgesamt bis zu 128 über alle Verbindungen. Antworten werden über die &lt;code&gt;MessageId&lt;/code&gt; zugeordnet. Ein Frame mit einem einzelnen &lt;code&gt;READ&lt;/code&gt; einer normalen Datei läuft neben anderen; Compound-Ketten (als Ganzes und der Reihe nach beantwortet), asynchrone Anfragen und &lt;code&gt;WRITE&lt;/code&gt; laufen allein. Ein Frame hat 30 s Zeit, einzutreffen, sobald er begonnen hat. Der Mechanismus ist das gemeinsame Modul go-filesystems/inflight, das auch SFTP und NFS verwenden.&lt;/p&gt;</description></item></channel></rss>

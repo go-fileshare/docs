@@ -1,0 +1,83 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>go-fileshare – Smb</title><link>https://go-fileshare.github.io/docs/0.51/zh-cn/tags/smb/</link><description>Recent content in Smb on go-fileshare</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><atom:link href="https://go-fileshare.github.io/docs/0.51/zh-cn/tags/smb/index.xml" rel="self" type="application/rss+xml"/><item><title>SMB：NTLMv2</title><link>https://go-fileshare.github.io/docs/0.51/zh-cn/protocols/smb/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://go-fileshare.github.io/docs/0.51/zh-cn/protocols/smb/</guid><description>
+&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;serve &amp;#34;smb&amp;#34; { addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:445&amp;#34;&lt;/span&gt; }&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="复制代码"
+aria-label="复制代码"
+data-copied-label="已复制！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;密码&lt;strong&gt;从不在网络上传输&lt;/strong&gt;：客户端发送的是由密码计算出的证明。共享会在读者尝试之前，通过访问掩码告知读者其权限，而不是让其稍后因写入失败才发现。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="what-a-directory-must-hold"&gt;目录服务必须持有什么&lt;span class="hx:absolute hx:-mt-20" id="what-a-directory-must-hold"&gt;&lt;/span&gt;
+&lt;a href="#what-a-directory-must-hold" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;NTLMv2 需要密码本身或其 MD4（&lt;code&gt;sambaNTPassword&lt;/code&gt;，即 &lt;code&gt;nt_hash&lt;/code&gt;
+列）。&lt;strong&gt;其他任何东西都不行。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;只能&lt;em&gt;检查&lt;/em&gt;密码的目录服务，例如 LDAP 绑定或 bcrypt 列，无法应答 SMB，无论检查有多好，因为服务器必须计算出与客户端相同的证明。这是协议的属性，而不是本程序的限制。&lt;/p&gt;
+&lt;p&gt;对于这样的人员，&lt;a href="https://go-fileshare.github.io/docs/0.51/zh-cn/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt;会在配置阶段于 SMB 列中打印 &lt;code&gt;-&lt;/code&gt;，而不是让其在挂载时才发现。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="kerberos"&gt;Kerberos：用票据代替密码&lt;span class="hx:absolute hx:-mt-20" id="kerberos"&gt;&lt;/span&gt;
+&lt;a href="#kerberos" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;kerberos&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; realm&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;EXAMPLE.ORG&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; keytab&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/etc/fileshare/krb5.keytab&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # nfs/fs.example.org 和 cifs/fs.example.org
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;smb&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;0.0.0.0:445&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; ntlm&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;false&lt;/span&gt;&lt;span class="c1"&gt; # 仅 Kerberos：从不校验任何密码
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="复制代码"
+aria-label="复制代码"
+data-copied-label="已复制！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;让 NFS 能够区分人员的 &lt;code&gt;kerberos&lt;/code&gt; 块，同样让 SMB 接受票据。&lt;strong&gt;一个 keytab&lt;/strong&gt; 同时保存两个服务，每个协议只应答自己的服务：SMB 只读取该块所在领域（realm）的 &lt;code&gt;cifs/&amp;lt;主机&amp;gt;&lt;/code&gt; 主体，所以为&lt;code&gt;nfs/&lt;/code&gt; 签发的票据在这里会被拒绝。没有 &lt;code&gt;cifs/&lt;/code&gt; 主体的 keytab 会让 SMB 保持原样，只用 NTLM，服务器会在启动时说明这一点。&lt;/p&gt;
+&lt;p&gt;主体先经过与 NFS 相同的规则（另一个领域的 &lt;code&gt;alice&lt;/code&gt; 什么人也不是），然后必须是&lt;strong&gt;这份配置所认识的人&lt;/strong&gt;：票据只证明 KDC 认识这个人，并不证明这台服务器认识。共享的 &lt;code&gt;allow&lt;/code&gt; 和 &lt;code&gt;writers&lt;/code&gt; 列表与使用密码时一样生效。会话随票据一同结束，Windows 客户端会自行重新认证。&lt;/p&gt;
+&lt;p&gt;自 fileshare v0.50.0 起，&lt;strong&gt;keytab&lt;/strong&gt; 必须是普通文件，属于 root 或运行 fileshare 的账户，且不得被其他人读写，也不得被其所属组写入：&lt;code&gt;root:fileshare&lt;/code&gt; &lt;code&gt;0640&lt;/code&gt; 和&lt;code&gt;fileshare:fileshare&lt;/code&gt; &lt;code&gt;0600&lt;/code&gt; 会被接受，&lt;code&gt;krb5:fileshare&lt;/code&gt; &lt;code&gt;0640&lt;/code&gt; 会被拒绝。这同时适用于SMB 和 NFS。客户端的名称和领域取自&lt;strong&gt;票据&lt;/strong&gt;，绝不取自客户端一并发送的认证器（jcmturner/gokrb5#577，RFC 4120 第 3.2.3 节）；NFS 需要 go-authn/krb5 v0.3.4 或更高版本，v0.50.0 已包含。&lt;/p&gt;
+&lt;p&gt;没有 &lt;code&gt;kerberos&lt;/code&gt; 块时，&lt;code&gt;ntlm = false&lt;/code&gt; 在加载时即被拒绝；keytab 中没有该领域的 &lt;code&gt;cifs/&lt;/code&gt; 密钥时，服务器拒绝启动：没人能登录的服务器不算服务器。有了该块，目录里没有 NT 哈希的人也能使用 SMB，&lt;a href="https://go-fileshare.github.io/docs/0.51/zh-cn/configuration/check/"&gt;&lt;code&gt;check&lt;/code&gt;&lt;/a&gt; 会如实显示。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;未加入域&lt;/strong&gt;的 Windows 机器用本领域的票据访问：执行一次 &lt;code&gt;ksetup /addkdc&lt;/code&gt; 和&lt;code&gt;ksetup /addhosttorealmmap&lt;/code&gt;，在登录会话中放入票据授予票据，然后执行&lt;code&gt;net use \\fs.example.org\photos&lt;/code&gt;——要用名称，因为使用地址时 Windows 会回退到 NTLM。用 Windows 11 25H2（未加入域）实测：客户端提供 MS-KRB5、Kerberos、NEGOEX 和 NTLMSSP，发送 Kerberos AP-REQ，在要求签名的情况下挂载、列目录、读取和写入，并且不发送任何 NTLM 消息。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="quic"&gt;QUIC 上的 SMB&lt;span class="hx:absolute hx:-mt-20" id="quic"&gt;&lt;/span&gt;
+&lt;a href="#quic" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code"&gt;
+&lt;div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-hcl" data-lang="hcl"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;tls&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; cert_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/var/lib/caddy/certificates/acme-v02.api.letsencrypt.org-directory/files.example.org/files.example.org.crt&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; key_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/var/lib/caddy/certificates/acme-v02.api.letsencrypt.org-directory/files.example.org/files.example.org.key&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;serve&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;smb&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;:443&amp;#34;&lt;/span&gt;&lt;span class="c1"&gt; # UDP：不与 TCP 443 上的 HTTPS 代理冲突
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; transport&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;quic&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt; tls&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;true&lt;/span&gt;&lt;span class="c1"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt; # client_cert = &amp;#34;required&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt; # client_ca_file = &amp;#34;/etc/fileshare/client-ca.pem&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="hextra-code-copy-btn-container hx:opacity-0 hx:transition hx:group-hover/code:opacity-100 hx:flex hx:gap-1 hx:absolute hx:m-[11px] hx:right-0 hx:top-0"&gt;
+&lt;button
+class="hextra-code-copy-btn hx:group/copybtn hx:cursor-pointer hx:transition-all hx:active:opacity-50 hx:bg-primary-700/5 hx:border hx:border-black/5 hx:text-gray-600 hx:hover:text-gray-900 hx:rounded-md hx:p-1.5 hx:dark:bg-primary-300/10 hx:dark:border-white/10 hx:dark:text-gray-400 hx:dark:hover:text-gray-50"
+title="复制代码"
+aria-label="复制代码"
+data-copied-label="已复制！"
+&gt;
+&lt;div class="hextra-copy-icon hx:group-[.copied]/copybtn:hidden hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;div class="hextra-success-icon hx:hidden hx:group-[.copied]/copybtn:block hx:pointer-events-none hx:h-4 hx:w-4"&gt;&lt;/div&gt;
+&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;QUIC 上的 SMB 3.1.1 是同一协议，运行在 UDP 443 的 TLS 1.3 之内，ALPN 为&lt;code&gt;smb&lt;/code&gt;：在 Windows 11 上关闭 TCP 445，执行&lt;code&gt;net use \\files.example.org\share /TRANSPORT:QUIC&lt;/code&gt;。证书是 &lt;code&gt;tls&lt;/code&gt; 块的证书，文件变化时会重新加载，因此指向反向代理的 ACME 存储即可跟随其续期。Windows客户端会把服务器名与证书的 DNS 名比对：请使用名称而不是地址（地址还会强制使用 NTLM）。同一主机上的代理不得在该 UDP 端口提供 HTTP/3（Caddy：&lt;code&gt;protocols h1 h2&lt;/code&gt;）。&lt;/p&gt;
+&lt;p&gt;默认只有 Kerberos 区分人员，keytab 中需有 &lt;code&gt;cifs/files.example.org&lt;/code&gt; 主体。&lt;code&gt;client_cert = &amp;quot;required&amp;quot;&lt;/code&gt; 额外要求链到 &lt;code&gt;client_ca_file&lt;/code&gt; 的客户端证书，在读取任何 SMB 字节之前的 TLS 握手中验证：它表明哪台机器可以连接，人员仍由Kerberos 主体确定。CA 文件在启动时读取。在 QUIC 上，服务器对每个请求授予一个 credit，且不宣告 large MTU（[MS-SMB2] 3.3.5.4），因此每次读写最多64 KiB。&lt;code&gt;identity = &amp;quot;system&amp;quot;&lt;/code&gt; 和隔离的子进程暂不提供 QUIC，服务器会拒绝启动。一个 &lt;code&gt;serve &amp;quot;smb&amp;quot;&lt;/code&gt; 块只承载一种传输：TCP 请另启一个实例。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="a-privileged-port-without-a-privileged-server"&gt;无需特权服务器的特权端口&lt;span class="hx:absolute hx:-mt-20" id="a-privileged-port-without-a-privileged-server"&gt;&lt;/span&gt;
+&lt;a href="#a-privileged-port-without-a-privileged-server" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;在 Unix 上使用 &lt;a href="https://go-fileshare.github.io/docs/0.51/zh-cn/operations/isolation/"&gt;&lt;code&gt;--isolate&lt;/code&gt;&lt;/a&gt; 时，父进程绑定 445，并把监听器传给子进程，因此真正使用 SMB 的进程从不需要该特权。Windows 没有 &lt;code&gt;ExtraFiles&lt;/code&gt;，因此在那里由子进程自行绑定地址；隔离效果相同，但特权端口这一半则不然。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="verified-against-a-client-this-project-did-not-write"&gt;已对照本项目未编写的客户端进行验证&lt;span class="hx:absolute hx:-mt-20" id="verified-against-a-client-this-project-did-not-write"&gt;&lt;/span&gt;
+&lt;a href="#verified-against-a-client-this-project-did-not-write" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;a href="https://github.com/cloudsoda/go-smb2" target="_blank" rel="noopener"&gt;go-smb2&lt;/a&gt; 在 CI 中的 &lt;code&gt;-race&lt;/code&gt; 下，通过 SMB 驱动二十个并发读取，同时有二十个通过 WebDAV 进行。macOS通过 SMB 挂载共享，同时 &lt;code&gt;curl&lt;/code&gt; 通过 WebDAV 向同一个映像写入，并读回 WebDAV 所写的内容。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="when-the-people-change"&gt;当人员发生变化时&lt;span class="hx:absolute hx:-mt-20" id="when-the-people-change"&gt;&lt;/span&gt;
+&lt;a href="#when-the-people-change" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;SMB 在&lt;strong&gt;共享添加时&lt;/strong&gt;就固定了谁可以连接到该共享，并在每次树连接时检查一次。因此，&lt;a href="https://go-fileshare.github.io/docs/0.51/zh-cn/administration/reload/"&gt;目录服务重新加载&lt;/a&gt;
+发现的新人会原地添加，包括 SMB 正在运行的服务器，不触及任何连接；但任何被收回的内容，无论是人员、凭据还是共享的展开列表，都会产生新的世代，SMB 已打开的连接会被关闭，因此撤销会触及已经打开的会话。&lt;code&gt;allow&lt;/code&gt; 组已清空的共享&lt;strong&gt;根本不会通过 SMB 提供&lt;/strong&gt;：其空的 &lt;code&gt;AllowUsers&lt;/code&gt; 会被理解为所有人。&lt;/p&gt;
+&lt;h2 data-hextra-search-id="requests-in-flight"&gt;并发处理的请求&lt;span class="hx:absolute hx:-mt-20" id="requests-in-flight"&gt;&lt;/span&gt;
+&lt;a href="#requests-in-flight" class="subheading-anchor" aria-label="此章节的永久链接"&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;自 go-filesystems/smb v0.8.1 起，一个连接最多同时处理 32 个请求，整个服务器跨所有连接最多 128 个。回复按 &lt;code&gt;MessageId&lt;/code&gt; 匹配。仅含一个普通文件 &lt;code&gt;READ&lt;/code&gt; 的帧可与其他请求并行执行；复合链（整体按顺序应答）、异步请求和 &lt;code&gt;WRITE&lt;/code&gt; 单独执行。一个帧开始后须在 30 秒内到达。该机制是共享模块 go-filesystems/inflight，SFTP 和 NFS 也使用它。&lt;/p&gt;</description></item></channel></rss>
