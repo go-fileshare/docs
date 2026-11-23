@@ -172,7 +172,8 @@ webdav: in the clear on 10.0.0.5:8080, on purpose (plaintext = true): TLS must b
 | WebDAV | 是 | HTTPS |
 | S3 | 是 | HTTPS |
 | NFS | 是 | RFC 9289；见下文 |
-| SMB | **拒绝** | SMB 3 使用自己的密钥加密 |
+| SMB（TCP） | **拒绝** | SMB 3 使用自己的密钥加密 |
+| SMB（QUIC） | **必需**（`transport = "quic"`） | UDP 上的 TLS 1.3；参见 [QUIC 上的 SMB]({{< relref "/protocols/smb.md#quic" >}}) |
 | SFTP | **拒绝** | SFTP 就是 SSH |
 
 ## 基于 TLS 的 NFS 证明的是机器，而不是个人 {#nfs-over-tls-proves-the-machine-not-the-person}

@@ -168,7 +168,8 @@ webdav: in the clear on 10.0.0.5:8080, on purpose (plaintext = true): TLS must b
 | WebDAV | 가능 | HTTPS |
 | S3 | 가능 | HTTPS |
 | NFS | 가능 | RFC 9289, 아래 참고 |
-| SMB | **거부** | SMB 3은 자체 키로 암호화합니다 |
+| SMB (TCP) | **거부** | SMB 3은 자체 키로 암호화합니다 |
+| SMB (QUIC) | **필수** (`transport = "quic"`) | UDP 위의 TLS 1.3. [QUIC 위의 SMB]({{< relref "/protocols/smb.md#quic" >}}) 참조 |
 | SFTP | **거부** | SFTP는 SSH입니다 |
 
 ## TLS 위의 NFS는 사용자가 아니라 머신을 증명합니다 {#nfs-over-tls-proves-the-machine-not-the-person}

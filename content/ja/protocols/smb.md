@@ -72,6 +72,43 @@ NTLM にフォールバックするため、名前で指定します。Windows 1
 クライアントは MS-KRB5、Kerberos、NEGOEX、NTLMSSP を提示し、Kerberos の AP-REQ を送り、
 署名必須のままマウント・一覧・読み取り・書き込みができ、NTLM メッセージは一切送りません。
 
+## QUIC 上の SMB {#quic}
+
+```hcl
+tls {
+  cert_file = "/var/lib/caddy/certificates/acme-v02.api.letsencrypt.org-directory/files.example.org/files.example.org.crt"
+  key_file  = "/var/lib/caddy/certificates/acme-v02.api.letsencrypt.org-directory/files.example.org/files.example.org.key"
+}
+
+serve "smb" {
+  addr      = ":443"          # UDP: TCP 443 の HTTPS プロキシとは衝突しない
+  transport = "quic"
+  tls       = true
+  # client_cert    = "required"
+  # client_ca_file = "/etc/fileshare/client-ca.pem"
+}
+```
+
+QUIC 上の SMB 3.1.1 は、UDP 443 の TLS 1.3 (ALPN `smb`) の中で動く同じ
+プロトコルです。Windows 11 で TCP 445 を閉じたまま
+`net use \\files.example.org\share /TRANSPORT:QUIC` と実行します。証明書は
+`tls` ブロックのもので、ファイルが変わると再読み込みされるため、リバース
+プロキシの ACME ストレージを指せば更新に追従します。Windows クライアントは
+サーバー名を証明書の DNS 名と照合するので、アドレスではなく名前で接続して
+ください (アドレスは NTLM も強制します)。同じホストのプロキシは、その UDP
+ポートで HTTP/3 を提供してはいけません (Caddy: `protocols h1 h2`)。
+
+既定では Kerberos だけが人を区別し、キータブに `cifs/files.example.org`
+プリンシパルが必要です。`client_cert = "required"` は `client_ca_file` に連なる
+クライアント証明書を追加で要求します。SMB の最初のバイトより前の TLS
+ハンドシェイクで検証され、接続してよいマシンを表し、人は引き続き Kerberos
+プリンシパルです。CA ファイルは起動時に読み込まれます。QUIC では、サーバーは
+要求ごとに 1 クレジットを与え、ラージ MTU を通知しません ([MS-SMB2]
+3.3.5.4)。そのため読み書きは 1 回あたり最大 64 KiB です。
+`identity = "system"` と分離された子プロセスはまだ QUIC を提供せず、
+サーバーは起動を拒否します。1 つの `serve "smb"` ブロックは 1 つのトランスポート
+のみを担うので、TCP には 2 つ目のインスタンスを起動してください。
+
 ## 特権サーバーなしの特権ポート {#a-privileged-port-without-a-privileged-server}
 
 Unix で [`--isolate`]({{< relref "/operations/isolation.md" >}}) を使う場合、親プロセスが 445 を

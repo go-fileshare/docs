@@ -175,7 +175,8 @@ webdav: in the clear on 10.0.0.5:8080, on purpose (plaintext = true): TLS must b
 | WebDAV | sí | HTTPS |
 | S3 | sí | HTTPS |
 | NFS | sí | RFC 9289; véase más abajo |
-| SMB | **rechazado** | SMB 3 cifra con sus propias claves |
+| SMB sobre TCP | **rechazado** | SMB 3 cifra con sus propias claves |
+| SMB sobre QUIC | **obligatorio** (`transport = "quic"`) | TLS 1.3 sobre UDP; véase [SMB sobre QUIC]({{< relref "/protocols/smb.md#quic" >}}) |
 | SFTP | **rechazado** | SFTP es SSH |
 
 ## NFS sobre TLS prueba la máquina, no la persona {#nfs-over-tls-proves-the-machine-not-the-person}

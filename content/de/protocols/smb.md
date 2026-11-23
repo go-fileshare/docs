@@ -76,6 +76,44 @@ beigetreten): Der Client bietet MS-KRB5, Kerberos, NEGOEX und NTLMSSP an, sendet
 Kerberos-AP-REQ, verbindet, listet, liest und schreibt bei erzwungener Signierung und
 sendet keine einzige NTLM-Nachricht.
 
+## SMB über QUIC {#quic}
+
+```hcl
+tls {
+  cert_file = "/var/lib/caddy/certificates/acme-v02.api.letsencrypt.org-directory/files.example.org/files.example.org.crt"
+  key_file  = "/var/lib/caddy/certificates/acme-v02.api.letsencrypt.org-directory/files.example.org/files.example.org.key"
+}
+
+serve "smb" {
+  addr      = ":443"          # UDP: kollidiert nicht mit einem HTTPS-Proxy auf TCP 443
+  transport = "quic"
+  tls       = true
+  # client_cert    = "required"
+  # client_ca_file = "/etc/fileshare/client-ca.pem"
+}
+```
+
+SMB 3.1.1 über QUIC ist dasselbe Protokoll in TLS 1.3 auf UDP 443 mit dem ALPN
+`smb`: `net use \\files.example.org\share /TRANSPORT:QUIC` unter Windows 11, bei
+geschlossenem TCP 445. Das Zertifikat ist das des `tls`-Blocks, seine Dateien
+werden bei Änderung neu geladen: Zeigen sie auf den ACME-Speicher eines
+Reverse-Proxys, folgt der Server dessen Erneuerungen. Ein Windows-Client
+vergleicht den Servernamen mit den DNS-Namen des Zertifikats: einen Namen
+wählen, nie eine Adresse (eine Adresse erzwingt zudem NTLM). Ein Proxy auf
+demselben Rechner darf auf diesem UDP-Port kein HTTP/3 anbieten (Caddy:
+`protocols h1 h2`).
+
+Standardmäßig unterscheidet nur Kerberos die Personen, mit einem Principal
+`cifs/files.example.org` in der Keytab. `client_cert = "required"` verlangt
+zusätzlich ein Client-Zertifikat, das zu `client_ca_file` passt, schon im
+TLS-Handshake vor dem ersten SMB-Byte: Es sagt, welche Maschine sich verbinden
+darf, der Kerberos-Principal bleibt die Person. Die CA-Datei wird beim Start
+gelesen. Über QUIC gewährt der Server einen Credit je Anfrage und kündigt kein
+Large MTU an ([MS-SMB2] 3.3.5.4): Lesen und Schreiben umfassen höchstens
+64 KiB. `identity = "system"` und isolierte Kindprozesse bedienen QUIC noch
+nicht, der Server startet damit nicht. Ein `serve "smb"`-Block trägt einen
+Transport: für TCP eine zweite Instanz starten.
+
 ## Ein privilegierter Port ohne privilegierten Server {#a-privileged-port-without-a-privileged-server}
 
 Unter [`--isolate`]({{< relref "/operations/isolation.md" >}}) bindet unter Unix der Elternprozess Port 445
